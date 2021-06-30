@@ -1,4 +1,4 @@
-package com.BSLCommunity.onlinefilmstracker.fragments
+package com.BSLCommunity.onlinefilmstracker.views.fragments
 
 import android.view.LayoutInflater
 import android.view.View
@@ -14,8 +14,7 @@ class FilmsListRecyclerViewAdapter(private val films: ArrayList<Film>) :
     RecyclerView.Adapter<FilmsListRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view: View =
-            LayoutInflater.from(parent.context).inflate(R.layout.inflate_film, parent, false)
+        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.inflate_film, parent, false)
         return ViewHolder(view)
     }
 

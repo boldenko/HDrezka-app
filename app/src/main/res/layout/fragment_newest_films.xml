@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:layout_margin="15dp"
     android:orientation="vertical"
-    tools:context=".fragments.FilmsListFragment">
+    tools:context=".views.fragments.NewestFilmsFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_films_list_films_rv_films"
@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        tools:context=".fragments.FilmsListFragment"
+        tools:context=".views.fragments.NewestFilmsFragment"
         tools:listitem="@layout/inflate_film" />
 
     <ProgressBar
