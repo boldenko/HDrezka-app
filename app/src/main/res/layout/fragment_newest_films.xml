@@ -7,6 +7,13 @@
     android:orientation="vertical"
     tools:context=".views.fragments.NewestFilmsFragment">
 
+    <Button
+        android:id="@+id/fragment_films_list_open_filters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="open filters"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_films_list_films_rv_films"
         android:name="com.BSLCommunity.onlinefilmstracker.fragments.FilmFragment"
@@ -16,11 +23,6 @@
         tools:context=".views.fragments.NewestFilmsFragment"
         tools:listitem="@layout/inflate_film" />
 
-    <ProgressBar
-        android:id="@+id/fragment_films_list_pb_loading"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent" />
 </LinearLayout>
 
 

@@ -23,6 +23,7 @@ class FilmsListRecyclerViewAdapter(private val films: ArrayList<Film>) :
         Picasso.get().load(film.posterPath).into(holder.filmPoster)
         holder.titleView.text = film.title
         holder.yearView.text = film.date
+        holder.countryView.text = film.country
     }
 
     override fun getItemCount(): Int = films.size
@@ -31,5 +32,6 @@ class FilmsListRecyclerViewAdapter(private val films: ArrayList<Film>) :
         val filmPoster: ImageView = view.findViewById(R.id.film_poster)
         val titleView: TextView = view.findViewById(R.id.film_title)
         val yearView: TextView = view.findViewById(R.id.film_year)
+        val countryView: TextView = view.findViewById(R.id.film_country)
     }
 }

@@ -2,12 +2,15 @@ package com.BSLCommunity.onlinefilmstracker.views.fragments
 
 import android.os.Bundle
 import android.util.ArrayMap
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ProgressBar
-import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,31 +20,35 @@ import com.BSLCommunity.onlinefilmstracker.objects.Film
 import com.BSLCommunity.onlinefilmstracker.presenters.NewestFilmsPresenter
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.NewestFilmsView
 
+
 class NewestFilmsFragment : Fragment(), NewestFilmsView {
     private val FILMS_PER_ROW: Int = 3
-
-    private var appliedFilters: ArrayMap<AppliedFilter, String> = ArrayMap()
 
     private lateinit var newestFilmsPresenter: NewestFilmsPresenter
     private lateinit var currentFragment: LinearLayout
     private lateinit var viewList: RecyclerView
     private lateinit var progressBar: ProgressBar
+    private lateinit var scrollView: NestedScrollView
+
+    private val selectedFilters: ArrayMap<AppliedFilter, ArrayList<String>> = ArrayMap()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentFragment = inflater.inflate(R.layout.fragment_newest_films, container, false) as LinearLayout
 
-        progressBar = currentFragment.findViewById(R.id.fragment_films_list_pb_loading)
+        progressBar = activity?.findViewById(R.id.pb_data_loading)!!
 
-        // set up recycler view container
         viewList = currentFragment.findViewById(R.id.fragment_films_list_films_rv_films)
         viewList.layoutManager = GridLayoutManager(context, FILMS_PER_ROW)
-        viewList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(1)) {
-                    progressBar.visibility = View.VISIBLE
-                    newestFilmsPresenter.addFilms()
-                    // Toast.makeText(activity?.applicationContext, appliedFilters.get(AppliedFilter.COUNTRY), Toast.LENGTH_SHORT).show()
+
+        scrollView = activity?.findViewById(R.id.nestedScrollView)!!
+        scrollView.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
+            override fun onScrollChange(v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
+                val view = scrollView.getChildAt(scrollView.childCount - 1)
+                val diff = view.bottom - (scrollView.height + scrollView.scrollY)
+
+                if (diff == 0) {
+                    setProgressBarState(true)
+                    newestFilmsPresenter.getFilms()
                 }
             }
         })
@@ -49,52 +56,79 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
         newestFilmsPresenter = NewestFilmsPresenter(this)
         newestFilmsPresenter.initFilms()
 
-        // createFilters()
+        createFilters()
 
         return currentFragment
     }
 
     override fun setFilms(films: ArrayList<Film>) {
         viewList.adapter = FilmsListRecyclerViewAdapter(films)
-        progressBar.visibility = View.GONE
+    }
+
+    override fun redrawFilms() {
+        //viewList.adapter.notifyItemRangeChanged()
+        viewList.adapter?.notifyDataSetChanged()
+    }
+
+    override fun setProgressBarState(state: Boolean){
+        if(state){
+            progressBar.visibility = View.VISIBLE
+        } else{
+            progressBar.visibility = View.GONE
+        }
     }
 
 
     private fun createFilters() {
-        /* val countries = resources.getStringArray(R.array.countries) //already array
+        activity?.let {
+            val filtersDialog = AlertDialog.Builder(it)
+            // Get the layout inflater
+            val filtersDialogView: LinearLayout = requireActivity().layoutInflater.inflate(R.layout.dialog_filters, null) as LinearLayout
 
-         activity?.let {
-             val builder = AlertDialog.Builder(it)
-             // Get the layout inflater
-             val view: LinearLayout = requireActivity().layoutInflater.inflate(R.layout.dialog_signin, null) as LinearLayout
+            createCountriesFilters(filtersDialogView.findViewById(R.id.bt_countries))
+            // createGenresFilters()
 
-             (view.findViewById<Spinner>(R.id.sp_countries)).onItemSelectedListener =
-                 object : AdapterView.OnItemSelectedListener {
-                     override fun onNothingSelected(parent: AdapterView<*>?) {
+            filtersDialog.setView(filtersDialogView)
+            filtersDialog.setPositiveButton("set") { dialog, id ->
+                newestFilmsPresenter.applyFilters(selectedFilters)
+                dialog.dismiss()
+            }
+            filtersDialog.setNegativeButton("cancel") { dialog, id ->
+                dialog.dismiss()
+            }
+            val d = filtersDialog.create()
+            currentFragment.findViewById<Button>(R.id.fragment_films_list_open_filters).setOnClickListener {
+                d.show()
+            }
+        }
+    }
 
-                     }
+    private fun createCountriesFilters(btn: Button) {
+        val countries = resources.getStringArray(R.array.countries)
+        val checkedCountries: ArrayList<String> = ArrayList()
 
-                     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                         when (id) {
-                             R.id.sp_countries -> {
-                                 appliedFilters[AppliedFilter.COUNTRY] = countries[position]
-                             }
-                         }
-                     }
+        activity?.let {
+            val builder = AlertDialog.Builder(it)
+            builder.setTitle("Выберите страны")
+            builder.setMultiChoiceItems(countries, BooleanArray(countries.size)) { dialog, which, isChecked ->
+                if (isChecked) {
+                    checkedCountries.add(countries[which])
+                } else {
+                    checkedCountries.remove(countries[which])
+                }
+            }
+            builder.setPositiveButton("Ok") { dialog, id ->
+                selectedFilters[AppliedFilter.COUNTRY] = checkedCountries
+                dialog.dismiss()
+            }
+            val d = builder.create()
+            btn.setOnClickListener {
+                d.show()
+            }
+        }
+    }
 
-                 }
-             // Inflate and set the layout for the dialog
-             // Pass null as the parent view because its going in the dialog layout
-             builder.setView(view)
-                 // Add action buttons
-                 .setPositiveButton("set") { dialog, id ->
-                     // sign in the user ...
-                 }
-                 .setNegativeButton("cancel") { dialog, id ->
-                     // cancel
-                 }
-             builder.create()
-             builder.show()
-         }*/
+    private fun createGenresFilters(btn: Button) {
+
     }
 }

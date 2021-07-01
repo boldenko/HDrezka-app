@@ -3,5 +3,7 @@
     <string-array name="countries">
         <item>США</item>
         <item>Украина</item>
+        <item>Россия</item>
+        <item>Бразилия</item>
     </string-array>
 </resources>

@@ -25,6 +25,12 @@
             app:layout_constraintStart_toStartOf="parent" />
     </androidx.core.widget.NestedScrollView>
 
+    <ProgressBar
+        android:id="@+id/pb_data_loading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/nestedScrollView" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/activity_main_nv_bottomBar"
         android:layout_width="0dp"
