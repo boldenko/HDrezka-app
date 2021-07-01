@@ -1,5 +1,9 @@
 package com.BSLCommunity.onlinefilmstracker.constants
 
 enum class AppliedFilter {
-    COUNTRY
+    COUNTRIES,
+    GENRES,
+    RATING,
+    YEAR,
+    TYPE
 }

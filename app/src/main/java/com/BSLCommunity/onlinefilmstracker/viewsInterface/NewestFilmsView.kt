@@ -8,4 +8,6 @@ interface NewestFilmsView {
     fun redrawFilms()
 
     fun setProgressBarState(state: Boolean)
+
+    fun showStopToast()
 }

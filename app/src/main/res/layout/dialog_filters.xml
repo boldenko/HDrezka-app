@@ -1,12 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/bt_countries"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Выбрать страну" />
+        android:layout_height="match_parent"
+        android:layout_margin="15dp"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/bt_countries"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Выбрать страну" />
+
+        <Button
+            android:id="@+id/bt_genres"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Выбрать жанр" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Выбрать рейтинг"
+            android:textSize="18sp" />
+
+        <com.google.android.material.slider.RangeSlider
+            android:id="@+id/rating_range_slider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stepSize="0.1"
+            android:valueFrom="0.0"
+            android:valueTo="10.0"
+            app:values="@array/initial_rating_slider_values" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Выбрать дату выхода"
+            android:textSize="18sp" />
+
+        <com.google.android.material.slider.RangeSlider
+            android:id="@+id/year_range_slider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stepSize="1"
+            android:valueFrom="1960"
+            android:valueTo="2021"
+            app:values="@array/initial_year_slider_values" />
+
+        <RadioGroup
+            android:id="@+id/film_types"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/type_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Все"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/type_films"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Фильмы"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/type_serials"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Сериалы"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/type_multfilms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Мультфильмы"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/type_anime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Аниме"
+                android:textSize="18sp" />
+        </RadioGroup>
+
+    </LinearLayout>
 </LinearLayout>

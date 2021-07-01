@@ -22,8 +22,17 @@ class FilmsListRecyclerViewAdapter(private val films: ArrayList<Film>) :
         val film = films[position]
         Picasso.get().load(film.posterPath).into(holder.filmPoster)
         holder.titleView.text = film.title
-        holder.yearView.text = film.date
-        holder.countryView.text = film.country
+
+        var info = ""
+        info += film.year
+        if (film.countries.size > 0) {
+            info += ", " + film.countries[0]
+        }
+        if (film.ratingIMDB != null) {
+            info += ", " + film.ratingIMDB
+        }
+
+        holder.infoView.text = info
     }
 
     override fun getItemCount(): Int = films.size
@@ -31,7 +40,6 @@ class FilmsListRecyclerViewAdapter(private val films: ArrayList<Film>) :
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val filmPoster: ImageView = view.findViewById(R.id.film_poster)
         val titleView: TextView = view.findViewById(R.id.film_title)
-        val yearView: TextView = view.findViewById(R.id.film_year)
-        val countryView: TextView = view.findViewById(R.id.film_country)
+        val infoView: TextView = view.findViewById(R.id.film_info)
     }
 }

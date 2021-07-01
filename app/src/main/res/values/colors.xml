@@ -3,6 +3,7 @@
     <color name="background">#000E27</color>
     <color name="dark_background">#000919</color>
     <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
     <color name="main_color_1">#304ffe</color>
     <color name="main_color_2">#21c5df</color>
     <color name="main_color_3">#FF474F</color>

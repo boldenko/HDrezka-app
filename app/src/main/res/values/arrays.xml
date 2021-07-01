@@ -4,6 +4,20 @@
         <item>США</item>
         <item>Украина</item>
         <item>Россия</item>
-        <item>Бразилия</item>
+        <item>Великобритания</item>
     </string-array>
+    <string-array name="genres">
+        <item>Фантастика</item>
+        <item>Триллеры</item>
+        <item>Комедии</item>
+        <item>Драмы</item>
+    </string-array>
+    <array name="initial_rating_slider_values">
+        <item>0.0</item>
+        <item>10.0</item>
+    </array>
+    <array name="initial_year_slider_values">
+        <item>1960</item>
+        <item>2021</item>
+    </array>
 </resources>

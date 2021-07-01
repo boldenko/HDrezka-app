@@ -13,7 +13,6 @@ object NewestFilmsModel {
     private val FILM_LINK = "div.b-content__inline_item-cover a"
     private val FILM_TITLE = "div.b-post__title h1"
     private val FILM_POSTER = "div.b-sidecover a img"
-    private val FILM_RATING_IMDB = "span.b-post__info_r"
     private val FILM_TABLE_INFO = "table.b-post__info tbody tr"
 
     fun getPage(page: Int): Elements {
@@ -28,25 +27,47 @@ object NewestFilmsModel {
             val filmPage: Document = Jsoup.connect(link).get()
             val table: Elements = filmPage.select(FILM_TABLE_INFO)
 
-            val title: String = filmPage.select(FILM_TITLE).text();
-            val poster: String = filmPage.select(FILM_POSTER).attr("src")
-            val ratingIMDB: String = filmPage.select(FILM_RATING_IMDB).select("span").text()
+            val title: String = filmPage.select(FILM_TITLE).text()
+            val type: String = element.select("span.cat i")[0].text()
+            val posterPath: String = filmPage.select(FILM_POSTER).attr("src")
+            var ratingIMDB: String? = null
             var date = ""
-            var country = ""
+            var year = ""
+            val countries: ArrayList<String> = ArrayList()
+            val genres: ArrayList<String> = ArrayList()
 
             // Parse info table
             for (tr in table) {
                 val td: Elements = tr.select("td")
-                if (td[0].select("h2").text().equals("Дата выхода")) {
-                    date = td[1].text()
-                }
+                if (td.size > 0) {
+                    val h2Els: Elements = td[0].select("h2")
+                    if (h2Els.size > 0) {
+                        val h2: Element = h2Els[0]
 
-                if (td[0].select("h2").text().equals("Страна")) {
-                    country = td[1].select("a").text()
+                        when (h2.text()) {
+                            "Рейтинги" -> {
+                                ratingIMDB = td[1].select("span.b-post__info_rates imdb span").text()
+                            }
+                            "Дата выхода" -> {
+                                date = td[1].ownText()
+                                year = td[1].select("a").text()
+                            }
+                            "Страна" -> {
+                                for (el in td[1].select("a")) {
+                                    countries.add(el.text())
+                                }
+                            }
+                            "Жанр" -> {
+                                for (el in td[1].select("a")) {
+                                    genres.add(el.select("span").text())
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
-            Film(title, date, poster, country, ratingIMDB, ArrayList())
+            Film(link, title, date, year, posterPath, countries, ratingIMDB, genres, type)
         } catch (e: IOException) {
             e.printStackTrace()
             null

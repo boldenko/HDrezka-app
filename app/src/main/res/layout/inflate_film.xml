@@ -8,7 +8,8 @@
     <ImageView
         android:id="@+id/film_poster"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:contentDescription="film poster" />
 
     <TextView
         android:id="@+id/film_title"
@@ -20,21 +21,13 @@
         android:textSize="14sp" />
 
     <TextView
-        android:id="@+id/film_year"
+        android:id="@+id/film_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:singleLine="false"
-        android:text="Year"
+        android:text="Info"
         android:textColor="#C8C8C8"
         android:textSize="14sp" />
 
-    <TextView
-        android:id="@+id/film_country"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:singleLine="false"
-        android:text="Country"
-        android:textColor="#C8C8C8"
-        android:textSize="14sp" />
 
 </LinearLayout>

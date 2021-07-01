@@ -1,15 +1,11 @@
 package com.BSLCommunity.onlinefilmstracker.views.fragments
 
 import android.os.Bundle
-import android.util.ArrayMap
-import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import androidx.appcompat.app.AlertDialog
+import android.widget.*
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -19,6 +15,8 @@ import com.BSLCommunity.onlinefilmstracker.constants.AppliedFilter
 import com.BSLCommunity.onlinefilmstracker.objects.Film
 import com.BSLCommunity.onlinefilmstracker.presenters.NewestFilmsPresenter
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.NewestFilmsView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.slider.RangeSlider
 
 
 class NewestFilmsFragment : Fragment(), NewestFilmsView {
@@ -29,8 +27,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
     private lateinit var viewList: RecyclerView
     private lateinit var progressBar: ProgressBar
     private lateinit var scrollView: NestedScrollView
-
-    private val selectedFilters: ArrayMap<AppliedFilter, ArrayList<String>> = ArrayMap()
+    private lateinit var stopToast: Toast
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentFragment = inflater.inflate(R.layout.fragment_newest_films, container, false) as LinearLayout
@@ -57,6 +54,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
         newestFilmsPresenter.initFilms()
 
         createFilters()
+        createStopToast()
 
         return currentFragment
     }
@@ -70,27 +68,45 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
         viewList.adapter?.notifyDataSetChanged()
     }
 
-    override fun setProgressBarState(state: Boolean){
-        if(state){
+    override fun setProgressBarState(state: Boolean) {
+        if (state) {
             progressBar.visibility = View.VISIBLE
-        } else{
+        } else {
             progressBar.visibility = View.GONE
         }
+    }
+
+    override fun showStopToast() {
+        stopToast.show()
     }
 
 
     private fun createFilters() {
         activity?.let {
-            val filtersDialog = AlertDialog.Builder(it)
+            val filtersDialog = MaterialAlertDialogBuilder(it)
             // Get the layout inflater
             val filtersDialogView: LinearLayout = requireActivity().layoutInflater.inflate(R.layout.dialog_filters, null) as LinearLayout
 
+            filtersDialogView.findViewById<RangeSlider>(R.id.year_range_slider).addOnChangeListener { slider, value, fromUser ->
+                newestFilmsPresenter.setFilter(AppliedFilter.YEAR, arrayListOf(slider.values[0].toString(), slider.values[1].toString()))
+            }
+
+            filtersDialogView.findViewById<RangeSlider>(R.id.rating_range_slider).addOnChangeListener { slider, value, fromUser ->
+                newestFilmsPresenter.setFilter(AppliedFilter.RATING, arrayListOf(slider.values[0].toString(), slider.values[1].toString()))
+            }
+
+            filtersDialogView.findViewById<RadioGroup>(R.id.film_types).setOnCheckedChangeListener { group, checkedId ->
+                run {
+                    val value: String = group.findViewById<RadioButton>(checkedId).text as String
+                    newestFilmsPresenter.setFilter(AppliedFilter.TYPE, arrayListOf(value))
+                }
+            }
             createCountriesFilters(filtersDialogView.findViewById(R.id.bt_countries))
-            // createGenresFilters()
+            createGenresFilters(filtersDialogView.findViewById(R.id.bt_genres))
 
             filtersDialog.setView(filtersDialogView)
             filtersDialog.setPositiveButton("set") { dialog, id ->
-                newestFilmsPresenter.applyFilters(selectedFilters)
+                newestFilmsPresenter.applyFilters()
                 dialog.dismiss()
             }
             filtersDialog.setNegativeButton("cancel") { dialog, id ->
@@ -108,7 +124,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
         val checkedCountries: ArrayList<String> = ArrayList()
 
         activity?.let {
-            val builder = AlertDialog.Builder(it)
+            val builder = MaterialAlertDialogBuilder(it)
             builder.setTitle("Выберите страны")
             builder.setMultiChoiceItems(countries, BooleanArray(countries.size)) { dialog, which, isChecked ->
                 if (isChecked) {
@@ -118,7 +134,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
                 }
             }
             builder.setPositiveButton("Ok") { dialog, id ->
-                selectedFilters[AppliedFilter.COUNTRY] = checkedCountries
+                newestFilmsPresenter.setFilter(AppliedFilter.COUNTRIES, checkedCountries)
                 dialog.dismiss()
             }
             val d = builder.create()
@@ -129,6 +145,39 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
     }
 
     private fun createGenresFilters(btn: Button) {
+        val genres = resources.getStringArray(R.array.genres)
+        val checkedGenres: ArrayList<String> = ArrayList()
 
+        activity?.let {
+            val builder = MaterialAlertDialogBuilder(it)
+            builder.setTitle("Выберите жанры")
+            builder.setMultiChoiceItems(genres, BooleanArray(genres.size)) { dialog, which, isChecked ->
+                if (isChecked) {
+                    checkedGenres.add(genres[which])
+                } else {
+                    checkedGenres.remove(genres[which])
+                }
+            }
+            builder.setPositiveButton("Ok") { dialog, id ->
+                newestFilmsPresenter.setFilter(AppliedFilter.GENRES, checkedGenres)
+                dialog.dismiss()
+            }
+            val d = builder.create()
+            btn.setOnClickListener {
+                d.show()
+            }
+        }
+    }
+
+    private fun createStopToast() {
+        stopToast = Toast(activity?.applicationContext).also {
+            // View and duration has to be set
+            val view = LayoutInflater.from(context).inflate(R.layout.popup_toast, null)
+            it.setView(view)
+            it.duration = Toast.LENGTH_LONG
+
+            it.setGravity(Gravity.START, 0, 0)
+            it.setMargin(0.1f, 0.2f)
+        }
     }
 }
