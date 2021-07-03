@@ -13,11 +13,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jsoup.select.Elements
-import java.util.*
-import kotlin.collections.ArrayList
 
 class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView) {
-    private val FILMS_PER_PAGE: Int = 9
+    private val FILMS_PER_PAGE: Int = 9 * 2
     private val STOP_TIME: Long = 8 // Seconds
 
     private var currentPage: Int = 1 // newest film page
@@ -30,82 +28,90 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView) {
     private var timer: CountDownTimer? = null
     private var isShouldStop: Boolean = false
 
-    private val debugKey: String = "FILMS_DEBUG"
-
     fun initFilms() {
         newestFilmsView.setFilms(activeFilms)
-        getFilms()
+        getNextFilms()
     }
 
-    fun getFilms() {
-        GlobalScope.launch {
-            if (isLoading) {
-                Log.d(debugKey, "loading... return")
-                return@launch
-            }
+    fun getNextFilms() {
+        if (isLoading) {
+            return
+        }
 
-            if (isShouldStop) {
-                isShouldStop = false
-                return@launch
-            }
+        if (isShouldStop) {
+            isShouldStop = false
+            return
+        }
 
-            isLoading = true
-            /*  withContext(Dispatchers.Main){
-                  startTimer()
-              }*/
+        isLoading = true
+        /* startTimer() */
 
-            if (filmElements.size == 0) {
-                filmElements = NewestFilmsModel.getPage(currentPage++)
-            }
-
-            // load FILMS_PER_PAGE (9) films
-            val loadedFilms: ArrayList<Film> = ArrayList()
-            for (filmElement in filmElements.clone()) {
-                if (loadedFilms.size >= FILMS_PER_PAGE) {
-                    Log.d(debugKey, "loaded ${loadedFilms.size} films. BREAK")
-                    break
+        if (filmElements.size == 0) {
+            NewestFilmsModel.getPage(currentPage++) { elements: Elements ->
+                run {
+                    filmElements = elements
+                    getFilmsData()
                 }
-
-                val film: Film? = FilmModel.getMainData(filmElement)
-                if (film != null) {
-                    //Log.d(debugKey, "film: $film")
-                    loadedFilms.add(film)
-                }
-
-                filmElements.removeAt(0)
-            }
-            isLoading = false
-
-            allFilms.addAll(loadedFilms)
-            addFilms(loadedFilms)
-        }
-    }
-
-    private suspend fun addFilms(films: ArrayList<Film>) {
-        val sortedFilms: ArrayList<Film> = ArrayList()
-
-        for (film in films) {
-            if (checkFilmForFilters(film)) {
-                sortedFilms.add(film)
-            }
-        }
-
-        withContext(Dispatchers.Main) {
-            activeFilms.addAll(sortedFilms)
-            Log.d(debugKey, "redraw ${sortedFilms.size} films")
-            newestFilmsView.redrawFilms()
-        }
-
-        sortedFilmsCount += sortedFilms.size
-        if (sortedFilmsCount >= FILMS_PER_PAGE) {
-            sortedFilmsCount = 0
-            withContext(Dispatchers.Main) {
-                newestFilmsView.setProgressBarState(false)
-                //   timer?.cancel()
             }
         } else {
-            Log.d(debugKey, "sorted ${sortedFilmsCount}. Not enough")
-            getFilms()
+            getFilmsData()
+        }
+    }
+
+    private fun getFilmsData() {
+        // load FILMS_PER_PAGE (9) films
+        val loadedFilms: ArrayList<Film> = ArrayList()
+        var count = 0
+        for (filmElement in filmElements.clone()) {
+            if (count == FILMS_PER_PAGE) {
+                break
+            }
+
+            FilmModel.getMainData(filmElement) { film: Film? ->
+                run {
+                    if (film != null) {
+                        loadedFilms.add(film)
+                        filmElements.removeAt(0)
+                    }
+
+                    if (loadedFilms.size >= FILMS_PER_PAGE) {
+                        isLoading = false
+                        allFilms.addAll(loadedFilms)
+                        addFilms(loadedFilms)
+                    }
+                }
+            }
+
+            count++
+        }
+    }
+
+    private fun addFilms(films: ArrayList<Film>) {
+        GlobalScope.launch {
+            val sortedFilms: ArrayList<Film> = ArrayList()
+
+            for (film in films) {
+                if (checkFilmForFilters(film)) {
+                    sortedFilms.add(film)
+                }
+            }
+
+            activeFilms.addAll(sortedFilms)
+            withContext(Dispatchers.Main) {
+                newestFilmsView.redrawFilms()
+            }
+
+            sortedFilmsCount += sortedFilms.size
+            if (sortedFilmsCount >= FILMS_PER_PAGE) {
+                sortedFilmsCount = 0
+
+                withContext(Dispatchers.Main) {
+                    newestFilmsView.setProgressBarState(false)
+                }
+                //   timer?.cancel()
+            } else {
+                getNextFilms()
+            }
         }
     }
 
@@ -118,18 +124,15 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView) {
     }
 
     fun applyFilters() {
-        Log.d(debugKey, "filers applied!")
-        GlobalScope.launch {
-            activeFilms.clear()
-            withContext(Dispatchers.Main) {
-                newestFilmsView.redrawFilms()
-                newestFilmsView.setProgressBarState(true)
-                /*   timer?.cancel()
-                   startTimer()*/
-            }
+        activeFilms.clear()
+        newestFilmsView.redrawFilms()
+        newestFilmsView.setProgressBarState(true)
+        /*   timer?.cancel()
+           startTimer()*/
 
-            addFilms(allFilms)
-        }
+
+        addFilms(allFilms)
+
     }
 
     private fun startTimer() {

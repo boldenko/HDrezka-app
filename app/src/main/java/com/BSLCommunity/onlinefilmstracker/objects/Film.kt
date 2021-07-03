@@ -10,7 +10,7 @@ open class Film(
     val posterPath: String,
     val countries: ArrayList<String>,
     val ratingIMDB: String?,
-    val genres: List<String>,
+    val genres: ArrayList<String>,
     val type: String
 ) : Serializable {
     var origTitle: String? = null

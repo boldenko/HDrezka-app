@@ -13,7 +13,7 @@
     <string name="categories">Категории</string>
     <string name="bookmarks">Закладки</string>
     <string name="choose_country">Выбрать страну</string>
-    <string name="exclude_country">Исключить страны</string>
+    <string name="exclude_country">Исключить страну</string>
     <string name="choose_genre">Выбрать жанр</string>
     <string name="exclude_genre">Исключить жанр</string>
     <string name="choose_rating">Выбрать рейтинг</string>
@@ -26,5 +26,5 @@
     <string name="filters">Фильтры</string>
     <string name="slow_search">Поиск идет слишком долго. Остановить?</string>
     <string name="stop">Стоп</string>
-
+    <string name="open_link">Открыть в браузере</string>
 </resources>

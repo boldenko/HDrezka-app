@@ -52,7 +52,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
 
                 if (diff == 0) {
                     setProgressBarState(true)
-                    newestFilmsPresenter.getFilms()
+                    newestFilmsPresenter.getNextFilms()
                 }
             }
         })
@@ -77,7 +77,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
     }
 
     override fun setFilms(films: ArrayList<Film>) {
-        viewList.adapter = FilmsListRecyclerViewAdapter(films, ::openFilm)
+        viewList.adapter = context?.let { FilmsListRecyclerViewAdapter(it, films, ::openFilm) }
     }
 
     override fun redrawFilms() {
@@ -197,7 +197,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
     private fun createStopToast() {
         stopToast = Toast(activity?.applicationContext).also {
             // View and duration has to be set
-            val view = LayoutInflater.from(context).inflate(R.layout.popup_toast, null)
+            val view = LayoutInflater.from(context).inflate(R.layout.popup_box, null)
             view.findViewById<TextView>(R.id.stop_btn).setOnClickListener {
                 newestFilmsPresenter.stopGetFilms()
             }

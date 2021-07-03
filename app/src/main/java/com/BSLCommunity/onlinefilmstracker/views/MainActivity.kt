@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
                 .add(R.id.main_fragment_container, newestFragment)
                 .commit()
         }
-        fragmentManager.beginTransaction().replace(R.id.main_fragment_container, NewestFilmsFragment()).commit()
     }
 
     override fun onFragmentInteraction(fragmentSource: Fragment?, fragmentReceiver: Fragment?, action: OnFragmentInteractionListener.Action?, data: Bundle?, backStackTag: String?) {

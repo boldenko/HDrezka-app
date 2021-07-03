@@ -14,7 +14,12 @@ class FilmPresenter(private val filmView: FilmView) {
             FilmModel.setAdditionalData(film)
 
             withContext(Dispatchers.Main) {
-                filmView.setFilmData(film)
+                filmView.setFilmBaseData(film)
+                filmView.setGenres(film.genres)
+                filmView.setCountries(film.countries)
+                film.directors?.let { filmView.setDirectors(it) }
+                film.actors?.let { filmView.setActors(it) }
+                filmView.setFilmLink(film.link)
             }
         }
     }

@@ -2,15 +2,54 @@
 <resources>
     <string-array name="countries">
         <item>США</item>
+        <item>Корея Южная</item>
+        <item>Великобритания</item>
+        <item>Франция</item>
+        <item>Германия</item>
         <item>Украина</item>
         <item>Россия</item>
-        <item>Великобритания</item>
+        <item>Китай</item>
+        <item>Япония</item>
+        <item>Канада</item>
+        <item>Италия</item>
+        <item>Швеция</item>
+        <item>Турция</item>
+        <item>Гонконг</item>
+        <item>Австралия</item>
+        <item>Мексика</item>
+        <item>Эстония</item>
+        <item>Испания</item>
+        <item>Нидерланды</item>
+        <item>Новая Зеландия</item>
+        <item>Филиппины</item>
+        <item>Бразилия</item>
+        <item>Тайвань</item>
     </string-array>
     <string-array name="genres">
         <item>Фантастика</item>
         <item>Триллеры</item>
         <item>Комедии</item>
+        <item>Фэнтези</item>
+        <item>Боевики</item>
+        <item>Детективы</item>
+        <item>Ужасы</item>
         <item>Драмы</item>
+        <item>Приключения</item>
+        <item>Семейные</item>
+        <item>Мелодрамы</item>
+        <item>Спортивные</item>
+        <item>Криминал</item>
+        <item>Исторические</item>
+        <item>Биографические</item>
+        <item>Вестерны</item>
+        <item>Документальные</item>
+        <item>Музыкальные</item>
+        <item>Эротика</item>
+        <item>Зарубежные</item>
+        <item>Сказки</item>
+        <item>Детские</item>
+        <item>Романтические</item>
+        <item>Арт-хаус</item>
     </string-array>
     <array name="initial_rating_slider_values">
         <item>0.0</item>
