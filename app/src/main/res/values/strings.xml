@@ -1,36 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">OnlineFilmsTracker</string>
-    <string name="dialog_title">Downloading files</string>
-    <string name="close">Close</string>
-    <string name="service_title">App is running in background</string>
-    <string name="rating" translatable="false">%1$s\n (%2$s)</string>
-    <string name="release_date">Release date: %1$s</string>
-    <string name="runtime">Runtime: %1$s minutes</string>
-    <string name="adult" translatable="false">18+</string>
-    <string name="directors">Directors: \t</string>
-    <string name="producers">Producers: \t</string>
-    <string name="writers">Writers: \t</string>
-    <string name="actor_born">Born: %1$s</string>
-    <string name="actor_died">Died: %1$s</string>
-    <string name="unknown">unknown</string>
-    <string name="enter_film_name">Enter film name!"</string>
-    <string name="movies">Movies</string>
-    <string name="search_for_movie">Search for movie</string>
-    <string name="plot">Plot</string>
-    <string name="cast">Cast</string>
-    <string name="search_hint">Start search for a Movie title in the search bar up above to fetch results</string>
-    <string name="downloading_error">Failed to download files</string>
-    <string name="categories">Categories</string>
-    <string name="genre_popular">Popular</string>
-    <string name="categories_hint">Find film within categories!</string>
-    <string name="role_actor">Actor</string>
-    <string name="role_director">Director</string>
-    <string name="role_producer">Producer</string>
-    <string name="role_writer">Writer</string>
-    <string name="bookmarks">Bookmarks</string>
-    <string name="bookmarked">This movie has been bookmarked</string>
-    <string name="bookmarks_hint">Search and bookmark movies!</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name">HDrezka Client</string>
+    <string name="runtime">Время: %1$s</string>
+    <string name="directors">Режиссер: %1$s</string>
+    <string name="countries">Страна: %1$s</string>
+    <string name="release_date">Дата выхода: %1$s</string>
+    <string name="film_type">Тип: %1$s</string>
+    <string name="plot">Сюжет</string>
+    <string name="cast">Актеры</string>
+    <string name="newest">Новинки</string>
+    <string name="search_for_movie">Поиск</string>
+    <string name="categories">Категории</string>
+    <string name="bookmarks">Закладки</string>
+    <string name="choose_country">Выбрать страну</string>
+    <string name="exclude_country">Исключить страны</string>
+    <string name="choose_genre">Выбрать жанр</string>
+    <string name="exclude_genre">Исключить жанр</string>
+    <string name="choose_rating">Выбрать рейтинг</string>
+    <string name="choose_release_date">Выбрать дату выхода</string>
+    <string name="all">Все</string>
+    <string name="films">Фильмы</string>
+    <string name="serials">Сериалы</string>
+    <string name="multfilms">Мультфильмы</string>
+    <string name="anime">Аниме</string>
+    <string name="filters">Фильтры</string>
+    <string name="slow_search">Поиск идет слишком долго. Остановить?</string>
+    <string name="stop">Стоп</string>
+
 </resources>

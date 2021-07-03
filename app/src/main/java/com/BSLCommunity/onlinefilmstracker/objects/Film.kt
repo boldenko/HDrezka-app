@@ -1,7 +1,9 @@
 package com.BSLCommunity.onlinefilmstracker.objects
 
-data class Film(
-    val filmLink: String,
+import java.io.Serializable
+
+open class Film(
+    val link: String,
     val title: String,
     val date: String,
     val year: String,
@@ -10,4 +12,11 @@ data class Film(
     val ratingIMDB: String?,
     val genres: List<String>,
     val type: String
-)
+) : Serializable {
+    var origTitle: String? = null
+    var description: String? = null
+    var votes: String? = null
+    var runtime: String? = null
+    var actors: ArrayList<String>? = null
+    var directors: ArrayList<String>? = null
+}

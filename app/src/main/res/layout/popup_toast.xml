@@ -4,18 +4,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:padding="10dp">
+    android:padding="10dp"
+    android:weightSum="1">
 
     <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Поисе идет слишком долго. Остановить?"
-        android:textColor="#FFF" />
+        android:layout_weight="0.5"
+        android:text="@string/slow_search"
+        android:textColor="#FFF"
+        android:textSize="16sp" />
 
-    <Button
+    <Space
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Стоп" />
+        android:layout_weight="0.3" />
+
+    <TextView
+        android:id="@+id/stop_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:text="@string/stop"
+        android:textColor="#EA0000"
+        android:textSize="16sp" />
 
 </LinearLayout>

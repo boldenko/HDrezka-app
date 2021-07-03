@@ -4,6 +4,7 @@ import android.os.CountDownTimer
 import android.util.ArrayMap
 import android.util.Log
 import com.BSLCommunity.onlinefilmstracker.constants.AppliedFilter
+import com.BSLCommunity.onlinefilmstracker.models.FilmModel
 import com.BSLCommunity.onlinefilmstracker.models.NewestFilmsModel
 import com.BSLCommunity.onlinefilmstracker.objects.Film
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.NewestFilmsView
@@ -17,6 +18,7 @@ import kotlin.collections.ArrayList
 
 class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView) {
     private val FILMS_PER_PAGE: Int = 9
+    private val STOP_TIME: Long = 8 // Seconds
 
     private var currentPage: Int = 1 // newest film page
     private var isLoading: Boolean = false // loading condition
@@ -25,9 +27,10 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView) {
     private var sortedFilmsCount: Int = 0 // current sorted films
     private var appliedFilters: ArrayMap<AppliedFilter, ArrayList<String>> = ArrayMap() // applied filters
     private var filmElements: Elements = Elements() // current films elements from newst page
+    private var timer: CountDownTimer? = null
+    private var isShouldStop: Boolean = false
 
     private val debugKey: String = "FILMS_DEBUG"
-    private var timer: CountDownTimer? = null
 
     fun initFilms() {
         newestFilmsView.setFilms(activeFilms)
@@ -41,7 +44,16 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView) {
                 return@launch
             }
 
+            if (isShouldStop) {
+                isShouldStop = false
+                return@launch
+            }
+
             isLoading = true
+            /*  withContext(Dispatchers.Main){
+                  startTimer()
+              }*/
+
             if (filmElements.size == 0) {
                 filmElements = NewestFilmsModel.getPage(currentPage++)
             }
@@ -54,9 +66,9 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView) {
                     break
                 }
 
-                val film: Film? = NewestFilmsModel.getFilm(filmElement)
+                val film: Film? = FilmModel.getMainData(filmElement)
                 if (film != null) {
-                    Log.d(debugKey, "film: $film")
+                    //Log.d(debugKey, "film: $film")
                     loadedFilms.add(film)
                 }
 
@@ -89,12 +101,16 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView) {
             sortedFilmsCount = 0
             withContext(Dispatchers.Main) {
                 newestFilmsView.setProgressBarState(false)
-                timer?.cancel()
+                //   timer?.cancel()
             }
         } else {
             Log.d(debugKey, "sorted ${sortedFilmsCount}. Not enough")
             getFilms()
         }
+    }
+
+    fun stopGetFilms() {
+        isShouldStop = true
     }
 
     fun setFilter(key: AppliedFilter, value: ArrayList<String>) {
@@ -108,20 +124,26 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView) {
             withContext(Dispatchers.Main) {
                 newestFilmsView.redrawFilms()
                 newestFilmsView.setProgressBarState(true)
-
-                timer = object : CountDownTimer(2000, 1000) {
-                    override fun onTick(millisUntilFinished: Long) {}
-
-                    override fun onFinish() {
-                        newestFilmsView.showStopToast()
-                    }
-                }
-                timer?.start()
+                /*   timer?.cancel()
+                   startTimer()*/
             }
 
             addFilms(allFilms)
         }
     }
+
+    private fun startTimer() {
+        timer = object : CountDownTimer(STOP_TIME * 1000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {}
+
+            override fun onFinish() {
+                newestFilmsView.showStopToast()
+                startTimer()
+            }
+        }
+        timer?.start()
+    }
+
 
     // true - film соотвествует критериям
     // false - фильм не соотвествует критериям
@@ -145,6 +167,26 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView) {
                         applyList[AppliedFilter.GENRES] = genre in filterEntry.value
 
                         if (applyList[AppliedFilter.GENRES] == true) {
+                            break
+                        }
+                    }
+                }
+
+                AppliedFilter.COUNTRIES_INVERTED -> {
+                    for (country in film.countries) {
+                        applyList[AppliedFilter.COUNTRIES_INVERTED] = country !in filterEntry.value
+
+                        if (applyList[AppliedFilter.COUNTRIES_INVERTED] == false) {
+                            break
+                        }
+                    }
+                }
+
+                AppliedFilter.GENRES_INVERTED -> {
+                    for (genre in film.genres) {
+                        applyList[AppliedFilter.GENRES_INVERTED] = genre !in filterEntry.value
+
+                        if (applyList[AppliedFilter.GENRES_INVERTED] == false) {
                             break
                         }
                     }

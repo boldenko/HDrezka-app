@@ -5,97 +5,143 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="15dp"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/bt_countries"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Выбрать страну" />
+            android:layout_height="match_parent"
+            android:layout_margin="15dp"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/bt_genres"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Выбрать жанр" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Выбрать рейтинг"
-            android:textSize="18sp" />
-
-        <com.google.android.material.slider.RangeSlider
-            android:id="@+id/rating_range_slider"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:stepSize="0.1"
-            android:valueFrom="0.0"
-            android:valueTo="10.0"
-            app:values="@array/initial_rating_slider_values" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Выбрать дату выхода"
-            android:textSize="18sp" />
-
-        <com.google.android.material.slider.RangeSlider
-            android:id="@+id/year_range_slider"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:stepSize="1"
-            android:valueFrom="1960"
-            android:valueTo="2021"
-            app:values="@array/initial_year_slider_values" />
-
-        <RadioGroup
-            android:id="@+id/film_types"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <RadioButton
-                android:id="@+id/type_all"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="Все"
-                android:textSize="18sp" />
+                android:orientation="horizontal"
+                android:weightSum="1">
 
-            <RadioButton
-                android:id="@+id/type_films"
-                android:layout_width="wrap_content"
+                <Button
+                    android:id="@+id/bt_countries"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="0.5"
+                    android:text="@string/choose_country"
+                    android:textSize="@dimen/filters_text_size" />
+
+                <Button
+                    android:id="@+id/bt_countries_inverted"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="0.5"
+                    android:text="@string/exclude_country"
+                    android:textSize="@dimen/filters_text_size" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Фильмы"
-                android:textSize="18sp" />
+                android:orientation="horizontal"
+                android:weightSum="1">
 
-            <RadioButton
-                android:id="@+id/type_serials"
-                android:layout_width="wrap_content"
+                <Button
+                    android:id="@+id/bt_genres"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="0.5"
+                    android:text="@string/choose_genre"
+                    android:textSize="@dimen/filters_text_size" />
+
+                <Button
+                    android:id="@+id/bt_genres_inverted"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="0.5"
+                    android:text="@string/exclude_genre"
+                    android:textSize="@dimen/filters_text_size" />
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Сериалы"
-                android:textSize="18sp" />
+                android:layout_marginTop="20dp"
+                android:text="@string/choose_rating"
+                android:textSize="@dimen/filters_text_size" />
 
-            <RadioButton
-                android:id="@+id/type_multfilms"
-                android:layout_width="wrap_content"
+            <com.google.android.material.slider.RangeSlider
+                android:id="@+id/rating_range_slider"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Мультфильмы"
-                android:textSize="18sp" />
+                android:stepSize="0.1"
+                android:valueFrom="0.0"
+                android:valueTo="10.0"
+                app:values="@array/initial_rating_slider_values" />
 
-            <RadioButton
-                android:id="@+id/type_anime"
-                android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Аниме"
-                android:textSize="18sp" />
-        </RadioGroup>
+                android:layout_marginTop="20dp"
+                android:text="@string/choose_release_date"
+                android:textSize="@dimen/filters_text_size" />
 
-    </LinearLayout>
+            <com.google.android.material.slider.RangeSlider
+                android:id="@+id/year_range_slider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stepSize="1"
+                android:valueFrom="1960"
+                android:valueTo="2021"
+                app:values="@array/initial_year_slider_values" />
+
+            <RadioGroup
+                android:id="@+id/film_types"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
+
+                <RadioButton
+                    android:id="@+id/type_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/all"
+                    android:textSize="@dimen/filters_text_size" />
+
+                <RadioButton
+                    android:id="@+id/type_films"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/films"
+                    android:textSize="@dimen/filters_text_size" />
+
+                <RadioButton
+                    android:id="@+id/type_serials"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/serials"
+                    android:textSize="@dimen/filters_text_size" />
+
+                <RadioButton
+                    android:id="@+id/type_multfilms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/multfilms"
+                    android:textSize="@dimen/filters_text_size" />
+
+                <RadioButton
+                    android:id="@+id/type_anime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/anime"
+                    android:textSize="@dimen/filters_text_size" />
+            </RadioGroup>
+
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
