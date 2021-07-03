@@ -15,58 +15,55 @@
             android:layout_margin="15dp"
             android:orientation="vertical">
 
-            <LinearLayout
+
+            <TableLayout
                 android:layout_marginTop="0dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="1">
+                android:layout_height="wrap_content">
 
-                <Button
-                    android:id="@+id/bt_countries"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:layout_weight="0.5"
-                    android:text="@string/choose_country"
-                    android:textSize="@dimen/filters_text_size" />
+                <TableRow>
+                    <Button
+                        android:id="@+id/bt_countries"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="0.5"
+                        android:text="@string/choose_country"
+                        android:textAllCaps="false"
+                        android:textSize="@dimen/filters_text_size" />
 
-                <Button
-                    android:id="@+id/bt_countries_inverted"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_weight="0.5"
-                    android:text="@string/exclude_country"
-                    android:textSize="@dimen/filters_text_size" />
-            </LinearLayout>
+                    <Button
+                        android:textAllCaps="false"
+                        android:id="@+id/bt_countries_inverted"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="0.5"
+                        android:text="@string/exclude_country"
+                        android:textSize="@dimen/filters_text_size" />
+                </TableRow>
+                <TableRow>
+                    <Button
+                        android:textAllCaps="false"
+                        android:id="@+id/bt_genres"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="0.5"
+                        android:text="@string/choose_genre"
+                        android:textSize="@dimen/filters_text_size" />
 
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="1">
-
-                <Button
-                    android:id="@+id/bt_genres"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:layout_weight="0.5"
-                    android:text="@string/choose_genre"
-                    android:textSize="@dimen/filters_text_size" />
-
-                <Button
-                    android:id="@+id/bt_genres_inverted"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_weight="0.5"
-                    android:text="@string/exclude_genre"
-                    android:textSize="@dimen/filters_text_size" />
-            </LinearLayout>
-
+                    <Button
+                        android:textAllCaps="false"
+                        android:id="@+id/bt_genres_inverted"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="0.5"
+                        android:text="@string/exclude_genre"
+                        android:textSize="@dimen/filters_text_size" />
+                </TableRow>
+            </TableLayout>
 
             <TextView
                 android:layout_width="match_parent"

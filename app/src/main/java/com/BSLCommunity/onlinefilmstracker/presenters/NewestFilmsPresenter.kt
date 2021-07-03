@@ -2,7 +2,6 @@ package com.BSLCommunity.onlinefilmstracker.presenters
 
 import android.os.CountDownTimer
 import android.util.ArrayMap
-import android.util.Log
 import com.BSLCommunity.onlinefilmstracker.constants.AppliedFilter
 import com.BSLCommunity.onlinefilmstracker.models.FilmModel
 import com.BSLCommunity.onlinefilmstracker.models.NewestFilmsModel
@@ -201,15 +200,21 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView) {
                         val max: Float = filterEntry.value[1].toFloat()
                         val filmRating: Float = film.ratingIMDB.toFloat()
                         applyList[AppliedFilter.RATING] = filmRating in min..max
+                    } else {
+                        applyList[AppliedFilter.RATING] = false
                     }
                 }
 
                 AppliedFilter.YEAR -> {
-                    val min: Float = filterEntry.value[0].toFloat()
-                    val max: Float = filterEntry.value[1].toFloat()
-                    val filmYear: Float = film.year.take(4).toFloat()
+                    if (film.year.isNotEmpty()) {
+                        val min: Float = filterEntry.value[0].toFloat()
+                        val max: Float = filterEntry.value[1].toFloat()
+                        val filmYear: Float = film.year.take(4).toFloat()
 
-                    applyList[AppliedFilter.YEAR] = filmYear in min..max
+                        applyList[AppliedFilter.YEAR] = filmYear in min..max
+                    } else {
+                        applyList[AppliedFilter.YEAR] = false
+                    }
                 }
 
                 AppliedFilter.TYPE -> {

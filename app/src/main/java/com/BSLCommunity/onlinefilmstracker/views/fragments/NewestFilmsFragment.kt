@@ -24,7 +24,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
     private val FILMS_PER_ROW: Int = 3
 
     private lateinit var newestFilmsPresenter: NewestFilmsPresenter
-    private lateinit var currentFragment: LinearLayout
+    private lateinit var currentFragment: RelativeLayout
     private lateinit var viewList: RecyclerView
     private lateinit var progressBar: ProgressBar
     private lateinit var scrollView: NestedScrollView
@@ -37,9 +37,9 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        currentFragment = inflater.inflate(R.layout.fragment_newest_films, container, false) as LinearLayout
+        currentFragment = inflater.inflate(R.layout.fragment_newest_films, container, false) as RelativeLayout
 
-        progressBar = activity?.findViewById(R.id.pb_data_loading)!!
+        progressBar = currentFragment.findViewById(R.id.pb_data_loading)
 
         viewList = currentFragment.findViewById(R.id.fragment_films_list_films_rv_films)
         viewList.layoutManager = GridLayoutManager(context, FILMS_PER_ROW)

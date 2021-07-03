@@ -1,33 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="15dp"
     android:orientation="vertical"
+    android:layout_margin="15dp"
     tools:context=".views.fragments.NewestFilmsFragment">
 
-    <Button
-        android:id="@+id/fragment_films_list_open_filters"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/filters" />
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/nestedScrollView"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/fragment_films_list_films_rv_films"
-            android:name="com.BSLCommunity.onlinefilmstracker.fragments.FilmFragment"
+        <Button
+            android:id="@+id/fragment_films_list_open_filters"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            tools:context=".views.fragments.NewestFilmsFragment"
-            tools:listitem="@layout/inflate_film" />
-    </androidx.core.widget.NestedScrollView>
-</LinearLayout>
+            android:text="@string/filters" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/fragment_films_list_films_rv_films"
+                android:name="com.BSLCommunity.onlinefilmstracker.fragments.FilmFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                tools:context=".views.fragments.NewestFilmsFragment"
+                tools:listitem="@layout/inflate_film" />
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/pb_data_loading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+</RelativeLayout>
 
 
 
