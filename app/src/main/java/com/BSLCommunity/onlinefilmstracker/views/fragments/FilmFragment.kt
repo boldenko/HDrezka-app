@@ -6,11 +6,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
 import android.widget.*
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.objects.Film
+import com.BSLCommunity.onlinefilmstracker.objects.MyChromeClient
+import com.BSLCommunity.onlinefilmstracker.objects.MyWebViewClient
 import com.BSLCommunity.onlinefilmstracker.presenters.FilmPresenter
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmView
 import com.squareup.picasso.Picasso
@@ -21,9 +24,17 @@ class FilmFragment : Fragment(), FilmView {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentFragment = inflater.inflate(R.layout.fragment_film, container, false)
-
+        currentFragment.findViewById<ProgressBar>(R.id.fragment_film_pb_loading).visibility = View.VISIBLE
         filmPresenter = FilmPresenter(this)
         filmPresenter.initFilmData((arguments?.getSerializable("film") as Film?)!!)
+
+   /*     val webView = currentFragment.findViewById<WebView>(R.id.webView)
+        webView.getSettings().javaScriptEnabled = true
+        webView.getSettings().loadWithOverviewMode = true
+        webView.getSettings().useWideViewPort = true
+        webView.webViewClient = MyWebViewClient()
+        webView.webChromeClient = activity?.let { MyChromeClient(it) }
+        webView.loadUrl("http://hdrezka.tv/films/action/39912-voyna-buduschego-2021.html")*/
 
         return currentFragment
     }
