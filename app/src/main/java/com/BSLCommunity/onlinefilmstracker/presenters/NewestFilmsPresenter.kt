@@ -2,6 +2,7 @@ package com.BSLCommunity.onlinefilmstracker.presenters
 
 import android.os.CountDownTimer
 import android.util.ArrayMap
+import android.util.Log
 import com.BSLCommunity.onlinefilmstracker.constants.AppliedFilter
 import com.BSLCommunity.onlinefilmstracker.models.FilmModel
 import com.BSLCommunity.onlinefilmstracker.models.NewestFilmsModel
@@ -11,24 +12,25 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 
 class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView) {
-    private val FILMS_PER_PAGE: Int = 9 * 2
+    private val FILMS_PER_PAGE: Int = 9
     private val STOP_TIME: Long = 8 // Seconds
 
     private var currentPage: Int = 1 // newest film page
     private var isLoading: Boolean = false // loading condition
-    private val allFilms: ArrayList<Film> = ArrayList() // all loaded films
+    private val allFilms: ArrayList<Film?> = ArrayList() // all loaded films
     private val activeFilms: ArrayList<Film> = ArrayList() // current active films
     private var sortedFilmsCount: Int = 0 // current sorted films
     private var appliedFilters: ArrayMap<AppliedFilter, ArrayList<String>> = ArrayMap() // applied filters
     private var filmElements: Elements = Elements() // current films elements from newst page
     private var timer: CountDownTimer? = null
     private var isShouldStop: Boolean = false
+    private var isInit: Boolean = false
 
     fun initFilms() {
-        newestFilmsView.setFilms(activeFilms)
         getNextFilms()
     }
 
@@ -58,45 +60,60 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView) {
     }
 
     private fun getFilmsData() {
-        // load FILMS_PER_PAGE (9) films
-        val loadedFilms: ArrayList<Film> = ArrayList()
-        var count = 0
-        for (filmElement in filmElements.clone()) {
-            if (count == FILMS_PER_PAGE) {
+        // load FILMS_PER_PAGE (18) films
+        // val loadedFilms: ArrayList<Film?> = ArrayList()
+        val loadedFilms = arrayOfNulls<Film?>(FILMS_PER_PAGE)
+        val filmsToLoad: ArrayList<Element> = ArrayList()
+
+        for ((index, el) in filmElements.clone().withIndex()) {
+            filmsToLoad.add(el)
+            filmElements.removeAt(0)
+
+            if (index == FILMS_PER_PAGE - 1) {
                 break
             }
+        }
 
-            FilmModel.getMainData(filmElement) { film: Film? ->
-                run {
-                    if (film != null) {
-                        loadedFilms.add(film)
-                        filmElements.removeAt(0)
-                    }
 
-                    if (loadedFilms.size >= FILMS_PER_PAGE) {
-                        isLoading = false
-                        allFilms.addAll(loadedFilms)
-                        addFilms(loadedFilms)
+        var count = 0
+        for ((index, filmElement) in filmsToLoad.withIndex()) {
+            GlobalScope.launch {
+                val film: Film = FilmModel.getMainData(filmElement)
+                loadedFilms[index] = film
+                count++
+
+                Log.d("FILM_DEBUG", "loaded ${film.title} on index $index")
+                if (count >= FILMS_PER_PAGE) {
+                    isLoading = false
+                    val list: ArrayList<Film?> = ArrayList()
+                    for (item in loadedFilms) {
+                        list.add(item)
                     }
+                    allFilms.addAll(list)
+                    addFilms(list)
                 }
             }
-
-            count++
         }
     }
 
-    private fun addFilms(films: ArrayList<Film>) {
+    private fun addFilms(films: ArrayList<Film?>) {
         GlobalScope.launch {
             val sortedFilms: ArrayList<Film> = ArrayList()
 
             for (film in films) {
-                if (checkFilmForFilters(film)) {
-                    sortedFilms.add(film)
+                if (film != null) {
+                    if (checkFilmForFilters(film)) {
+                        sortedFilms.add(film)
+                    }
                 }
             }
 
             activeFilms.addAll(sortedFilms)
             withContext(Dispatchers.Main) {
+                if (!isInit) {
+                    newestFilmsView.setFilms(activeFilms)
+                    isInit = true
+                }
                 newestFilmsView.redrawFilms()
             }
 

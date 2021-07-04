@@ -1,45 +1,61 @@
 package com.BSLCommunity.onlinefilmstracker.views.fragments
 
+import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
+import android.view.Window
 import android.widget.*
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import com.BSLCommunity.onlinefilmstracker.R
+import com.BSLCommunity.onlinefilmstracker.objects.Actor
 import com.BSLCommunity.onlinefilmstracker.objects.Film
-import com.BSLCommunity.onlinefilmstracker.objects.MyChromeClient
-import com.BSLCommunity.onlinefilmstracker.objects.MyWebViewClient
 import com.BSLCommunity.onlinefilmstracker.presenters.FilmPresenter
+import com.BSLCommunity.onlinefilmstracker.views.OnFragmentInteractionListener
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmView
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 
 class FilmFragment : Fragment(), FilmView {
     private lateinit var filmPresenter: FilmPresenter
     private lateinit var currentFragment: View
+    private lateinit var fragmentListener: OnFragmentInteractionListener
+    private var modalDialog: Dialog? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        fragmentListener = context as OnFragmentInteractionListener
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentFragment = inflater.inflate(R.layout.fragment_film, container, false)
         currentFragment.findViewById<ProgressBar>(R.id.fragment_film_pb_loading).visibility = View.VISIBLE
-        filmPresenter = FilmPresenter(this)
-        filmPresenter.initFilmData((arguments?.getSerializable("film") as Film?)!!)
 
-   /*     val webView = currentFragment.findViewById<WebView>(R.id.webView)
-        webView.getSettings().javaScriptEnabled = true
-        webView.getSettings().loadWithOverviewMode = true
-        webView.getSettings().useWideViewPort = true
-        webView.webViewClient = MyWebViewClient()
-        webView.webChromeClient = activity?.let { MyChromeClient(it) }
-        webView.loadUrl("http://hdrezka.tv/films/action/39912-voyna-buduschego-2021.html")*/
+        filmPresenter = FilmPresenter(this, (arguments?.getSerializable("film") as Film?)!!)
+        filmPresenter.initFilmData()
+        filmPresenter.createFulSizeImage()
+
+        currentFragment.findViewById<ImageView>(R.id.fragment_film_iv_poster).setOnClickListener { openFullSizeImage() }
+        /*     val webView = currentFragment.findViewById<WebView>(R.id.webView)
+             webView.getSettings().javaScriptEnabled = true
+             webView.getSettings().loadWithOverviewMode = true
+             webView.getSettings().useWideViewPort = true
+             webView.webViewClient = MyWebViewClient()
+             webView.webChromeClient = activity?.let { MyChromeClient(it) }
+             webView.loadUrl("http://hdrezka.tv/films/action/39912-voyna-buduschego-2021.html")*/
 
         return currentFragment
     }
 
     override fun setFilmBaseData(film: Film) {
+        filmPresenter.initActors()
+
         Picasso.get().load(film.posterPath).into(currentFragment.findViewById<ImageView>(R.id.fragment_film_iv_poster))
         val ratingView: TextView = currentFragment.findViewById(R.id.fragment_film_tv_rating)
         if (film.ratingIMDB != null && film.votes != null) {
@@ -58,16 +74,36 @@ class FilmFragment : Fragment(), FilmView {
         currentFragment.findViewById<NestedScrollView>(R.id.fragment_film_sv_content).visibility = View.VISIBLE
     }
 
-    override fun setActors(actors: ArrayList<String>) {
+    override fun setActors(actors: ArrayList<Actor?>) {
         val actorsLayout: LinearLayout = currentFragment.findViewById(R.id.fragment_film_ll_actorsLayout)
 
-        for (actor in actors) {
-            val layout: LinearLayout = LayoutInflater.from(context).inflate(R.layout.inflate_actor, null) as LinearLayout
+        for (actor in actors.reversed()) {
+            if (actor != null) {
+                val layout: LinearLayout = LayoutInflater.from(context).inflate(R.layout.inflate_actor, null) as LinearLayout
 
-            //ставим имя актера
-            (layout.getChildAt(1) as TextView).text = actor
+                layout.findViewById<TextView>(R.id.actor_name).text = actor.name
 
-            actorsLayout.addView(layout)
+                if (actor.photoLink.isNotEmpty() && actor.photoLink != "https://static.hdrezka.ac/i/nopersonphoto.png") {
+                    val actorProgress: ProgressBar = layout.findViewById(R.id.actor_loading)
+                    val actorLayout: LinearLayout = layout.findViewById(R.id.actor_layout)
+
+                    actorProgress.visibility = View.VISIBLE
+                    actorLayout.visibility = View.GONE
+                    Picasso.get().load(actor.photoLink).into(layout.findViewById(R.id.actor_photo), object : Callback {
+                        override fun onSuccess() {
+                            actorProgress.visibility = View.GONE
+                            actorLayout.visibility = View.VISIBLE
+                            actorsLayout.addView(layout, 0)
+                        }
+
+                        override fun onError(e: Exception) {
+                            e.printStackTrace()
+                        }
+                    })
+                } else {
+                    actorsLayout.addView(layout)
+                }
+            }
         }
     }
 
@@ -111,5 +147,26 @@ class FilmFragment : Fragment(), FilmView {
         currentFragment.findViewById<Button>(R.id.fragment_film_bt_film_link).setOnClickListener {
             startActivity(intent)
         }
+    }
+
+    override fun setFullSizeImage(posterPath: String) {
+        val dialog: Dialog? = Dialog(requireActivity())
+        val layout: LinearLayout = layoutInflater.inflate(R.layout.modal_image, null) as LinearLayout
+        Picasso.get().load(posterPath).into(layout.findViewById(R.id.modal_image), object : Callback {
+            override fun onSuccess() {
+                layout.findViewById<ProgressBar>(R.id.modal_progress).visibility = View.GONE
+                layout.findViewById<ImageView>(R.id.modal_image).visibility = View.VISIBLE
+            }
+
+            override fun onError(e: Exception) {
+            }
+        })
+        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.setContentView(layout)
+        modalDialog = dialog
+    }
+
+    private fun openFullSizeImage() {
+        modalDialog?.show()
     }
 }

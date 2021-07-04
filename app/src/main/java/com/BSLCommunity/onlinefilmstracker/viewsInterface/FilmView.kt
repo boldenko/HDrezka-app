@@ -1,11 +1,12 @@
 package com.BSLCommunity.onlinefilmstracker.viewsInterface
 
+import com.BSLCommunity.onlinefilmstracker.objects.Actor
 import com.BSLCommunity.onlinefilmstracker.objects.Film
 
 interface FilmView {
     fun setFilmBaseData(film: Film)
 
-    fun setActors(actors: ArrayList<String>)
+    fun setActors(actors: ArrayList<Actor?>)
 
     fun setDirectors(directors: ArrayList<String>)
 
@@ -14,4 +15,6 @@ interface FilmView {
     fun setGenres(genres: ArrayList<String>)
 
     fun setFilmLink(link: String)
+
+    fun setFullSizeImage(posterPath: String)
 }

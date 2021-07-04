@@ -8,6 +8,7 @@ open class Film(
     val date: String,
     val year: String,
     val posterPath: String,
+    val fullSizePosterPath: String,
     val countries: ArrayList<String>,
     val ratingIMDB: String?,
     val genres: ArrayList<String>,
@@ -17,6 +18,6 @@ open class Film(
     var description: String? = null
     var votes: String? = null
     var runtime: String? = null
-    var actors: ArrayList<String>? = null
+    var actorsLinks: ArrayList<String>? = null
     var directors: ArrayList<String>? = null
 }

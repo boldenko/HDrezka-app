@@ -1,16 +1,16 @@
 package com.BSLCommunity.onlinefilmstracker.views.fragments
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.objects.Film
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 
 class FilmsListRecyclerViewAdapter(private val context: Context, private val films: ArrayList<Film>, private val openFilm: (film: Film) -> Unit) :
@@ -23,7 +23,16 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val film = films[position]
-        Picasso.get().load(film.posterPath).into(holder.filmPoster)
+        Log.d("FILM_DEBUG", "binded ${film.title} on position $position")
+        Picasso.get().load(film.posterPath).into(holder.filmPoster, object : Callback {
+            override fun onSuccess() {
+                holder.progressView.visibility = View.GONE
+                holder.posterLayoutView.visibility = View.VISIBLE
+            }
+
+            override fun onError(e: Exception) {
+            }
+        })
         holder.titleView.text = film.title
 
         var info = ""
@@ -62,5 +71,7 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
         val titleView: TextView = view.findViewById(R.id.film_title)
         val infoView: TextView = view.findViewById(R.id.film_info)
         val typeView: TextView = view.findViewById(R.id.film_type)
+        val progressView: ProgressBar = view.findViewById(R.id.film_loading)
+        val posterLayoutView: RelativeLayout = view.findViewById(R.id.film_posterLayout)
     }
 }
