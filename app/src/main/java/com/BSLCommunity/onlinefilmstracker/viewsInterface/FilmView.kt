@@ -17,4 +17,6 @@ interface FilmView {
     fun setFilmLink(link: String)
 
     fun setFullSizeImage(posterPath: String)
+
+    fun setPlayer(link: String)
 }

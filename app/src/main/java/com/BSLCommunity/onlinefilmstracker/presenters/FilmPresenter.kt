@@ -26,7 +26,7 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
         }
     }
 
-    fun createFulSizeImage() {
+    fun initFullSizeImage() {
         film.fullSizePosterPath?.let { filmView.setFullSizeImage(it) }
     }
 
@@ -51,5 +51,9 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
                 }
             }
         }
+    }
+
+    fun initPlayer(){
+        filmView.setPlayer(film.link)
     }
 }

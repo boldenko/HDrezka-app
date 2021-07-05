@@ -8,11 +8,11 @@
     tools:context="views.fragments.FilmFragment">
 
     <ProgressBar
-        android:visibility="gone"
         android:id="@+id/fragment_film_pb_loading"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/fragment_film_sv_content"
@@ -46,7 +46,7 @@
                         android:text="8.0\n (123456)"
                         android:textAlignment="center"
                         android:textColor="#FFFFFF"
-                        android:textSize="12sp"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
 
                     <LinearLayout
@@ -61,7 +61,7 @@
                             android:breakStrategy="balanced"
                             android:text="Film title"
                             android:textColor="@color/main_color_3"
-                            android:textSize="24sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/fragment_film_tv_origtitle"
@@ -112,10 +112,10 @@
 
                 <ImageView
                     android:id="@+id/fragment_film_iv_poster"
-                    android:adjustViewBounds="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.6" />
+                    android:layout_weight="0.6"
+                    android:adjustViewBounds="true" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -130,7 +130,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
                         android:text="Directors"
-                        android:textColor="#FFFFFF" />
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/fragment_film_tv_releaseDate"
@@ -138,7 +139,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
                         android:text="Release date"
-                        android:textColor="#FFFFFF" />
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/fragment_film_tv_runtime"
@@ -146,7 +148,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
                         android:text="Runtime"
-                        android:textColor="#FFFFFF" />
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/fragment_film_tv_countries"
@@ -154,7 +157,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
                         android:text="Countries"
-                        android:textColor="#FFFFFF" />
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/fragment_film_tv_type"
@@ -162,7 +166,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
                         android:text="Type"
-                        android:textColor="#FFFFFF" />
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -184,6 +189,7 @@
                     android:id="@+id/fragment_film_tv_plot"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:justificationMode="inter_word"
                     android:textColor="@color/white"
                     android:textSize="16sp" />
             </LinearLayout>
@@ -210,21 +216,27 @@
                     android:showDividers="middle" />
             </HorizontalScrollView>
 
-            <Button
-                android:id="@+id/fragment_film_bt_film_link"
+            <!--            <Button
+                            android:id="@+id/fragment_film_bt_film_link"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="50dp"
+                            android:background="#00000000"
+                            android:text="@string/open_link"
+                            android:textAllCaps="false"
+                            android:textColor="@color/white"
+                            android:textSize="14sp" />-->
+
+            <ProgressBar
+                android:id="@+id/fragment_film_pb_player_loading"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="50dp"
-                android:background="#00000000"
-                android:text="@string/open_link"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:layout_height="wrap_content" />
 
             <WebView
-                android:id="@+id/webView"
+                android:id="@+id/fragment_film_wv_player"
                 android:layout_width="match_parent"
-                android:layout_height="500dp" />
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>

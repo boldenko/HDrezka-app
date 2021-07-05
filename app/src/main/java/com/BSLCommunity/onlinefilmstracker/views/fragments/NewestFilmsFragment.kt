@@ -72,7 +72,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
 
         fragmentListener.onFragmentInteraction(
             this, FilmFragment(),
-            OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, data, null
+            OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, data, "film"
         )
     }
 

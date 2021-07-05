@@ -1,19 +1,20 @@
 package com.BSLCommunity.onlinefilmstracker.views.fragments
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
-import android.widget.*
+import android.view.*
+import android.webkit.WebView
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import com.BSLCommunity.onlinefilmstracker.R
+import com.BSLCommunity.onlinefilmstracker.clients.MyChromeClient
+import com.BSLCommunity.onlinefilmstracker.clients.MyWebViewClient
 import com.BSLCommunity.onlinefilmstracker.objects.Actor
 import com.BSLCommunity.onlinefilmstracker.objects.Film
 import com.BSLCommunity.onlinefilmstracker.presenters.FilmPresenter
@@ -22,10 +23,12 @@ import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmView
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 
+
 class FilmFragment : Fragment(), FilmView {
     private lateinit var filmPresenter: FilmPresenter
     private lateinit var currentFragment: View
     private lateinit var fragmentListener: OnFragmentInteractionListener
+    private lateinit var playerView: WebView
     private var modalDialog: Dialog? = null
 
     override fun onAttach(context: Context) {
@@ -33,24 +36,31 @@ class FilmFragment : Fragment(), FilmView {
         fragmentListener = context as OnFragmentInteractionListener
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         currentFragment = inflater.inflate(R.layout.fragment_film, container, false)
         currentFragment.findViewById<ProgressBar>(R.id.fragment_film_pb_loading).visibility = View.VISIBLE
+        playerView = currentFragment.findViewById(R.id.fragment_film_wv_player)
 
         filmPresenter = FilmPresenter(this, (arguments?.getSerializable("film") as Film?)!!)
         filmPresenter.initFilmData()
-        filmPresenter.createFulSizeImage()
+        filmPresenter.initPlayer()
+        filmPresenter.initFullSizeImage()
 
         currentFragment.findViewById<ImageView>(R.id.fragment_film_iv_poster).setOnClickListener { openFullSizeImage() }
-        /*     val webView = currentFragment.findViewById<WebView>(R.id.webView)
-             webView.getSettings().javaScriptEnabled = true
-             webView.getSettings().loadWithOverviewMode = true
-             webView.getSettings().useWideViewPort = true
-             webView.webViewClient = MyWebViewClient()
-             webView.webChromeClient = activity?.let { MyChromeClient(it) }
-             webView.loadUrl("http://hdrezka.tv/films/action/39912-voyna-buduschego-2021.html")*/
 
         return currentFragment
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    override fun setPlayer(link: String) {
+        playerView.settings.javaScriptEnabled = true
+        playerView.webViewClient = MyWebViewClient {
+            currentFragment.findViewById<ProgressBar>(R.id.fragment_film_pb_player_loading).visibility = View.GONE
+            playerView.visibility = View.VISIBLE
+        }
+
+        playerView.webChromeClient = activity?.let { MyChromeClient(it) }
+        playerView.loadUrl(link)
     }
 
     override fun setFilmBaseData(film: Film) {
@@ -143,10 +153,10 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun setFilmLink(link: String) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+        /*val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
         currentFragment.findViewById<Button>(R.id.fragment_film_bt_film_link).setOnClickListener {
             startActivity(intent)
-        }
+        }*/
     }
 
     override fun setFullSizeImage(posterPath: String) {
@@ -163,6 +173,13 @@ class FilmFragment : Fragment(), FilmView {
         })
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
         dialog?.setContentView(layout)
+
+        val lp: WindowManager.LayoutParams = WindowManager.LayoutParams()
+        lp.copyFrom(dialog?.window?.attributes);
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+        dialog?.window?.attributes = lp;
+
         modalDialog = dialog
     }
 

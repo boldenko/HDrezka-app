@@ -10,5 +10,5 @@
     android:paddingBottom="5dp"
     android:text="Test"
     android:textColor="#FFFFFF"
-    android:textSize="12sp">
+    android:textSize="16sp">
 </TextView>
