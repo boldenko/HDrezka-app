@@ -7,7 +7,6 @@ import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 
 object FilmModel {
-    private val FILM_LINK = "div.b-content__inline_item-cover a"
     private val FILM_TITLE = "div.b-post__title h1"
     private val FILM_POSTER = "div.b-sidecover a"
     private val FILM_TABLE_INFO = "table.b-post__info tbody tr"
@@ -17,22 +16,15 @@ object FilmModel {
         return Jsoup.connect(link).get()
     }
 
-    fun getMainData(element: Element): Film {
-        val link: String = element.select(FILM_LINK).attr("href")
-
-        val filmPage: Document = getFilmPage(link)
+    fun getMainData(film: Film): Film {
+        val filmPage: Document = getFilmPage(film.link)
         val table: Elements = filmPage.select(FILM_TABLE_INFO)
 
-        val title: String = filmPage.select(FILM_TITLE).text()
-        val type: String = element.select("span.cat i")[0].text()
+        film.title = filmPage.select(FILM_TITLE).text()
+
         val posterElement: Element = filmPage.select(FILM_POSTER)[0]
-        val fullSizePosterPath: String = posterElement.attr("href")
-        val posterPath: String = posterElement.select("img").attr("src")
-        var ratingIMDB: String? = null
-        var date = ""
-        var year = ""
-        val countries: ArrayList<String> = ArrayList()
-        val genres: ArrayList<String> = ArrayList()
+        film.fullSizePosterPath = posterElement.attr("href")
+        film.posterPath = posterElement.select("img").attr("src")
 
         // Parse info table
         for (tr in table) {
@@ -44,31 +36,35 @@ object FilmModel {
 
                     when (h2.text()) {
                         "Рейтинги" -> {
-                            ratingIMDB = td[1].select(FILM_IMDB_RATING).text()
+                            film.ratingIMDB = td[1].select(FILM_IMDB_RATING).text()
                         }
                         "Дата выхода" -> {
-                            date = td[1].ownText()
-                            year = td[1].select("a").text()
+                            film.date = td[1].ownText()
+                            film.year = td[1].select("a").text()
                         }
                         "Страна" -> {
+                            val countries: ArrayList<String> = ArrayList()
                             for (el in td[1].select("a")) {
                                 countries.add(el.text())
                             }
+                            film.countries = countries
                         }
                         "Жанр" -> {
+                            val genres: ArrayList<String> = ArrayList()
                             for (el in td[1].select("a")) {
                                 genres.add(el.select("span").text())
                             }
+                            film.genres = genres
                         }
                     }
                 }
             }
         }
 
-        return Film(link, title, date, year, posterPath, fullSizePosterPath, countries, ratingIMDB, genres, type)
+        return film
     }
 
-    fun setAdditionalData(film: Film) {
+    fun getAdditionalData(film: Film) : Film  {
         val document: Document = getFilmPage(film.link)
         film.origTitle = document.select("div.b-post__origtitle").text()
         film.description = document.select("div.b-post__description_text").text()
@@ -98,5 +94,6 @@ object FilmModel {
 
         film.directors = directors
         film.actorsLinks = actorsLinks
+        return film
     }
 }

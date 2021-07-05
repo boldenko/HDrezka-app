@@ -14,12 +14,12 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
 
     fun initFilmData() {
         GlobalScope.launch {
-            FilmModel.setAdditionalData(film)
+            FilmModel.getAdditionalData(film)
 
             withContext(Dispatchers.Main) {
                 filmView.setFilmBaseData(film)
-                filmView.setGenres(film.genres)
-                filmView.setCountries(film.countries)
+                film.genres?.let { filmView.setGenres(it) }
+                film.countries?.let { filmView.setCountries(it) }
                 film.directors?.let { filmView.setDirectors(it) }
                 filmView.setFilmLink(film.link)
             }
@@ -27,7 +27,7 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
     }
 
     fun createFulSizeImage() {
-        filmView.setFullSizeImage(film.fullSizePosterPath)
+        film.fullSizePosterPath?.let { filmView.setFullSizeImage(it) }
     }
 
     fun initActors() {

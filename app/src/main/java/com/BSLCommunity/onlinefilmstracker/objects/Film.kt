@@ -4,16 +4,16 @@ import java.io.Serializable
 
 open class Film(
     val link: String,
-    val title: String,
-    val date: String,
-    val year: String,
-    val posterPath: String,
-    val fullSizePosterPath: String,
-    val countries: ArrayList<String>,
-    val ratingIMDB: String?,
-    val genres: ArrayList<String>,
     val type: String
 ) : Serializable {
+    var title: String? = null
+    var date: String? = null
+    var year: String? = null
+    var posterPath: String? = null
+    var fullSizePosterPath: String? = null
+    var countries: ArrayList<String>? = null
+    var ratingIMDB: String? = null
+    var genres: ArrayList<String>? = null
     var origTitle: String? = null
     var description: String? = null
     var votes: String? = null

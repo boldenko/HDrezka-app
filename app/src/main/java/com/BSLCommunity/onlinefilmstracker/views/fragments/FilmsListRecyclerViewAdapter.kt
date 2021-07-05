@@ -37,8 +37,10 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
 
         var info = ""
         info += film.year
-        if (film.countries.size > 0) {
-            info += ", " + film.countries[0]
+        film.countries?.let {
+            if (film.countries!!.size > 0) {
+                info += ", " + film.countries!![0]
+            }
         }
         if (film.ratingIMDB?.isNotEmpty() == true) {
             info += ", " + film.ratingIMDB
