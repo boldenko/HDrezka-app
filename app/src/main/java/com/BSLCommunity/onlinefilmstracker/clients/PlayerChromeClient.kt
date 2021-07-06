@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.widget.FrameLayout
 
-class MyChromeClient(private val activity: Activity) : WebChromeClient() {
+class PlayerChromeClient(private val activity: Activity) : WebChromeClient() {
     private var mCustomView: View? = null
     private var mCustomViewCallback: CustomViewCallback? = null
     protected var mFullscreenContainer: FrameLayout? = null

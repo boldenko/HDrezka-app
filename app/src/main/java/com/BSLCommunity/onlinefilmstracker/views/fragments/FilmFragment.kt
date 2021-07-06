@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.webkit.WebView
 import android.widget.ImageView
@@ -13,8 +14,9 @@ import android.widget.TextView
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import com.BSLCommunity.onlinefilmstracker.R
-import com.BSLCommunity.onlinefilmstracker.clients.MyChromeClient
-import com.BSLCommunity.onlinefilmstracker.clients.MyWebViewClient
+import com.BSLCommunity.onlinefilmstracker.clients.PlayerChromeClient
+import com.BSLCommunity.onlinefilmstracker.clients.PlayerWebViewClient
+import com.BSLCommunity.onlinefilmstracker.models.UserModel
 import com.BSLCommunity.onlinefilmstracker.objects.Actor
 import com.BSLCommunity.onlinefilmstracker.objects.Film
 import com.BSLCommunity.onlinefilmstracker.presenters.FilmPresenter
@@ -41,6 +43,8 @@ class FilmFragment : Fragment(), FilmView {
         currentFragment.findViewById<ProgressBar>(R.id.fragment_film_pb_loading).visibility = View.VISIBLE
         playerView = currentFragment.findViewById(R.id.fragment_film_wv_player)
 
+        Log.d("DEEBUG", UserModel.isLoggedIn.toString())
+
         filmPresenter = FilmPresenter(this, (arguments?.getSerializable("film") as Film?)!!)
         filmPresenter.initFilmData()
         filmPresenter.initPlayer()
@@ -54,12 +58,12 @@ class FilmFragment : Fragment(), FilmView {
     @SuppressLint("SetJavaScriptEnabled")
     override fun setPlayer(link: String) {
         playerView.settings.javaScriptEnabled = true
-        playerView.webViewClient = MyWebViewClient {
+        playerView.webViewClient = PlayerWebViewClient {
             currentFragment.findViewById<ProgressBar>(R.id.fragment_film_pb_player_loading).visibility = View.GONE
             playerView.visibility = View.VISIBLE
         }
 
-        playerView.webChromeClient = activity?.let { MyChromeClient(it) }
+        playerView.webChromeClient = activity?.let { PlayerChromeClient(it) }
         playerView.loadUrl(link)
     }
 

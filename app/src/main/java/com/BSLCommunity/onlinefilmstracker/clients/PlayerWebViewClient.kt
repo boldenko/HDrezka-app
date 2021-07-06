@@ -6,8 +6,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 
-
-class MyWebViewClient(val callback: () -> Unit) : WebViewClient() {
+class PlayerWebViewClient(val callback: () -> Unit) : WebViewClient() {
 
     @TargetApi(Build.VERSION_CODES.N)
     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
@@ -18,7 +17,6 @@ class MyWebViewClient(val callback: () -> Unit) : WebViewClient() {
     // Для старых устройств
     override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
         view.loadUrl(url)
-
         return true
     }
 

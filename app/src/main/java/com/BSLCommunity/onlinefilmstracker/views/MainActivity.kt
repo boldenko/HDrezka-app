@@ -1,20 +1,20 @@
 package com.BSLCommunity.onlinefilmstracker.views
 
 import android.content.pm.ActivityInfo
-import android.content.res.Configuration
 import android.os.Bundle
-import android.util.ArrayMap
-import android.view.View
-import android.widget.Toast
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.BSLCommunity.onlinefilmstracker.R
+import com.BSLCommunity.onlinefilmstracker.models.UserModel
 import com.BSLCommunity.onlinefilmstracker.views.OnFragmentInteractionListener.Action
 import com.BSLCommunity.onlinefilmstracker.views.fragments.NewestFilmsFragment
+import com.BSLCommunity.onlinefilmstracker.views.fragments.UserFragment
 
 
 class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
     private lateinit var newestFragment: Fragment
+    private var isSettingsOpened: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,15 +23,33 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
         if (savedInstanceState == null) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
+            UserModel.loadLoggedIn(applicationContext)
+
             // Инициализация менеджера смены фрагментов
             newestFragment = NewestFilmsFragment()
 
             // Открытие фрагмента главного меню
             supportFragmentManager.beginTransaction()
                 .add(R.id.main_fragment_container, newestFragment)
-                .addToBackStack("newest")
                 .commit()
+
+            findViewById<ImageView>(R.id.activity_main_ib_user).setOnClickListener {
+                if (!isSettingsOpened) {
+                    supportFragmentManager.beginTransaction()
+                        .add(R.id.main_fragment_container, UserFragment())
+                        .addToBackStack(null)
+                        .commit()
+                    isSettingsOpened = true
+                }
+            }
         }
+    }
+
+    override fun onBackPressed() {
+        if (isSettingsOpened) {
+            isSettingsOpened = false
+        }
+        super.onBackPressed()
     }
 
     override fun onFragmentInteraction(fragmentSource: Fragment?, fragmentReceiver: Fragment?, action: Action?, data: Bundle?, backStackTag: String?) {

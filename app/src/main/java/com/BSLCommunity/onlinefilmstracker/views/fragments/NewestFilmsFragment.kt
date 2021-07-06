@@ -199,7 +199,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
             // View and duration has to be set
             val view = LayoutInflater.from(context).inflate(R.layout.popup_box, null)
             view.findViewById<TextView>(R.id.stop_btn).setOnClickListener {
-                newestFilmsPresenter.stopGetFilms()
+               // newestFilmsPresenter.stopGetFilms()
             }
             it.view = view
             it.duration = Toast.LENGTH_LONG

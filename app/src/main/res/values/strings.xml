@@ -27,4 +27,6 @@
     <string name="slow_search">Поиск идет слишком долго. Остановить?</string>
     <string name="stop">Стоп</string>
     <string name="open_link">Открыть в браузере</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

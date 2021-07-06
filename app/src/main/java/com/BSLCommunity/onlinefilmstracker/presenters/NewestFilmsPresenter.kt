@@ -25,7 +25,6 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView) {
     private var sortedFilmsCount: Int = 0 // current sorted films
     private var appliedFilters: ArrayMap<AppliedFilter, ArrayList<String>> = ArrayMap() // applied filters
     private var timer: CountDownTimer? = null
-    private var isShouldStop: Boolean = false
     private var isInit: Boolean = false
 
     fun initFilms() {
@@ -37,14 +36,7 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView) {
             return
         }
 
-        if (isShouldStop) {
-            isShouldStop = false
-            return
-        }
-
         isLoading = true
-        /* startTimer() */
-
         if (newestFilms.size == 0) {
             GlobalScope.launch {
                 newestFilms = NewestFilmsModel.getFilmsFromPage(currentPage++)
@@ -121,10 +113,6 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView) {
                 getNextFilms()
             }
         }
-    }
-
-    fun stopGetFilms() {
-        isShouldStop = true
     }
 
     fun setFilter(key: AppliedFilter, value: ArrayList<String>) {
