@@ -2,6 +2,7 @@ package com.BSLCommunity.onlinefilmstracker.views.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +34,7 @@ class BookmarksFragment : Fragment(), BookmarksView, AdapterView.OnItemSelectedL
     private lateinit var progressBar: ProgressBar
     private lateinit var spinnersLayout: LinearLayout
     private lateinit var msgView: TextView
+    private var checked = 0
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -86,6 +88,7 @@ class BookmarksFragment : Fragment(), BookmarksView, AdapterView.OnItemSelectedL
                 R.id.fragment_bookmarks_sp_sort -> spinner.item = resources.getStringArray(R.array.sort).toMutableList()
                 R.id.fragment_bookmarks_sp_show -> spinner.item = resources.getStringArray(R.array.show).toMutableList()
             }
+            spinner.setSelection(0)
             spinner.onItemSelectedListener = this
         }
     }
@@ -105,12 +108,23 @@ class BookmarksFragment : Fragment(), BookmarksView, AdapterView.OnItemSelectedL
     override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
         when (parent.id) {
             R.id.fragment_bookmarks_sp_sort -> {
-                bookmarksPresenter.setFilter(bookmarksPresenter.sortFilters[position], BookmarkFilterType.SORT)
+                if(checked > 2){
+                    Log.d("DEEBUG", "sort selected")
+                    bookmarksPresenter.setFilter(bookmarksPresenter.sortFilters[position], BookmarkFilterType.SORT)
+                } else{
+                    checked++
+                }
             }
             R.id.fragment_bookmarks_sp_show -> {
-                bookmarksPresenter.setFilter(bookmarksPresenter.showFilters[position], BookmarkFilterType.SHOW)
+                if(checked > 1){
+                    Log.d("DEEBUG", "show selected")
+                    bookmarksPresenter.setFilter(bookmarksPresenter.showFilters[position], BookmarkFilterType.SHOW)
+                } else{
+                    checked++
+                }
             }
             R.id.fragment_bookmarks_sp_list -> {
+                Log.d("DEEBUG", "list selected")
                 bookmarksPresenter.bookmarks?.get(position)?.let { bookmarksPresenter.setBookmark(it) }
             }
         }

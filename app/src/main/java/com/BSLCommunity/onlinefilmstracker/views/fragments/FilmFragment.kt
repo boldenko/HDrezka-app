@@ -25,7 +25,6 @@ import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmView
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 
-
 class FilmFragment : Fragment(), FilmView {
     private lateinit var currentView: View
     private lateinit var filmPresenter: FilmPresenter

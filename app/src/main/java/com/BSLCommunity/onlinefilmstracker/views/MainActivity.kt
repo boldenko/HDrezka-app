@@ -1,7 +1,9 @@
 package com.BSLCommunity.onlinefilmstracker.views
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.pm.ActivityInfo
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.ImageView
@@ -14,6 +16,8 @@ import com.BSLCommunity.onlinefilmstracker.views.fragments.BookmarksFragment
 import com.BSLCommunity.onlinefilmstracker.views.fragments.NewestFilmsFragment
 import com.BSLCommunity.onlinefilmstracker.views.fragments.UserFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlin.system.exitProcess
 
 
 class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
@@ -25,19 +29,38 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (savedInstanceState == null) {
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        var connected = false
+        try {
+            val cm = applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val nInfo = cm.activeNetworkInfo
+            connected = nInfo != null && nInfo.isAvailable && nInfo.isConnected
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
-            UserModel.loadLoggedIn(applicationContext)
-            selectedFragment = NewestFilmsFragment()
-            setBottomBar()
+        if (connected) {
+            if (savedInstanceState == null) {
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-            findViewById<ImageView>(R.id.activity_main_ib_user).setOnClickListener {
-                if (!isSettingsOpened) {
-                    onFragmentInteraction(UserFragment(), Action.NEXT_FRAGMENT_HIDE, null, null)
-                    isSettingsOpened = true
+                UserModel.loadLoggedIn(applicationContext)
+                selectedFragment = NewestFilmsFragment()
+                setBottomBar()
+
+                findViewById<ImageView>(R.id.activity_main_ib_user).setOnClickListener {
+                    if (!isSettingsOpened) {
+                        onFragmentInteraction(UserFragment(), Action.NEXT_FRAGMENT_HIDE, null, null)
+                        isSettingsOpened = true
+                    }
                 }
             }
+        } else {
+            val dialog = MaterialAlertDialogBuilder(this)
+            dialog.setTitle("Ошибка. Отсутствует интернет соеденение")
+            dialog.setPositiveButton("Выйти") { dialog, id ->
+                exitProcess(0)
+            }
+            val d = dialog.create()
+            d.show()
         }
     }
 

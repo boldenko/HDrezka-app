@@ -1,5 +1,6 @@
 package com.BSLCommunity.onlinefilmstracker.presenters
 
+import android.util.Log
 import com.BSLCommunity.onlinefilmstracker.constants.BookmarkFilterType
 import com.BSLCommunity.onlinefilmstracker.models.BookmarksModel
 import com.BSLCommunity.onlinefilmstracker.models.FilmModel
@@ -61,9 +62,10 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView) {
                 // if page is not empty
                 selectedBookmark?.let { loadedFilms.addAll(BookmarksModel.getFilmsFromBookmarkPage(it.link, curPage++, selectedSortFilter, selectedShowFilter)) }
 
+                Log.d("DEEBUG", curPage.toString())
                 if (loadedFilms.size > 0) {
                     setFilms()
-                } else {
+                } else if(curPage == 2){
                     withContext(Dispatchers.Main) {
                         bookmarksView.showMsg("Ничего не можем найти в закладках по данному запросу")
                     }
