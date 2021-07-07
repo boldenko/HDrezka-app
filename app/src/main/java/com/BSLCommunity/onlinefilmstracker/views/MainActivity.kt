@@ -1,21 +1,26 @@
 package com.BSLCommunity.onlinefilmstracker.views
 
+import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.view.MenuItem
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.models.UserModel
 import com.BSLCommunity.onlinefilmstracker.views.OnFragmentInteractionListener.Action
+import com.BSLCommunity.onlinefilmstracker.views.fragments.BookmarksFragment
 import com.BSLCommunity.onlinefilmstracker.views.fragments.NewestFilmsFragment
 import com.BSLCommunity.onlinefilmstracker.views.fragments.UserFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
-    private lateinit var newestFragment: Fragment
     private var isSettingsOpened: Boolean = false
+    private lateinit var selectedFragment: Fragment
 
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -24,25 +29,31 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
             UserModel.loadLoggedIn(applicationContext)
-
-            // Инициализация менеджера смены фрагментов
-            newestFragment = NewestFilmsFragment()
-
-            // Открытие фрагмента главного меню
-            supportFragmentManager.beginTransaction()
-                .add(R.id.main_fragment_container, newestFragment)
-                .commit()
+            selectedFragment = NewestFilmsFragment()
+            setBottomBar()
 
             findViewById<ImageView>(R.id.activity_main_ib_user).setOnClickListener {
                 if (!isSettingsOpened) {
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.main_fragment_container, UserFragment())
-                        .addToBackStack(null)
-                        .commit()
+                    onFragmentInteraction(UserFragment(), Action.NEXT_FRAGMENT_HIDE, null, null)
                     isSettingsOpened = true
                 }
             }
         }
+    }
+
+    private fun setBottomBar() {
+        val newestFragment = NewestFilmsFragment()
+        val bookmarksFragment = BookmarksFragment()
+
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.activity_main_nv_bottomBar)
+        bottomNavigationView.setOnItemSelectedListener { item: MenuItem ->
+            when (item.itemId) {
+                R.id.nav_newest -> onFragmentInteraction(newestFragment, Action.NEXT_FRAGMENT_HIDE_NO_BACK_STACK, null, null)
+                R.id.nav_bookmarks -> onFragmentInteraction(bookmarksFragment, Action.NEXT_FRAGMENT_HIDE_NO_BACK_STACK, null, null)
+            }
+            false
+        }
+        bottomNavigationView.selectedItemId = R.id.nav_newest
     }
 
     override fun onBackPressed() {
@@ -52,35 +63,47 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
         super.onBackPressed()
     }
 
-    override fun onFragmentInteraction(fragmentSource: Fragment?, fragmentReceiver: Fragment?, action: Action?, data: Bundle?, backStackTag: String?) {
+    override fun onFragmentInteraction(fragmentReceiver: Fragment, action: Action, data: Bundle?, backStackTag: String?) {
         val fTrans = supportFragmentManager.beginTransaction()
 
-        fragmentReceiver?.arguments = data
+        fragmentReceiver.arguments = data
 
         val animIn: Int = R.anim.fade_in
         val animOut: Int = R.anim.fade_out
-
         fTrans.setCustomAnimations(animIn, animOut, animIn, animOut)
 
+        if (selectedFragment.isVisible) fTrans.hide(selectedFragment)
+        selectedFragment = fragmentReceiver
+
+        val frags: List<Fragment> = supportFragmentManager.fragments
+        var f: Fragment? = null
+        for (fragment in frags) {
+            if (fragment == fragmentReceiver) {
+                f = fragment
+                break
+            }
+        }
+        if (f == null) {
+            fTrans.add(R.id.main_fragment_container, fragmentReceiver)
+        } else {
+            fTrans.show(fragmentReceiver)
+        }
+
         when (action) {
-            Action.NEXT_FRAGMENT_NO_BACK_STACK -> {
-                fTrans.replace(R.id.main_fragment_container, fragmentReceiver!!)
+            Action.NEXT_FRAGMENT_HIDE_NO_BACK_STACK -> {
                 fTrans.commit()
             }
             Action.NEXT_FRAGMENT_HIDE -> {
-                if (newestFragment.isVisible) fTrans.hide(newestFragment)
-                else fTrans.hide(fragmentSource!!)
-                fTrans.add(R.id.main_fragment_container, fragmentReceiver!!)
                 fTrans.addToBackStack(backStackTag) // Добавление изменнений в стек
                 fTrans.commit()
             }
-            Action.NEXT_FRAGMENT_REPLACE -> {
-                fTrans.replace(R.id.main_fragment_container, fragmentReceiver!!)
+/*            Action.NEXT_FRAGMENT_REPLACE -> {
+                fTrans.replace(R.id.main_fragment_container, fragmentReceiver)
                 fTrans.addToBackStack(backStackTag) // Добавление изменнений в стек
                 fTrans.commit()
             }
             Action.RETURN_FRAGMENT_BY_TAG -> supportFragmentManager.popBackStack(backStackTag, 0)
-            Action.POP_BACK_STACK -> supportFragmentManager.popBackStack()
+            Action.POP_BACK_STACK -> supportFragmentManager.popBackStack()*/
         }
     }
 }

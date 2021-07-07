@@ -19,12 +19,12 @@ import com.BSLCommunity.onlinefilmstracker.models.UserModel
 
 class UserFragment : Fragment() {
 
-    private lateinit var currentFragment: View
+    private lateinit var currentView: View
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        currentFragment = inflater.inflate(R.layout.fragment_user, container, false)
+        currentView = inflater.inflate(R.layout.fragment_user, container, false)
 
-        currentFragment.findViewById<TextView>(R.id.fragment_user_tv_exit).setOnClickListener {
+        currentView.findViewById<TextView>(R.id.fragment_user_tv_exit).setOnClickListener {
             activity?.let {
                 UserModel.saveLoggedIn(false, it)
                 setAuthPanel(false)
@@ -36,7 +36,7 @@ class UserFragment : Fragment() {
         UserModel.isLoggedIn?.let { setAuthPanel(it) }
         createAuthDialog()
 
-        return currentFragment
+        return currentView
     }
 
     @SuppressLint("SetJavaScriptEnabled", "ClickableViewAccessibility")
@@ -65,7 +65,7 @@ class UserFragment : Fragment() {
                 }
             }
 
-            currentFragment.findViewById<TextView>(R.id.fragment_user_tv_login).setOnClickListener {
+            currentView.findViewById<TextView>(R.id.fragment_user_tv_login).setOnClickListener {
                 popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
                 if (!isLoaded) {
                     webView.loadUrl("http://hdrezka.tv/favorites/")
@@ -77,11 +77,11 @@ class UserFragment : Fragment() {
 
     private fun setAuthPanel(isLogged: Boolean) {
         if (isLogged) {
-            currentFragment.findViewById<LinearLayout>(R.id.fragment_user_ll_auth_panel).visibility = View.GONE
-            currentFragment.findViewById<TextView>(R.id.fragment_user_tv_exit).visibility = View.VISIBLE
+            currentView.findViewById<LinearLayout>(R.id.fragment_user_ll_auth_panel).visibility = View.GONE
+            currentView.findViewById<TextView>(R.id.fragment_user_tv_exit).visibility = View.VISIBLE
         } else {
-            currentFragment.findViewById<LinearLayout>(R.id.fragment_user_ll_auth_panel).visibility = View.VISIBLE
-            currentFragment.findViewById<TextView>(R.id.fragment_user_tv_exit).visibility = View.GONE
+            currentView.findViewById<LinearLayout>(R.id.fragment_user_ll_auth_panel).visibility = View.VISIBLE
+            currentView.findViewById<TextView>(R.id.fragment_user_tv_exit).visibility = View.GONE
         }
     }
 }

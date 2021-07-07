@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/nav_movies"
+        android:id="@+id/nav_newest"
         android:icon="@drawable/ic_baseline_movie_24"
         android:title="@string/newest" />
 
@@ -21,7 +21,7 @@
         android:title="@string/bookmarks" />
 
     <item
-        android:id="@+id/nav_user"
+        android:id="@+id/nav_watch"
         android:icon="@drawable/ic_baseline_watch_later_24"
         android:title="Досмотреть" />
 </menu>

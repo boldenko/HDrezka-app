@@ -27,8 +27,8 @@ import com.squareup.picasso.Picasso
 
 
 class FilmFragment : Fragment(), FilmView {
+    private lateinit var currentView: View
     private lateinit var filmPresenter: FilmPresenter
-    private lateinit var currentFragment: View
     private lateinit var fragmentListener: OnFragmentInteractionListener
     private lateinit var playerView: WebView
     private var modalDialog: Dialog? = null
@@ -39,9 +39,9 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        currentFragment = inflater.inflate(R.layout.fragment_film, container, false)
-        currentFragment.findViewById<ProgressBar>(R.id.fragment_film_pb_loading).visibility = View.VISIBLE
-        playerView = currentFragment.findViewById(R.id.fragment_film_wv_player)
+        currentView = inflater.inflate(R.layout.fragment_film, container, false)
+        currentView.findViewById<ProgressBar>(R.id.fragment_film_pb_loading).visibility = View.VISIBLE
+        playerView = currentView.findViewById(R.id.fragment_film_wv_player)
 
         Log.d("DEEBUG", UserModel.isLoggedIn.toString())
 
@@ -50,16 +50,16 @@ class FilmFragment : Fragment(), FilmView {
         filmPresenter.initPlayer()
         filmPresenter.initFullSizeImage()
 
-        currentFragment.findViewById<ImageView>(R.id.fragment_film_iv_poster).setOnClickListener { openFullSizeImage() }
+        currentView.findViewById<ImageView>(R.id.fragment_film_iv_poster).setOnClickListener { openFullSizeImage() }
 
-        return currentFragment
+        return currentView
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun setPlayer(link: String) {
         playerView.settings.javaScriptEnabled = true
         playerView.webViewClient = PlayerWebViewClient {
-            currentFragment.findViewById<ProgressBar>(R.id.fragment_film_pb_player_loading).visibility = View.GONE
+            currentView.findViewById<ProgressBar>(R.id.fragment_film_pb_player_loading).visibility = View.GONE
             playerView.visibility = View.VISIBLE
         }
 
@@ -70,26 +70,26 @@ class FilmFragment : Fragment(), FilmView {
     override fun setFilmBaseData(film: Film) {
         filmPresenter.initActors()
 
-        Picasso.get().load(film.posterPath).into(currentFragment.findViewById<ImageView>(R.id.fragment_film_iv_poster))
-        val ratingView: TextView = currentFragment.findViewById(R.id.fragment_film_tv_rating)
+        Picasso.get().load(film.posterPath).into(currentView.findViewById<ImageView>(R.id.fragment_film_iv_poster))
+        val ratingView: TextView = currentView.findViewById(R.id.fragment_film_tv_rating)
         if (film.ratingIMDB != null && film.votes != null) {
             ratingView.text = "${film.ratingIMDB}\n${film.votes}"
         } else {
             ratingView.visibility = View.GONE
         }
-        currentFragment.findViewById<TextView>(R.id.fragment_film_tv_title).text = film.title
-        currentFragment.findViewById<TextView>(R.id.fragment_film_tv_origtitle).text = film.origTitle
-        currentFragment.findViewById<TextView>(R.id.fragment_film_tv_releaseDate).text = getString(R.string.release_date, "${film.date} ${film.year}")
-        currentFragment.findViewById<TextView>(R.id.fragment_film_tv_runtime).text = getString(R.string.runtime, film.runtime)
-        currentFragment.findViewById<TextView>(R.id.fragment_film_tv_type).text = getString(R.string.film_type, film.type)
-        currentFragment.findViewById<TextView>(R.id.fragment_film_tv_plot).text = film.description
+        currentView.findViewById<TextView>(R.id.fragment_film_tv_title).text = film.title
+        currentView.findViewById<TextView>(R.id.fragment_film_tv_origtitle).text = film.origTitle
+        currentView.findViewById<TextView>(R.id.fragment_film_tv_releaseDate).text = getString(R.string.release_date, "${film.date} ${film.year}")
+        currentView.findViewById<TextView>(R.id.fragment_film_tv_runtime).text = getString(R.string.runtime, film.runtime)
+        currentView.findViewById<TextView>(R.id.fragment_film_tv_type).text = getString(R.string.film_type, film.type)
+        currentView.findViewById<TextView>(R.id.fragment_film_tv_plot).text = film.description
 
-        currentFragment.findViewById<ProgressBar>(R.id.fragment_film_pb_loading).visibility = View.GONE
-        currentFragment.findViewById<NestedScrollView>(R.id.fragment_film_sv_content).visibility = View.VISIBLE
+        currentView.findViewById<ProgressBar>(R.id.fragment_film_pb_loading).visibility = View.GONE
+        currentView.findViewById<NestedScrollView>(R.id.fragment_film_sv_content).visibility = View.VISIBLE
     }
 
     override fun setActors(actors: ArrayList<Actor?>) {
-        val actorsLayout: LinearLayout = currentFragment.findViewById(R.id.fragment_film_ll_actorsLayout)
+        val actorsLayout: LinearLayout = currentView.findViewById(R.id.fragment_film_ll_actorsLayout)
 
         for (actor in actors.reversed()) {
             if (actor != null) {
@@ -130,7 +130,7 @@ class FilmFragment : Fragment(), FilmView {
                 directorsText += ", "
             }
         }
-        currentFragment.findViewById<TextView>(R.id.fragment_film_tv_directors).text = getString(R.string.directors, directorsText)
+        currentView.findViewById<TextView>(R.id.fragment_film_tv_directors).text = getString(R.string.directors, directorsText)
     }
 
     override fun setCountries(countries: ArrayList<String>) {
@@ -143,11 +143,11 @@ class FilmFragment : Fragment(), FilmView {
             }
         }
 
-        currentFragment.findViewById<TextView>(R.id.fragment_film_tv_countries).text = getString(R.string.countries, countriesText)
+        currentView.findViewById<TextView>(R.id.fragment_film_tv_countries).text = getString(R.string.countries, countriesText)
     }
 
     override fun setGenres(genres: ArrayList<String>) {
-        val genresLayout: LinearLayout = currentFragment.findViewById(R.id.fragment_film_ll_genres)
+        val genresLayout: LinearLayout = currentView.findViewById(R.id.fragment_film_ll_genres)
 
         for (genre in genres) {
             val genreView = LayoutInflater.from(context).inflate(R.layout.inflate_tag, null) as TextView

@@ -5,10 +5,10 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
 object NewestFilmsModel {
-    private val HDREZKA_NEWEST = "http://hdrezka.tv/new/page/"
-    private val FILMS = "div.b-content__inline_item"
-    private val FILM_LINK = "div.b-content__inline_item-cover a"
-    private val FILM_TYPE = "span.cat i"
+    private const val HDREZKA_NEWEST = "http://hdrezka.tv/new/page/"
+    const val FILMS = "div.b-content__inline_item"
+    const val FILM_LINK = "div.b-content__inline_item-cover a"
+    const val FILM_TYPE = "span.cat i"
 
     fun getFilmsFromPage(page: Int): ArrayList<Film> {
         val films: ArrayList<Film> = ArrayList()

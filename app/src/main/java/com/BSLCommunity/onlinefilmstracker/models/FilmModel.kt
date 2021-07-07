@@ -7,10 +7,10 @@ import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 
 object FilmModel {
-    private val FILM_TITLE = "div.b-post__title h1"
-    private val FILM_POSTER = "div.b-sidecover a"
-    private val FILM_TABLE_INFO = "table.b-post__info tbody tr"
-    private val FILM_IMDB_RATING = "span.imdb span"
+    private const val FILM_TITLE = "div.b-post__title h1"
+    private const val FILM_POSTER = "div.b-sidecover a"
+    private const val FILM_TABLE_INFO = "table.b-post__info tbody tr"
+    private const val FILM_IMDB_RATING = "span.imdb span"
 
     private fun getFilmPage(link: String): Document {
         return Jsoup.connect(link).get()
@@ -64,7 +64,7 @@ object FilmModel {
         return film
     }
 
-    fun getAdditionalData(film: Film) : Film  {
+    fun getAdditionalData(film: Film): Film {
         val document: Document = getFilmPage(film.link)
         film.origTitle = document.select("div.b-post__origtitle").text()
         film.description = document.select("div.b-post__description_text").text()

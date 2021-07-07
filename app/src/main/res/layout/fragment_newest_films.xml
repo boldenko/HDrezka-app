@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:layout_margin="15dp"
+    android:orientation="vertical"
     tools:context=".views.fragments.NewestFilmsFragment">
 
     <LinearLayout
@@ -16,10 +16,11 @@
             android:id="@+id/fragment_films_list_open_filters"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:text="@string/filters" />
 
         <androidx.core.widget.NestedScrollView
-            android:id="@+id/nestedScrollView"
+            android:id="@+id/fragment_films_list_films_nsv_films"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -35,7 +36,7 @@
     </LinearLayout>
 
     <ProgressBar
-        android:id="@+id/pb_data_loading"
+        android:id="@+id/fragment_films_list_films_pb_data_loading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" />

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="15dp"
+    android:orientation="vertical"
+    tools:context=".views.fragments.BookmarksFragment">
+
+    <ProgressBar
+        android:id="@+id/fragment_bookmarks_pb_spinner_loading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/fragment_bookmarks_ll_spinners_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <com.chivorn.smartmaterialspinner.SmartMaterialSpinner
+            android:id="@+id/fragment_bookmarks_sp_sort"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:spinnerMode="dialog"
+            app:smsp_arrowColor="@color/white"
+            app:smsp_floatingLabelColor="@color/white"
+            app:smsp_hint="Сортировать"
+            app:smsp_hintColor="@color/white"
+            app:smsp_itemColor="@color/white"
+            app:smsp_itemListHintColor="@color/white"
+            app:smsp_itemSize="20dp"
+            app:smsp_selectedItemListColor="@color/main_color_3" />
+
+        <com.chivorn.smartmaterialspinner.SmartMaterialSpinner
+            android:id="@+id/fragment_bookmarks_sp_show"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:spinnerMode="dialog"
+            app:smsp_arrowColor="@color/white"
+            app:smsp_floatingLabelColor="@color/white"
+            app:smsp_hint="Отобразить"
+            app:smsp_hintColor="@color/white"
+            app:smsp_itemColor="@color/white"
+            app:smsp_itemListHintColor="@color/white"
+            app:smsp_itemSize="20dp"
+            app:smsp_selectedItemListColor="@color/main_color_3" />
+
+        <com.chivorn.smartmaterialspinner.SmartMaterialSpinner
+            android:id="@+id/fragment_bookmarks_sp_list"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:spinnerMode="dialog"
+            app:smsp_arrowColor="@color/white"
+            app:smsp_enableSearchHeader="false"
+            app:smsp_floatingLabelColor="@color/white"
+            app:smsp_hint="Каталог"
+            app:smsp_hintColor="@color/white"
+            app:smsp_isSearchable="true"
+            app:smsp_itemColor="@color/white"
+            app:smsp_itemListHintColor="@color/white"
+            app:smsp_itemSize="20dp"
+            app:smsp_selectedItemListColor="@color/main_color_3" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/fragment_bookmarks_tv_not_auth"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="Вы не авторизированы"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/fragment_bookmarks_nsv_films"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/fragment_bookmarks_rv_films"
+                android:name="com.BSLCommunity.onlinefilmstracker.fragments.BookmarksFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                tools:context=".views.fragments.BookmarksFragment"
+                tools:listitem="@layout/inflate_film" />
+        </androidx.core.widget.NestedScrollView>
+
+        <ProgressBar
+            android:id="@+id/fragment_bookmarks_pb_data_loading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+
+</LinearLayout>

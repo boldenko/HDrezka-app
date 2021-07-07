@@ -23,8 +23,8 @@ import com.google.android.material.slider.RangeSlider
 class NewestFilmsFragment : Fragment(), NewestFilmsView {
     private val FILMS_PER_ROW: Int = 3
 
+    private lateinit var currentView: View
     private lateinit var newestFilmsPresenter: NewestFilmsPresenter
-    private lateinit var currentFragment: RelativeLayout
     private lateinit var viewList: RecyclerView
     private lateinit var progressBar: ProgressBar
     private lateinit var scrollView: NestedScrollView
@@ -37,14 +37,14 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        currentFragment = inflater.inflate(R.layout.fragment_newest_films, container, false) as RelativeLayout
+        currentView = inflater.inflate(R.layout.fragment_newest_films, container, false) as RelativeLayout
 
-        progressBar = currentFragment.findViewById(R.id.pb_data_loading)
+        progressBar = currentView.findViewById(R.id.fragment_films_list_films_pb_data_loading)
 
-        viewList = currentFragment.findViewById(R.id.fragment_films_list_films_rv_films)
+        viewList = currentView.findViewById(R.id.fragment_films_list_films_rv_films)
         viewList.layoutManager = GridLayoutManager(context, FILMS_PER_ROW)
 
-        scrollView = currentFragment.findViewById(R.id.nestedScrollView)
+        scrollView = currentView.findViewById(R.id.fragment_films_list_films_nsv_films)
         scrollView.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
             override fun onScrollChange(v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
                 val view = scrollView.getChildAt(scrollView.childCount - 1)
@@ -61,9 +61,9 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
         newestFilmsPresenter.initFilms()
 
         createFilters()
-        createStopToast()
+        //createStopToast()
 
-        return currentFragment
+        return currentView
     }
 
     private fun openFilm(film: Film) {
@@ -71,8 +71,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
         data.putSerializable("film", film)
 
         fragmentListener.onFragmentInteraction(
-            this, FilmFragment(),
-            OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, data, "film"
+            FilmFragment(), OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, data, null
         )
     }
 
@@ -164,7 +163,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
                 dialog.dismiss()
             }
             val d = filtersDialog.create()
-            currentFragment.findViewById<Button>(R.id.fragment_films_list_open_filters).setOnClickListener {
+            currentView.findViewById<Button>(R.id.fragment_films_list_open_filters).setOnClickListener {
                 d.show()
             }
         }
@@ -199,7 +198,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
             // View and duration has to be set
             val view = LayoutInflater.from(context).inflate(R.layout.popup_box, null)
             view.findViewById<TextView>(R.id.stop_btn).setOnClickListener {
-               // newestFilmsPresenter.stopGetFilms()
+                // newestFilmsPresenter.stopGetFilms()
             }
             it.view = view
             it.duration = Toast.LENGTH_LONG
