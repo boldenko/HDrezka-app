@@ -1,6 +1,11 @@
 package com.BSLCommunity.onlinefilmstracker.models
 
+import android.util.Log
 import com.BSLCommunity.onlinefilmstracker.objects.Film
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -95,5 +100,42 @@ object FilmModel {
         film.directors = directors
         film.actorsLinks = actorsLinks
         return film
+    }
+
+
+    fun getFilmsData(films: ArrayList<Film>, filmsPerPage: Int, callback: (ArrayList<Film>) -> Unit) {
+        val filmsToLoad: ArrayList<Film> = ArrayList()
+        for ((index, film) in (films.clone() as ArrayList<Film>).withIndex()) {
+            filmsToLoad.add(film)
+            films.removeAt(0)
+
+            if (index == filmsPerPage - 1) {
+                break
+            }
+        }
+
+        val loadedFilms = arrayOfNulls<Film?>(filmsPerPage)
+        var count = 0
+        for ((index, film) in filmsToLoad.withIndex()) {
+            GlobalScope.launch {
+                loadedFilms[index] = getMainData(film)
+                count++
+
+                Log.d("FILM_DEBUG", "loaded ${film.title} on index $index")
+                if (count >= filmsToLoad.size) {
+                    val list: ArrayList<Film> = ArrayList()
+                    for (item in loadedFilms) {
+                        if (item != null) {
+                            list.add(item)
+                        }
+                    }
+                    Log.d("FILM_DEBUG", "all loaded")
+
+                    withContext(Dispatchers.Main){
+                        callback(list)
+                    }
+                }
+            }
+        }
     }
 }

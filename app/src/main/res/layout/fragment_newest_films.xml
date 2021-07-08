@@ -14,32 +14,10 @@
         android:layout_margin="5dp"
         android:text="@string/filters" />
 
-    <RelativeLayout
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_newest_films_fcv_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:context=".views.fragments.FilmsListFragment">
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/fragment_films_list_nsv_films"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/fragment_films_list_rv_films"
-                android:name="com.BSLCommunity.onlinefilmstracker.fragments.FilmsListFragment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                tools:context=".views.fragments.FilmsListFragment"
-                tools:listitem="@layout/inflate_film" />
-        </androidx.core.widget.NestedScrollView>
-
-        <ProgressBar
-            android:id="@+id/fragment_films_list_pb_data_loading"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true" />
-    </RelativeLayout>
+        android:layout_height="wrap_content"/>
 </LinearLayout>
 
 

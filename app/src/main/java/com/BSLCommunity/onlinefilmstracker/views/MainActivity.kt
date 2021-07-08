@@ -7,6 +7,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -23,7 +24,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlin.system.exitProcess
 
 
-class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, INoConnection {
     private var isSettingsOpened: Boolean = false
     private lateinit var selectedFragment: Fragment
 
@@ -39,6 +40,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
                 UserModel.loadLoggedIn(applicationContext)
                 selectedFragment = NewestFilmsFragment()
                 setBottomBar()
+                Log.d("AUTH_SYS", UserModel.isLoggedIn.toString())
 
                 findViewById<ImageView>(R.id.activity_main_ib_user).setOnClickListener {
                     if (!isSettingsOpened) {
@@ -150,7 +152,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
         return connection
     }
 
-    private fun showErrorDialog() {
+    override fun showErrorDialog() {
         val dialog = MaterialAlertDialogBuilder(this)
         dialog.setTitle("Ошибка. Отсутствует интернет соеденение")
         dialog.setPositiveButton("Выйти") { dialog, id ->

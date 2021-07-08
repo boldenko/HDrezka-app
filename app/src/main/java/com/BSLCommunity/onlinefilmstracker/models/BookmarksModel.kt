@@ -9,7 +9,6 @@ import org.jsoup.select.Elements
 
 object BookmarksModel {
     private const val MAIN_PAGE = "http://hdrezka.tv/favorites/"
-    const val FILMS_ON_PAGE = 36
 
     fun getBookmarksList(): ArrayList<Bookmark> {
         val document: Document = Jsoup.connect(MAIN_PAGE).header("Cookie", CookieManager.getInstance().getCookie(MAIN_PAGE)).get()
@@ -26,6 +25,7 @@ object BookmarksModel {
         }
 
         return bookmarks
+
     }
 
     fun getFilmsFromBookmarkPage(link: String, page: Int, sort: String?, show: String?): ArrayList<Film> {

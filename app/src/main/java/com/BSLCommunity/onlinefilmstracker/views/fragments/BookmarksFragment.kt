@@ -1,6 +1,5 @@
 package com.BSLCommunity.onlinefilmstracker.views.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,74 +9,53 @@ import android.widget.AdapterView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.constants.BookmarkFilterType
 import com.BSLCommunity.onlinefilmstracker.models.UserModel
-import com.BSLCommunity.onlinefilmstracker.objects.Film
 import com.BSLCommunity.onlinefilmstracker.presenters.BookmarksPresenter
-import com.BSLCommunity.onlinefilmstracker.views.OnFragmentInteractionListener
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.BookmarksView
+import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmListCallView
 import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
 
-class BookmarksFragment : Fragment(), BookmarksView, AdapterView.OnItemSelectedListener {
-    private val FILMS_PER_ROW: Int = 3
-
+class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterView.OnItemSelectedListener {
     private lateinit var currentView: View
     private lateinit var bookmarksPresenter: BookmarksPresenter
-    private lateinit var viewList: RecyclerView
-    private lateinit var fragmentListener: OnFragmentInteractionListener
-    private lateinit var scrollView: NestedScrollView
-    private lateinit var progressBar: ProgressBar
     private lateinit var spinnersLayout: LinearLayout
     private lateinit var msgView: TextView
+    private lateinit var filmsListFragment: FilmsListFragment
+    private lateinit var progressBarSpinnerLayout: ProgressBar
     private var checked = 0
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        fragmentListener = context as OnFragmentInteractionListener
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentView = inflater.inflate(R.layout.fragment_bookmarks, container, false)
-        bookmarksPresenter = BookmarksPresenter(this)
+        filmsListFragment = FilmsListFragment()
+        filmsListFragment.setCallView(this)
+        childFragmentManager.beginTransaction().replace(R.id.fragment_bookmarks_fcv_container, filmsListFragment).commit()
 
         msgView = currentView.findViewById(R.id.fragment_bookmarks_tv_not_auth)
-
         spinnersLayout = currentView.findViewById(R.id.fragment_bookmarks_ll_spinners_layout)
         spinnersLayout.visibility = View.GONE
-
-        viewList = currentView.findViewById(R.id.fragment_bookmarks_rv_films)
-        viewList.layoutManager = GridLayoutManager(context, FILMS_PER_ROW)
-
-        progressBar = currentView.findViewById(R.id.fragment_bookmarks_pb_data_loading)
-        scrollView = currentView.findViewById(R.id.fragment_bookmarks_nsv_films)
-        scrollView.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
-            override fun onScrollChange(v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
-                val view = scrollView.getChildAt(scrollView.childCount - 1)
-                val diff = view.bottom - (scrollView.height + scrollView.scrollY)
-
-                if (diff == 0) {
-                    progressBar.visibility = View.VISIBLE
-                    bookmarksPresenter.getNextFilms()
-                }
-            }
-        })
+        progressBarSpinnerLayout = currentView.findViewById(R.id.fragment_bookmarks_pb_spinner_loading)
 
         if (UserModel.isLoggedIn == true) {
             setSpinnerData(R.id.fragment_bookmarks_sp_sort)
             setSpinnerData(R.id.fragment_bookmarks_sp_show)
-
-            bookmarksPresenter.initBookmarks()
-        } else {
-            showMsg("Данный раздел доступен только зарегистрированным пользователям")
-            viewList.visibility = View.GONE
-            progressBar.visibility = View.GONE
         }
         return currentView
+    }
+
+    override fun onStart() {
+        bookmarksPresenter = BookmarksPresenter(this, filmsListFragment)
+
+        if (UserModel.isLoggedIn == true) {
+            bookmarksPresenter.initBookmarks()
+        } else {
+            progressBarSpinnerLayout.visibility = View.GONE
+            bookmarksPresenter.setMsg(BookmarksPresenter.MsgType.NOT_AUTHORIZED)
+        }
+
+        super.onStart()
     }
 
     private fun setSpinnerData(spinnerId: Int) {
@@ -108,18 +86,18 @@ class BookmarksFragment : Fragment(), BookmarksView, AdapterView.OnItemSelectedL
     override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
         when (parent.id) {
             R.id.fragment_bookmarks_sp_sort -> {
-                if(checked > 2){
+                if (checked > 2) {
                     Log.d("DEEBUG", "sort selected")
                     bookmarksPresenter.setFilter(bookmarksPresenter.sortFilters[position], BookmarkFilterType.SORT)
-                } else{
+                } else {
                     checked++
                 }
             }
             R.id.fragment_bookmarks_sp_show -> {
-                if(checked > 1){
+                if (checked > 1) {
                     Log.d("DEEBUG", "show selected")
                     bookmarksPresenter.setFilter(bookmarksPresenter.showFilters[position], BookmarkFilterType.SHOW)
-                } else{
+                } else {
                     checked++
                 }
             }
@@ -128,33 +106,21 @@ class BookmarksFragment : Fragment(), BookmarksView, AdapterView.OnItemSelectedL
                 bookmarksPresenter.bookmarks?.get(position)?.let { bookmarksPresenter.setBookmark(it) }
             }
         }
-        progressBar.visibility = View.VISIBLE
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
     }
 
-    override fun setFilms(films: ArrayList<Film>) {
-        viewList.adapter = context?.let { FilmsListRecyclerViewAdapter(it, films, ::openFilm) }
-    }
-
-    override fun redrawFilms() {
-        msgView.visibility = View.GONE
-        progressBar.visibility = View.GONE
-        viewList.adapter?.notifyDataSetChanged()
-    }
-
-    override fun showMsg(msg: String) {
+    override fun showMsg(type: BookmarksPresenter.MsgType) {
         msgView.visibility = View.VISIBLE
-        msgView.text = msg
+
+        when (type) {
+            BookmarksPresenter.MsgType.NOT_AUTHORIZED -> msgView.text = "Данный раздел доступен только зарегистрированным пользователям"
+            BookmarksPresenter.MsgType.NOTHING_FOUND -> msgView.text = "Ничего не можем найти в закладках по данному запросу"
+        }
     }
 
-    private fun openFilm(film: Film) {
-        val data = Bundle()
-        data.putSerializable("film", film)
-
-        fragmentListener.onFragmentInteraction(
-            FilmFragment(), OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, data, null
-        )
+    override fun triggerEnd() {
+        bookmarksPresenter.getNextFilms()
     }
 }

@@ -1,33 +1,30 @@
 package com.BSLCommunity.onlinefilmstracker.presenters
 
-import android.os.CountDownTimer
 import android.util.ArrayMap
 import android.util.Log
 import com.BSLCommunity.onlinefilmstracker.constants.AppliedFilter
 import com.BSLCommunity.onlinefilmstracker.models.FilmModel
 import com.BSLCommunity.onlinefilmstracker.models.NewestFilmsModel
 import com.BSLCommunity.onlinefilmstracker.objects.Film
+import com.BSLCommunity.onlinefilmstracker.views.INoConnection
+import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmsListView
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.NewestFilmsView
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView) {
+class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView, private val filmsListView: FilmsListView, private val noConnectionInterface: INoConnection) {
     private val FILMS_PER_PAGE: Int = 9
-    private val STOP_TIME: Long = 8 // Seconds
 
     private var currentPage: Int = 1 // newest film page
     private var isLoading: Boolean = false // loading condition
     private var newestFilms: ArrayList<Film> = ArrayList() // current films links and their types from newest page
-    private val allFilms: ArrayList<Film?> = ArrayList() // all loaded films
+    private val allFilms: ArrayList<Film> = ArrayList() // all loaded films
     private val activeFilms: ArrayList<Film> = ArrayList() // current active films
     private var sortedFilmsCount: Int = 0 // current sorted films
     private var appliedFilters: ArrayMap<AppliedFilter, ArrayList<String>> = ArrayMap() // applied filters
-    private var timer: CountDownTimer? = null
 
     fun initFilms() {
-        newestFilmsView.setFilms(activeFilms)
+        filmsListView.setFilms(activeFilms)
         getNextFilms()
     }
 
@@ -37,80 +34,45 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView) {
         }
 
         isLoading = true
-        if (newestFilms.size == 0) {
-            GlobalScope.launch {
-                newestFilms = NewestFilmsModel.getFilmsFromPage(currentPage++)
-                getFilmsData()
-            }
-        } else {
-            getFilmsData()
-        }
-    }
-
-    private fun getFilmsData() {
-        // load FILMS_PER_PAGE (18) films
-        val filmsToLoad: ArrayList<Film> = ArrayList()
-        for ((index, film) in (newestFilms.clone() as ArrayList<Film>).withIndex()) {
-            filmsToLoad.add(film)
-            newestFilms.removeAt(0)
-
-            if (index == FILMS_PER_PAGE - 1) {
-                break
-            }
-        }
-
-        val loadedFilms = arrayOfNulls<Film?>(FILMS_PER_PAGE)
-        var count = 0
-        for ((index, film) in filmsToLoad.withIndex()) {
-            GlobalScope.launch {
-                loadedFilms[index] = FilmModel.getMainData(film)
-                count++
-
-                Log.d("FILM_DEBUG", "loaded ${film.title} on index $index")
-                if (count >= FILMS_PER_PAGE) {
-                    isLoading = false
-                    val list: ArrayList<Film?> = ArrayList()
-                    for (item in loadedFilms) {
-                        list.add(item)
-                    }
-                    allFilms.addAll(list)
-                    addFilms(list)
-                }
-            }
-        }
-    }
-
-    private fun addFilms(films: ArrayList<Film?>) {
+        filmsListView.setProgressBarState(true)
         GlobalScope.launch {
-            val sortedFilms: ArrayList<Film> = ArrayList()
-
-            for (film in films) {
-                if (film != null) {
-                    if (checkFilmForFilters(film)) {
-                        sortedFilms.add(film)
-                    }
+            if (newestFilms.size == 0) {
+                try {
+                    newestFilms = NewestFilmsModel.getFilmsFromPage(currentPage++)
+                } catch (e: Exception) {
+                    noConnectionInterface.showErrorDialog()
+                    return@launch
                 }
             }
+            FilmModel.getFilmsData(newestFilms, FILMS_PER_PAGE, ::processFilms)
+        }
+    }
 
-            activeFilms.addAll(sortedFilms)
+    private fun processFilms(films: ArrayList<Film>) {
+        allFilms.addAll(films)
+        addFilms(films)
+    }
 
-            // !!!
-            withContext(Dispatchers.Main) {
-                newestFilmsView.redrawFilms()
+    private fun addFilms(films: ArrayList<Film>) {
+        isLoading = false
+
+        // sort films
+        val sortedFilms: ArrayList<Film> = ArrayList()
+        for (film in films) {
+            if (checkFilmForFilters(film)) {
+                Log.d("FILM_DEBUG", "sorted ${film.title}")
+                sortedFilms.add(film)
             }
+        }
+        activeFilms.addAll(sortedFilms)
+        filmsListView.redrawFilms()
 
-            sortedFilmsCount += sortedFilms.size
-            if (sortedFilmsCount >= FILMS_PER_PAGE) {
-                sortedFilmsCount = 0
-
-                // !!!
-                withContext(Dispatchers.Main) {
-                    newestFilmsView.setProgressBarState(false)
-                }
-                //   timer?.cancel()
-            } else {
-                getNextFilms()
-            }
+        sortedFilmsCount += sortedFilms.size
+        if (sortedFilmsCount >= FILMS_PER_PAGE) {
+            sortedFilmsCount = 0
+            filmsListView.setProgressBarState(false)
+        } else {
+            getNextFilms()
         }
     }
 
@@ -120,25 +82,10 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView) {
 
     fun applyFilters() {
         activeFilms.clear()
-        newestFilmsView.redrawFilms()
-        newestFilmsView.setProgressBarState(true)
-        /*   timer?.cancel()
-           startTimer()*/
+        filmsListView.redrawFilms()
+        filmsListView.setProgressBarState(true)
         addFilms(allFilms)
     }
-
-/*    private fun startTimer() {
-        timer = object : CountDownTimer(STOP_TIME * 1000, 1000) {
-            override fun onTick(millisUntilFinished: Long) {}
-
-            override fun onFinish() {
-                newestFilmsView.showStopToast()
-                startTimer()
-            }
-        }
-        timer?.start()
-    }*/
-
 
     // true - film соотвествует критериям
     // false - фильм не соотвествует критериям

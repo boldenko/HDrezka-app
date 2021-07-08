@@ -11,12 +11,16 @@ object NewestFilmsModel {
     const val FILM_TYPE = "span.cat i"
 
     fun getFilmsFromPage(page: Int): ArrayList<Film> {
-        val films: ArrayList<Film> = ArrayList()
-        val doc: Document = Jsoup.connect(HDREZKA_NEWEST + page).get()
+        try {
+            val films: ArrayList<Film> = ArrayList()
+            val doc: Document = Jsoup.connect(HDREZKA_NEWEST + page).get()
 
-        for (element in doc.select(FILMS)) {
-            films.add(Film(element.select(FILM_LINK).attr("href"), element.select(FILM_TYPE)[0].text()))
+            for (element in doc.select(FILMS)) {
+                films.add(Film(element.select(FILM_LINK).attr("href"), element.select(FILM_TYPE)[0].text()))
+            }
+            return films
+        } catch (e: Exception) {
+            throw e
         }
-        return films
     }
 }

@@ -48,9 +48,9 @@ class AuthWebViewClient(val callback: (isLogged: Boolean) -> Unit) : WebViewClie
     private fun checkUrl(url: String): Boolean {
         return if (url == "http://hdrezka.tv/favorites/") {
             callback(true)
-            false
-        } else {
             true
+        } else {
+            false
         }
     }
 }

@@ -15,8 +15,10 @@ object UserModel {
     fun loadLoggedIn(context: Context) {
         if (isLoggedIn == null) {
             val data: String? = FileManager.readFile(FILE_NAME, context)
-            data?.let {
-                isLoggedIn = data == "1"
+            isLoggedIn = if (data != null) {
+                data == "1"
+            } else {
+                false
             }
         }
     }

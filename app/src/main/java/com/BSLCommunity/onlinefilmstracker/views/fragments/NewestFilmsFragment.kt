@@ -1,103 +1,46 @@
 package com.BSLCommunity.onlinefilmstracker.views.fragments
 
-import android.content.Context
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
-import androidx.core.widget.NestedScrollView
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.constants.AppliedFilter
-import com.BSLCommunity.onlinefilmstracker.objects.Film
 import com.BSLCommunity.onlinefilmstracker.presenters.NewestFilmsPresenter
-import com.BSLCommunity.onlinefilmstracker.views.OnFragmentInteractionListener
+import com.BSLCommunity.onlinefilmstracker.views.MainActivity
+import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmListCallView
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.NewestFilmsView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.RangeSlider
 
-class NewestFilmsFragment : Fragment(), NewestFilmsView {
-    private val FILMS_PER_ROW: Int = 3
-
+class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
     private lateinit var currentView: View
     private lateinit var newestFilmsPresenter: NewestFilmsPresenter
-    private lateinit var viewList: RecyclerView
-    private lateinit var progressBar: ProgressBar
-    private lateinit var scrollView: NestedScrollView
-    private lateinit var stopToast: Toast
-    private lateinit var fragmentListener: OnFragmentInteractionListener
     private lateinit var filmsListFragment: FilmsListFragment
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        fragmentListener = context as OnFragmentInteractionListener
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentView = inflater.inflate(R.layout.fragment_newest_films, container, false) as LinearLayout
+
         filmsListFragment = FilmsListFragment()
-
-        progressBar = currentView.findViewById(R.id.fragment_films_list_pb_data_loading)
-
-        viewList = currentView.findViewById(R.id.fragment_films_list_rv_films)
-        viewList.layoutManager = GridLayoutManager(context, FILMS_PER_ROW)
-
-        scrollView = currentView.findViewById(R.id.fragment_films_list_nsv_films)
-        scrollView.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
-            override fun onScrollChange(v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
-                val view = scrollView.getChildAt(scrollView.childCount - 1)
-                val diff = view.bottom - (scrollView.height + scrollView.scrollY)
-
-                if (diff == 0) {
-                    setProgressBarState(true)
-                    newestFilmsPresenter.getNextFilms()
-                }
-            }
-        })
-
-        newestFilmsPresenter = NewestFilmsPresenter(this)
-        newestFilmsPresenter.initFilms()
+        filmsListFragment.setCallView(this)
+        childFragmentManager.beginTransaction().replace(R.id.fragment_newest_films_fcv_container, filmsListFragment).commit()
 
         createFilters()
-        //createStopToast()
 
         return currentView
     }
 
-    private fun openFilm(film: Film) {
-        val data = Bundle()
-        data.putSerializable("film", film)
+    override fun onStart() {
+        newestFilmsPresenter = NewestFilmsPresenter(this, filmsListFragment, requireActivity() as MainActivity)
+        newestFilmsPresenter.initFilms()
 
-        fragmentListener.onFragmentInteraction(
-            FilmFragment(), OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, data, null
-        )
+        super.onStart()
     }
-
-    override fun setFilms(films: ArrayList<Film>) {
-        viewList.adapter = context?.let { FilmsListRecyclerViewAdapter(it, films, ::openFilm) }
-    }
-
-    override fun redrawFilms() {
-        //viewList.adapter.notifyItemRangeChanged()
-        viewList.adapter?.notifyDataSetChanged()
-    }
-
-    override fun setProgressBarState(state: Boolean) {
-        if (state) {
-            progressBar.visibility = View.VISIBLE
-        } else {
-            progressBar.visibility = View.GONE
-        }
-    }
-
-    override fun showStopToast() {
-        stopToast.show()
-    }
-
 
     private fun createFilters() {
         activity?.let {
@@ -195,17 +138,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
         }
     }
 
-    private fun createStopToast() {
-        stopToast = Toast(activity?.applicationContext).also {
-            // View and duration has to be set
-            val view = LayoutInflater.from(context).inflate(R.layout.popup_box, null)
-            view.findViewById<TextView>(R.id.stop_btn).setOnClickListener {
-                // newestFilmsPresenter.stopGetFilms()
-            }
-            it.view = view
-            it.duration = Toast.LENGTH_LONG
-            it.setGravity(Gravity.START, 0, 0)
-            it.setMargin(0.1f, 0.2f)
-        }
+    override fun triggerEnd() {
+        newestFilmsPresenter.getNextFilms()
     }
 }

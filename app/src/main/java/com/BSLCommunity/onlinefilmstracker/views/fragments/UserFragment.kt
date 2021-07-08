@@ -55,6 +55,8 @@ class UserFragment : Fragment() {
             webView.settings.javaScriptEnabled = true
             webView.settings.domStorageEnabled = true
             webView.webViewClient = AuthWebViewClient { isLogged ->
+                webView.stopLoading()
+
                 if (isLogged) {
                     UserModel.saveLoggedIn(isLogged, it)
                     setAuthPanel(isLogged)
