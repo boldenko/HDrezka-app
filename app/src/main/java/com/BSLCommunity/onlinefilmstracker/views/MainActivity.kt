@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.ImageView
@@ -29,16 +31,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        var connected = false
-        try {
-            val cm = applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val nInfo = cm.activeNetworkInfo
-            connected = nInfo != null && nInfo.isAvailable && nInfo.isConnected
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        if (connected) {
+        if (isInternetAvailable(applicationContext)) {
             if (savedInstanceState == null) {
                 requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
@@ -54,13 +47,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
                 }
             }
         } else {
-            val dialog = MaterialAlertDialogBuilder(this)
-            dialog.setTitle("Ошибка. Отсутствует интернет соеденение")
-            dialog.setPositiveButton("Выйти") { dialog, id ->
-                exitProcess(0)
-            }
-            val d = dialog.create()
-            d.show()
+            showErrorDialog()
         }
     }
 
@@ -128,5 +115,45 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
             Action.RETURN_FRAGMENT_BY_TAG -> supportFragmentManager.popBackStack(backStackTag, 0)
             Action.POP_BACK_STACK -> supportFragmentManager.popBackStack()*/
         }
+    }
+
+    private fun isInternetAvailable(context: Context): Boolean {
+        var connection = false
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val networkCapabilities = connectivityManager.activeNetwork ?: return false
+            val actNw = connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+            connection = when {
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                else -> false
+            }
+        } else {
+            connectivityManager.run {
+                connectivityManager.activeNetworkInfo?.run {
+                    connection = when (type) {
+                        ConnectivityManager.TYPE_WIFI -> true
+                        ConnectivityManager.TYPE_MOBILE -> true
+                        ConnectivityManager.TYPE_ETHERNET -> true
+                        else -> false
+                    }
+
+                }
+            }
+        }
+
+        return connection
+    }
+
+    private fun showErrorDialog() {
+        val dialog = MaterialAlertDialogBuilder(this)
+        dialog.setTitle("Ошибка. Отсутствует интернет соеденение")
+        dialog.setPositiveButton("Выйти") { dialog, id ->
+            exitProcess(0)
+        }
+        val d = dialog.create()
+        d.show()
     }
 }
