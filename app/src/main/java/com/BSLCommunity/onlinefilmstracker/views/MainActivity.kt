@@ -16,6 +16,7 @@ import com.BSLCommunity.onlinefilmstracker.models.UserModel
 import com.BSLCommunity.onlinefilmstracker.views.OnFragmentInteractionListener.Action
 import com.BSLCommunity.onlinefilmstracker.views.fragments.BookmarksFragment
 import com.BSLCommunity.onlinefilmstracker.views.fragments.NewestFilmsFragment
+import com.BSLCommunity.onlinefilmstracker.views.fragments.SearchFragment
 import com.BSLCommunity.onlinefilmstracker.views.fragments.UserFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -54,12 +55,14 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
     private fun setBottomBar() {
         val newestFragment = NewestFilmsFragment()
         val bookmarksFragment = BookmarksFragment()
+        val searchFragment = SearchFragment()
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.activity_main_nv_bottomBar)
         bottomNavigationView.setOnItemSelectedListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.nav_newest -> onFragmentInteraction(newestFragment, Action.NEXT_FRAGMENT_HIDE_NO_BACK_STACK, null, null)
                 R.id.nav_bookmarks -> onFragmentInteraction(bookmarksFragment, Action.NEXT_FRAGMENT_HIDE_NO_BACK_STACK, null, null)
+                R.id.nav_search -> onFragmentInteraction(searchFragment, Action.NEXT_FRAGMENT_HIDE_NO_BACK_STACK, null, null)
             }
             false
         }

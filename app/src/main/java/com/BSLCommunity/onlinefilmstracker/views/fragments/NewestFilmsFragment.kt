@@ -30,6 +30,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
     private lateinit var scrollView: NestedScrollView
     private lateinit var stopToast: Toast
     private lateinit var fragmentListener: OnFragmentInteractionListener
+    private lateinit var filmsListFragment: FilmsListFragment
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -37,14 +38,15 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        currentView = inflater.inflate(R.layout.fragment_newest_films, container, false) as RelativeLayout
+        currentView = inflater.inflate(R.layout.fragment_newest_films, container, false) as LinearLayout
+        filmsListFragment = FilmsListFragment()
 
-        progressBar = currentView.findViewById(R.id.fragment_films_list_films_pb_data_loading)
+        progressBar = currentView.findViewById(R.id.fragment_films_list_pb_data_loading)
 
-        viewList = currentView.findViewById(R.id.fragment_films_list_films_rv_films)
+        viewList = currentView.findViewById(R.id.fragment_films_list_rv_films)
         viewList.layoutManager = GridLayoutManager(context, FILMS_PER_ROW)
 
-        scrollView = currentView.findViewById(R.id.fragment_films_list_films_nsv_films)
+        scrollView = currentView.findViewById(R.id.fragment_films_list_nsv_films)
         scrollView.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
             override fun onScrollChange(v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
                 val view = scrollView.getChildAt(scrollView.childCount - 1)
@@ -163,7 +165,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView {
                 dialog.dismiss()
             }
             val d = filtersDialog.create()
-            currentView.findViewById<Button>(R.id.fragment_films_list_open_filters).setOnClickListener {
+            currentView.findViewById<Button>(R.id.fragment_newest_films_bt_filters).setOnClickListener {
                 d.show()
             }
         }

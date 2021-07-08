@@ -13,6 +13,7 @@ open class Film(
     var fullSizePosterPath: String? = null
     var countries: ArrayList<String>? = null
     var ratingIMDB: String? = null
+    var ratingKP: String? = null
     var genres: ArrayList<String>? = null
     var origTitle: String? = null
     var description: String? = null
@@ -20,4 +21,5 @@ open class Film(
     var runtime: String? = null
     var actorsLinks: ArrayList<String>? = null
     var directors: ArrayList<String>? = null
+    var additionalInfo: String? = null
 }

@@ -25,9 +25,9 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView) {
     private var sortedFilmsCount: Int = 0 // current sorted films
     private var appliedFilters: ArrayMap<AppliedFilter, ArrayList<String>> = ArrayMap() // applied filters
     private var timer: CountDownTimer? = null
-    private var isInit: Boolean = false
 
     fun initFilms() {
+        newestFilmsView.setFilms(activeFilms)
         getNextFilms()
     }
 
@@ -93,11 +93,9 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView) {
             }
 
             activeFilms.addAll(sortedFilms)
+
+            // !!!
             withContext(Dispatchers.Main) {
-                if (!isInit) {
-                    newestFilmsView.setFilms(activeFilms)
-                    isInit = true
-                }
                 newestFilmsView.redrawFilms()
             }
 
@@ -105,6 +103,7 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView) {
             if (sortedFilmsCount >= FILMS_PER_PAGE) {
                 sortedFilmsCount = 0
 
+                // !!!
                 withContext(Dispatchers.Main) {
                     newestFilmsView.setProgressBarState(false)
                 }
