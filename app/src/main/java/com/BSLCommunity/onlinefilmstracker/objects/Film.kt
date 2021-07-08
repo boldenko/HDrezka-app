@@ -22,4 +22,6 @@ open class Film(
     var actorsLinks: ArrayList<String>? = null
     var directors: ArrayList<String>? = null
     var additionalInfo: String? = null
+    var hasMainData: Boolean = false
+    var hasAdditionalData: Boolean = false
 }

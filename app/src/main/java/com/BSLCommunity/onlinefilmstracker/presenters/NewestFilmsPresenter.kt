@@ -4,6 +4,7 @@ import android.util.ArrayMap
 import android.util.Log
 import com.BSLCommunity.onlinefilmstracker.constants.AppliedFilter
 import com.BSLCommunity.onlinefilmstracker.models.FilmModel
+import com.BSLCommunity.onlinefilmstracker.models.FilmsListModel
 import com.BSLCommunity.onlinefilmstracker.models.NewestFilmsModel
 import com.BSLCommunity.onlinefilmstracker.objects.Film
 import com.BSLCommunity.onlinefilmstracker.views.INoConnection
@@ -38,7 +39,8 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView, private
         GlobalScope.launch {
             if (newestFilms.size == 0) {
                 try {
-                    newestFilms = NewestFilmsModel.getFilmsFromPage(currentPage++)
+                    newestFilms = FilmsListModel.getFilmsFromPage(NewestFilmsModel.HDREZKA_NEWEST + currentPage)
+                    currentPage++
                 } catch (e: Exception) {
                     noConnectionInterface.showErrorDialog()
                     return@launch

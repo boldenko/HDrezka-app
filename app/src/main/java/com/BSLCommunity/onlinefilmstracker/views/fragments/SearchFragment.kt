@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,45 +15,63 @@ import android.widget.AutoCompleteTextView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import com.BSLCommunity.onlinefilmstracker.R
+import com.BSLCommunity.onlinefilmstracker.objects.Film
 import com.BSLCommunity.onlinefilmstracker.presenters.SearchPresenter
+import com.BSLCommunity.onlinefilmstracker.views.OnFragmentInteractionListener
+import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmListCallView
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.SearchView
 
-class SearchFragment : Fragment(), SearchView {
+class SearchFragment : Fragment(), SearchView, FilmListCallView {
     private lateinit var currentView: View
     private lateinit var searchPresenter: SearchPresenter
+    private lateinit var filmsListFragment: FilmsListFragment
     private lateinit var autoCompleteTextView: AutoCompleteTextView
     private lateinit var imm: InputMethodManager
     private lateinit var hintLayout: LinearLayout
-    private lateinit var filmsLayout: RecyclerView
+    private lateinit var fragmentListener: OnFragmentInteractionListener
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        fragmentListener = context as OnFragmentInteractionListener
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentView = inflater.inflate(R.layout.fragment_search, container, false)
-        searchPresenter = SearchPresenter(this)
+        filmsListFragment = FilmsListFragment()
+        filmsListFragment.setCallView(this)
+        childFragmentManager.beginTransaction().replace(R.id.fragment_search_fcv_container, filmsListFragment).commit()
 
         autoCompleteTextView = currentView.findViewById(R.id.fragment_search_act_suggest)
         imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         hintLayout = currentView.findViewById(R.id.fragment_search_ll_hint)
-        filmsLayout = currentView.findViewById(R.id.fragment_search_rv_films)
-        initSearch()
+
+        initSearchViews()
 
         return currentView
     }
 
-    private fun initSearch() {
+    override fun onStart() {
+        searchPresenter = SearchPresenter(this, filmsListFragment)
+        searchPresenter.initFilms()
+        filmsListFragment.setProgressBarState(false)
+        super.onStart()
+    }
+
+    private fun initSearchViews() {
         // pressed enter
         autoCompleteTextView.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
                 autoCompleteTextView.dismissDropDown()
                 val text: String = autoCompleteTextView.text.toString()
 
+                Log.d("TEXT_TEST", text)
                 //проверяем ведденный текст
-                if (text.isNotEmpty()) {
+                if (text.isEmpty()) {
                     Toast.makeText(context, "Enter film name!", Toast.LENGTH_SHORT).show()
                 } else {
                     hintLayout.visibility = View.GONE
-                    // http://hdrezka.tv/search/?do=search&subaction=search&q=fgkgd
+                    searchPresenter.setQuery(text)
                 }
             }
             false
@@ -68,13 +87,17 @@ class SearchFragment : Fragment(), SearchView {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                searchPresenter.fetchFilms(s.toString())
+                if (!autoCompleteTextView.isPerformingCompletion) {
+                    searchPresenter.getFilms(s.toString())
+                }
             }
         })
 
         // pressed on film
         autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             imm.hideSoftInputFromWindow(autoCompleteTextView.windowToken, 0)
+            autoCompleteTextView.dismissDropDown()
+            searchPresenter.getFilm(position)
         }
     }
 
@@ -86,7 +109,16 @@ class SearchFragment : Fragment(), SearchView {
         }
     }
 
-    override fun setFilms() {
-        TODO("Not yet implemented")
+    override fun triggerEnd() {
+       searchPresenter.getNextFilms()
+    }
+
+    override fun openFilm(film: Film) {
+        val data = Bundle()
+        data.putSerializable("film", film)
+
+        fragmentListener.onFragmentInteraction(
+            FilmFragment(), OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, data, null
+        )
     }
 }

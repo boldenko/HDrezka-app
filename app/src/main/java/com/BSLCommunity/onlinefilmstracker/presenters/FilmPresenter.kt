@@ -14,6 +14,9 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
 
     fun initFilmData() {
         GlobalScope.launch {
+            if (!film.hasMainData) {
+                FilmModel.getMainData(film)
+            }
             FilmModel.getAdditionalData(film)
 
             withContext(Dispatchers.Main) {
@@ -53,7 +56,7 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
         }
     }
 
-    fun initPlayer(){
+    fun initPlayer() {
         filmView.setPlayer(film.link)
     }
 }

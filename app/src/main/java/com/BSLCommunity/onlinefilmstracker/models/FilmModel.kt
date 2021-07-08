@@ -66,6 +66,8 @@ object FilmModel {
             }
         }
 
+        film.hasMainData = true
+
         return film
     }
 
@@ -99,6 +101,9 @@ object FilmModel {
 
         film.directors = directors
         film.actorsLinks = actorsLinks
+
+        film.hasAdditionalData = true
+
         return film
     }
 

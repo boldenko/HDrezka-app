@@ -38,30 +38,9 @@
             android:textColor="@color/white" />
     </LinearLayout>
 
-    <RelativeLayout
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_search_fcv_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/fragment_search_nsv_films"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/fragment_search_rv_films"
-                android:name="com.BSLCommunity.onlinefilmstracker.fragments.BookmarksFragment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                tools:context=".views.fragments.BookmarksFragment"
-                tools:listitem="@layout/inflate_film" />
-        </androidx.core.widget.NestedScrollView>
-
-        <ProgressBar
-            android:id="@+id/fragment_search_pb_data_loading"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true" />
-    </RelativeLayout>
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

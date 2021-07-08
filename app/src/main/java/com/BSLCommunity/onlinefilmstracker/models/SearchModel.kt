@@ -7,6 +7,7 @@ import org.jsoup.select.Elements
 
 object SearchModel {
     private const val SEARCH_URL = "http://hdrezka.tv/engine/ajax/search.php"
+    const val SEARCH_QUERY = "http://hdrezka.tv/search/?do=search&subaction=search&q="
 
     fun getFilmsListByQuery(text: String): ArrayList<Film> {
         val doc: Document = Jsoup.connect(SEARCH_URL).data("q", text).userAgent("Mozilla").post()

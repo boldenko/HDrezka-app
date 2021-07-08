@@ -43,9 +43,9 @@ object BookmarksModel {
 
         val films: ArrayList<Film> = ArrayList()
 
-        val elements: Elements = document.select(NewestFilmsModel.FILMS)
+        val elements: Elements = document.select(FilmsListModel.FILMS)
         for (el in elements) {
-            films.add(Film(el.select(NewestFilmsModel.FILM_LINK).attr("href"), el.select(NewestFilmsModel.FILM_TYPE)[0].text()))
+            films.add(Film(el.select(FilmsListModel.FILM_LINK).attr("href"), el.select(FilmsListModel.FILM_TYPE)[0].text()))
         }
 
         return films
