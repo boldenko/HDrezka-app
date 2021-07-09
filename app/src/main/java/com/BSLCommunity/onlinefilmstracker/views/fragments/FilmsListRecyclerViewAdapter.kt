@@ -52,7 +52,7 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
 
         val color: Int
         val res = context.resources
-        color = when (film.type.take(4)) {
+        color = when (film.type?.take(4)) {
             res.getString(R.string.films).take(4) -> ContextCompat.getColor(context, R.color.film)
             res.getString(R.string.multfilms).take(4) -> ContextCompat.getColor(context, R.color.multfilm)
             res.getString(R.string.serials).take(4) -> ContextCompat.getColor(context, R.color.serial)

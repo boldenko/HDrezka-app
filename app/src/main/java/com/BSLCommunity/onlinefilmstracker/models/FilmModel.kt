@@ -25,6 +25,15 @@ object FilmModel {
         val filmPage: Document = getFilmPage(film.link)
         val table: Elements = filmPage.select(FILM_TABLE_INFO)
 
+        val genre: String = film.link.split("/")[3]
+        film.type = when (genre) {
+            "series" -> "Сериал"
+            "cartoons" -> "Мультфильм"
+            "films" -> "Фильм"
+            "animation" -> "Аниме"
+            else -> genre
+        }
+
         film.title = filmPage.select(FILM_TITLE).text()
 
         val posterElement: Element = filmPage.select(FILM_POSTER)[0]
@@ -136,7 +145,7 @@ object FilmModel {
                     }
                     Log.d("FILM_DEBUG", "all loaded")
 
-                    withContext(Dispatchers.Main){
+                    withContext(Dispatchers.Main) {
                         callback(list)
                     }
                 }

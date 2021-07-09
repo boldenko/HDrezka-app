@@ -8,7 +8,7 @@ import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 
 object BookmarksModel {
-    private const val MAIN_PAGE = "http://hdrezka.tv/favorites/"
+    const val MAIN_PAGE = "http://hdrezka.tv/favorites/"
 
     fun getBookmarksList(): ArrayList<Bookmark> {
         val document: Document = Jsoup.connect(MAIN_PAGE).header("Cookie", CookieManager.getInstance().getCookie(MAIN_PAGE)).get()
@@ -45,7 +45,7 @@ object BookmarksModel {
 
         val elements: Elements = document.select(FilmsListModel.FILMS)
         for (el in elements) {
-            films.add(Film(el.select(FilmsListModel.FILM_LINK).attr("href"), el.select(FilmsListModel.FILM_TYPE)[0].text()))
+            films.add(Film(el.select(FilmsListModel.FILM_LINK).attr("href")))
         }
 
         return films

@@ -97,7 +97,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
         autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             imm.hideSoftInputFromWindow(autoCompleteTextView.windowToken, 0)
             autoCompleteTextView.dismissDropDown()
-            searchPresenter.getFilm(position)
+            filmsListFragment.openFilm(searchPresenter.activeSearchFilms[position])
         }
     }
 
@@ -111,14 +111,5 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
 
     override fun triggerEnd() {
        searchPresenter.getNextFilms()
-    }
-
-    override fun openFilm(film: Film) {
-        val data = Bundle()
-        data.putSerializable("film", film)
-
-        fragmentListener.onFragmentInteraction(
-            FilmFragment(), OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, data, null
-        )
     }
 }

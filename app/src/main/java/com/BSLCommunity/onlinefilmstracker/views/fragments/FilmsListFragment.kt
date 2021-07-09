@@ -2,13 +2,12 @@ package com.BSLCommunity.onlinefilmstracker.views.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.os.IInterface
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.BSLCommunity.onlinefilmstracker.R
@@ -57,7 +56,7 @@ open class FilmsListFragment : Fragment(), FilmsListView {
         return currentView
     }
 
-    fun setCallView(cv: FilmListCallView){
+    fun setCallView(cv: FilmListCallView) {
         callView = cv
     }
 
@@ -77,7 +76,7 @@ open class FilmsListFragment : Fragment(), FilmsListView {
         }
     }
 
-    private fun openFilm(film: Film) {
+    fun openFilm(film: Film) {
         val data = Bundle()
         data.putSerializable("film", film)
 

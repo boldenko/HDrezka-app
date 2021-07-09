@@ -15,7 +15,7 @@ object FilmsListModel {
             val doc: Document = Jsoup.connect(url).get()
 
             for (element in doc.select(FILMS)) {
-                films.add(Film(element.select(FILM_LINK).attr("href"), element.select(FILM_TYPE)[0].text()))
+                films.add(Film(element.select(FILM_LINK).attr("href")))
             }
             return films
         } catch (e: Exception) {

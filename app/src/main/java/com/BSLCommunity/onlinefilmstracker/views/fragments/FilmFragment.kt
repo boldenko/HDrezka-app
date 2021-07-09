@@ -42,8 +42,6 @@ class FilmFragment : Fragment(), FilmView {
         currentView.findViewById<ProgressBar>(R.id.fragment_film_pb_loading).visibility = View.VISIBLE
         playerView = currentView.findViewById(R.id.fragment_film_wv_player)
 
-        Log.d("DEEBUG", UserModel.isLoggedIn.toString())
-
         filmPresenter = FilmPresenter(this, (arguments?.getSerializable("film") as Film?)!!)
         filmPresenter.initFilmData()
         filmPresenter.initPlayer()

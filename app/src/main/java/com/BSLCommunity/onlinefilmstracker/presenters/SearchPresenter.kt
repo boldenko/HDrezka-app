@@ -13,8 +13,8 @@ import kotlinx.coroutines.withContext
 
 class SearchPresenter(private val searchView: SearchView, private val filmsListView: FilmsListView) {
     private val FILMS_PER_PAGE = 9
-    private var activeSearchFilms: ArrayList<Film> = ArrayList()
-    private var activeListFilms: ArrayList<Film> = ArrayList()
+    var activeSearchFilms: ArrayList<Film> = ArrayList()
+    var activeListFilms: ArrayList<Film> = ArrayList()
     private var loadedListFilms: ArrayList<Film> = ArrayList()
     private var currentPage: Int = 1
     private var isLoading: Boolean = false
@@ -37,10 +37,6 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
                 searchView.redrawSearchFilms(searchFilms)
             }
         }
-    }
-
-    fun getFilm(pos: Int) {
-        searchView.openFilm(activeSearchFilms[pos])
     }
 
     fun setQuery(text: String) {

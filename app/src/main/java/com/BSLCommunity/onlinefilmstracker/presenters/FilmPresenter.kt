@@ -17,7 +17,10 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
             if (!film.hasMainData) {
                 FilmModel.getMainData(film)
             }
-            FilmModel.getAdditionalData(film)
+
+            if (!film.hasAdditionalData) {
+                FilmModel.getAdditionalData(film)
+            }
 
             withContext(Dispatchers.Main) {
                 filmView.setFilmBaseData(film)

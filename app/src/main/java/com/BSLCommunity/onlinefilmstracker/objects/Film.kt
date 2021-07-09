@@ -4,8 +4,8 @@ import java.io.Serializable
 
 open class Film(
     val link: String,
-    val type: String
 ) : Serializable {
+    var type: String? = null
     var title: String? = null
     var date: String? = null
     var year: String? = null

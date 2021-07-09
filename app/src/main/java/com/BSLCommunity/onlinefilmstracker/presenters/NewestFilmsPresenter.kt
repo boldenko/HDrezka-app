@@ -172,7 +172,9 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView, private
                         continue
                     }
 
-                    applyList[AppliedFilter.TYPE] = filterEntry.value[0].take(4) == film.type.take(4)
+                    film.type.let {
+                        applyList[AppliedFilter.TYPE] = filterEntry.value[0].take(4) == film.type!!.take(4)
+                    }
                 }
             }
         }
