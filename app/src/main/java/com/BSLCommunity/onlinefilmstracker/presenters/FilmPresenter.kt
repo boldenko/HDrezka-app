@@ -11,7 +11,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class FilmPresenter(private val filmView: FilmView, private val film: Film) {
-
     fun initFilmData() {
         GlobalScope.launch {
             if (!film.hasMainData) {
@@ -28,6 +27,8 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
                 film.countries?.let { filmView.setCountries(it) }
                 film.directors?.let { filmView.setDirectors(it) }
                 filmView.setFilmLink(film.link)
+                film.seriesSchedule?.let { filmView.setSchedule(it) }
+                film.collection?.let { filmView.setCollection(it) }
             }
         }
     }

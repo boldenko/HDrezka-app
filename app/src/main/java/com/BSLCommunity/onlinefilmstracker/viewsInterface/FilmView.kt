@@ -1,7 +1,9 @@
 package com.BSLCommunity.onlinefilmstracker.viewsInterface
 
+import android.util.ArrayMap
 import com.BSLCommunity.onlinefilmstracker.objects.Actor
 import com.BSLCommunity.onlinefilmstracker.objects.Film
+import com.BSLCommunity.onlinefilmstracker.objects.Schedule
 
 interface FilmView {
     fun setFilmBaseData(film: Film)
@@ -19,4 +21,8 @@ interface FilmView {
     fun setFullSizeImage(posterPath: String)
 
     fun setPlayer(link: String)
+
+    fun setSchedule(schedule: ArrayList<Pair<String, ArrayList<Schedule>>>)
+
+    fun setCollection(collection: ArrayList<Film>)
 }

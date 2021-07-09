@@ -2,6 +2,7 @@ package com.BSLCommunity.onlinefilmstracker.models
 
 import android.util.Log
 import com.BSLCommunity.onlinefilmstracker.objects.Film
+import com.BSLCommunity.onlinefilmstracker.objects.Schedule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -89,7 +90,6 @@ object FilmModel {
 
         val actorsLinks: ArrayList<String> = ArrayList()
         val directors: ArrayList<String> = ArrayList()
-
         val personsElements: Elements = document.select("div.persons-list-holder")
         for (el in personsElements) {
             val els: Elements = el.select("span.item")
@@ -107,9 +107,58 @@ object FilmModel {
                 }
             }
         }
-
         film.directors = directors
         film.actorsLinks = actorsLinks
+
+        val seriesSchedule: ArrayList<Pair<String, ArrayList<Schedule>>> = ArrayList()
+        val seasonsElements: Elements = document.select("div.b-post__schedule div.b-post__schedule_block")
+        for (block in seasonsElements) {
+            var header: String = block.select("div.b-post__schedule_block_title div.title").text()
+            val toReplace = "${film.title} - даты выхода серий "
+
+            if (header.contains(toReplace)) {
+                header = header.replace("${film.title} - даты выхода серий ", "").dropLast(1)
+            }
+
+            val listSchedule: ArrayList<Schedule> = ArrayList()
+            val list: Elements = block.select("div.b-post__schedule_list table tbody tr")
+            for (el in list) {
+                val episode: String = el.select("td.td-1").text()
+                val name: String = el.select("td.td-2 b").text()
+                val date: String = el.select("td.td-4").text()
+                val nextEpisodeIn: String = el.select("td.td-5").text()
+
+                val schedule = Schedule(episode, name, date)
+                if (nextEpisodeIn.isNotEmpty()) {
+                    schedule.nextEpisodeIn = nextEpisodeIn
+                }
+
+                listSchedule.add(schedule)
+            }
+
+            seriesSchedule.add(Pair(header, listSchedule))
+        }
+        film.seriesSchedule = seriesSchedule
+
+        val collection: ArrayList<Film> = ArrayList()
+        val collectionElements: Elements = document.select("div.b-post__partcontent_item")
+        for (el in collectionElements) {
+            val subFilm: Film
+
+            val a = el.select("div.title a")
+            if (a.size > 0) {
+                subFilm = Film(a.attr("href"))
+                subFilm.title = a.text()
+            } else {
+                subFilm = Film("")
+                subFilm.title = el.select("div.title").text()
+            }
+
+            subFilm.year = el.select("div.year").text()
+            subFilm.ratingKP = el.select("div.rating i").text()
+            collection.add(subFilm)
+        }
+        film.collection = collection
 
         film.hasAdditionalData = true
 

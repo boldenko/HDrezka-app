@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.*
 import android.webkit.WebView
 import android.widget.ImageView
@@ -16,14 +17,16 @@ import androidx.fragment.app.Fragment
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.clients.PlayerChromeClient
 import com.BSLCommunity.onlinefilmstracker.clients.PlayerWebViewClient
-import com.BSLCommunity.onlinefilmstracker.models.UserModel
 import com.BSLCommunity.onlinefilmstracker.objects.Actor
 import com.BSLCommunity.onlinefilmstracker.objects.Film
+import com.BSLCommunity.onlinefilmstracker.objects.Schedule
 import com.BSLCommunity.onlinefilmstracker.presenters.FilmPresenter
 import com.BSLCommunity.onlinefilmstracker.views.OnFragmentInteractionListener
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmView
+import com.github.aakira.expandablelayout.ExpandableLinearLayout
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+
 
 class FilmFragment : Fragment(), FilmView {
     private lateinit var currentView: View
@@ -90,31 +93,33 @@ class FilmFragment : Fragment(), FilmView {
     override fun setActors(actors: ArrayList<Actor?>) {
         val actorsLayout: LinearLayout = currentView.findViewById(R.id.fragment_film_ll_actorsLayout)
 
-        for (actor in actors.reversed()) {
-            if (actor != null) {
-                val layout: LinearLayout = LayoutInflater.from(context).inflate(R.layout.inflate_actor, null) as LinearLayout
+        context?.let {
+            for (actor in actors.reversed()) {
+                if (actor != null) {
+                    val layout: LinearLayout = LayoutInflater.from(it).inflate(R.layout.inflate_actor, null) as LinearLayout
 
-                layout.findViewById<TextView>(R.id.actor_name).text = actor.name
+                    layout.findViewById<TextView>(R.id.actor_name).text = actor.name
 
-                if (actor.photoLink.isNotEmpty() && actor.photoLink != "https://static.hdrezka.ac/i/nopersonphoto.png") {
-                    val actorProgress: ProgressBar = layout.findViewById(R.id.actor_loading)
-                    val actorLayout: LinearLayout = layout.findViewById(R.id.actor_layout)
+                    if (actor.photoLink.isNotEmpty() && actor.photoLink != "https://static.hdrezka.ac/i/nopersonphoto.png") {
+                        val actorProgress: ProgressBar = layout.findViewById(R.id.actor_loading)
+                        val actorLayout: LinearLayout = layout.findViewById(R.id.actor_layout)
 
-                    actorProgress.visibility = View.VISIBLE
-                    actorLayout.visibility = View.GONE
-                    Picasso.get().load(actor.photoLink).into(layout.findViewById(R.id.actor_photo), object : Callback {
-                        override fun onSuccess() {
-                            actorProgress.visibility = View.GONE
-                            actorLayout.visibility = View.VISIBLE
-                            actorsLayout.addView(layout, 0)
-                        }
+                        actorProgress.visibility = View.VISIBLE
+                        actorLayout.visibility = View.GONE
+                        Picasso.get().load(actor.photoLink).into(layout.findViewById(R.id.actor_photo), object : Callback {
+                            override fun onSuccess() {
+                                actorProgress.visibility = View.GONE
+                                actorLayout.visibility = View.VISIBLE
+                                actorsLayout.addView(layout, 0)
+                            }
 
-                        override fun onError(e: Exception) {
-                            e.printStackTrace()
-                        }
-                    })
-                } else {
-                    actorsLayout.addView(layout)
+                            override fun onError(e: Exception) {
+                                e.printStackTrace()
+                            }
+                        })
+                    } else {
+                        actorsLayout.addView(layout)
+                    }
                 }
             }
         }
@@ -188,5 +193,66 @@ class FilmFragment : Fragment(), FilmView {
 
     private fun openFullSizeImage() {
         modalDialog?.show()
+    }
+
+    override fun setSchedule(schedule: ArrayList<Pair<String, ArrayList<Schedule>>>) {
+        if (schedule.size == 0) {
+            currentView.findViewById<TextView>(R.id.fragment_film_tv_schedule_header).visibility = View.GONE
+            return
+        }
+
+        // get mount layout
+        val scheduleLayout: LinearLayout = currentView.findViewById(R.id.fragment_film_ll_schedule)
+        for (sch in schedule) {
+            // create season layout
+            val layout: LinearLayout = layoutInflater.inflate(R.layout.inflate_schedule_layout, null) as LinearLayout
+            val expandedList: ExpandableLinearLayout = layout.findViewById(R.id.inflate_layout_list)
+            layout.findViewById<TextView>(R.id.inflate_layout_header).text = sch.first
+            layout.findViewById<LinearLayout>(R.id.inflate_layout_button).setOnClickListener {
+                expandedList.toggle()
+            }
+
+            // fill episodes layout
+            for (item in sch.second) {
+                val itemLayout: LinearLayout = layoutInflater.inflate(R.layout.inflate_schedule_item, null) as LinearLayout
+                itemLayout.findViewById<TextView>(R.id.inflate_item_episode).text = item.episode
+                itemLayout.findViewById<TextView>(R.id.inflate_item_name).text = item.name
+                itemLayout.findViewById<TextView>(R.id.inflate_item_date).text = item.date
+                itemLayout.findViewById<TextView>(R.id.inflate_item_next_episode).text = item.nextEpisodeIn
+                expandedList.addView(itemLayout)
+            }
+            scheduleLayout.addView(layout)
+        }
+    }
+
+    override fun setCollection(collection: ArrayList<Film>) {
+        if (collection.size == 0) {
+            currentView.findViewById<TextView>(R.id.fragment_film_tv_collection_header).visibility = View.GONE
+            return
+        }
+
+        val collectionLayout: LinearLayout = currentView.findViewById(R.id.fragment_film_tv_collection_list)
+        for ((index, film) in collection.withIndex()) {
+            val layout: LinearLayout = layoutInflater.inflate(R.layout.inflate_colletion_item, null) as LinearLayout
+            layout.findViewById<TextView>(R.id.inflate_collection_item_n).text = (index + 1).toString()
+            layout.findViewById<TextView>(R.id.inflate_collection_item_name).text = film.title
+            layout.findViewById<TextView>(R.id.inflate_collection_item_year).text = film.year
+            layout.findViewById<TextView>(R.id.inflate_collection_item_rating).text = film.ratingKP
+
+            if (film.link.isNotEmpty()) {
+                val outValue = TypedValue()
+                requireContext().theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
+                layout.setBackgroundResource(outValue.resourceId)
+                layout.setOnClickListener {
+                    val data = Bundle()
+                    data.putSerializable("film", film)
+                    fragmentListener.onFragmentInteraction(FilmFragment(), OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, data, true, null)
+
+                }
+            } else {
+                layout.findViewById<TextView>(R.id.inflate_collection_item_name).setTextColor(requireContext().getColor(R.color.gray))
+            }
+            collectionLayout.addView(layout)
+        }
     }
 }

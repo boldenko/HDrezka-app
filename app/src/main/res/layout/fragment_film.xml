@@ -25,6 +25,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <!-- Header -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -87,6 +88,7 @@
 
             </LinearLayout>
 
+            <!-- Genres -->
             <HorizontalScrollView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -102,6 +104,7 @@
                     android:showDividers="middle" />
             </HorizontalScrollView>
 
+            <!-- Poster and main info -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -112,16 +115,16 @@
 
                 <ImageView
                     android:id="@+id/fragment_film_iv_poster"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.6"
+                    android:layout_weight="0.4"
                     android:adjustViewBounds="true" />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
-                    android:layout_weight="0.4"
+                    android:layout_weight="0.6"
                     android:orientation="vertical">
 
                     <TextView
@@ -171,19 +174,20 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
-                android:text="@string/plot"
-                android:textColor="#FFFFFF"
-                android:textSize="24sp" />
-
+            <!-- Plot -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:text="@string/plot"
+                    android:textColor="#FFFFFF"
+                    android:textSize="24sp" />
 
                 <TextView
                     android:id="@+id/fragment_film_tv_plot"
@@ -194,49 +198,99 @@
                     android:textSize="16sp" />
             </LinearLayout>
 
-            <TextView
+            <!-- Player -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <ProgressBar
+                    android:id="@+id/fragment_film_pb_player_loading"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <WebView
+                    android:id="@+id/fragment_film_wv_player"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <!-- Actors -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
-                android:text="@string/cast"
-                android:textColor="#FFFFFF"
-                android:textSize="24sp" />
+                android:orientation="vertical">
 
-            <HorizontalScrollView
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:text="@string/cast"
+                    android:textColor="#FFFFFF"
+                    android:textSize="24sp" />
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/fragment_film_ll_actorsLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:divider="@drawable/divider"
+                        android:orientation="horizontal"
+                        android:showDividers="middle" />
+                </HorizontalScrollView>
+            </LinearLayout>
+
+            <!-- Schedule -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/fragment_film_tv_schedule_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:text="График выхода серий"
+                    android:textColor="#FFFFFF"
+                    android:textSize="24sp" />
 
                 <LinearLayout
-                    android:id="@+id/fragment_film_ll_actorsLayout"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/fragment_film_ll_schedule"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:divider="@drawable/divider"
-                    android:orientation="horizontal"
-                    android:showDividers="middle" />
-            </HorizontalScrollView>
+                    android:orientation="vertical">
 
-            <!--            <Button
-                            android:id="@+id/fragment_film_bt_film_link"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="50dp"
-                            android:background="#00000000"
-                            android:text="@string/open_link"
-                            android:textAllCaps="false"
-                            android:textColor="@color/white"
-                            android:textSize="14sp" />-->
+                </LinearLayout>
+            </LinearLayout>
 
-            <ProgressBar
-                android:id="@+id/fragment_film_pb_player_loading"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <WebView
-                android:id="@+id/fragment_film_wv_player"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/fragment_film_tv_collection_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:text="Все части"
+                    android:textColor="#FFFFFF"
+                    android:textSize="24sp" />
+
+                <LinearLayout
+                    android:id="@+id/fragment_film_tv_collection_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>

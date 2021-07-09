@@ -7,6 +7,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -43,10 +44,10 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, INoConn
         }
     }
 
-    fun createUserMenu() {
+    private fun createUserMenu() {
         findViewById<ImageView>(R.id.activity_main_ib_user).setOnClickListener {
             if (!isSettingsOpened) {
-                onFragmentInteraction(selectedFragment, UserFragment(), Action.NEXT_FRAGMENT_HIDE, null, true, null)
+                onFragmentInteraction(UserFragment(), Action.NEXT_FRAGMENT_HIDE, null, true, null)
                 isSettingsOpened = true
             }
         }
@@ -69,7 +70,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, INoConn
                 R.id.nav_watch -> watchLaterFragment
                 else -> Fragment()
             }
-            onFragmentInteraction(selectedFragment, fragment, Action.NEXT_FRAGMENT_HIDE, null, false, null)
+            onFragmentInteraction(fragment, Action.NEXT_FRAGMENT_HIDE, null, false, null)
             selectedFragment = fragment
             false
         }
@@ -80,10 +81,16 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, INoConn
         if (isSettingsOpened) {
             isSettingsOpened = false
         }
+
+/*        val fragments = supportFragmentManager.fragments
+        if (fragments.size > 1) {
+            selectedFragment = fragments[fragments.size - 2]
+            Log.d("SEL_FR", "set on backpressed" + selectedFragment.toString())
+        }*/
         super.onBackPressed()
     }
 
-    override fun onFragmentInteraction(fragmentSource: Fragment?, fragmentReceiver: Fragment, action: Action, data: Bundle?, isBackStack: Boolean, backStackTag: String?) {
+    override fun onFragmentInteraction(fragmentReceiver: Fragment, action: Action, data: Bundle?, isBackStack: Boolean, backStackTag: String?) {
         val fTrans: FragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentReceiver.arguments = data
 
@@ -95,8 +102,10 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, INoConn
             Action.NEXT_FRAGMENT_HIDE -> {
                 selectedFragment?.let {
                     if (selectedFragment!!.isVisible) fTrans.hide(selectedFragment!!)
-                    else fragmentSource?.let { it1 -> fTrans.hide(it1) }
+                    // else fragmentSource?.let { it1 -> fTrans.hide(it1) }
                 }
+
+                Log.d("SEL_FR", "set on hide" + selectedFragment.toString())
 
                 val frags: List<Fragment> = supportFragmentManager.fragments
                 var f: Fragment? = null
@@ -128,50 +137,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, INoConn
         }
     }
 
-    /*  override fun onFragmentInteraction(fragmentReceiver: Fragment, action: Action, data: Bundle?, backStackTag: String?) {
-          val fTrans = supportFragmentManager.beginTransaction()
-
-          fragmentReceiver.arguments = data
-
-          val animIn: Int = R.anim.fade_in
-          val animOut: Int = R.anim.fade_out
-          fTrans.setCustomAnimations(animIn, animOut, animIn, animOut)
-
-          if (selectedFragment.isVisible) fTrans.hide(selectedFragment)
-          selectedFragment = fragmentReceiver
-
-          val frags: List<Fragment> = supportFragmentManager.fragments
-          var f: Fragment? = null
-          for (fragment in frags) {
-              if (fragment == fragmentReceiver) {
-                  f = fragment
-                  break
-              }
-          }
-          if (f == null) {
-              fTrans.add(R.id.main_fragment_container, fragmentReceiver)
-          } else {
-              fTrans.show(fragmentReceiver)
-          }
-
-          when (action) {
-              Action.NEXT_FRAGMENT_HIDE_NO_BACK_STACK -> {
-                  fTrans.commit()
-              }
-              Action.NEXT_FRAGMENT_HIDE -> {
-                  fTrans.addToBackStack(backStackTag) // Добавление изменнений в стек
-                  fTrans.commit()
-              }
-  *//*            Action.NEXT_FRAGMENT_REPLACE -> {
-                fTrans.replace(R.id.main_fragment_container, fragmentReceiver)
-                fTrans.addToBackStack(backStackTag) // Добавление изменнений в стек
-                fTrans.commit()
-            }
-            Action.RETURN_FRAGMENT_BY_TAG -> supportFragmentManager.popBackStack(backStackTag, 0)
-            Action.POP_BACK_STACK -> supportFragmentManager.popBackStack()*//*
-        }
-    }
-*/
     private fun isInternetAvailable(context: Context): Boolean {
         var connection = false
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

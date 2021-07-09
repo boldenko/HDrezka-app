@@ -1,5 +1,6 @@
 package com.BSLCommunity.onlinefilmstracker.objects
 
+import android.util.ArrayMap
 import java.io.Serializable
 
 open class Film(
@@ -24,4 +25,8 @@ open class Film(
     var additionalInfo: String? = null
     var hasMainData: Boolean = false
     var hasAdditionalData: Boolean = false
+    var seriesSchedule: ArrayList<Pair<String, ArrayList<Schedule>>>? = null
+    var collection: ArrayList<Film>? = null
+    var related: ArrayList<Film>? = null
+    var comments: ArrayList<Comment>? = null
 }

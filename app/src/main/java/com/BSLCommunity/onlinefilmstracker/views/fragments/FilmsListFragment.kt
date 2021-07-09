@@ -84,6 +84,6 @@ open class FilmsListFragment : Fragment(), FilmsListView {
         val data = Bundle()
         data.putSerializable("film", film)
 
-        fragmentListener.onFragmentInteraction(this, FilmFragment(), OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, data, true, null)
+        fragmentListener.onFragmentInteraction(FilmFragment(), OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, data, true, null)
     }
 }
