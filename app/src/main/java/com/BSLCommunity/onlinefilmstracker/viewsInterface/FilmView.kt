@@ -25,4 +25,6 @@ interface FilmView {
     fun setSchedule(schedule: ArrayList<Pair<String, ArrayList<Schedule>>>)
 
     fun setCollection(collection: ArrayList<Film>)
+
+    fun setRelated(collection: ArrayList<Film>)
 }

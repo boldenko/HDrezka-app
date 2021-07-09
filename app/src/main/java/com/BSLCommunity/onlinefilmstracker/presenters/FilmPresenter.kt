@@ -29,6 +29,7 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
                 filmView.setFilmLink(film.link)
                 film.seriesSchedule?.let { filmView.setSchedule(it) }
                 film.collection?.let { filmView.setCollection(it) }
+                film.related?.let { filmView.setRelated(it) }
             }
         }
     }

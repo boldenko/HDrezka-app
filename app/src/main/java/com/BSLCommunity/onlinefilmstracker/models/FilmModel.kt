@@ -140,7 +140,7 @@ object FilmModel {
         }
         film.seriesSchedule = seriesSchedule
 
-        val collection: ArrayList<Film> = ArrayList()
+        val collectionFilms: ArrayList<Film> = ArrayList()
         val collectionElements: Elements = document.select("div.b-post__partcontent_item")
         for (el in collectionElements) {
             val subFilm: Film
@@ -156,9 +156,26 @@ object FilmModel {
 
             subFilm.year = el.select("div.year").text()
             subFilm.ratingKP = el.select("div.rating i").text()
-            collection.add(subFilm)
+            collectionFilms.add(subFilm)
         }
-        film.collection = collection
+        film.collection = collectionFilms
+
+        val relatedFilms: ArrayList<Film> = ArrayList()
+        val relatedElements = document.select("div.b-content__inline_item")
+        for (el in relatedElements) {
+            val cover: String = el.select("div.b-content__inline_item-cover a img").attr("src")
+            val a = el.select("div.b-content__inline_item-link a")
+            val link: String = a.attr("href")
+            val title: String = a.text()
+            val misc: String = el.select("div.misc").text()
+
+            val relatedFilm = Film(link)
+            relatedFilm.posterPath = cover
+            relatedFilm.title = title
+            relatedFilm.relatedMisc = misc
+            relatedFilms.add(relatedFilm)
+        }
+        film.related = relatedFilms
 
         film.hasAdditionalData = true
 

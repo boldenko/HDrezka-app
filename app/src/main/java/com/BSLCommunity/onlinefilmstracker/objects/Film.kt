@@ -28,5 +28,6 @@ open class Film(
     var seriesSchedule: ArrayList<Pair<String, ArrayList<Schedule>>>? = null
     var collection: ArrayList<Film>? = null
     var related: ArrayList<Film>? = null
+    var relatedMisc: String? = null
     var comments: ArrayList<Comment>? = null
 }

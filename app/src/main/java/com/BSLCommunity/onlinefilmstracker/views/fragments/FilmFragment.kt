@@ -8,10 +8,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.webkit.WebView
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import com.BSLCommunity.onlinefilmstracker.R
@@ -244,15 +241,64 @@ class FilmFragment : Fragment(), FilmView {
                 requireContext().theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
                 layout.setBackgroundResource(outValue.resourceId)
                 layout.setOnClickListener {
-                    val data = Bundle()
-                    data.putSerializable("film", film)
-                    fragmentListener.onFragmentInteraction(FilmFragment(), OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, data, true, null)
-
+                    openFilm(film)
                 }
             } else {
                 layout.findViewById<TextView>(R.id.inflate_collection_item_name).setTextColor(requireContext().getColor(R.color.gray))
             }
             collectionLayout.addView(layout)
         }
+    }
+
+    override fun setRelated(relatedList: ArrayList<Film>) {
+        val relatedLayout = currentView.findViewById<LinearLayout>(R.id.fragment_film_tv_related_list)
+
+        for (film in relatedList) {
+            val layout: LinearLayout = layoutInflater.inflate(R.layout.inflate_film, null) as LinearLayout
+            val titleView: TextView = layout.findViewById(R.id.film_title)
+            val infoView: TextView = layout.findViewById(R.id.film_info)
+            layout.findViewById<TextView>(R.id.film_type).visibility = View.GONE
+            titleView.text = film.title
+            titleView.textSize = 10F
+            infoView.text = film.relatedMisc
+            infoView.textSize = 10F
+
+            val filmPoster: ImageView = layout.findViewById(R.id.film_poster)
+            Picasso.get().load(film.posterPath).into(filmPoster, object : Callback {
+                override fun onSuccess() {
+                    layout.findViewById<ProgressBar>(R.id.film_loading).visibility = View.GONE
+                    layout.findViewById<RelativeLayout>(R.id.film_posterLayout).visibility = View.VISIBLE
+                }
+
+                override fun onError(e: Exception) {
+                }
+            })
+
+            val params = LinearLayout.LayoutParams(
+                getPX(80),
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            params.setMargins(getPX(5), getPX(5), getPX(5), getPX(5))
+            layout.layoutParams = params
+            layout.setOnClickListener {
+                openFilm(film)
+            }
+
+            relatedLayout.addView(layout)
+        }
+    }
+
+    private fun getPX(dp: Int): Int {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp.toFloat(),
+            resources.displayMetrics
+        ).toInt()
+    }
+
+    private fun openFilm(film: Film) {
+        val data = Bundle()
+        data.putSerializable("film", film)
+        fragmentListener.onFragmentInteraction(FilmFragment(), OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, data, true, null)
     }
 }
