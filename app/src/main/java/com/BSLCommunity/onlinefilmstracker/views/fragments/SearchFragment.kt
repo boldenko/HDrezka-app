@@ -38,6 +38,8 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentView = inflater.inflate(R.layout.fragment_search, container, false)
+        Log.d("FRAGMENT_TEST", "search init")
+
         filmsListFragment = FilmsListFragment()
         filmsListFragment.setCallView(this)
         childFragmentManager.beginTransaction().replace(R.id.fragment_search_fcv_container, filmsListFragment).commit()
@@ -51,7 +53,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
         return currentView
     }
 
-    override fun onStart() {
+    override fun onFilmsListCreated() {
         searchPresenter = SearchPresenter(this, filmsListFragment)
         searchPresenter.initFilms()
         filmsListFragment.setProgressBarState(false)

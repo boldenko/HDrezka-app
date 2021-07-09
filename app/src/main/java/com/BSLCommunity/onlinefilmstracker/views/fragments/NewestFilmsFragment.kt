@@ -1,6 +1,7 @@
 package com.BSLCommunity.onlinefilmstracker.views.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,8 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentView = inflater.inflate(R.layout.fragment_newest_films, container, false) as LinearLayout
 
+        Log.d("FRAGMENT_TEST", "newest init")
+
         filmsListFragment = FilmsListFragment()
         filmsListFragment.setCallView(this)
         childFragmentManager.beginTransaction().replace(R.id.fragment_newest_films_fcv_container, filmsListFragment).commit()
@@ -35,11 +38,9 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
         return currentView
     }
 
-    override fun onStart() {
+    override fun onFilmsListCreated() {
         newestFilmsPresenter = NewestFilmsPresenter(this, filmsListFragment, requireActivity() as MainActivity)
         newestFilmsPresenter.initFilms()
-
-        super.onStart()
     }
 
     private fun createFilters() {

@@ -2,6 +2,7 @@ package com.BSLCommunity.onlinefilmstracker.views.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +34,8 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         currentView = inflater.inflate(R.layout.fragment_watch_later_list, container, false)
+        Log.d("FRAGMENT_TEST", "watch init")
+
         listView = currentView.findViewById(R.id.fragment_watch_later_list_rv)
         progressBar = currentView.findViewById(R.id.fragment_watch_later_list_pb_loading)
 
@@ -59,8 +62,6 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
         val data = Bundle()
         data.putSerializable("film", film)
 
-        fragmentListener.onFragmentInteraction(
-            FilmFragment(), OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, data, null
-        )
+        fragmentListener.onFragmentInteraction(this, FilmFragment(), OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, data, true, null)
     }
 }

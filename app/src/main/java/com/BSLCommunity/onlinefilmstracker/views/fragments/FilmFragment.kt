@@ -37,15 +37,16 @@ class FilmFragment : Fragment(), FilmView {
         fragmentListener = context as OnFragmentInteractionListener
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentView = inflater.inflate(R.layout.fragment_film, container, false)
+        Log.d("FRAGMENT_TEST", "film init")
+
         currentView.findViewById<ProgressBar>(R.id.fragment_film_pb_loading).visibility = View.VISIBLE
         playerView = currentView.findViewById(R.id.fragment_film_wv_player)
 
         filmPresenter = FilmPresenter(this, (arguments?.getSerializable("film") as Film?)!!)
         filmPresenter.initFilmData()
         filmPresenter.initPlayer()
-        filmPresenter.initFullSizeImage()
 
         currentView.findViewById<ImageView>(R.id.fragment_film_iv_poster).setOnClickListener { openFullSizeImage() }
 
@@ -66,6 +67,7 @@ class FilmFragment : Fragment(), FilmView {
 
     override fun setFilmBaseData(film: Film) {
         filmPresenter.initActors()
+        filmPresenter.initFullSizeImage()
 
         Picasso.get().load(film.posterPath).into(currentView.findViewById<ImageView>(R.id.fragment_film_iv_poster))
         val ratingView: TextView = currentView.findViewById(R.id.fragment_film_tv_rating)
@@ -161,7 +163,7 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun setFullSizeImage(posterPath: String) {
-        val dialog: Dialog? = Dialog(requireActivity())
+        val dialog = Dialog(requireActivity())
         val layout: LinearLayout = layoutInflater.inflate(R.layout.modal_image, null) as LinearLayout
         Picasso.get().load(posterPath).into(layout.findViewById(R.id.modal_image), object : Callback {
             override fun onSuccess() {
@@ -172,14 +174,14 @@ class FilmFragment : Fragment(), FilmView {
             override fun onError(e: Exception) {
             }
         })
-        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog?.setContentView(layout)
+        dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(layout)
 
         val lp: WindowManager.LayoutParams = WindowManager.LayoutParams()
-        lp.copyFrom(dialog?.window?.attributes);
+        lp.copyFrom(dialog.window?.attributes);
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT
-        dialog?.window?.attributes = lp;
+        dialog.window?.attributes = lp;
 
         modalDialog = dialog
     }

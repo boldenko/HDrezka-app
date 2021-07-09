@@ -10,7 +10,7 @@ interface OnFragmentInteractionListener {
      * RETURN_FRAGMENT_BY_TAG - Вернуться к фрагменту (состоянию) по тегу. Полезно в случае если необходимо сделать несколько popBackStack-ов
      * */
     enum class Action {
-        NEXT_FRAGMENT_HIDE, NEXT_FRAGMENT_HIDE_NO_BACK_STACK, NEXT_FRAGMENT_REPLACE, RETURN_FRAGMENT_BY_TAG, POP_BACK_STACK
+        NEXT_FRAGMENT_HIDE, NEXT_FRAGMENT_REPLACE, RETURN_FRAGMENT_BY_TAG, POP_BACK_STACK
     }
 
     /**
@@ -22,5 +22,5 @@ interface OnFragmentInteractionListener {
      * action - одна из констант действий
      * backStackTag - тег для стека вызовов фрагментов
      */
-    fun onFragmentInteraction(fragmentReceiver: Fragment, action: Action, data: Bundle?, backStackTag: String?)
+    fun onFragmentInteraction(fragmentSource: Fragment?, fragmentReceiver: Fragment, action: Action, data: Bundle?, isBackStack: Boolean, backStackTag: String?)
 }

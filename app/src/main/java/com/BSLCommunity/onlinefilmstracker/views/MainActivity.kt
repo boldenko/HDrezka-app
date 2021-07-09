@@ -7,11 +7,11 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.models.UserModel
 import com.BSLCommunity.onlinefilmstracker.views.OnFragmentInteractionListener.Action
@@ -23,7 +23,7 @@ import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, INoConnection {
     private var isSettingsOpened: Boolean = false
-    private lateinit var selectedFragment: Fragment
+    private var selectedFragment: Fragment? = null
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,19 +35,20 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, INoConn
                 requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
                 UserModel.loadLoggedIn(applicationContext)
-                selectedFragment = NewestFilmsFragment()
                 setBottomBar()
-                Log.d("AUTH_SYS", UserModel.isLoggedIn.toString())
-
-                findViewById<ImageView>(R.id.activity_main_ib_user).setOnClickListener {
-                    if (!isSettingsOpened) {
-                        onFragmentInteraction(UserFragment(), Action.NEXT_FRAGMENT_HIDE, null, null)
-                        isSettingsOpened = true
-                    }
-                }
+                createUserMenu()
             }
         } else {
             showErrorDialog()
+        }
+    }
+
+    fun createUserMenu() {
+        findViewById<ImageView>(R.id.activity_main_ib_user).setOnClickListener {
+            if (!isSettingsOpened) {
+                onFragmentInteraction(selectedFragment, UserFragment(), Action.NEXT_FRAGMENT_HIDE, null, true, null)
+                isSettingsOpened = true
+            }
         }
     }
 
@@ -56,18 +57,23 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, INoConn
         val bookmarksFragment = BookmarksFragment()
         val searchFragment = SearchFragment()
         val watchLaterFragment = WatchLaterFragment()
+        val categoriesFragment = CategoriesFragment()
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.activity_main_nv_bottomBar)
         bottomNavigationView.setOnItemSelectedListener { item: MenuItem ->
-            when (item.itemId) {
-                R.id.nav_newest -> onFragmentInteraction(newestFragment, Action.NEXT_FRAGMENT_HIDE_NO_BACK_STACK, null, null)
-                R.id.nav_bookmarks -> onFragmentInteraction(bookmarksFragment, Action.NEXT_FRAGMENT_HIDE_NO_BACK_STACK, null, null)
-                R.id.nav_search -> onFragmentInteraction(searchFragment, Action.NEXT_FRAGMENT_HIDE_NO_BACK_STACK, null, null)
-                R.id.nav_watch -> onFragmentInteraction(watchLaterFragment, Action.NEXT_FRAGMENT_HIDE_NO_BACK_STACK, null, null)
+            val fragment: Fragment = when (item.itemId) {
+                R.id.nav_newest -> newestFragment
+                R.id.nav_categories -> categoriesFragment
+                R.id.nav_search -> searchFragment
+                R.id.nav_bookmarks -> bookmarksFragment
+                R.id.nav_watch -> watchLaterFragment
+                else -> Fragment()
             }
+            onFragmentInteraction(selectedFragment, fragment, Action.NEXT_FRAGMENT_HIDE, null, false, null)
+            selectedFragment = fragment
             false
         }
-        bottomNavigationView.selectedItemId = R.id.nav_newest
+        bottomNavigationView.selectedItemId = R.id.nav_newest // default select
     }
 
     override fun onBackPressed() {
@@ -77,50 +83,95 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, INoConn
         super.onBackPressed()
     }
 
-    override fun onFragmentInteraction(fragmentReceiver: Fragment, action: Action, data: Bundle?, backStackTag: String?) {
-        val fTrans = supportFragmentManager.beginTransaction()
-
+    override fun onFragmentInteraction(fragmentSource: Fragment?, fragmentReceiver: Fragment, action: Action, data: Bundle?, isBackStack: Boolean, backStackTag: String?) {
+        val fTrans: FragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentReceiver.arguments = data
 
-        val animIn: Int = R.anim.fade_in
-        val animOut: Int = R.anim.fade_out
+        val animIn = R.anim.fade_in
+        val animOut = R.anim.fade_out
         fTrans.setCustomAnimations(animIn, animOut, animIn, animOut)
 
-        if (selectedFragment.isVisible) fTrans.hide(selectedFragment)
-        selectedFragment = fragmentReceiver
-
-        val frags: List<Fragment> = supportFragmentManager.fragments
-        var f: Fragment? = null
-        for (fragment in frags) {
-            if (fragment == fragmentReceiver) {
-                f = fragment
-                break
-            }
-        }
-        if (f == null) {
-            fTrans.add(R.id.main_fragment_container, fragmentReceiver)
-        } else {
-            fTrans.show(fragmentReceiver)
-        }
-
         when (action) {
-            Action.NEXT_FRAGMENT_HIDE_NO_BACK_STACK -> {
-                fTrans.commit()
-            }
             Action.NEXT_FRAGMENT_HIDE -> {
-                fTrans.addToBackStack(backStackTag) // Добавление изменнений в стек
+                selectedFragment?.let {
+                    if (selectedFragment!!.isVisible) fTrans.hide(selectedFragment!!)
+                    else fragmentSource?.let { it1 -> fTrans.hide(it1) }
+                }
+
+                val frags: List<Fragment> = supportFragmentManager.fragments
+                var f: Fragment? = null
+                for (fragment in frags) {
+                    if (fragment == fragmentReceiver) {
+                        f = fragment
+                        break
+                    }
+                }
+                if (f == null) {
+                    fTrans.add(R.id.main_fragment_container, fragmentReceiver)
+                } else {
+                    fTrans.show(fragmentReceiver)
+                }
+                if (isBackStack) {
+                    fTrans.addToBackStack(backStackTag)
+                }
                 fTrans.commit()
             }
-/*            Action.NEXT_FRAGMENT_REPLACE -> {
+            Action.NEXT_FRAGMENT_REPLACE -> {
+                fTrans.replace(R.id.main_fragment_container, fragmentReceiver)
+                if (isBackStack) {
+                    fTrans.addToBackStack(backStackTag)
+                }
+                fTrans.commit()
+            }
+            Action.RETURN_FRAGMENT_BY_TAG -> supportFragmentManager.popBackStack(backStackTag, 0)
+            Action.POP_BACK_STACK -> supportFragmentManager.popBackStack()
+        }
+    }
+
+    /*  override fun onFragmentInteraction(fragmentReceiver: Fragment, action: Action, data: Bundle?, backStackTag: String?) {
+          val fTrans = supportFragmentManager.beginTransaction()
+
+          fragmentReceiver.arguments = data
+
+          val animIn: Int = R.anim.fade_in
+          val animOut: Int = R.anim.fade_out
+          fTrans.setCustomAnimations(animIn, animOut, animIn, animOut)
+
+          if (selectedFragment.isVisible) fTrans.hide(selectedFragment)
+          selectedFragment = fragmentReceiver
+
+          val frags: List<Fragment> = supportFragmentManager.fragments
+          var f: Fragment? = null
+          for (fragment in frags) {
+              if (fragment == fragmentReceiver) {
+                  f = fragment
+                  break
+              }
+          }
+          if (f == null) {
+              fTrans.add(R.id.main_fragment_container, fragmentReceiver)
+          } else {
+              fTrans.show(fragmentReceiver)
+          }
+
+          when (action) {
+              Action.NEXT_FRAGMENT_HIDE_NO_BACK_STACK -> {
+                  fTrans.commit()
+              }
+              Action.NEXT_FRAGMENT_HIDE -> {
+                  fTrans.addToBackStack(backStackTag) // Добавление изменнений в стек
+                  fTrans.commit()
+              }
+  *//*            Action.NEXT_FRAGMENT_REPLACE -> {
                 fTrans.replace(R.id.main_fragment_container, fragmentReceiver)
                 fTrans.addToBackStack(backStackTag) // Добавление изменнений в стек
                 fTrans.commit()
             }
             Action.RETURN_FRAGMENT_BY_TAG -> supportFragmentManager.popBackStack(backStackTag, 0)
-            Action.POP_BACK_STACK -> supportFragmentManager.popBackStack()*/
+            Action.POP_BACK_STACK -> supportFragmentManager.popBackStack()*//*
         }
     }
-
+*/
     private fun isInternetAvailable(context: Context): Boolean {
         var connection = false
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

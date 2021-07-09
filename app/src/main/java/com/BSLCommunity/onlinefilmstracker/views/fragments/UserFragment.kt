@@ -2,6 +2,7 @@ package com.BSLCommunity.onlinefilmstracker.views.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +24,7 @@ class UserFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         currentView = inflater.inflate(R.layout.fragment_user, container, false)
+        Log.d("FRAGMENT_TEST", "user init")
 
         currentView.findViewById<TextView>(R.id.fragment_user_tv_exit).setOnClickListener {
             activity?.let {

@@ -29,6 +29,8 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentView = inflater.inflate(R.layout.fragment_bookmarks, container, false)
+        Log.d("FRAGMENT_TEST", "book init")
+
         filmsListFragment = FilmsListFragment()
         filmsListFragment.setCallView(this)
         childFragmentManager.beginTransaction().replace(R.id.fragment_bookmarks_fcv_container, filmsListFragment).commit()
@@ -45,7 +47,7 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
         return currentView
     }
 
-    override fun onStart() {
+    override fun onFilmsListCreated() {
         bookmarksPresenter = BookmarksPresenter(this, filmsListFragment)
 
         if (UserModel.isLoggedIn == true) {
