@@ -1,0 +1,38 @@
+package com.BSLCommunity.onlinefilmstracker.models
+
+import android.util.ArrayMap
+import com.BSLCommunity.onlinefilmstracker.objects.Comment
+import org.json.JSONObject
+import org.jsoup.Jsoup
+import org.jsoup.select.Elements
+
+object CommentsModel {
+    // filmId = news_id
+    // t = unix time
+    // cstart = page
+    fun getCommentsFromPage(page: Int, filmId: String): ArrayList<Comment> {
+        val unixTime = System.currentTimeMillis()
+        val result: String = Jsoup.connect("http://hdrezka.tv/ajax/get_comments/?t=$unixTime&news_id=$filmId&cstart=$page&type=0&comment_id=0&skin=hdrezka")
+            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            .ignoreContentType(true)
+            .execute()
+            .body()
+
+        val jsonObject = JSONObject(result)
+        val doc = Jsoup.parse(jsonObject.getString("comments"))
+
+        val comments: ArrayList<Comment> = ArrayList()
+        val list: Elements = doc.select("li.comments-tree-item")
+        for (el in list) {
+            val avatarPath: String = el.select("div.ava img")[0].attr("src")
+            val nickname: String = el.select("span.name")[0].text()
+            val date: String = el.select("span.date")[0].text()
+            val text: String = el.select("div.text div")[0].text()
+            val indent: Int = el.attr("data-indent")[0].toString().toInt()
+
+            comments.add(Comment(avatarPath, nickname, text, date, indent))
+        }
+
+        return comments
+    }
+}

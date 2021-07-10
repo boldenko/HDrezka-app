@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -76,15 +77,18 @@
 
                 </LinearLayout>
 
-                <!--        <ImageView
-                            android:id="@+id/fragment_film_iv_bookmark"
-                            android:layout_width="90dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.5"
-                            android:background="#00000000"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:src="@drawable/ic_baseline_unbookmarked_24" />-->
+                <ImageView
+                    android:id="@+id/fragment_film_iv_bookmark"
+                    android:layout_width="90dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:layout_weight="0.5"
+                    android:background="#00000000"
+                    android:clickable="true"
+                    android:contentDescription="bookmarks button"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:src="@drawable/ic_baseline_star_24" />
 
             </LinearLayout>
 
@@ -271,7 +275,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
@@ -293,7 +297,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
@@ -308,7 +312,7 @@
                     android:textSize="24sp" />
 
                 <HorizontalScrollView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
                     <LinearLayout
@@ -318,6 +322,36 @@
                         android:orientation="horizontal" />
                 </HorizontalScrollView>
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:text="Комментарии"
+                    android:textColor="#FFFFFF"
+                    android:textSize="24sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/fragment_film_rv_comments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/inflate_comment" />
+
+            </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-</LinearLayout>
+
+    <ProgressBar
+        android:visibility="gone"
+        android:id="@+id/fragment_film_pb_comments_loading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+</RelativeLayout>

@@ -11,25 +11,28 @@ import android.webkit.WebView
 import android.widget.*
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.clients.PlayerChromeClient
 import com.BSLCommunity.onlinefilmstracker.clients.PlayerWebViewClient
-import com.BSLCommunity.onlinefilmstracker.objects.Actor
-import com.BSLCommunity.onlinefilmstracker.objects.Film
-import com.BSLCommunity.onlinefilmstracker.objects.Schedule
+import com.BSLCommunity.onlinefilmstracker.models.UserModel
+import com.BSLCommunity.onlinefilmstracker.objects.*
 import com.BSLCommunity.onlinefilmstracker.presenters.FilmPresenter
+import com.BSLCommunity.onlinefilmstracker.utils.UnitsConverter
 import com.BSLCommunity.onlinefilmstracker.views.OnFragmentInteractionListener
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmView
 import com.github.aakira.expandablelayout.ExpandableLinearLayout
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-
 
 class FilmFragment : Fragment(), FilmView {
     private lateinit var currentView: View
     private lateinit var filmPresenter: FilmPresenter
     private lateinit var fragmentListener: OnFragmentInteractionListener
     private lateinit var playerView: WebView
+    private lateinit var scrollView: NestedScrollView
+    private lateinit var commentsList: RecyclerView
     private var modalDialog: Dialog? = null
 
     override fun onAttach(context: Context) {
@@ -43,10 +46,24 @@ class FilmFragment : Fragment(), FilmView {
 
         currentView.findViewById<ProgressBar>(R.id.fragment_film_pb_loading).visibility = View.VISIBLE
         playerView = currentView.findViewById(R.id.fragment_film_wv_player)
+        commentsList = currentView.findViewById(R.id.fragment_film_rv_comments)
 
         filmPresenter = FilmPresenter(this, (arguments?.getSerializable("film") as Film?)!!)
         filmPresenter.initFilmData()
         filmPresenter.initPlayer()
+
+        scrollView = currentView.findViewById(R.id.fragment_film_sv_content)
+        scrollView.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
+            override fun onScrollChange(v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
+                val view = scrollView.getChildAt(scrollView.childCount - 1)
+                val diff = view.bottom - (scrollView.height + scrollView.scrollY)
+
+                if (diff == 0) {
+                    filmPresenter.initComments()
+                    filmPresenter.getNextComments()
+                }
+            }
+        })
 
         currentView.findViewById<ImageView>(R.id.fragment_film_iv_poster).setOnClickListener { openFullSizeImage() }
 
@@ -84,7 +101,7 @@ class FilmFragment : Fragment(), FilmView {
         currentView.findViewById<TextView>(R.id.fragment_film_tv_plot).text = film.description
 
         currentView.findViewById<ProgressBar>(R.id.fragment_film_pb_loading).visibility = View.GONE
-        currentView.findViewById<NestedScrollView>(R.id.fragment_film_sv_content).visibility = View.VISIBLE
+        scrollView.visibility = View.VISIBLE
     }
 
     override fun setActors(actors: ArrayList<Actor?>) {
@@ -275,10 +292,11 @@ class FilmFragment : Fragment(), FilmView {
             })
 
             val params = LinearLayout.LayoutParams(
-                getPX(80),
+                UnitsConverter.getPX(requireContext(), 80),
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
-            params.setMargins(getPX(5), getPX(5), getPX(5), getPX(5))
+            val m = UnitsConverter.getPX(requireContext(), 5)
+            params.setMargins(m, m, m, m)
             layout.layoutParams = params
             layout.setOnClickListener {
                 openFilm(film)
@@ -288,17 +306,56 @@ class FilmFragment : Fragment(), FilmView {
         }
     }
 
-    private fun getPX(dp: Int): Int {
-        return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            dp.toFloat(),
-            resources.displayMetrics
-        ).toInt()
-    }
-
     private fun openFilm(film: Film) {
         val data = Bundle()
         data.putSerializable("film", film)
         fragmentListener.onFragmentInteraction(FilmFragment(), OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, data, true, null)
+    }
+
+    override fun setBookmarksList(bookmarks: ArrayList<Bookmark>) {
+        val btn: ImageView = currentView.findViewById(R.id.fragment_film_iv_bookmark)
+        if (UserModel.isLoggedIn == true) {
+            val data: Array<String?> = arrayOfNulls(bookmarks.size)
+            val checkedItems = BooleanArray(bookmarks.size)
+
+            for ((index, bookmark) in bookmarks.withIndex()) {
+                data[index] = bookmark.name
+                checkedItems[index] = bookmark.isChecked == true
+            }
+
+            activity?.let {
+                val builder = MaterialAlertDialogBuilder(it)
+                builder.setTitle("Выбери разделы закладок")
+                builder.setMultiChoiceItems(data, checkedItems) { dialog, which, isChecked ->
+                    filmPresenter.setBookmark(bookmarks[which].catId)
+                    checkedItems[which] = isChecked
+                }
+                builder.setPositiveButton("ОК") { dialog, id ->
+                    dialog.dismiss()
+                }
+                val d = builder.create()
+                btn.setOnClickListener {
+                    d.show()
+                }
+            }
+        } else {
+            btn.visibility = View.GONE
+        }
+    }
+
+    override fun setCommentsList(list: ArrayList<Comment>) {
+        commentsList.adapter = CommentsRecyclerViewAdapter(requireContext(), list)
+    }
+
+    override fun redrawComments() {
+        commentsList.adapter?.notifyDataSetChanged()
+    }
+
+    override fun setCommentsProgressState(state: Boolean) {
+        currentView.findViewById<ProgressBar>(R.id.fragment_film_pb_comments_loading).visibility = if (state) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
     }
 }

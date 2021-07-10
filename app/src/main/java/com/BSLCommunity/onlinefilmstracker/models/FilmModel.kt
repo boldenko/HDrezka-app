@@ -1,6 +1,8 @@
 package com.BSLCommunity.onlinefilmstracker.models
 
 import android.util.Log
+import android.webkit.CookieManager
+import com.BSLCommunity.onlinefilmstracker.objects.Bookmark
 import com.BSLCommunity.onlinefilmstracker.objects.Film
 import com.BSLCommunity.onlinefilmstracker.objects.Schedule
 import kotlinx.coroutines.Dispatchers
@@ -18,12 +20,9 @@ object FilmModel {
     private const val FILM_TABLE_INFO = "table.b-post__info tbody tr"
     private const val FILM_IMDB_RATING = "span.imdb span"
 
-    private fun getFilmPage(link: String): Document {
-        return Jsoup.connect(link).get()
-    }
 
     fun getMainData(film: Film): Film {
-        val filmPage: Document = getFilmPage(film.link)
+        val filmPage: Document = Jsoup.connect(film.link).get()
         val table: Elements = filmPage.select(FILM_TABLE_INFO)
 
         val genre: String = film.link.split("/")[3]
@@ -82,11 +81,12 @@ object FilmModel {
     }
 
     fun getAdditionalData(film: Film): Film {
-        val document: Document = getFilmPage(film.link)
+        val document: Document = Jsoup.connect(film.link).header("Cookie", CookieManager.getInstance().getCookie(BookmarksModel.MAIN_PAGE)).get()
         film.origTitle = document.select("div.b-post__origtitle").text()
         film.description = document.select("div.b-post__description_text").text()
         film.votes = document.select("span.imdb i").text()
         film.runtime = document.select("td[itemprop=duration]").text()
+        film.filmId = document.select("div.b-userset__fav_holder").attr("data-post_id")
 
         val actorsLinks: ArrayList<String> = ArrayList()
         val directors: ArrayList<String> = ArrayList()
@@ -176,6 +176,19 @@ object FilmModel {
             relatedFilms.add(relatedFilm)
         }
         film.related = relatedFilms
+
+        val bookmarks: ArrayList<Bookmark> = ArrayList()
+        val bookmarkElements = document.select("div.hd-label-row")
+        for (el in bookmarkElements) {
+            val name = "${el.select("label")[0].ownText()} (${el.select("b").text()})"
+            val isChecked = el.select("input").attr("checked") == "checked"
+            val catId = el.select("input").attr("value")
+
+            val bookmark = Bookmark(catId, "", name, 0)
+            bookmark.isChecked = isChecked
+            bookmarks.add(bookmark)
+        }
+        film.bookmarks = bookmarks
 
         film.hasAdditionalData = true
 

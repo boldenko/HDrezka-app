@@ -1,5 +1,6 @@
 package com.BSLCommunity.onlinefilmstracker.models
 
+import android.util.ArrayMap
 import android.webkit.CookieManager
 import com.BSLCommunity.onlinefilmstracker.objects.Bookmark
 import com.BSLCommunity.onlinefilmstracker.objects.Film
@@ -9,6 +10,7 @@ import org.jsoup.select.Elements
 
 object BookmarksModel {
     const val MAIN_PAGE = "http://hdrezka.tv/favorites/"
+    const val POST_URL = "http://hdrezka.tv/ajax/favorites/"
 
     fun getBookmarksList(): ArrayList<Bookmark> {
         val document: Document = Jsoup.connect(MAIN_PAGE).header("Cookie", CookieManager.getInstance().getCookie(MAIN_PAGE)).get()
@@ -17,11 +19,12 @@ object BookmarksModel {
 
         val tableEls: Elements = document.select("div.b-favorites_content__cats_list_item")
         for (el in tableEls) {
+            val catId: String = el.attr("data-cat_id")
             val link: String = el.select("a.b-favorites_content__cats_list_link").attr("href")
             val name: String = el.select("span.name").text()
             val amount: Number = el.select("span.num-holder b").text().toInt()
 
-            bookmarks.add(Bookmark(link, name, amount))
+            bookmarks.add(Bookmark(catId, link, name, amount))
         }
 
         return bookmarks
@@ -49,5 +52,20 @@ object BookmarksModel {
         }
 
         return films
+    }
+
+    fun postBookmark(filmId: String, catId: String) {
+        val data: ArrayMap<String, String> = ArrayMap()
+        data["post_id"] = filmId
+        data["cat_id"] = catId
+        data["action"] = "add_post"
+
+        Jsoup.connect(POST_URL)
+            .data(data)
+            .userAgent("Mozilla")
+            .header("Cookie", CookieManager.getInstance().getCookie(MAIN_PAGE))
+            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            .ignoreContentType(true)
+            .post()
     }
 }

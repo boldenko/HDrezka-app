@@ -4,49 +4,48 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:foreground="?attr/selectableItemBackground"
-    android:background="@drawable/watch_border"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:weightSum="3">
 
-    <TextView
-        android:id="@+id/watchLater_date"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.8"
-        android:padding="3dp"
-        android:text="06-07-2021"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/watchLater_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:padding="3dp"
+            android:text="06-07-2021"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/watchLater_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.1"
+            android:padding="3dp"
+            android:text="Игра престолов (2011-2019, проект завершен)"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/watchLater_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.1"
+            android:padding="3dp"
+            android:text="1 сезон 1 серия (HDrezka Studio) смотреть ещё 9 серий в 1 сезоне"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+    </LinearLayout>
 
     <View
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="@color/main_color_3" />
-
-    <TextView
-        android:id="@+id/watchLater_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1.1"
-        android:padding="3dp"
-        android:text="Игра престолов (2011-2019, проект завершен)"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
-
-    <View
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="@color/main_color_3" />
-
-    <TextView
-        android:id="@+id/watchLater_info"
-
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1.1"
-        android:padding="3dp"
-        android:text="1 сезон 1 серия (HDrezka Studio) смотреть ещё 9 серий в 1 сезоне"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/main_color_1" />
 
 </LinearLayout>

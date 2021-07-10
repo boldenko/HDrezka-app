@@ -6,6 +6,7 @@ import java.io.Serializable
 open class Film(
     val link: String,
 ) : Serializable {
+    var filmId: String? = null
     var type: String? = null
     var title: String? = null
     var date: String? = null
@@ -29,5 +30,5 @@ open class Film(
     var collection: ArrayList<Film>? = null
     var related: ArrayList<Film>? = null
     var relatedMisc: String? = null
-    var comments: ArrayList<Comment>? = null
+    var bookmarks: ArrayList<Bookmark>? = null
 }

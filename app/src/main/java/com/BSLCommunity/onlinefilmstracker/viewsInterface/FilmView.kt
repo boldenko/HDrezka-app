@@ -1,9 +1,6 @@
 package com.BSLCommunity.onlinefilmstracker.viewsInterface
 
-import android.util.ArrayMap
-import com.BSLCommunity.onlinefilmstracker.objects.Actor
-import com.BSLCommunity.onlinefilmstracker.objects.Film
-import com.BSLCommunity.onlinefilmstracker.objects.Schedule
+import com.BSLCommunity.onlinefilmstracker.objects.*
 
 interface FilmView {
     fun setFilmBaseData(film: Film)
@@ -27,4 +24,12 @@ interface FilmView {
     fun setCollection(collection: ArrayList<Film>)
 
     fun setRelated(collection: ArrayList<Film>)
+
+    fun setBookmarksList(bookmarks: ArrayList<Bookmark>)
+
+    fun setCommentsList(list: ArrayList<Comment>)
+
+    fun redrawComments()
+
+    fun setCommentsProgressState(state: Boolean)
 }
