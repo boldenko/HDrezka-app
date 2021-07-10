@@ -31,6 +31,7 @@
                     app:drawableStartCompat="@drawable/ic_baseline_login_24" />
 
                 <TextView
+                    android:id="@+id/fragment_user_tv_register"
                     style="@style/UserSettingElement"
                     android:text="Регистрация"
                     app:drawableStartCompat="@drawable/ic_baseline_register_24" />

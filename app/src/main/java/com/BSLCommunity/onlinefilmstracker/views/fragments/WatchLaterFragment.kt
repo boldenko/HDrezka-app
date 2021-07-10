@@ -26,6 +26,7 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
     private lateinit var watchLaterPresenter: WatchLaterPresenter
     private lateinit var fragmentListener: OnFragmentInteractionListener
     private lateinit var progressBar: ProgressBar
+    private lateinit var msgView: TextView
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -38,24 +39,26 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
 
         listView = currentView.findViewById(R.id.fragment_watch_later_list_rv)
         progressBar = currentView.findViewById(R.id.fragment_watch_later_list_pb_loading)
+        msgView = currentView.findViewById<TextView>(R.id.fragment_watch_later_list_tv_msg)
 
         if (UserModel.isLoggedIn == true) {
             listView.layoutManager = LinearLayoutManager(context)
             watchLaterPresenter = WatchLaterPresenter(this)
             watchLaterPresenter.initList()
         } else {
-            currentView.findViewById<TextView>(R.id.fragment_watch_later_list_tv_not_auth).visibility = View.VISIBLE
-            listView.visibility = View.GONE
-            progressBar.visibility = View.GONE
+            setDownloadingFailed("Данный раздел доступен только зарегистрированным пользователям")
         }
 
         return currentView
     }
 
     override fun setWatchLaterList(list: ArrayList<WatchLater>) {
-        listView.adapter = WatchLaterRecyclerViewAdapter(list, ::openFilm)
-
-        progressBar.visibility = View.GONE
+        if(list.size > 0){
+            listView.adapter = WatchLaterRecyclerViewAdapter(list, ::openFilm)
+            progressBar.visibility = View.GONE
+        } else{
+            setDownloadingFailed("В этот раздел попадают все просматриваемые тобой сериалы")
+        }
     }
 
     private fun openFilm(film: Film) {
@@ -63,5 +66,12 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
         data.putSerializable("film", film)
 
         fragmentListener.onFragmentInteraction(FilmFragment(), OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, data, true, null)
+    }
+
+    private fun setDownloadingFailed(msg: String){
+        msgView.text = msg
+        msgView.visibility = View.VISIBLE
+        listView.visibility = View.GONE
+        progressBar.visibility = View.GONE
     }
 }

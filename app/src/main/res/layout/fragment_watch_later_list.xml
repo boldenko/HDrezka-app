@@ -22,11 +22,11 @@
         tools:context=".views.fragments.WatchLaterFragment" />
 
     <TextView
-        android:id="@+id/fragment_watch_later_list_tv_not_auth"
+        android:id="@+id/fragment_watch_later_list_tv_msg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="Данный раздел доступен только зарегистрированным пользователям"
+        android:text="msg"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:visibility="gone" />
