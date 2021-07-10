@@ -9,8 +9,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.03">
+        android:layout_height="0dp"
+        android:layout_weight="0.07">
 
         <TextView
             android:layout_width="wrap_content"
@@ -33,20 +33,9 @@
     </RelativeLayout>
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/main_fragment_container"
+        android:id="@+id/activity_main_fcv_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.96" />
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/activity_main_nv_bottomBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.01"
-        android:background="@color/dark_background"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"
-        app:labelVisibilityMode="labeled"
-        app:menu="@menu/bottom_nav_menu" />
+        android:layout_height="0dp"
+        android:layout_weight="0.93" />
 
 </LinearLayout>

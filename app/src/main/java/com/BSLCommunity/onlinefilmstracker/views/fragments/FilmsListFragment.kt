@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.objects.Film
+import com.BSLCommunity.onlinefilmstracker.utils.FragmentOpener
 import com.BSLCommunity.onlinefilmstracker.views.OnFragmentInteractionListener
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmListCallView
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmsListView
@@ -65,7 +66,7 @@ open class FilmsListFragment : Fragment(), FilmsListView {
     }
 
     override fun setFilms(films: ArrayList<Film>) {
-        viewList.adapter = context?.let { FilmsListRecyclerViewAdapter(it, films, ::openFilm) }
+        viewList.adapter = context?.let { FilmsListRecyclerViewAdapter(it, films, ::listCallback) }
     }
 
     override fun redrawFilms() {
@@ -80,10 +81,7 @@ open class FilmsListFragment : Fragment(), FilmsListView {
         }
     }
 
-    fun openFilm(film: Film) {
-        val data = Bundle()
-        data.putSerializable("film", film)
-
-        fragmentListener.onFragmentInteraction(FilmFragment(), OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, data, true, null)
+    fun listCallback(film: Film) {
+        FragmentOpener.openFilm(film, this, fragmentListener)
     }
 }

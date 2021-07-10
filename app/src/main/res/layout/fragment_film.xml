@@ -45,10 +45,10 @@
                         android:layout_marginEnd="10dp"
                         android:background="@drawable/rating_bg"
                         android:gravity="center"
-                        android:text="8.0\n (123456)"
+                        android:text="0.0\n (0)"
                         android:textAlignment="center"
                         android:textColor="#FFFFFF"
-                        android:textSize="14sp"
+                        android:textSize="13sp"
                         android:textStyle="bold" />
 
                     <LinearLayout

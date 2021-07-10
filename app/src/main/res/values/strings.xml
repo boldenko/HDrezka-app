@@ -25,6 +25,4 @@
     <string name="anime">Аниме</string>
     <string name="filters">Фильтры</string>
     <string name="slow_search">Поиск идет слишком долго. Остановить?</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

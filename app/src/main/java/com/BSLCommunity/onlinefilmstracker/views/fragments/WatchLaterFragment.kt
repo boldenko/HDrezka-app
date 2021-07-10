@@ -16,6 +16,7 @@ import com.BSLCommunity.onlinefilmstracker.models.UserModel
 import com.BSLCommunity.onlinefilmstracker.objects.Film
 import com.BSLCommunity.onlinefilmstracker.objects.WatchLater
 import com.BSLCommunity.onlinefilmstracker.presenters.WatchLaterPresenter
+import com.BSLCommunity.onlinefilmstracker.utils.FragmentOpener
 import com.BSLCommunity.onlinefilmstracker.views.OnFragmentInteractionListener
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.WatchLaterView
 
@@ -53,22 +54,19 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
     }
 
     override fun setWatchLaterList(list: ArrayList<WatchLater>) {
-        if(list.size > 0){
-            listView.adapter = WatchLaterRecyclerViewAdapter(list, ::openFilm)
+        if (list.size > 0) {
+            listView.adapter = WatchLaterRecyclerViewAdapter(list, ::listCallback)
             progressBar.visibility = View.GONE
-        } else{
+        } else {
             setDownloadingFailed("В этот раздел попадают все просматриваемые тобой сериалы")
         }
     }
 
-    private fun openFilm(film: Film) {
-        val data = Bundle()
-        data.putSerializable("film", film)
-
-        fragmentListener.onFragmentInteraction(FilmFragment(), OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, data, true, null)
+    private fun listCallback(film: Film) {
+        FragmentOpener.openFilm(film, this, fragmentListener)
     }
 
-    private fun setDownloadingFailed(msg: String){
+    private fun setDownloadingFailed(msg: String) {
         msgView.text = msg
         msgView.visibility = View.VISIBLE
         listView.visibility = View.GONE

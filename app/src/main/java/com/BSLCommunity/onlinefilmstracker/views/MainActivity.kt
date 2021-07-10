@@ -7,8 +7,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.MenuItem
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -16,15 +14,15 @@ import androidx.fragment.app.FragmentTransaction
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.models.UserModel
 import com.BSLCommunity.onlinefilmstracker.views.OnFragmentInteractionListener.Action
-import com.BSLCommunity.onlinefilmstracker.views.fragments.*
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.BSLCommunity.onlinefilmstracker.views.fragments.UserFragment
+import com.BSLCommunity.onlinefilmstracker.views.fragments.ViewPagerFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlin.system.exitProcess
 
 
 class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, INoConnection {
     private var isSettingsOpened: Boolean = false
-    private var selectedFragment: Fragment? = null
+    private lateinit var mainFragment: ViewPagerFragment
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +34,8 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, INoConn
                 requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
                 UserModel.loadLoggedIn(applicationContext)
-                setBottomBar()
+                mainFragment = ViewPagerFragment()
+                onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null)
                 createUserMenu()
             }
         } else {
@@ -47,50 +46,20 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, INoConn
     private fun createUserMenu() {
         findViewById<ImageView>(R.id.activity_main_ib_user).setOnClickListener {
             if (!isSettingsOpened) {
-                onFragmentInteraction(UserFragment(), Action.NEXT_FRAGMENT_HIDE, null, true, null)
+                onFragmentInteraction(mainFragment, UserFragment(), Action.NEXT_FRAGMENT_HIDE, true, null, null)
                 isSettingsOpened = true
             }
         }
-    }
-
-    private fun setBottomBar() {
-        val newestFragment = NewestFilmsFragment()
-        val bookmarksFragment = BookmarksFragment()
-        val searchFragment = SearchFragment()
-        val watchLaterFragment = WatchLaterFragment()
-        val categoriesFragment = CategoriesFragment()
-
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.activity_main_nv_bottomBar)
-        bottomNavigationView.setOnItemSelectedListener { item: MenuItem ->
-            val fragment: Fragment = when (item.itemId) {
-                R.id.nav_newest -> newestFragment
-                R.id.nav_categories -> categoriesFragment
-                R.id.nav_search -> searchFragment
-                R.id.nav_bookmarks -> bookmarksFragment
-                R.id.nav_watch -> watchLaterFragment
-                else -> Fragment()
-            }
-            onFragmentInteraction(fragment, Action.NEXT_FRAGMENT_HIDE, null, false, null)
-            selectedFragment = fragment
-            false
-        }
-        bottomNavigationView.selectedItemId = R.id.nav_newest // default select
     }
 
     override fun onBackPressed() {
         if (isSettingsOpened) {
             isSettingsOpened = false
         }
-
-/*        val fragments = supportFragmentManager.fragments
-        if (fragments.size > 1) {
-            selectedFragment = fragments[fragments.size - 2]
-            Log.d("SEL_FR", "set on backpressed" + selectedFragment.toString())
-        }*/
         super.onBackPressed()
     }
 
-    override fun onFragmentInteraction(fragmentReceiver: Fragment, action: Action, data: Bundle?, isBackStack: Boolean, backStackTag: String?) {
+    override fun onFragmentInteraction(fragmentSource: Fragment?, fragmentReceiver: Fragment, action: Action, isBackStack: Boolean, backStackTag: String?, data: Bundle?) {
         val fTrans: FragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentReceiver.arguments = data
 
@@ -100,12 +69,8 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, INoConn
 
         when (action) {
             Action.NEXT_FRAGMENT_HIDE -> {
-                selectedFragment?.let {
-                    if (selectedFragment!!.isVisible) fTrans.hide(selectedFragment!!)
-                    // else fragmentSource?.let { it1 -> fTrans.hide(it1) }
-                }
-
-                Log.d("SEL_FR", "set on hide" + selectedFragment.toString())
+                if (mainFragment.isVisible) fTrans.hide(mainFragment)
+                else fragmentSource?.let { fTrans.hide(it) }
 
                 val frags: List<Fragment> = supportFragmentManager.fragments
                 var f: Fragment? = null
@@ -115,18 +80,20 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, INoConn
                         break
                     }
                 }
+
                 if (f == null) {
-                    fTrans.add(R.id.main_fragment_container, fragmentReceiver)
+                    fTrans.add(R.id.activity_main_fcv_container, fragmentReceiver)
                 } else {
                     fTrans.show(fragmentReceiver)
                 }
+
                 if (isBackStack) {
                     fTrans.addToBackStack(backStackTag)
                 }
                 fTrans.commit()
             }
             Action.NEXT_FRAGMENT_REPLACE -> {
-                fTrans.replace(R.id.main_fragment_container, fragmentReceiver)
+                fTrans.replace(R.id.activity_main_fcv_container, fragmentReceiver)
                 if (isBackStack) {
                     fTrans.addToBackStack(backStackTag)
                 }
@@ -175,5 +142,9 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, INoConn
         }
         val d = dialog.create()
         d.show()
+    }
+
+    fun updatePager(){
+        mainFragment.setAdapter()
     }
 }

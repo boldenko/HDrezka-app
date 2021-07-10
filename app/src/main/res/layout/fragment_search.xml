@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:layout_margin="20dp"
+        android:layout_marginBottom="10dp"
         android:background="@color/main_color_2"
         android:drawableStart="@drawable/ic_baseline_search_24"
         android:drawableTint="@color/white"

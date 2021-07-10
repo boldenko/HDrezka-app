@@ -8,4 +8,6 @@ interface BookmarksView {
     fun setBookmarksSpinner(bookmarksNames: ArrayList<String>)
 
     fun showMsg(type:BookmarksPresenter.MsgType)
+
+    fun setNoBookmarks()
 }

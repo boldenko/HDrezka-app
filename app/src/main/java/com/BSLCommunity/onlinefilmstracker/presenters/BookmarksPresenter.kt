@@ -29,7 +29,8 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
 
     enum class MsgType {
         NOT_AUTHORIZED,
-        NOTHING_FOUND
+        NOTHING_FOUND,
+        NO_BOOKMARKS
     }
 
     fun initBookmarks() {
@@ -44,6 +45,8 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
                     }
                     bookmarksView.setBookmarksSpinner(names)
                     filmsListView.setFilms(activeFilms)
+                } else{
+                    bookmarksView.setNoBookmarks()
                 }
             }
         }

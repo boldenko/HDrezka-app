@@ -85,6 +85,13 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
         }
     }
 
+    override fun setNoBookmarks() {
+        progressBarSpinnerLayout.visibility = View.GONE
+        spinnersLayout.visibility = View.GONE
+        filmsListFragment.setProgressBarState(false)
+        showMsg(BookmarksPresenter.MsgType.NO_BOOKMARKS)
+    }
+
     override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
         when (parent.id) {
             R.id.fragment_bookmarks_sp_sort -> {
@@ -119,6 +126,7 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
         when (type) {
             BookmarksPresenter.MsgType.NOT_AUTHORIZED -> msgView.text = "Данный раздел доступен только зарегистрированным пользователям"
             BookmarksPresenter.MsgType.NOTHING_FOUND -> msgView.text = "Ничего не можем найти в закладках по данному запросу"
+            BookmarksPresenter.MsgType.NO_BOOKMARKS -> msgView.text = "В закладках еще ничего нет"
         }
     }
 

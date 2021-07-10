@@ -22,5 +22,5 @@ interface OnFragmentInteractionListener {
      * action - одна из констант действий
      * backStackTag - тег для стека вызовов фрагментов
      */
-    fun onFragmentInteraction(fragmentReceiver: Fragment, action: Action, data: Bundle?, isBackStack: Boolean, backStackTag: String?)
+    fun onFragmentInteraction(fragmentSource: Fragment?, fragmentReceiver: Fragment, action: Action, isBackStack: Boolean, backStackTag: String?, data: Bundle?)
 }

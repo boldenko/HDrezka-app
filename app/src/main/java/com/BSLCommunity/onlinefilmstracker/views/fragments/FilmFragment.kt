@@ -18,6 +18,7 @@ import com.BSLCommunity.onlinefilmstracker.clients.PlayerWebViewClient
 import com.BSLCommunity.onlinefilmstracker.models.UserModel
 import com.BSLCommunity.onlinefilmstracker.objects.*
 import com.BSLCommunity.onlinefilmstracker.presenters.FilmPresenter
+import com.BSLCommunity.onlinefilmstracker.utils.FragmentOpener
 import com.BSLCommunity.onlinefilmstracker.utils.UnitsConverter
 import com.BSLCommunity.onlinefilmstracker.views.OnFragmentInteractionListener
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmView
@@ -258,7 +259,7 @@ class FilmFragment : Fragment(), FilmView {
                 requireContext().theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
                 layout.setBackgroundResource(outValue.resourceId)
                 layout.setOnClickListener {
-                    openFilm(film)
+                    FragmentOpener.openFilm(film, this, fragmentListener)
                 }
             } else {
                 layout.findViewById<TextView>(R.id.inflate_collection_item_name).setTextColor(requireContext().getColor(R.color.gray))
@@ -299,17 +300,11 @@ class FilmFragment : Fragment(), FilmView {
             params.setMargins(m, m, m, m)
             layout.layoutParams = params
             layout.setOnClickListener {
-                openFilm(film)
+                FragmentOpener.openFilm(film, this, fragmentListener)
             }
 
             relatedLayout.addView(layout)
         }
-    }
-
-    private fun openFilm(film: Film) {
-        val data = Bundle()
-        data.putSerializable("film", film)
-        fragmentListener.onFragmentInteraction(FilmFragment(), OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, data, true, null)
     }
 
     override fun setBookmarksList(bookmarks: ArrayList<Bookmark>) {

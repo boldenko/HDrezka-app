@@ -16,8 +16,8 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.BSLCommunity.onlinefilmstracker.R
-import com.BSLCommunity.onlinefilmstracker.objects.Film
 import com.BSLCommunity.onlinefilmstracker.presenters.SearchPresenter
+import com.BSLCommunity.onlinefilmstracker.utils.FragmentOpener
 import com.BSLCommunity.onlinefilmstracker.views.OnFragmentInteractionListener
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmListCallView
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.SearchView
@@ -99,7 +99,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
         autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             imm.hideSoftInputFromWindow(autoCompleteTextView.windowToken, 0)
             autoCompleteTextView.dismissDropDown()
-            filmsListFragment.openFilm(searchPresenter.activeSearchFilms[position])
+            FragmentOpener.openFilm(searchPresenter.activeSearchFilms[position], this, fragmentListener)
         }
     }
 
@@ -112,6 +112,6 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
     }
 
     override fun triggerEnd() {
-       searchPresenter.getNextFilms()
+        searchPresenter.getNextFilms()
     }
 }

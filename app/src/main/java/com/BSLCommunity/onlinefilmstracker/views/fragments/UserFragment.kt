@@ -16,6 +16,7 @@ import com.BSLCommunity.onlinefilmstracker.clients.AuthWebViewClient
 import com.BSLCommunity.onlinefilmstracker.models.BookmarksModel
 import com.BSLCommunity.onlinefilmstracker.models.UserModel
 import com.BSLCommunity.onlinefilmstracker.presenters.UserPresenter
+import com.BSLCommunity.onlinefilmstracker.views.MainActivity
 
 class UserFragment : Fragment() {
     private lateinit var currentView: View
@@ -33,19 +34,12 @@ class UserFragment : Fragment() {
         userPresenter = UserPresenter()
         Log.d("FRAGMENT_TEST", "user init")
 
-        currentView.findViewById<TextView>(R.id.fragment_user_tv_exit).setOnClickListener {
-            activity?.let {
-                UserModel.saveLoggedIn(false, it)
-                setAuthPanel(false)
-                CookieManager.getInstance().removeAllCookies(null)
-                CookieManager.getInstance().flush()
-            }
-        }
-
+        setExitButton()
         UserModel.isLoggedIn?.let { setAuthPanel(it) }
 
         return currentView
     }
+
 
     @SuppressLint("SetJavaScriptEnabled", "ClickableViewAccessibility")
     private fun createAuthDialog() {
@@ -99,10 +93,30 @@ class UserFragment : Fragment() {
             UserModel.saveLoggedIn(isLogged, requireContext())
             setAuthPanel(isLogged)
             webView.visibility = View.GONE
+
+            activity?.let {
+                (it as MainActivity).updatePager()
+            }
+            popupWindow.dismiss()
         } else {
             popupWindowLoadingBar.visibility = View.GONE
             popupWindowCloseBtn?.visibility = View.VISIBLE
             webView.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setExitButton() {
+        currentView.findViewById<TextView>(R.id.fragment_user_tv_exit).setOnClickListener {
+            activity?.let {
+                UserModel.saveLoggedIn(false, it)
+                setAuthPanel(false)
+                CookieManager.getInstance().removeAllCookies(null)
+                CookieManager.getInstance().flush()
+
+                activity?.let { it1 ->
+                    (it1 as MainActivity).updatePager()
+                }
+            }
         }
     }
 
@@ -116,7 +130,6 @@ class UserFragment : Fragment() {
             currentView.findViewById<TextView>(R.id.fragment_user_tv_exit).visibility = View.GONE
 
             createAuthDialog()
-
         }
     }
 }
