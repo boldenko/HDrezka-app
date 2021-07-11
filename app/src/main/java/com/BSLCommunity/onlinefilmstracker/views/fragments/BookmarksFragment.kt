@@ -14,7 +14,7 @@ import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.constants.BookmarkFilterType
 import com.BSLCommunity.onlinefilmstracker.models.UserModel
 import com.BSLCommunity.onlinefilmstracker.presenters.BookmarksPresenter
-import com.BSLCommunity.onlinefilmstracker.views.IMsg
+import com.BSLCommunity.onlinefilmstracker.views.interfaces.IMsg
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.BookmarksView
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmListCallView
 import com.chivorn.smartmaterialspinner.SmartMaterialSpinner

@@ -20,7 +20,8 @@ import com.BSLCommunity.onlinefilmstracker.objects.*
 import com.BSLCommunity.onlinefilmstracker.presenters.FilmPresenter
 import com.BSLCommunity.onlinefilmstracker.utils.FragmentOpener
 import com.BSLCommunity.onlinefilmstracker.utils.UnitsConverter
-import com.BSLCommunity.onlinefilmstracker.views.OnFragmentInteractionListener
+import com.BSLCommunity.onlinefilmstracker.views.interfaces.OnFragmentInteractionListener
+import com.BSLCommunity.onlinefilmstracker.views.adapters.CommentsRecyclerViewAdapter
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmView
 import com.github.aakira.expandablelayout.ExpandableLinearLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder

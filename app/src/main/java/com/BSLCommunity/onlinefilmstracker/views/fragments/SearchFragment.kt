@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.presenters.SearchPresenter
 import com.BSLCommunity.onlinefilmstracker.utils.FragmentOpener
-import com.BSLCommunity.onlinefilmstracker.views.OnFragmentInteractionListener
+import com.BSLCommunity.onlinefilmstracker.views.interfaces.OnFragmentInteractionListener
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmListCallView
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.SearchView
 

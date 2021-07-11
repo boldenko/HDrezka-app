@@ -1,4 +1,4 @@
-package com.BSLCommunity.onlinefilmstracker.views.fragments
+package com.BSLCommunity.onlinefilmstracker.views.adapters
 
 import android.content.Context
 import android.util.Log
@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.objects.Film
 import com.squareup.picasso.Callback
-import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 
 class FilmsListRecyclerViewAdapter(private val context: Context, private val films: ArrayList<Film>, private val openFilm: (film: Film) -> Unit) :

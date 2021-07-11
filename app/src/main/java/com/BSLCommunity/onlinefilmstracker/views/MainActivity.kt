@@ -13,9 +13,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.models.UserModel
-import com.BSLCommunity.onlinefilmstracker.views.OnFragmentInteractionListener.Action
+import com.BSLCommunity.onlinefilmstracker.views.interfaces.OnFragmentInteractionListener.Action
 import com.BSLCommunity.onlinefilmstracker.views.fragments.UserFragment
 import com.BSLCommunity.onlinefilmstracker.views.fragments.ViewPagerFragment
+import com.BSLCommunity.onlinefilmstracker.views.interfaces.INoConnection
+import com.BSLCommunity.onlinefilmstracker.views.interfaces.OnFragmentInteractionListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlin.system.exitProcess
 

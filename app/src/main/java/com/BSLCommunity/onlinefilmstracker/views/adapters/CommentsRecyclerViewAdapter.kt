@@ -1,4 +1,4 @@
-package com.BSLCommunity.onlinefilmstracker.views.fragments
+package com.BSLCommunity.onlinefilmstracker.views.adapters
 
 import android.content.Context
 import android.view.LayoutInflater

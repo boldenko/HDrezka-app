@@ -7,7 +7,7 @@ import com.BSLCommunity.onlinefilmstracker.models.FilmModel
 import com.BSLCommunity.onlinefilmstracker.models.FilmsListModel
 import com.BSLCommunity.onlinefilmstracker.models.NewestFilmsModel
 import com.BSLCommunity.onlinefilmstracker.objects.Film
-import com.BSLCommunity.onlinefilmstracker.views.INoConnection
+import com.BSLCommunity.onlinefilmstracker.views.interfaces.INoConnection
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmsListView
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.NewestFilmsView
 import kotlinx.coroutines.GlobalScope

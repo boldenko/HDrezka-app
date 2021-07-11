@@ -1,4 +1,4 @@
-package com.BSLCommunity.onlinefilmstracker.views
+package com.BSLCommunity.onlinefilmstracker.views.interfaces
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
