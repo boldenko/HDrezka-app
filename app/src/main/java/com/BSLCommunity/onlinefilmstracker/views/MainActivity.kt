@@ -13,12 +13,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.models.UserModel
-import com.BSLCommunity.onlinefilmstracker.views.interfaces.OnFragmentInteractionListener.Action
+import com.BSLCommunity.onlinefilmstracker.utils.FileManager
 import com.BSLCommunity.onlinefilmstracker.views.fragments.UserFragment
 import com.BSLCommunity.onlinefilmstracker.views.fragments.ViewPagerFragment
 import com.BSLCommunity.onlinefilmstracker.views.interfaces.INoConnection
 import com.BSLCommunity.onlinefilmstracker.views.interfaces.OnFragmentInteractionListener
+import com.BSLCommunity.onlinefilmstracker.views.interfaces.OnFragmentInteractionListener.Action
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.squareup.picasso.NetworkPolicy
+import com.squareup.picasso.Picasso
 import kotlin.system.exitProcess
 
 
@@ -39,6 +42,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, INoConn
                 mainFragment = ViewPagerFragment()
                 onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null)
                 createUserMenu()
+                setUserAvatar()
             }
         } else {
             showErrorDialog()
@@ -46,7 +50,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, INoConn
     }
 
     private fun createUserMenu() {
-        findViewById<ImageView>(R.id.activity_main_ib_user).setOnClickListener {
+        findViewById<ImageView>(R.id.activity_main_iv_user).setOnClickListener {
             if (!isSettingsOpened) {
                 onFragmentInteraction(mainFragment, UserFragment(), Action.NEXT_FRAGMENT_HIDE, true, null, null)
                 isSettingsOpened = true
@@ -146,7 +150,14 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, INoConn
         d.show()
     }
 
-    fun updatePager(){
+    fun updatePager() {
         mainFragment.setAdapter()
+    }
+
+    private fun setUserAvatar() {
+        val link: String? = FileManager.readFile(UserModel.USER_AVATAR, applicationContext)
+        link?.let {
+            Picasso.get().load(link).networkPolicy(NetworkPolicy.OFFLINE).into(findViewById<ImageView>(R.id.activity_main_iv_user))
+        }
     }
 }

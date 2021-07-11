@@ -1,4 +1,4 @@
-package com.BSLCommunity.onlinefilmstracker.managers
+package com.BSLCommunity.onlinefilmstracker.utils
 
 import android.content.Context
 import java.io.*

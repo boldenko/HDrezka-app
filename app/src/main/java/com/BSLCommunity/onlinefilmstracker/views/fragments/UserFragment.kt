@@ -13,10 +13,16 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.clients.AuthWebViewClient
+import com.BSLCommunity.onlinefilmstracker.utils.FileManager
 import com.BSLCommunity.onlinefilmstracker.models.BookmarksModel
 import com.BSLCommunity.onlinefilmstracker.models.UserModel
 import com.BSLCommunity.onlinefilmstracker.presenters.UserPresenter
 import com.BSLCommunity.onlinefilmstracker.views.MainActivity
+import com.squareup.picasso.Picasso
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class UserFragment : Fragment() {
     private lateinit var currentView: View
@@ -28,7 +34,7 @@ class UserFragment : Fragment() {
     private var popupWindowCloseBtn: Button? = null
     private var isLoaded = false
     private lateinit var authPanel: LinearLayout
-    private lateinit var exitView: TextView
+    private lateinit var exitPanel: TextView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         currentView = inflater.inflate(R.layout.fragment_user, container, false)
@@ -36,13 +42,12 @@ class UserFragment : Fragment() {
         Log.d("FRAGMENT_TEST", "user init")
 
         authPanel = currentView.findViewById(R.id.fragment_user_ll_auth_panel)
-        exitView = currentView.findViewById(R.id.fragment_user_tv_exit)
+        exitPanel = currentView.findViewById(R.id.fragment_user_tv_exit)
+
+        initExitButton()
 
         UserModel.isLoggedIn?.let {
-            if (it) {
-                setAuthPanel(it)
-                setExitButton()
-            }
+            setAuthPanel(it)
         }
 
         return currentView
@@ -53,10 +58,10 @@ class UserFragment : Fragment() {
         if (isLogged) {
             popupWindowCloseBtn?.visibility = View.GONE
             authPanel.visibility = View.GONE
-            exitView.visibility = View.VISIBLE
+            exitPanel.visibility = View.VISIBLE
         } else {
             authPanel.visibility = View.VISIBLE
-            exitView.visibility = View.GONE
+            exitPanel.visibility = View.GONE
             createAuthDialog()
         }
     }
@@ -112,9 +117,11 @@ class UserFragment : Fragment() {
         isLoaded = false
 
         if (isLogged) {
+            webView.visibility = View.GONE
+
             UserModel.saveLoggedIn(isLogged, requireContext())
             setAuthPanel(isLogged)
-            webView.visibility = View.GONE
+            setUserAvatar()
 
             activity?.let {
                 (it as MainActivity).updatePager()
@@ -127,8 +134,8 @@ class UserFragment : Fragment() {
         }
     }
 
-    private fun setExitButton() {
-        exitView.setOnClickListener {
+    private fun initExitButton() {
+        exitPanel.setOnClickListener {
             activity?.let {
                 UserModel.saveLoggedIn(false, it)
                 setAuthPanel(false)
@@ -138,6 +145,17 @@ class UserFragment : Fragment() {
                 activity?.let { it1 ->
                     (it1 as MainActivity).updatePager()
                 }
+            }
+        }
+    }
+
+    private fun setUserAvatar() {
+        GlobalScope.launch {
+            val link: String = UserModel.getUserAvatarLink()
+            FileManager.writeFile(UserModel.USER_AVATAR, link, false, requireContext())
+
+            withContext(Dispatchers.Main) {
+                Picasso.get().load(link).into(requireActivity().findViewById<ImageView>(R.id.activity_main_iv_user))
             }
         }
     }
