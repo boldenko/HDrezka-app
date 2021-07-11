@@ -1,5 +1,6 @@
 package com.BSLCommunity.onlinefilmstracker.models
 
+import android.util.Log
 import com.BSLCommunity.onlinefilmstracker.objects.Film
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document

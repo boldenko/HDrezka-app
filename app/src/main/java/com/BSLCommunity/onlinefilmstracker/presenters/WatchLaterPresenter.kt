@@ -10,7 +10,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class WatchLaterPresenter(private val watchLaterView: WatchLaterView, private val msgInterface: IMsg) {
+class WatchLaterPresenter(private val watchLaterView: WatchLaterView) {
     private var loadedWatchLaterList: ArrayList<WatchLater> = ArrayList()
     private var activeWatchLaterList: ArrayList<WatchLater> = ArrayList()
     private val ITEMS_PER_PAGE = 9
@@ -24,7 +24,7 @@ class WatchLaterPresenter(private val watchLaterView: WatchLaterView, private va
                     watchLaterView.setWatchLaterList(activeWatchLaterList)
                     getNextWatchLater()
                 } else {
-                    msgInterface.showMsg(IMsg.MsgType.NOTHING_FOUND)
+                    watchLaterView.showMsg(IMsg.MsgType.NOTHING_FOUND)
                 }
             }
         }

@@ -23,10 +23,10 @@ import com.BSLCommunity.onlinefilmstracker.views.interfaces.OnFragmentInteractio
 import com.BSLCommunity.onlinefilmstracker.views.adapters.WatchLaterRecyclerViewAdapter
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.WatchLaterView
 
-class WatchLaterFragment : Fragment(), WatchLaterView, IMsg {
+class WatchLaterFragment : Fragment(), WatchLaterView {
     private lateinit var currentView: View
-    private lateinit var listView: RecyclerView
     private lateinit var watchLaterPresenter: WatchLaterPresenter
+    private lateinit var listView: RecyclerView
     private lateinit var fragmentListener: OnFragmentInteractionListener
     private lateinit var progressBar: ProgressBar
     private lateinit var msgView: TextView
@@ -60,7 +60,7 @@ class WatchLaterFragment : Fragment(), WatchLaterView, IMsg {
 
         if (UserModel.isLoggedIn == true) {
             listView.layoutManager = LinearLayoutManager(context)
-            watchLaterPresenter = WatchLaterPresenter(this, this)
+            watchLaterPresenter = WatchLaterPresenter(this)
             watchLaterPresenter.initList()
         } else {
             showMsg(IMsg.MsgType.NOT_AUTHORIZED)
