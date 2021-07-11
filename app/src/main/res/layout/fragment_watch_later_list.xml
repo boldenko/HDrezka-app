@@ -6,19 +6,33 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ProgressBar
-        android:id="@+id/fragment_watch_later_list_pb_loading"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="center" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_watch_later_list_rv"
-        android:name="com.BSLCommunity.onlinefilmstracker.views.fragments.WatchLaterFragment"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layoutManager="LinearLayoutManager"
-        tools:context=".views.fragments.WatchLaterFragment" />
+        android:layout_height="wrap_content">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/fragment_watch_later_nsv_films"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/fragment_watch_later_list_rv"
+                android:name="com.BSLCommunity.onlinefilmstracker.views.fragments.WatchLaterFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="LinearLayoutManager"
+                tools:listitem="@layout/inflate_watch_later"
+                tools:context=".views.fragments.WatchLaterFragment" />
+        </androidx.core.widget.NestedScrollView>
+
+        <ProgressBar
+            android:id="@+id/fragment_watch_later_list_pb_loading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center" />
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/fragment_watch_later_list_tv_msg"

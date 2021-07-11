@@ -14,6 +14,7 @@ import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.constants.BookmarkFilterType
 import com.BSLCommunity.onlinefilmstracker.models.UserModel
 import com.BSLCommunity.onlinefilmstracker.presenters.BookmarksPresenter
+import com.BSLCommunity.onlinefilmstracker.views.IMsg
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.BookmarksView
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmListCallView
 import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
@@ -54,7 +55,7 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
             bookmarksPresenter.initBookmarks()
         } else {
             progressBarSpinnerLayout.visibility = View.GONE
-            bookmarksPresenter.setMsg(BookmarksPresenter.MsgType.NOT_AUTHORIZED)
+            bookmarksPresenter.setMsg(IMsg.MsgType.NOT_AUTHORIZED)
         }
 
         super.onStart()
@@ -89,7 +90,7 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
         progressBarSpinnerLayout.visibility = View.GONE
         spinnersLayout.visibility = View.GONE
         filmsListFragment.setProgressBarState(false)
-        showMsg(BookmarksPresenter.MsgType.NO_BOOKMARKS)
+        showMsg(IMsg.MsgType.NOTHING_ADDED)
     }
 
     override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
@@ -120,13 +121,13 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
     override fun onNothingSelected(parent: AdapterView<*>?) {
     }
 
-    override fun showMsg(type: BookmarksPresenter.MsgType) {
+    override fun showMsg(type: IMsg.MsgType) {
         msgView.visibility = View.VISIBLE
 
         when (type) {
-            BookmarksPresenter.MsgType.NOT_AUTHORIZED -> msgView.text = "Данный раздел доступен только зарегистрированным пользователям"
-            BookmarksPresenter.MsgType.NOTHING_FOUND -> msgView.text = "Ничего не можем найти в закладках по данному запросу"
-            BookmarksPresenter.MsgType.NO_BOOKMARKS -> msgView.text = "В закладках еще ничего нет"
+            IMsg.MsgType.NOT_AUTHORIZED -> msgView.text = "Данный раздел доступен только зарегистрированным пользователям"
+            IMsg.MsgType.NOTHING_FOUND -> msgView.text = "Ничего не можем найти в закладках по данному запросу"
+            IMsg.MsgType.NOTHING_ADDED -> msgView.text = "В закладках еще ничего нет"
         }
     }
 

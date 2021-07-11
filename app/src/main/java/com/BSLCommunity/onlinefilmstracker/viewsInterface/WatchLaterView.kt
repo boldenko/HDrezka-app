@@ -4,4 +4,8 @@ import com.BSLCommunity.onlinefilmstracker.objects.WatchLater
 
 interface WatchLaterView {
     fun setWatchLaterList(list: ArrayList<WatchLater>)
+
+    fun redrawWatchLaterList()
+
+    fun setProgressBarState(state: Boolean)
 }

@@ -20,7 +20,6 @@ object FilmModel {
     private const val FILM_TABLE_INFO = "table.b-post__info tbody tr"
     private const val FILM_IMDB_RATING = "span.imdb span"
 
-
     fun getMainData(film: Film): Film {
         val filmPage: Document = Jsoup.connect(film.link).get()
         val table: Elements = filmPage.select(FILM_TABLE_INFO)
@@ -230,5 +229,11 @@ object FilmModel {
                 }
             }
         }
+    }
+
+    fun getFilmPosterByLink(filmLink: String): String {
+        val filmPage: Document = Jsoup.connect(filmLink).get()
+        val posterElement: Element = filmPage.select(FILM_POSTER)[0]
+        return posterElement.select("img").attr("src")
     }
 }

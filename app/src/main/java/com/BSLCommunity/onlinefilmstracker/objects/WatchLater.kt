@@ -6,4 +6,6 @@ data class WatchLater(
     val name: String,
     val info: String,
     val additionalInfo: String
-)
+) {
+    var posterPath: String? = null
+}

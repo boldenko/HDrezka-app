@@ -6,6 +6,7 @@ import com.BSLCommunity.onlinefilmstracker.models.BookmarksModel
 import com.BSLCommunity.onlinefilmstracker.models.FilmModel
 import com.BSLCommunity.onlinefilmstracker.objects.Bookmark
 import com.BSLCommunity.onlinefilmstracker.objects.Film
+import com.BSLCommunity.onlinefilmstracker.views.IMsg
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.BookmarksView
 import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmsListView
 import kotlinx.coroutines.Dispatchers
@@ -26,12 +27,6 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
     private var loadedFilms: ArrayList<Film> = ArrayList()
     private var activeFilms: ArrayList<Film> = ArrayList()
     private var isLoading: Boolean = false
-
-    enum class MsgType {
-        NOT_AUTHORIZED,
-        NOTHING_FOUND,
-        NO_BOOKMARKS
-    }
 
     fun initBookmarks() {
         GlobalScope.launch {
@@ -84,7 +79,7 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
                 } else if (curPage == 2) {
                     isLoading = false
                     withContext(Dispatchers.Main) {
-                        bookmarksView.showMsg(MsgType.NOTHING_FOUND)
+                        bookmarksView.showMsg(IMsg.MsgType.NOTHING_FOUND)
                     }
                 } else {
                     isLoading = false
@@ -113,7 +108,7 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
         getNextFilms()
     }
 
-    fun setMsg(type: MsgType) {
+    fun setMsg(type: IMsg.MsgType) {
         filmsListView.setProgressBarState(false)
         bookmarksView.showMsg(type)
     }
