@@ -4,8 +4,8 @@ import com.BSLCommunity.onlinefilmstracker.models.FilmModel
 import com.BSLCommunity.onlinefilmstracker.models.FilmsListModel
 import com.BSLCommunity.onlinefilmstracker.models.SearchModel
 import com.BSLCommunity.onlinefilmstracker.objects.Film
-import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmsListView
-import com.BSLCommunity.onlinefilmstracker.viewsInterface.SearchView
+import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmsListView
+import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.SearchView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

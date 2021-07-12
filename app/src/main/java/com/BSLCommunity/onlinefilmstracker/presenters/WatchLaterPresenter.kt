@@ -3,8 +3,8 @@ package com.BSLCommunity.onlinefilmstracker.presenters
 import com.BSLCommunity.onlinefilmstracker.models.FilmModel
 import com.BSLCommunity.onlinefilmstracker.models.WatchLaterModel
 import com.BSLCommunity.onlinefilmstracker.objects.WatchLater
-import com.BSLCommunity.onlinefilmstracker.views.interfaces.IMsg
-import com.BSLCommunity.onlinefilmstracker.viewsInterface.WatchLaterView
+import com.BSLCommunity.onlinefilmstracker.interfaces.IMsg
+import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.WatchLaterView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

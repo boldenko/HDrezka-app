@@ -14,9 +14,10 @@ import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.constants.BookmarkFilterType
 import com.BSLCommunity.onlinefilmstracker.models.UserModel
 import com.BSLCommunity.onlinefilmstracker.presenters.BookmarksPresenter
-import com.BSLCommunity.onlinefilmstracker.views.interfaces.IMsg
-import com.BSLCommunity.onlinefilmstracker.viewsInterface.BookmarksView
-import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmListCallView
+import com.BSLCommunity.onlinefilmstracker.interfaces.IMsg
+import com.BSLCommunity.onlinefilmstracker.objects.UserData
+import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.BookmarksView
+import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmListCallView
 import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
 
 class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterView.OnItemSelectedListener {
@@ -41,7 +42,7 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
         spinnersLayout.visibility = View.GONE
         progressBarSpinnerLayout = currentView.findViewById(R.id.fragment_bookmarks_pb_spinner_loading)
 
-        if (UserModel.isLoggedIn == true) {
+        if (UserData.isLoggedIn == true) {
             setSpinnerData(R.id.fragment_bookmarks_sp_sort)
             setSpinnerData(R.id.fragment_bookmarks_sp_show)
         }
@@ -51,7 +52,7 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
     override fun onFilmsListCreated() {
         bookmarksPresenter = BookmarksPresenter(this, filmsListFragment)
 
-        if (UserModel.isLoggedIn == true) {
+        if (UserData.isLoggedIn == true) {
             bookmarksPresenter.initBookmarks()
         } else {
             progressBarSpinnerLayout.visibility = View.GONE

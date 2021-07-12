@@ -3,7 +3,7 @@ package com.BSLCommunity.onlinefilmstracker.utils
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.BSLCommunity.onlinefilmstracker.objects.Film
-import com.BSLCommunity.onlinefilmstracker.views.interfaces.OnFragmentInteractionListener
+import com.BSLCommunity.onlinefilmstracker.interfaces.OnFragmentInteractionListener
 import com.BSLCommunity.onlinefilmstracker.views.fragments.FilmFragment
 
 object FragmentOpener {

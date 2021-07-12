@@ -5,9 +5,9 @@ import com.BSLCommunity.onlinefilmstracker.models.BookmarksModel
 import com.BSLCommunity.onlinefilmstracker.models.FilmModel
 import com.BSLCommunity.onlinefilmstracker.objects.Bookmark
 import com.BSLCommunity.onlinefilmstracker.objects.Film
-import com.BSLCommunity.onlinefilmstracker.views.interfaces.IMsg
-import com.BSLCommunity.onlinefilmstracker.viewsInterface.BookmarksView
-import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmsListView
+import com.BSLCommunity.onlinefilmstracker.interfaces.IMsg
+import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.BookmarksView
+import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmsListView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

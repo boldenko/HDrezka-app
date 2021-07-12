@@ -20,9 +20,9 @@ import com.BSLCommunity.onlinefilmstracker.objects.*
 import com.BSLCommunity.onlinefilmstracker.presenters.FilmPresenter
 import com.BSLCommunity.onlinefilmstracker.utils.FragmentOpener
 import com.BSLCommunity.onlinefilmstracker.utils.UnitsConverter
-import com.BSLCommunity.onlinefilmstracker.views.interfaces.OnFragmentInteractionListener
+import com.BSLCommunity.onlinefilmstracker.interfaces.OnFragmentInteractionListener
 import com.BSLCommunity.onlinefilmstracker.views.adapters.CommentsRecyclerViewAdapter
-import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmView
+import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmView
 import com.github.aakira.expandablelayout.ExpandableLinearLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Callback
@@ -310,7 +310,7 @@ class FilmFragment : Fragment(), FilmView {
 
     override fun setBookmarksList(bookmarks: ArrayList<Bookmark>) {
         val btn: ImageView = currentView.findViewById(R.id.fragment_film_iv_bookmark)
-        if (UserModel.isLoggedIn == true) {
+        if (UserData.isLoggedIn == true) {
             val data: Array<String?> = arrayOfNulls(bookmarks.size)
             val checkedItems = BooleanArray(bookmarks.size)
 

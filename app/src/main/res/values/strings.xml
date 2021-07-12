@@ -25,4 +25,5 @@
     <string name="anime">Аниме</string>
     <string name="filters">Фильтры</string>
     <string name="slow_search">Поиск идет слишком долго. Остановить?</string>
+    <string name="watch_later">Досмотреть</string>
 </resources>

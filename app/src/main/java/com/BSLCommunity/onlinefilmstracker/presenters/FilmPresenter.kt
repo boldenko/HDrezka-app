@@ -7,7 +7,7 @@ import com.BSLCommunity.onlinefilmstracker.models.FilmModel
 import com.BSLCommunity.onlinefilmstracker.objects.Actor
 import com.BSLCommunity.onlinefilmstracker.objects.Comment
 import com.BSLCommunity.onlinefilmstracker.objects.Film
-import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmView
+import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

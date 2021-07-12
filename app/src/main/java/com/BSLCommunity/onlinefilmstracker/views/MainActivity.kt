@@ -12,20 +12,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.BSLCommunity.onlinefilmstracker.R
-import com.BSLCommunity.onlinefilmstracker.models.UserModel
-import com.BSLCommunity.onlinefilmstracker.utils.FileManager
+import com.BSLCommunity.onlinefilmstracker.interfaces.IConnection
+import com.BSLCommunity.onlinefilmstracker.interfaces.OnFragmentInteractionListener
+import com.BSLCommunity.onlinefilmstracker.interfaces.OnFragmentInteractionListener.Action
+import com.BSLCommunity.onlinefilmstracker.objects.SettingsData
+import com.BSLCommunity.onlinefilmstracker.objects.UserData
 import com.BSLCommunity.onlinefilmstracker.views.fragments.UserFragment
 import com.BSLCommunity.onlinefilmstracker.views.fragments.ViewPagerFragment
-import com.BSLCommunity.onlinefilmstracker.views.interfaces.INoConnection
-import com.BSLCommunity.onlinefilmstracker.views.interfaces.OnFragmentInteractionListener
-import com.BSLCommunity.onlinefilmstracker.views.interfaces.OnFragmentInteractionListener.Action
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import kotlin.system.exitProcess
 
 
-class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, INoConnection {
+class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnection {
     private var isSettingsOpened: Boolean = false
     private lateinit var mainFragment: ViewPagerFragment
 
@@ -38,7 +38,9 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, INoConn
             if (savedInstanceState == null) {
                 requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-                UserModel.loadLoggedIn(applicationContext)
+                UserData.init(applicationContext)
+                SettingsData.init(applicationContext)
+
                 mainFragment = ViewPagerFragment()
                 onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null)
                 createUserMenu()
@@ -155,9 +157,8 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, INoConn
     }
 
     private fun setUserAvatar() {
-        val link: String? = FileManager.readFile(UserModel.USER_AVATAR, applicationContext)
-        link?.let {
-            Picasso.get().load(link).networkPolicy(NetworkPolicy.OFFLINE).into(findViewById<ImageView>(R.id.activity_main_iv_user))
+        UserData.avatarLink?.let {
+            Picasso.get().load(it).networkPolicy(NetworkPolicy.OFFLINE).into(findViewById<ImageView>(R.id.activity_main_iv_user))
         }
     }
 }

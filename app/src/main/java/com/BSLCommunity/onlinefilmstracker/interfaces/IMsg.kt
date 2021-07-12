@@ -1,4 +1,4 @@
-package com.BSLCommunity.onlinefilmstracker.views.interfaces
+package com.BSLCommunity.onlinefilmstracker.interfaces
 
 interface IMsg {
     enum class MsgType {

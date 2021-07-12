@@ -1,4 +1,4 @@
-package com.BSLCommunity.onlinefilmstracker.viewsInterface
+package com.BSLCommunity.onlinefilmstracker.views.viewsInterface
 
 import com.BSLCommunity.onlinefilmstracker.objects.Film
 

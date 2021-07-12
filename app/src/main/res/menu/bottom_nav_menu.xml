@@ -28,5 +28,5 @@
         android:id="@+id/nav_watch"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_watch_later_24"
-        android:title="Досмотреть" />
+        android:title="@string/watch_later" />
 </menu>

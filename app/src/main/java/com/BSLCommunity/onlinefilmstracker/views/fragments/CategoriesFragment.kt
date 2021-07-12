@@ -12,8 +12,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.presenters.CategoriesPresenter
-import com.BSLCommunity.onlinefilmstracker.viewsInterface.CategoriesView
-import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmListCallView
+import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.CategoriesView
+import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmListCallView
 import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
 
 class CategoriesFragment : Fragment(), CategoriesView, AdapterView.OnItemSelectedListener, FilmListCallView {

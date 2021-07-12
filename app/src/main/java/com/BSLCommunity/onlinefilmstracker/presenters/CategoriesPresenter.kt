@@ -5,8 +5,8 @@ import com.BSLCommunity.onlinefilmstracker.models.CategoriesModel
 import com.BSLCommunity.onlinefilmstracker.models.FilmModel
 import com.BSLCommunity.onlinefilmstracker.models.FilmsListModel
 import com.BSLCommunity.onlinefilmstracker.objects.Film
-import com.BSLCommunity.onlinefilmstracker.viewsInterface.CategoriesView
-import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmsListView
+import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.CategoriesView
+import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmsListView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

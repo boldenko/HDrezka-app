@@ -1,6 +1,6 @@
-package com.BSLCommunity.onlinefilmstracker.viewsInterface
+package com.BSLCommunity.onlinefilmstracker.views.viewsInterface
 
-import com.BSLCommunity.onlinefilmstracker.views.interfaces.IMsg
+import com.BSLCommunity.onlinefilmstracker.interfaces.IMsg
 
 interface BookmarksView {
     fun setBookmarksSpinner(bookmarksNames: ArrayList<String>)

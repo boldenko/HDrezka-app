@@ -1,6 +1,7 @@
 package com.BSLCommunity.onlinefilmstracker.views.fragments
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -13,9 +14,10 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.clients.AuthWebViewClient
-import com.BSLCommunity.onlinefilmstracker.utils.FileManager
+import com.BSLCommunity.onlinefilmstracker.interfaces.OnFragmentInteractionListener
 import com.BSLCommunity.onlinefilmstracker.models.BookmarksModel
 import com.BSLCommunity.onlinefilmstracker.models.UserModel
+import com.BSLCommunity.onlinefilmstracker.objects.UserData
 import com.BSLCommunity.onlinefilmstracker.presenters.UserPresenter
 import com.BSLCommunity.onlinefilmstracker.views.MainActivity
 import com.squareup.picasso.Picasso
@@ -35,6 +37,12 @@ class UserFragment : Fragment() {
     private var isLoaded = false
     private lateinit var authPanel: LinearLayout
     private lateinit var exitPanel: TextView
+    private lateinit var fragmentListener: OnFragmentInteractionListener
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        fragmentListener = context as OnFragmentInteractionListener
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         currentView = inflater.inflate(R.layout.fragment_user, container, false)
@@ -46,11 +54,20 @@ class UserFragment : Fragment() {
 
         initExitButton()
 
-        UserModel.isLoggedIn?.let {
+        UserData.isLoggedIn?.let {
             setAuthPanel(it)
         }
 
+        currentView.findViewById<TextView>(R.id.fragment_user_tv_settings).setOnClickListener {
+            fragmentListener.onFragmentInteraction(this, SettingsFragment(), OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, true, null, null)
+        }
+
         return currentView
+    }
+
+    override fun onResume() {
+        Toast.makeText(context, "r", Toast.LENGTH_LONG).show()
+        super.onResume()
     }
 
 
@@ -119,7 +136,7 @@ class UserFragment : Fragment() {
         if (isLogged) {
             webView.visibility = View.GONE
 
-            UserModel.saveLoggedIn(isLogged, requireContext())
+            UserData.setLoggedIn(isLogged, requireContext())
             setAuthPanel(isLogged)
             setUserAvatar()
 
@@ -137,7 +154,7 @@ class UserFragment : Fragment() {
     private fun initExitButton() {
         exitPanel.setOnClickListener {
             activity?.let {
-                UserModel.saveLoggedIn(false, it)
+                UserData.setLoggedIn(false, it)
                 setAuthPanel(false)
                 CookieManager.getInstance().removeAllCookies(null)
                 CookieManager.getInstance().flush()
@@ -152,7 +169,7 @@ class UserFragment : Fragment() {
     private fun setUserAvatar() {
         GlobalScope.launch {
             val link: String = UserModel.getUserAvatarLink()
-            FileManager.writeFile(UserModel.USER_AVATAR, link, false, requireContext())
+            UserData.setAvatar(link, requireContext())
 
             withContext(Dispatchers.Main) {
                 Picasso.get().load(link).into(requireActivity().findViewById<ImageView>(R.id.activity_main_iv_user))

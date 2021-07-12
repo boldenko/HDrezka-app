@@ -1,0 +1,27 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="Интерфейс">
+        <ListPreference
+            app:defaultValue="0"
+            app:entries="@array/screens"
+            app:entryValues="@array/screensIds"
+            app:key="screens"
+            app:layout="@layout/custom_list_preference"
+            app:summary="Определяет главный экран при загрузке приложения"
+            app:title="Выбрать главный экран"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Приложение">
+        <ListPreference
+            app:defaultValue="hdrezka.tv"
+            app:entries="@array/providers"
+            app:entryValues="@array/providers"
+            app:key="providers"
+            app:layout="@layout/custom_list_preference"
+            app:summary="Позволяет выбрать сайт с которого будет браться информация"
+            app:title="Выбрать провайдера"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

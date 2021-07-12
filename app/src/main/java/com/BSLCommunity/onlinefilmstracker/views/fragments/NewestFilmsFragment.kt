@@ -14,8 +14,8 @@ import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.constants.AppliedFilter
 import com.BSLCommunity.onlinefilmstracker.presenters.NewestFilmsPresenter
 import com.BSLCommunity.onlinefilmstracker.views.MainActivity
-import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmListCallView
-import com.BSLCommunity.onlinefilmstracker.viewsInterface.NewestFilmsView
+import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmListCallView
+import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.NewestFilmsView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.RangeSlider
 

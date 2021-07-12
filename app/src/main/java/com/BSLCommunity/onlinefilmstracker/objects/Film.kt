@@ -1,6 +1,5 @@
 package com.BSLCommunity.onlinefilmstracker.objects
 
-import android.util.ArrayMap
 import java.io.Serializable
 
 open class Film(

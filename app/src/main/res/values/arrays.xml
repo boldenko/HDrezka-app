@@ -71,4 +71,22 @@
         <item>Мультфильмы</item>
         <item>Аниме</item>
     </string-array>
+    <string-array name="providers">
+        <item>hdrezka.tv</item>
+        <item>hdrezka.ag</item>
+    </string-array>
+    <string-array name="screens">
+        <item>@string/newest</item>
+        <item>@string/categories</item>
+        <item>@string/search_for_movie</item>
+        <item>@string/bookmarks</item>
+        <item>@string/watch_later</item>
+    </string-array>
+    <string-array name="screensIds">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
 </resources>

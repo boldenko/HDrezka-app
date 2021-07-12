@@ -7,13 +7,13 @@ import com.BSLCommunity.onlinefilmstracker.models.FilmModel
 import com.BSLCommunity.onlinefilmstracker.models.FilmsListModel
 import com.BSLCommunity.onlinefilmstracker.models.NewestFilmsModel
 import com.BSLCommunity.onlinefilmstracker.objects.Film
-import com.BSLCommunity.onlinefilmstracker.views.interfaces.INoConnection
-import com.BSLCommunity.onlinefilmstracker.viewsInterface.FilmsListView
-import com.BSLCommunity.onlinefilmstracker.viewsInterface.NewestFilmsView
+import com.BSLCommunity.onlinefilmstracker.interfaces.IConnection
+import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmsListView
+import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.NewestFilmsView
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView, private val filmsListView: FilmsListView, private val noConnectionInterface: INoConnection) {
+class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView, private val filmsListView: FilmsListView, private val connectionInterface: IConnection) {
     private val FILMS_PER_PAGE: Int = 9
 
     private var currentPage: Int = 1 // newest film page
@@ -42,7 +42,7 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView, private
                     newestFilms = FilmsListModel.getFilmsFromPage(NewestFilmsModel.HDREZKA_NEWEST + currentPage)
                     currentPage++
                 } catch (e: Exception) {
-                    noConnectionInterface.showErrorDialog()
+                    connectionInterface.showErrorDialog()
                     return@launch
                 }
             }

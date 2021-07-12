@@ -18,10 +18,11 @@ import com.BSLCommunity.onlinefilmstracker.objects.Film
 import com.BSLCommunity.onlinefilmstracker.objects.WatchLater
 import com.BSLCommunity.onlinefilmstracker.presenters.WatchLaterPresenter
 import com.BSLCommunity.onlinefilmstracker.utils.FragmentOpener
-import com.BSLCommunity.onlinefilmstracker.views.interfaces.IMsg
-import com.BSLCommunity.onlinefilmstracker.views.interfaces.OnFragmentInteractionListener
+import com.BSLCommunity.onlinefilmstracker.interfaces.IMsg
+import com.BSLCommunity.onlinefilmstracker.interfaces.OnFragmentInteractionListener
+import com.BSLCommunity.onlinefilmstracker.objects.UserData
 import com.BSLCommunity.onlinefilmstracker.views.adapters.WatchLaterRecyclerViewAdapter
-import com.BSLCommunity.onlinefilmstracker.viewsInterface.WatchLaterView
+import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.WatchLaterView
 
 class WatchLaterFragment : Fragment(), WatchLaterView {
     private lateinit var currentView: View
@@ -58,7 +59,7 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
             }
         })
 
-        if (UserModel.isLoggedIn == true) {
+        if (UserData.isLoggedIn == true) {
             listView.layoutManager = LinearLayoutManager(context)
             watchLaterPresenter = WatchLaterPresenter(this)
             watchLaterPresenter.initList()
