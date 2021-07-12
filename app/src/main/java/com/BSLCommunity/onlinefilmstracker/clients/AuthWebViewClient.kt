@@ -50,13 +50,24 @@ class AuthWebViewClient(val isLogin: Boolean, val callback: (isLogged: Boolean) 
                     "windowPopup.style.width = '90%';" +
                     "document.getElementsByClassName('b-popup__close')[0].style.display = 'none';" +
                     "document.getElementsByClassName('b-login__popup_join')[0].style.display = 'none';" +
-                    "document.getElementById('overlay').style.display = 'none';", null
+                    "document.getElementById('overlay').style.display = 'none';" +
+                   // "body.classList.remove('active-brand');" +
+                    "function setPos(){" +
+                    "let isChanged = false;" +
+                    "for (let i = 0; i < body.childNodes.length; ++i) {" +
+                    "const node = body.childNodes[i];" +
+                    "if(node.childNodes.length > 0 && node.style.position == 'fixed'){node.style.display = 'none'; isChanged = true; return;}" +
+                    "} " +
+                    "if(!isChanged){setTimeout(setPos, 1000);}" +
+                    "} " +
+                    "setTimeout(setPos, 1000);", null
         )
 
         callback(false)
 
         super.onPageFinished(view, url)
     }
+
 
     private fun checkUrl(url: String): Boolean {
         return if (url == "http://hdrezka.tv/favorites/" || url == "https://rezka.ag/") {

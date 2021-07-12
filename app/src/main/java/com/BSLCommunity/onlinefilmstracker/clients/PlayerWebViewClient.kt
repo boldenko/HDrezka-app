@@ -60,7 +60,26 @@ class PlayerWebViewClient(val callback: () -> Unit) : WebViewClient() {
                     "voices.style.minWidth = 'unset';}}" +
                     "}});" +
                     "mo2.observe(parent, {childList: true, subtree: true});" +
-                    "})()", null
+                    "const timeLine = document.getElementById('oframecdnplayer').childNodes[9];" +
+                    "timeLine.style.width = '100%';" +
+                    "timeLine.childNodes[0].style.width = '70%';" +
+                    "const loadIcon = document.getElementById('oframecdnplayer').childNodes[13];" +
+                    "loadIcon.style.left = '50%';" +
+                    "const mo3 = new MutationObserver(() => {" +
+                    "loadIcon.style.left = '50%';" +
+                    "});" +
+                    "mo3.observe(loadIcon, { attributes: true, attributeFilter: ['style'] });" +
+                    // "document.body.classList.remove('active-brand');" +
+                    "function setPos(){" +
+                    "let isChanged = false;" +
+                    "for (let i = 0; i < document.body.childNodes.length; ++i) {" +
+                    "const node = document.body.childNodes[i];" +
+                    "if(node.childNodes.length > 0 && node.style.position == 'fixed'){node.style.display = 'none'; isChanged = true; return;}" +
+                    "} " +
+                    "if(!isChanged){setTimeout(setPos, 1000);}" +
+                    "} " +
+                    "setTimeout(setPos, 1000);" +
+                    "})();", null
         )
 
         view?.evaluateJavascript("javascript: document.body.style.height = 'unset';", null)
