@@ -52,7 +52,7 @@
                 android:layout_marginBottom="6dp"
                 android:text="nickname"
                 android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:textSize="@dimen/normal_text" />
 
         </LinearLayout>
 
@@ -62,6 +62,6 @@
             android:layout_height="wrap_content"
             android:text="text text text text"
             android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:textSize="@dimen/normal_text" />
     </LinearLayout>
 </LinearLayout>

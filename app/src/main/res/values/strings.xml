@@ -26,4 +26,7 @@
     <string name="filters">Фильтры</string>
     <string name="slow_search">Поиск идет слишком долго. Остановить?</string>
     <string name="watch_later">Досмотреть</string>
+    <string name="imdb">IMDb: %1$s</string>
+    <string name="kp">Кинопоиск: %1$s</string>
+    <string name="wa">World Art: %1$s</string>
 </resources>

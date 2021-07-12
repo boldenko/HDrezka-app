@@ -2,4 +2,7 @@
 <resources>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="filters_text_size">14sp</dimen>
+    <dimen name="head_text">24sp</dimen>
+    <dimen name="normal_text">16sp</dimen>
+    <dimen name="small_text">12sp</dimen>
 </resources>

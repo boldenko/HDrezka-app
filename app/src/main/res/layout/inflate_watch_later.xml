@@ -45,7 +45,7 @@
                 android:padding="3dp"
                 android:text="Игра престолов (2011-2019, проект завершен)"
                 android:textColor="@color/white"
-                android:textSize="18sp" />
+                android:textSize="@dimen/normal_text" />
 
 
             <TextView
@@ -55,7 +55,7 @@
                 android:padding="3dp"
                 android:text="Дата: 06-07-2021"
                 android:textColor="@color/white"
-                android:textSize="18sp" />
+                android:textSize="@dimen/normal_text" />
 
             <TextView
                 android:id="@+id/watchLater_info"
@@ -64,7 +64,7 @@
                 android:padding="3dp"
                 android:text="1 сезон 1 серия (HDrezka Studio) смотреть ещё 9 серий в 1 сезоне"
                 android:textColor="@color/white"
-                android:textSize="18sp" />
+                android:textSize="@dimen/normal_text" />
         </LinearLayout>
     </LinearLayout>
 

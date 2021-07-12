@@ -1,9 +1,11 @@
 package com.BSLCommunity.onlinefilmstracker.models
 
-import android.util.ArrayMap
 import com.BSLCommunity.onlinefilmstracker.objects.Comment
 import org.json.JSONObject
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Element
+import org.jsoup.nodes.Node
+import org.jsoup.nodes.TextNode
 import org.jsoup.select.Elements
 
 object CommentsModel {
@@ -27,7 +29,22 @@ object CommentsModel {
             val avatarPath: String = el.select("div.ava img")[0].attr("src")
             val nickname: String = el.select("span.name")[0].text()
             val date: String = el.select("span.date")[0].text()
-            val text: String = el.select("div.text div")[0].text()
+            val text: ArrayList<Pair<Comment.TextType, String>> = ArrayList()
+            val textElements: Element = el.select("div.text div")[0]
+            for (textItem in textElements.childNodes()) {
+                when (textItem) {
+                    is TextNode -> {
+                        text.add(Pair(Comment.TextType.REGULAR, textItem.text()))
+                    }
+                    is Element -> {
+                        if (textItem.hasClass("text_spoiler")) {
+                            text.add(Pair(Comment.TextType.SPOILER, textItem.text()))
+                        } else if (textItem.text() != "спойлер") {
+                            text.add(Pair(Comment.TextType.REGULAR, textItem.text()))
+                        }
+                    }
+                }
+            }
             val indent: Int = el.attr("data-indent")[0].toString().toInt()
 
             comments.add(Comment(avatarPath, nickname, text, date, indent))

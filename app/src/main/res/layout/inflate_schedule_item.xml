@@ -14,7 +14,7 @@
         android:padding="10dp"
         android:text="null"
         android:textColor="@color/white"
-        android:textSize="16sp" />
+        android:textSize="@dimen/normal_text" />
 
     <TextView
         android:id="@+id/inflate_item_name"
@@ -24,7 +24,7 @@
         android:padding="10dp"
         android:text="null"
         android:textColor="@color/white"
-        android:textSize="16sp" />
+        android:textSize="@dimen/normal_text" />
 
     <TextView
         android:id="@+id/inflate_item_date"
@@ -34,7 +34,7 @@
         android:padding="10dp"
         android:text="null"
         android:textColor="@color/white"
-        android:textSize="16sp" />
+        android:textSize="@dimen/normal_text" />
 
     <TextView
         android:id="@+id/inflate_item_next_episode"
@@ -44,7 +44,7 @@
         android:padding="10dp"
         android:text="null"
         android:textColor="@color/white"
-        android:textSize="16sp" />
+        android:textSize="@dimen/normal_text" />
 </LinearLayout>
 
 

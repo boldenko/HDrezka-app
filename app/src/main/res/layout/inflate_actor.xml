@@ -33,6 +33,6 @@
             android:breakStrategy="balanced"
             android:gravity="center"
             android:textColor="#FFFFFF"
-            android:textSize="12sp" />
+            android:textSize="@dimen/small_text" />
     </LinearLayout>
 </LinearLayout>

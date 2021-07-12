@@ -1,5 +1,6 @@
 package com.BSLCommunity.onlinefilmstracker.presenters
 
+import android.util.Log
 import com.BSLCommunity.onlinefilmstracker.models.ActorModel
 import com.BSLCommunity.onlinefilmstracker.models.BookmarksModel
 import com.BSLCommunity.onlinefilmstracker.models.CommentsModel
@@ -17,6 +18,7 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
     private val activeComments: ArrayList<Comment> = ArrayList()
     private val loadedComments: ArrayList<Comment> = ArrayList()
     private var commentsPage = 1
+    private var isCommentsLoading: Boolean = false
     val COMMENTS_PER_AGE = 18
 
     fun initFilmData() {
@@ -90,28 +92,54 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
     fun getNextComments() {
         filmView.setCommentsProgressState(true)
 
-        if(loadedComments.size > 0){
-            for((index, comment) in (loadedComments.clone() as ArrayList<Comment>).withIndex()){
+        if (isCommentsLoading) {
+            Log.d("COMMENT_TEST", "comments still loading... return")
+            return
+        }
+
+        Log.d("COMMENT_TEST", "comment loading is $isCommentsLoading")
+
+        if (loadedComments.size > 0) {
+            Log.d("COMMENT_TEST", "loaded comments ${loadedComments.size} > 0")
+
+            for ((index, comment) in (loadedComments.clone() as ArrayList<Comment>).withIndex()) {
                 activeComments.add(comment)
                 loadedComments.removeAt(0)
 
-                if(index == COMMENTS_PER_AGE - 1){
+                if (index == COMMENTS_PER_AGE - 1) {
                     break
                 }
             }
 
+            Log.d("COMMENT_TEST", "added active comments. Current size is ${activeComments.size}")
+
+
             filmView.redrawComments()
             filmView.setCommentsProgressState(false)
-        } else{
+            Log.d("COMMENT_TEST", "comments redraw")
+
+        } else {
+            isCommentsLoading = true
+
             GlobalScope.launch {
                 film.filmId?.let {
                     CommentsModel.getCommentsFromPage(commentsPage, it)
                 }?.let {
                     loadedComments.addAll(it)
                 }
-                commentsPage++
 
-                withContext(Dispatchers.Main){
+                Log.d("COMMENT_TEST", "downloaded comments ${loadedComments.size} from page $commentsPage")
+
+
+                commentsPage++
+                isCommentsLoading = false
+
+                Log.d("COMMENT_TEST", "comment loading is $isCommentsLoading")
+
+
+                withContext(Dispatchers.Main) {
+                    Log.d("COMMENT_TEST", "recall getNextComments()")
+
                     getNextComments()
                 }
             }

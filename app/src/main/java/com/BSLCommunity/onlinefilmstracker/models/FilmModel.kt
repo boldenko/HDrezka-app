@@ -19,6 +19,8 @@ object FilmModel {
     private const val FILM_POSTER = "div.b-sidecover a"
     private const val FILM_TABLE_INFO = "table.b-post__info tbody tr"
     private const val FILM_IMDB_RATING = "span.imdb span"
+    private const val FILM_KP_RATING = "span.kp span"
+    private const val FILM_WA_RATING = "span.wa span"
 
     fun getMainData(film: Film): Film {
         val filmPage: Document = Jsoup.connect(film.link).get()
@@ -50,6 +52,8 @@ object FilmModel {
                     when (h2.text()) {
                         "Рейтинги" -> {
                             film.ratingIMDB = td[1].select(FILM_IMDB_RATING).text()
+                            film.ratingKP = td[1].select(FILM_KP_RATING).text()
+                            film.ratingWA = td[1].select(FILM_WA_RATING).text()
                         }
                         "Дата выхода" -> {
                             film.date = td[1].ownText()
@@ -83,7 +87,9 @@ object FilmModel {
         val document: Document = Jsoup.connect(film.link).header("Cookie", CookieManager.getInstance().getCookie(BookmarksModel.MAIN_PAGE)).get()
         film.origTitle = document.select("div.b-post__origtitle").text()
         film.description = document.select("div.b-post__description_text").text()
-        film.votes = document.select("span.imdb i").text()
+        film.votesIMDB = document.select("span.imdb i").text()
+        film.votesKP = document.select("span.kp i").text()
+        film.votesWA = document.select("span.wa i").text()
         film.runtime = document.select("td[itemprop=duration]").text()
         film.filmId = document.select("div.b-userset__fav_holder").attr("data-post_id")
 

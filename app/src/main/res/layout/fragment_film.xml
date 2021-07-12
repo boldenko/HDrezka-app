@@ -12,14 +12,14 @@
         android:id="@+id/fragment_film_pb_loading"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:visibility="gone" />
+        android:layout_centerInParent="true"
+        android:visibility="visible" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/fragment_film_sv_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,59 +30,50 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:weightSum="1">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.85"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/fragment_film_tv_rating"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:layout_marginEnd="10dp"
-                        android:background="@drawable/rating_bg"
-                        android:gravity="center"
-                        android:text="0.0\n (0)"
-                        android:textAlignment="center"
-                        android:textColor="#FFFFFF"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:weightSum="1">
 
                         <TextView
                             android:id="@+id/fragment_film_tv_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="0.5"
                             android:breakStrategy="balanced"
                             android:text="Film title"
                             android:textColor="@color/main_color_3"
-                            android:textSize="18sp" />
+                            android:textSize="@dimen/head_text" />
 
                         <TextView
                             android:id="@+id/fragment_film_tv_origtitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="0.5"
                             android:breakStrategy="balanced"
-                            android:text="Film orig title"
+                            android:text="Film original title"
                             android:textColor="@color/main_color_3"
-                            android:textSize="14sp" />
+                            android:textSize="@dimen/normal_text" />
                     </LinearLayout>
 
                 </LinearLayout>
 
                 <ImageView
                     android:id="@+id/fragment_film_iv_bookmark"
-                    android:layout_width="90dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
                     android:layout_margin="5dp"
-                    android:layout_weight="0.5"
+                    android:layout_weight="0.15"
                     android:background="#00000000"
                     android:clickable="true"
                     android:contentDescription="bookmarks button"
@@ -122,7 +113,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.4"
-                    android:adjustViewBounds="true" />
+                    android:adjustViewBounds="true"
+                    android:contentDescription="film poster" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -132,13 +124,40 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/fragment_film_tv_ratingIMDB"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:text="IMDB Rating"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/normal_text" />
+
+                    <TextView
+                        android:id="@+id/fragment_film_tv_ratingKP"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:text="KP Rating"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/normal_text" />
+
+                    <TextView
+                        android:id="@+id/fragment_film_tv_ratingWA"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:text="WA Rating"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/normal_text" />
+
+                    <TextView
                         android:id="@+id/fragment_film_tv_directors"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
                         android:text="Directors"
-                        android:textColor="#FFFFFF"
-                        android:textSize="16sp" />
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/normal_text" />
 
                     <TextView
                         android:id="@+id/fragment_film_tv_releaseDate"
@@ -146,8 +165,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
                         android:text="Release date"
-                        android:textColor="#FFFFFF"
-                        android:textSize="16sp" />
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/normal_text" />
 
                     <TextView
                         android:id="@+id/fragment_film_tv_runtime"
@@ -155,8 +174,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
                         android:text="Runtime"
-                        android:textColor="#FFFFFF"
-                        android:textSize="16sp" />
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/normal_text" />
 
                     <TextView
                         android:id="@+id/fragment_film_tv_countries"
@@ -164,8 +183,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
                         android:text="Countries"
-                        android:textColor="#FFFFFF"
-                        android:textSize="16sp" />
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/normal_text" />
 
                     <TextView
                         android:id="@+id/fragment_film_tv_type"
@@ -173,8 +192,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
                         android:text="Type"
-                        android:textColor="#FFFFFF"
-                        android:textSize="16sp" />
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/normal_text" />
+
                 </LinearLayout>
             </LinearLayout>
 
@@ -182,6 +202,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -190,8 +211,8 @@
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="15dp"
                     android:text="@string/plot"
-                    android:textColor="#FFFFFF"
-                    android:textSize="24sp" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/head_text" />
 
                 <TextView
                     android:id="@+id/fragment_film_tv_plot"
@@ -199,13 +220,14 @@
                     android:layout_height="match_parent"
                     android:justificationMode="inter_word"
                     android:textColor="@color/white"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/normal_text" />
             </LinearLayout>
 
             <!-- Player -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
                 <ProgressBar
@@ -224,6 +246,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -232,8 +255,8 @@
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="15dp"
                     android:text="@string/cast"
-                    android:textColor="#FFFFFF"
-                    android:textSize="24sp" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/head_text" />
 
                 <HorizontalScrollView
                     android:layout_width="match_parent"
@@ -253,6 +276,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -262,8 +286,8 @@
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="15dp"
                     android:text="График выхода серий"
-                    android:textColor="#FFFFFF"
-                    android:textSize="24sp" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/head_text" />
 
                 <LinearLayout
                     android:id="@+id/fragment_film_ll_schedule"
@@ -277,6 +301,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -286,8 +311,8 @@
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="15dp"
                     android:text="Все части"
-                    android:textColor="#FFFFFF"
-                    android:textSize="24sp" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/head_text" />
 
                 <LinearLayout
                     android:id="@+id/fragment_film_tv_collection_list"
@@ -299,6 +324,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -308,8 +334,8 @@
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="15dp"
                     android:text="Смотреть ещё"
-                    android:textColor="#FFFFFF"
-                    android:textSize="24sp" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/head_text" />
 
                 <HorizontalScrollView
                     android:layout_width="wrap_content"
@@ -334,8 +360,8 @@
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="15dp"
                     android:text="Комментарии"
-                    android:textColor="#FFFFFF"
-                    android:textSize="24sp" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/head_text" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/fragment_film_rv_comments"
@@ -349,9 +375,9 @@
     </androidx.core.widget.NestedScrollView>
 
     <ProgressBar
-        android:visibility="gone"
         android:id="@+id/fragment_film_pb_comments_loading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:visibility="gone" />
 </RelativeLayout>

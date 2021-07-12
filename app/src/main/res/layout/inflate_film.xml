@@ -34,7 +34,7 @@
             android:paddingEnd="6dp"
             android:text="Type"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="@dimen/normal_text" />
     </RelativeLayout>
 
     <TextView
@@ -44,7 +44,7 @@
         android:breakStrategy="balanced"
         android:text="Title"
         android:textColor="@color/white"
-        android:textSize="14sp" />
+        android:textSize="@dimen/normal_text" />
 
     <TextView
         android:id="@+id/film_info"
@@ -53,6 +53,6 @@
         android:singleLine="false"
         android:text="Info"
         android:textColor="#C8C8C8"
-        android:textSize="14sp" />
+        android:textSize="@dimen/normal_text" />
 
 </LinearLayout>

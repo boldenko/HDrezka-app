@@ -15,12 +15,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.clients.PlayerChromeClient
 import com.BSLCommunity.onlinefilmstracker.clients.PlayerWebViewClient
-import com.BSLCommunity.onlinefilmstracker.models.UserModel
+import com.BSLCommunity.onlinefilmstracker.interfaces.OnFragmentInteractionListener
 import com.BSLCommunity.onlinefilmstracker.objects.*
 import com.BSLCommunity.onlinefilmstracker.presenters.FilmPresenter
 import com.BSLCommunity.onlinefilmstracker.utils.FragmentOpener
 import com.BSLCommunity.onlinefilmstracker.utils.UnitsConverter
-import com.BSLCommunity.onlinefilmstracker.interfaces.OnFragmentInteractionListener
 import com.BSLCommunity.onlinefilmstracker.views.adapters.CommentsRecyclerViewAdapter
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmView
 import com.github.aakira.expandablelayout.ExpandableLinearLayout
@@ -89,12 +88,10 @@ class FilmFragment : Fragment(), FilmView {
         filmPresenter.initFullSizeImage()
 
         Picasso.get().load(film.posterPath).into(currentView.findViewById<ImageView>(R.id.fragment_film_iv_poster))
-        val ratingView: TextView = currentView.findViewById(R.id.fragment_film_tv_rating)
-        if (film.ratingIMDB != null && film.votes != null) {
-            ratingView.text = "${film.ratingIMDB}\n${film.votes}"
-        } else {
-            ratingView.visibility = View.GONE
-        }
+        setRating(R.id.fragment_film_tv_ratingIMDB, R.string.imdb, film.ratingIMDB, film.votesIMDB)
+        setRating(R.id.fragment_film_tv_ratingKP, R.string.kp, film.ratingKP, film.votesKP)
+        setRating(R.id.fragment_film_tv_ratingWA, R.string.wa, film.ratingWA, film.votesWA)
+
         currentView.findViewById<TextView>(R.id.fragment_film_tv_title).text = film.title
         currentView.findViewById<TextView>(R.id.fragment_film_tv_origtitle).text = film.origTitle
         currentView.findViewById<TextView>(R.id.fragment_film_tv_releaseDate).text = getString(R.string.release_date, "${film.date} ${film.year}")
@@ -104,6 +101,15 @@ class FilmFragment : Fragment(), FilmView {
 
         currentView.findViewById<ProgressBar>(R.id.fragment_film_pb_loading).visibility = View.GONE
         scrollView.visibility = View.VISIBLE
+    }
+
+    private fun setRating(viewId: Int, stringId: Int, rating: String?, votes: String?) {
+        val ratingTextView: TextView = currentView.findViewById(viewId)
+        if (rating != null && votes != null && rating.isNotEmpty() && votes.isNotEmpty()) {
+            ratingTextView.text = getString(stringId, "$rating $votes")
+        } else {
+            ratingTextView.visibility = View.GONE
+        }
     }
 
     override fun setActors(actors: ArrayList<Actor?>) {
@@ -278,9 +284,9 @@ class FilmFragment : Fragment(), FilmView {
             val infoView: TextView = layout.findViewById(R.id.film_info)
             layout.findViewById<TextView>(R.id.film_type).visibility = View.GONE
             titleView.text = film.title
-            titleView.textSize = 10F
+            titleView.textSize = 12F
             infoView.text = film.relatedMisc
-            infoView.textSize = 10F
+            infoView.textSize = 12F
 
             val filmPoster: ImageView = layout.findViewById(R.id.film_poster)
             Picasso.get().load(film.posterPath).into(filmPoster, object : Callback {
