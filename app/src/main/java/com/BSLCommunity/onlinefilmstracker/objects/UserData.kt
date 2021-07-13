@@ -21,12 +21,18 @@ object UserData {
         avatarLink = FileManager.readFile(USER_AVATAR, context)
     }
 
-    fun setLoggedIn(state: Boolean, context: Context) {
-        isLoggedIn = state
-        FileManager.writeFile(USER_FILE, if (state) "1" else "0", false, context)
+    fun setLoggedIn(context: Context) {
+        isLoggedIn = true
+        FileManager.writeFile(USER_FILE, "1", false, context)
     }
 
     fun setAvatar(avatarLink: String, context: Context) {
         FileManager.writeFile(USER_AVATAR, avatarLink, false, context)
+    }
+
+    fun reset(context: Context) {
+        isLoggedIn = false
+        FileManager.writeFile(USER_FILE, "0", false, context)
+        FileManager.writeFile(USER_AVATAR, "", false, context)
     }
 }

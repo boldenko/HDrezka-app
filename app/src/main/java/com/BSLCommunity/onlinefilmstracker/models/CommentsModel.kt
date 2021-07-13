@@ -1,20 +1,22 @@
 package com.BSLCommunity.onlinefilmstracker.models
 
 import com.BSLCommunity.onlinefilmstracker.objects.Comment
+import com.BSLCommunity.onlinefilmstracker.objects.SettingsData
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
-import org.jsoup.nodes.Node
 import org.jsoup.nodes.TextNode
 import org.jsoup.select.Elements
 
 object CommentsModel {
+    private const val COMMENT_LINK = "/ajax/get_comments/"
+
     // filmId = news_id
     // t = unix time
     // cstart = page
     fun getCommentsFromPage(page: Int, filmId: String): ArrayList<Comment> {
         val unixTime = System.currentTimeMillis()
-        val result: String = Jsoup.connect("http://hdrezka.tv/ajax/get_comments/?t=$unixTime&news_id=$filmId&cstart=$page&type=0&comment_id=0&skin=hdrezka")
+        val result: String = Jsoup.connect(SettingsData.provider + COMMENT_LINK + "?t=$unixTime&news_id=$filmId&cstart=$page&type=0&comment_id=0&skin=hdrezka")
             .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
             .ignoreContentType(true)
             .execute()

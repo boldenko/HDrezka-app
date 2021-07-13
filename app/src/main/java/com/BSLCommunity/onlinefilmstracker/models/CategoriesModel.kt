@@ -2,15 +2,14 @@ package com.BSLCommunity.onlinefilmstracker.models
 
 import android.util.ArrayMap
 import com.BSLCommunity.onlinefilmstracker.objects.Film
+import com.BSLCommunity.onlinefilmstracker.objects.SettingsData
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 
 object CategoriesModel {
-    private const val MAIN_PAGE = "http://hdrezka.tv/"
-
     fun getCategories(): ArrayMap<String, ArrayList<Pair<String, String>>> {
-        val doc: Document = Jsoup.connect(MAIN_PAGE).get()
+        val doc: Document = Jsoup.connect(SettingsData.provider).get()
 
         val categories: ArrayMap<String, ArrayList<Pair<String, String>>> = ArrayMap()
         val els: Elements = doc.select("li.b-topnav__item")
@@ -34,5 +33,9 @@ object CategoriesModel {
         }
 
         return categories
+    }
+
+    fun getFilmsFromCategory(catLink: String, page: Int): ArrayList<Film> {
+        return FilmsListModel.getFilmsFromPage(SettingsData.provider + catLink + "page/" + page)
     }
 }

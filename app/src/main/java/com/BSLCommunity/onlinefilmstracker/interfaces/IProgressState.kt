@@ -1,8 +1,10 @@
 package com.BSLCommunity.onlinefilmstracker.interfaces
 
 interface IProgressState {
-    enum class State {
+    enum class StateType {
         LOADING,
         LOADED
     }
+
+    fun setProgressBarState(type: StateType)
 }

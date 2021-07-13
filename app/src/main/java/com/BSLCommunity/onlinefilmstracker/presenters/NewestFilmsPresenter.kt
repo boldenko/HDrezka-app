@@ -1,11 +1,10 @@
 package com.BSLCommunity.onlinefilmstracker.presenters
 
 import android.util.ArrayMap
-import android.util.Log
 import com.BSLCommunity.onlinefilmstracker.constants.AppliedFilter
 import com.BSLCommunity.onlinefilmstracker.interfaces.IConnection
+import com.BSLCommunity.onlinefilmstracker.interfaces.IProgressState
 import com.BSLCommunity.onlinefilmstracker.models.FilmModel
-import com.BSLCommunity.onlinefilmstracker.models.FilmsListModel
 import com.BSLCommunity.onlinefilmstracker.models.NewestFilmsModel
 import com.BSLCommunity.onlinefilmstracker.objects.Film
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmsListView
@@ -13,7 +12,7 @@ import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.NewestFilmsView
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView, private val filmsListView: FilmsListView, private val connectionInterface: IConnection) {
+class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView, private val filmsListView: FilmsListView) {
     private val FILMS_PER_PAGE: Int = 9
 
     private var currentPage: Int = 1 // newest film page
@@ -36,14 +35,14 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView, private
         }
 
         isLoading = true
-        filmsListView.setProgressBarState(true)
+        filmsListView.setProgressBarState(IProgressState.StateType.LOADING)
         GlobalScope.launch {
             if (newestFilms.size == 0) {
                 try {
-                    newestFilms = FilmsListModel.getFilmsFromPage(NewestFilmsModel.HDREZKA_NEWEST + currentPage)
+                    newestFilms = NewestFilmsModel.getNewestFilms(currentPage)
                     currentPage++
                 } catch (e: Exception) {
-                    connectionInterface.showErrorDialog()
+                    newestFilmsView.showConnectionError(IConnection.ErrorType.PARSING_ERROR)
                     return@launch
                 }
             }
@@ -63,7 +62,6 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView, private
         val sortedFilms: ArrayList<Film> = ArrayList()
         for (film in films) {
             if (checkFilmForFilters(film)) {
-                Log.d("FILM_DEBUG", "sorted ${film.title}")
                 sortedFilms.add(film)
             }
         }
@@ -73,7 +71,7 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView, private
         sortedFilmsCount += sortedFilms.size
         if (sortedFilmsCount >= FILMS_PER_PAGE) {
             sortedFilmsCount = 0
-            filmsListView.setProgressBarState(false)
+            filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
         } else {
             getNextFilms()
         }
@@ -91,7 +89,7 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView, private
     fun applyFilters() {
         activeFilms.clear()
         filmsListView.redrawFilms()
-        filmsListView.setProgressBarState(true)
+        filmsListView.setProgressBarState(IProgressState.StateType.LOADING)
         addFilms(allFilms)
     }
 
@@ -123,7 +121,7 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView, private
                     list.add(item)
                 }
             }
-            if(list.size > 0){
+            if (list.size > 0) {
                 filters[filterEntry.key] = list
             }
         }

@@ -2,7 +2,6 @@ package com.BSLCommunity.onlinefilmstracker.views.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,14 +12,14 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.BSLCommunity.onlinefilmstracker.R
-import com.BSLCommunity.onlinefilmstracker.models.UserModel
+import com.BSLCommunity.onlinefilmstracker.interfaces.IMsg
+import com.BSLCommunity.onlinefilmstracker.interfaces.IProgressState
+import com.BSLCommunity.onlinefilmstracker.interfaces.OnFragmentInteractionListener
 import com.BSLCommunity.onlinefilmstracker.objects.Film
+import com.BSLCommunity.onlinefilmstracker.objects.UserData
 import com.BSLCommunity.onlinefilmstracker.objects.WatchLater
 import com.BSLCommunity.onlinefilmstracker.presenters.WatchLaterPresenter
 import com.BSLCommunity.onlinefilmstracker.utils.FragmentOpener
-import com.BSLCommunity.onlinefilmstracker.interfaces.IMsg
-import com.BSLCommunity.onlinefilmstracker.interfaces.OnFragmentInteractionListener
-import com.BSLCommunity.onlinefilmstracker.objects.UserData
 import com.BSLCommunity.onlinefilmstracker.views.adapters.WatchLaterRecyclerViewAdapter
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.WatchLaterView
 
@@ -40,7 +39,6 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         currentView = inflater.inflate(R.layout.fragment_watch_later_list, container, false)
-        Log.d("FRAGMENT_TEST", "watch init")
 
         listView = currentView.findViewById(R.id.fragment_watch_later_list_rv)
         progressBar = currentView.findViewById(R.id.fragment_watch_later_list_pb_loading)
@@ -53,7 +51,7 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
                 val diff = view.bottom - (scrollView.height + scrollView.scrollY)
 
                 if (diff == 0) {
-                    setProgressBarState(true)
+                    setProgressBarState(IProgressState.StateType.LOADING)
                     watchLaterPresenter.getNextWatchLater()
                 }
             }
@@ -79,29 +77,28 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
         FragmentOpener.openFilm(film, this, fragmentListener)
     }
 
-    override fun showMsg(msg: IMsg.MsgType) {
+    override fun showMsg(type: IMsg.MsgType) {
         msgView.visibility = View.VISIBLE
         listView.visibility = View.GONE
         progressBar.visibility = View.GONE
 
-        var text = ""
-        when (msg) {
-            IMsg.MsgType.NOT_AUTHORIZED -> text = "Данный раздел доступен только зарегистрированным пользователям"
-            IMsg.MsgType.NOTHING_ADDED -> text = "В этот раздел попадают все просматриваемые тобой сериалы"
+        val text = when (type) {
+            IMsg.MsgType.NOT_AUTHORIZED -> getString(R.string.register_user_only)
+            IMsg.MsgType.NOTHING_ADDED -> getString(R.string.empty_watch_later)
+            IMsg.MsgType.NOTHING_FOUND -> getString(R.string.nothing_found)
         }
 
         msgView.text = text
     }
 
-    override fun redrawWatchLaterList() {
-        listView.adapter?.notifyDataSetChanged()
+    override fun setProgressBarState(type: IProgressState.StateType) {
+        progressBar.visibility = when (type) {
+            IProgressState.StateType.LOADED -> View.GONE
+            IProgressState.StateType.LOADING -> View.VISIBLE
+        }
     }
 
-    override fun setProgressBarState(state: Boolean) {
-        if (state) {
-            progressBar.visibility = View.VISIBLE
-        } else {
-            progressBar.visibility = View.GONE
-        }
+    override fun redrawWatchLaterList() {
+        listView.adapter?.notifyDataSetChanged()
     }
 }

@@ -12,7 +12,6 @@ import com.BSLCommunity.onlinefilmstracker.objects.SettingsData
 import com.BSLCommunity.onlinefilmstracker.views.adapters.ViewPagerAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-
 class ViewPagerFragment : Fragment() {
     private lateinit var currentView: View
     private lateinit var viewPager2: ViewPager2
@@ -28,7 +27,7 @@ class ViewPagerFragment : Fragment() {
     }
 
     private fun setBottomBar() {
-        bottomNavigationView = currentView.findViewById<BottomNavigationView>(R.id.fragment_pager_nv_bottomBar)
+        bottomNavigationView = currentView.findViewById(R.id.fragment_pager_nv_bottomBar)
         viewPager2 = currentView.findViewById(R.id.fragment_pager_viewPager2)
         viewPager2.offscreenPageLimit = 5
 
@@ -56,7 +55,6 @@ class ViewPagerFragment : Fragment() {
             }
         })
     }
-
 
     fun setAdapter() {
         val fragmentList = arrayListOf(

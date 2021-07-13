@@ -1,5 +1,6 @@
 package com.BSLCommunity.onlinefilmstracker.presenters
 
+import com.BSLCommunity.onlinefilmstracker.interfaces.IProgressState
 import com.BSLCommunity.onlinefilmstracker.models.FilmModel
 import com.BSLCommunity.onlinefilmstracker.models.FilmsListModel
 import com.BSLCommunity.onlinefilmstracker.models.SearchModel
@@ -13,8 +14,10 @@ import kotlinx.coroutines.withContext
 
 class SearchPresenter(private val searchView: SearchView, private val filmsListView: FilmsListView) {
     private val FILMS_PER_PAGE = 9
+
     var activeSearchFilms: ArrayList<Film> = ArrayList()
     var activeListFilms: ArrayList<Film> = ArrayList()
+
     private var loadedListFilms: ArrayList<Film> = ArrayList()
     private var currentPage: Int = 1
     private var isLoading: Boolean = false
@@ -50,11 +53,11 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
         }
 
         isLoading = true
-        filmsListView.setProgressBarState(true)
+        filmsListView.setProgressBarState(IProgressState.StateType.LOADING)
 
         GlobalScope.launch {
             if (loadedListFilms.size == 0) {
-                loadedListFilms = FilmsListModel.getFilmsFromPage(SearchModel.SEARCH_QUERY + query + "&page=$currentPage")
+                loadedListFilms =  SearchModel.getFilmsFromSearchPage(query, currentPage)
                 currentPage++
             }
             FilmModel.getFilmsData(loadedListFilms, FILMS_PER_PAGE, ::addFilms)
@@ -66,6 +69,6 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
         isLoading = false
         activeListFilms.addAll(films)
         filmsListView.redrawFilms()
-        filmsListView.setProgressBarState(false)
+        filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
     }
 }

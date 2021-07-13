@@ -9,7 +9,7 @@ object FileManager {
             val file = File(context.filesDir.toString(), src)
             val data = StringBuilder()
             val br = BufferedReader(FileReader(file))
-            var text: String? = null
+            var text: String?
             while (br.readLine().also { text = it } != null) {
                 data.append(text)
             }

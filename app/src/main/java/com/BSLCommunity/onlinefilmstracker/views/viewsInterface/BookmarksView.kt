@@ -1,11 +1,10 @@
 package com.BSLCommunity.onlinefilmstracker.views.viewsInterface
 
+import com.BSLCommunity.onlinefilmstracker.interfaces.IConnection
 import com.BSLCommunity.onlinefilmstracker.interfaces.IMsg
 
-interface BookmarksView {
+interface BookmarksView : IMsg, IConnection {
     fun setBookmarksSpinner(bookmarksNames: ArrayList<String>)
-
-    fun showMsg(type: IMsg.MsgType)
 
     fun setNoBookmarks()
 }

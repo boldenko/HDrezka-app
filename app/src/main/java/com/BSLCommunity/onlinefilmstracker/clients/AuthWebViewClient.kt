@@ -5,8 +5,10 @@ import android.os.Build
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.BSLCommunity.onlinefilmstracker.objects.SettingsData
+import com.BSLCommunity.onlinefilmstracker.presenters.UserPresenter
 
-class AuthWebViewClient(val isLogin: Boolean, val callback: (isLogged: Boolean) -> Unit) : WebViewClient() {
+class AuthWebViewClient(val type: UserPresenter.WindowType, val callback: (isLogged: Boolean) -> Unit) : WebViewClient() {
 
     @TargetApi(Build.VERSION_CODES.N)
     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
@@ -25,11 +27,12 @@ class AuthWebViewClient(val isLogin: Boolean, val callback: (isLogged: Boolean) 
 
     override fun onPageFinished(view: WebView?, url: String?) {
         var additionalScript = ""
-        val window: String = if (isLogin) {
-            "login-popup"
-        } else {
-            additionalScript += "\$('.b-tophead__register').trigger('click');"
-            "register-popup"
+        val window: String = when (type) {
+            UserPresenter.WindowType.LOGIN -> "login-popup"
+            UserPresenter.WindowType.REGISTRATION -> {
+                additionalScript += "\$('.b-tophead__register').trigger('click');"
+                "register-popup"
+            }
         }
 
         view?.evaluateJavascript(
@@ -51,7 +54,7 @@ class AuthWebViewClient(val isLogin: Boolean, val callback: (isLogged: Boolean) 
                     "document.getElementsByClassName('b-popup__close')[0].style.display = 'none';" +
                     "document.getElementsByClassName('b-login__popup_join')[0].style.display = 'none';" +
                     "document.getElementById('overlay').style.display = 'none';" +
-                   // "body.classList.remove('active-brand');" +
+                    // "body.classList.remove('active-brand');" +
                     "function setPos(){" +
                     "let isChanged = false;" +
                     "for (let i = 0; i < body.childNodes.length; ++i) {" +
@@ -70,7 +73,7 @@ class AuthWebViewClient(val isLogin: Boolean, val callback: (isLogged: Boolean) 
 
 
     private fun checkUrl(url: String): Boolean {
-        return if (url == "http://hdrezka.tv/favorites/" || url == "https://rezka.ag/") {
+        return if (url == SettingsData.provider + "/" || url == "https://rezka.ag/") {
             callback(true)
             true
         } else {

@@ -30,7 +30,7 @@ class CommentsRecyclerViewAdapter(private val context: Context, private val comm
     }
 
     private val spoilerTag = "||"
-    private val spoilerText = "Спойлер"
+    private val spoilerText = context.getString(R.string.spoiler)
     private var isNextColor = true
     private var lastColor: CommentColor = CommentColor.DARK
 

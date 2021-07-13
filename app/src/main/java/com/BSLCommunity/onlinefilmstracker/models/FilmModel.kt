@@ -1,10 +1,10 @@
 package com.BSLCommunity.onlinefilmstracker.models
 
-import android.util.Log
 import android.webkit.CookieManager
 import com.BSLCommunity.onlinefilmstracker.objects.Bookmark
 import com.BSLCommunity.onlinefilmstracker.objects.Film
 import com.BSLCommunity.onlinefilmstracker.objects.Schedule
+import com.BSLCommunity.onlinefilmstracker.objects.SettingsData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -84,7 +84,7 @@ object FilmModel {
     }
 
     fun getAdditionalData(film: Film): Film {
-        val document: Document = Jsoup.connect(film.link).header("Cookie", CookieManager.getInstance().getCookie(BookmarksModel.MAIN_PAGE)).get()
+        val document: Document = Jsoup.connect(film.link).header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider)).get()
         film.origTitle = document.select("div.b-post__origtitle").text()
         film.description = document.select("div.b-post__description_text").text()
         film.votesIMDB = document.select("span.imdb i").text()
@@ -200,7 +200,6 @@ object FilmModel {
         return film
     }
 
-
     fun getFilmsData(films: ArrayList<Film>, filmsPerPage: Int, callback: (ArrayList<Film>) -> Unit) {
         val filmsToLoad: ArrayList<Film> = ArrayList()
         for ((index, film) in (films.clone() as ArrayList<Film>).withIndex()) {
@@ -219,7 +218,6 @@ object FilmModel {
                 loadedFilms[index] = getMainData(film)
                 count++
 
-                Log.d("FILM_DEBUG", "loaded ${film.title} on index $index")
                 if (count >= filmsToLoad.size) {
                     val list: ArrayList<Film> = ArrayList()
                     for (item in loadedFilms) {
@@ -227,7 +225,6 @@ object FilmModel {
                             list.add(item)
                         }
                     }
-                    Log.d("FILM_DEBUG", "all loaded")
 
                     withContext(Dispatchers.Main) {
                         callback(list)

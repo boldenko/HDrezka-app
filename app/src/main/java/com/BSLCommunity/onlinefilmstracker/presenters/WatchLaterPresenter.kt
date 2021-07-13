@@ -4,6 +4,7 @@ import com.BSLCommunity.onlinefilmstracker.models.FilmModel
 import com.BSLCommunity.onlinefilmstracker.models.WatchLaterModel
 import com.BSLCommunity.onlinefilmstracker.objects.WatchLater
 import com.BSLCommunity.onlinefilmstracker.interfaces.IMsg
+import com.BSLCommunity.onlinefilmstracker.interfaces.IProgressState
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.WatchLaterView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -31,7 +32,7 @@ class WatchLaterPresenter(private val watchLaterView: WatchLaterView) {
     }
 
     fun getNextWatchLater() {
-        watchLaterView.setProgressBarState(true)
+        watchLaterView.setProgressBarState(IProgressState.StateType.LOADING)
 
         val dataToLoad: ArrayList<WatchLater> = ArrayList()
         if (loadedWatchLaterList.size > 0) {
@@ -57,7 +58,7 @@ class WatchLaterPresenter(private val watchLaterView: WatchLaterView) {
                     withContext(Dispatchers.Main) {
                         activeWatchLaterList.addAll(dataToLoad)
                         watchLaterView.redrawWatchLaterList()
-                        watchLaterView.setProgressBarState(false)
+                        watchLaterView.setProgressBarState(IProgressState.StateType.LOADED)
                     }
                 }
             }

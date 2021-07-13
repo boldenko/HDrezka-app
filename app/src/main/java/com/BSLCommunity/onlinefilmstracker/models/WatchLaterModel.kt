@@ -1,16 +1,17 @@
 package com.BSLCommunity.onlinefilmstracker.models
 
 import android.webkit.CookieManager
+import com.BSLCommunity.onlinefilmstracker.objects.SettingsData
 import com.BSLCommunity.onlinefilmstracker.objects.WatchLater
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 
 object WatchLaterModel {
-    const val MAIN_PAGE = "http://hdrezka.tv/continue/"
+    private const val MAIN_PAGE = "/continue/"
 
     fun getWatchLaterList(): ArrayList<WatchLater> {
-        val document: Document = Jsoup.connect(MAIN_PAGE).header("Cookie", CookieManager.getInstance().getCookie(BookmarksModel.MAIN_PAGE)).get()
+        val document: Document = Jsoup.connect(SettingsData.provider + MAIN_PAGE).header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider)).get()
 
         val watchLaterList: ArrayList<WatchLater> = ArrayList()
 

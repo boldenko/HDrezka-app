@@ -1,7 +1,6 @@
 package com.BSLCommunity.onlinefilmstracker.views.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +8,8 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.constants.AppliedFilter
+import com.BSLCommunity.onlinefilmstracker.interfaces.IConnection
 import com.BSLCommunity.onlinefilmstracker.presenters.NewestFilmsPresenter
-import com.BSLCommunity.onlinefilmstracker.views.MainActivity
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmListCallView
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.NewestFilmsView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -24,8 +23,6 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentView = inflater.inflate(R.layout.fragment_newest_films, container, false) as LinearLayout
 
-        Log.d("FRAGMENT_TEST", "newest init")
-
         filmsListFragment = FilmsListFragment()
         filmsListFragment.setCallView(this)
         childFragmentManager.beginTransaction().replace(R.id.fragment_newest_films_fcv_container, filmsListFragment).commit()
@@ -36,7 +33,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
     }
 
     override fun onFilmsListCreated() {
-        newestFilmsPresenter = NewestFilmsPresenter(this, filmsListFragment, requireActivity() as MainActivity)
+        newestFilmsPresenter = NewestFilmsPresenter(this, filmsListFragment)
         newestFilmsPresenter.initFilms()
     }
 
@@ -119,7 +116,6 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
     }
 
     private fun createFilter(title: String, btn: Button, filterType: AppliedFilter, data: Array<String>) {
-
         activity?.let {
             val builder = MaterialAlertDialogBuilder(it)
             builder.setTitle(title)
@@ -156,5 +152,11 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
 
     override fun triggerEnd() {
         newestFilmsPresenter.getNextFilms()
+    }
+
+    override fun showConnectionError(type: IConnection.ErrorType) {
+        if (type == IConnection.ErrorType.PARSING_ERROR) {
+            Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show()
+        }
     }
 }

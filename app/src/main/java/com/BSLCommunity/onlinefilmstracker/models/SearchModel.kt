@@ -1,16 +1,17 @@
 package com.BSLCommunity.onlinefilmstracker.models
 
 import com.BSLCommunity.onlinefilmstracker.objects.Film
+import com.BSLCommunity.onlinefilmstracker.objects.SettingsData
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 
 object SearchModel {
-    private const val SEARCH_URL = "http://hdrezka.tv/engine/ajax/search.php"
-    const val SEARCH_QUERY = "http://hdrezka.tv/search/?do=search&subaction=search&q="
+    private const val SEARCH_URL = "/engine/ajax/search.php"
+    private const val SEARCH_QUERY = "/search/?do=search&subaction=search&q="
 
     fun getFilmsListByQuery(text: String): ArrayList<Film> {
-        val doc: Document = Jsoup.connect(SEARCH_URL).data("q", text).userAgent("Mozilla").post()
+        val doc: Document = Jsoup.connect(SettingsData.provider + SEARCH_URL).data("q", text).userAgent("Mozilla").post()
 
         val films: ArrayList<Film> = ArrayList()
         val els: Elements = doc.select("li")
@@ -36,5 +37,9 @@ object SearchModel {
         }
 
         return films
+    }
+
+    fun getFilmsFromSearchPage(query: String, page: Int): ArrayList<Film> {
+        return FilmsListModel.getFilmsFromPage(SettingsData.provider + SEARCH_QUERY + query + "&page=$page")
     }
 }

@@ -1,11 +1,12 @@
 package com.BSLCommunity.onlinefilmstracker.presenters
 
 import com.BSLCommunity.onlinefilmstracker.constants.BookmarkFilterType
+import com.BSLCommunity.onlinefilmstracker.interfaces.IMsg
+import com.BSLCommunity.onlinefilmstracker.interfaces.IProgressState
 import com.BSLCommunity.onlinefilmstracker.models.BookmarksModel
 import com.BSLCommunity.onlinefilmstracker.models.FilmModel
 import com.BSLCommunity.onlinefilmstracker.objects.Bookmark
 import com.BSLCommunity.onlinefilmstracker.objects.Film
-import com.BSLCommunity.onlinefilmstracker.interfaces.IMsg
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.BookmarksView
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmsListView
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +20,7 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
     var bookmarks: ArrayList<Bookmark>? = null
     val sortFilters: ArrayList<String> = ArrayList(arrayListOf("added", "year", "popular"))
     val showFilters: ArrayList<String> = ArrayList(arrayListOf("0", "1", "2", "3", "82"))
+
     private var selectedBookmark: Bookmark? = null
     private var selectedSortFilter: String? = null
     private var selectedShowFilter: String? = null
@@ -39,7 +41,7 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
                     }
                     bookmarksView.setBookmarksSpinner(names)
                     filmsListView.setFilms(activeFilms)
-                } else{
+                } else {
                     bookmarksView.setNoBookmarks()
                 }
             }
@@ -49,6 +51,7 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
     fun setBookmark(bookmark: Bookmark) {
         reset()
         selectedBookmark = bookmark
+        filmsListView.setProgressBarState(IProgressState.StateType.LOADING)
         getNextFilms()
     }
 
@@ -83,7 +86,7 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
                 } else {
                     isLoading = false
                     withContext(Dispatchers.Main) {
-                        filmsListView.setProgressBarState(false)
+                        filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
                     }
                 }
             }
@@ -94,7 +97,7 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
         isLoading = false
         activeFilms.addAll(films)
         filmsListView.redrawFilms()
-        filmsListView.setProgressBarState(false)
+        filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
     }
 
     fun setFilter(filter: String, type: BookmarkFilterType) {
@@ -108,7 +111,7 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
     }
 
     fun setMsg(type: IMsg.MsgType) {
-        filmsListView.setProgressBarState(false)
+        filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
         bookmarksView.showMsg(type)
     }
 }

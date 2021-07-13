@@ -13,8 +13,6 @@ interface FilmView {
 
     fun setGenres(genres: ArrayList<String>)
 
-    fun setFilmLink(link: String)
-
     fun setFullSizeImage(posterPath: String)
 
     fun setPlayer(link: String)

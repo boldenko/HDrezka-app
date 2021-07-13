@@ -1,6 +1,5 @@
 package com.BSLCommunity.onlinefilmstracker.models
 
-import android.util.Log
 import com.BSLCommunity.onlinefilmstracker.objects.Film
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -8,7 +7,6 @@ import org.jsoup.nodes.Document
 object FilmsListModel {
     const val FILMS = "div.b-content__inline_item"
     const val FILM_LINK = "div.b-content__inline_item-cover a"
-    const val FILM_TYPE = "span.cat i"
 
     fun getFilmsFromPage(url: String): ArrayList<Film> {
         try {

@@ -1,9 +1,9 @@
 package com.BSLCommunity.onlinefilmstracker.presenters
 
 import android.util.ArrayMap
+import com.BSLCommunity.onlinefilmstracker.interfaces.IProgressState
 import com.BSLCommunity.onlinefilmstracker.models.CategoriesModel
 import com.BSLCommunity.onlinefilmstracker.models.FilmModel
-import com.BSLCommunity.onlinefilmstracker.models.FilmsListModel
 import com.BSLCommunity.onlinefilmstracker.objects.Film
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.CategoriesView
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmsListView
@@ -13,12 +13,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class CategoriesPresenter(private val categoriesView: CategoriesView, private val filmsListView: FilmsListView) {
+    private val FILMS_PER_PAGE: Int = 9
+
     private var curPage = 1
     private var loadedFilms: ArrayList<Film> = ArrayList()
     private var activeFilms: ArrayList<Film> = ArrayList()
     private var isLoading: Boolean = false
     private var selectedCategoryLink: String? = null
-    private val FILMS_PER_PAGE: Int = 9
 
     fun initCategories() {
         GlobalScope.launch {
@@ -47,14 +48,14 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
         }
 
         isLoading = true
-        filmsListView.setProgressBarState(true)
+        filmsListView.setProgressBarState(IProgressState.StateType.LOADING)
         if (loadedFilms.size > 0) {
             FilmModel.getFilmsData(loadedFilms, FILMS_PER_PAGE, ::addFilms)
         } else {
             GlobalScope.launch {
                 // if page is not empty
                 selectedCategoryLink?.let {
-                    loadedFilms.addAll(FilmsListModel.getFilmsFromPage("http://hdrezka.tv/" + it + "page/" + curPage))
+                    loadedFilms.addAll(CategoriesModel.getFilmsFromCategory(it, curPage))
                     curPage++
                 }
 
@@ -69,6 +70,6 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
         isLoading = false
         activeFilms.addAll(films)
         filmsListView.redrawFilms()
-        filmsListView.setProgressBarState(false)
+        filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
     }
 }

@@ -1,6 +1,5 @@
 package com.BSLCommunity.onlinefilmstracker.presenters
 
-import android.util.Log
 import com.BSLCommunity.onlinefilmstracker.models.ActorModel
 import com.BSLCommunity.onlinefilmstracker.models.BookmarksModel
 import com.BSLCommunity.onlinefilmstracker.models.CommentsModel
@@ -15,11 +14,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class FilmPresenter(private val filmView: FilmView, private val film: Film) {
+    private val COMMENTS_PER_AGE = 18
+
     private val activeComments: ArrayList<Comment> = ArrayList()
     private val loadedComments: ArrayList<Comment> = ArrayList()
     private var commentsPage = 1
     private var isCommentsLoading: Boolean = false
-    val COMMENTS_PER_AGE = 18
 
     fun initFilmData() {
         GlobalScope.launch {
@@ -37,7 +37,6 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
                 film.countries?.let { filmView.setCountries(it) }
                 film.directors?.let { filmView.setDirectors(it) }
                 film.bookmarks?.let { filmView.setBookmarksList(it) }
-                filmView.setFilmLink(film.link)
                 film.seriesSchedule?.let { filmView.setSchedule(it) }
                 film.collection?.let { filmView.setCollection(it) }
                 film.related?.let { filmView.setRelated(it) }
@@ -93,15 +92,10 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
         filmView.setCommentsProgressState(true)
 
         if (isCommentsLoading) {
-            Log.d("COMMENT_TEST", "comments still loading... return")
             return
         }
 
-        Log.d("COMMENT_TEST", "comment loading is $isCommentsLoading")
-
         if (loadedComments.size > 0) {
-            Log.d("COMMENT_TEST", "loaded comments ${loadedComments.size} > 0")
-
             for ((index, comment) in (loadedComments.clone() as ArrayList<Comment>).withIndex()) {
                 activeComments.add(comment)
                 loadedComments.removeAt(0)
@@ -111,13 +105,8 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
                 }
             }
 
-            Log.d("COMMENT_TEST", "added active comments. Current size is ${activeComments.size}")
-
-
             filmView.redrawComments()
             filmView.setCommentsProgressState(false)
-            Log.d("COMMENT_TEST", "comments redraw")
-
         } else {
             isCommentsLoading = true
 
@@ -128,18 +117,10 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
                     loadedComments.addAll(it)
                 }
 
-                Log.d("COMMENT_TEST", "downloaded comments ${loadedComments.size} from page $commentsPage")
-
-
                 commentsPage++
                 isCommentsLoading = false
 
-                Log.d("COMMENT_TEST", "comment loading is $isCommentsLoading")
-
-
                 withContext(Dispatchers.Main) {
-                    Log.d("COMMENT_TEST", "recall getNextComments()")
-
                     getNextComments()
                 }
             }

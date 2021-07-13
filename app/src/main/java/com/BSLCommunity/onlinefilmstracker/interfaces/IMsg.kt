@@ -6,5 +6,5 @@ interface IMsg {
         NOTHING_FOUND,
         NOTHING_ADDED
     }
-    fun showMsg(msg: MsgType)
+    fun showMsg(type: MsgType)
 }

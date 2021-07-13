@@ -6,10 +6,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.CookieManager
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.objects.SettingsData
+import com.BSLCommunity.onlinefilmstracker.objects.UserData
+import com.BSLCommunity.onlinefilmstracker.views.MainActivity
 
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
     private lateinit var preferences: SharedPreferences
@@ -28,7 +31,15 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
-            "providers" -> SettingsData.setProvider(requireContext())
+            "providers" -> {
+                requireActivity().let {
+                    SettingsData.setProvider(it.applicationContext)
+                    UserData.reset(it)
+                    CookieManager.getInstance().removeAllCookies(null)
+                    CookieManager.getInstance().flush()
+                    (it as MainActivity).updatePager()
+                }
+            }
         }
     }
 }

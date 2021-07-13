@@ -1,5 +1,7 @@
 package com.BSLCommunity.onlinefilmstracker.views.viewsInterface
 
-interface NewestFilmsView {
+import com.BSLCommunity.onlinefilmstracker.interfaces.IConnection
+
+interface NewestFilmsView : IConnection{
 
 }

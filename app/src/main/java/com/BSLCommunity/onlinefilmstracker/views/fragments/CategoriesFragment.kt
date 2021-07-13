@@ -29,7 +29,6 @@ class CategoriesFragment : Fragment(), CategoriesView, AdapterView.OnItemSelecte
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         currentView = inflater.inflate(R.layout.fragment_categories, container, false)
-        Log.d("FRAGMENT_TEST", "cat init")
 
         filmsListFragment = FilmsListFragment()
         filmsListFragment.setCallView(this)

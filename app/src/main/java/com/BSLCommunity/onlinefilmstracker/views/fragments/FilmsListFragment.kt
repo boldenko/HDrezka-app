@@ -2,7 +2,6 @@ package com.BSLCommunity.onlinefilmstracker.views.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +11,13 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.BSLCommunity.onlinefilmstracker.R
+import com.BSLCommunity.onlinefilmstracker.interfaces.IProgressState
+import com.BSLCommunity.onlinefilmstracker.interfaces.OnFragmentInteractionListener
 import com.BSLCommunity.onlinefilmstracker.objects.Film
 import com.BSLCommunity.onlinefilmstracker.utils.FragmentOpener
-import com.BSLCommunity.onlinefilmstracker.interfaces.OnFragmentInteractionListener
 import com.BSLCommunity.onlinefilmstracker.views.adapters.FilmsListRecyclerViewAdapter
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmListCallView
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmsListView
-
 
 open class FilmsListFragment : Fragment(), FilmsListView {
     private val FILMS_PER_ROW: Int = 3
@@ -37,7 +36,6 @@ open class FilmsListFragment : Fragment(), FilmsListView {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         currentView = inflater.inflate(R.layout.fragment_films_list, container, false)
-        Log.d("FRAGMENT_TEST", "film list init")
 
         progressBar = currentView.findViewById(R.id.fragment_films_list_pb_data_loading)
 
@@ -51,7 +49,7 @@ open class FilmsListFragment : Fragment(), FilmsListView {
                 val diff = view.bottom - (scrollView.height + scrollView.scrollY)
 
                 if (diff == 0) {
-                    setProgressBarState(true)
+                    setProgressBarState(IProgressState.StateType.LOADING)
                     callView.triggerEnd()
                 }
             }
@@ -74,15 +72,14 @@ open class FilmsListFragment : Fragment(), FilmsListView {
         viewList.adapter?.notifyDataSetChanged()
     }
 
-    override fun setProgressBarState(state: Boolean) {
-        if (state) {
-            progressBar.visibility = View.VISIBLE
-        } else {
-            progressBar.visibility = View.GONE
+    override fun setProgressBarState(type: IProgressState.StateType) {
+        progressBar.visibility = when (type) {
+            IProgressState.StateType.LOADED -> View.GONE
+            IProgressState.StateType.LOADING -> View.VISIBLE
         }
     }
 
-    fun listCallback(film: Film) {
+    private fun listCallback(film: Film) {
         FragmentOpener.openFilm(film, this, fragmentListener)
     }
 }

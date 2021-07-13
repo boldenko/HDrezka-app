@@ -3,30 +3,23 @@ package com.BSLCommunity.onlinefilmstracker.views.fragments
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.CookieManager
 import android.webkit.WebView
 import android.widget.*
 import androidx.fragment.app.Fragment
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.clients.AuthWebViewClient
 import com.BSLCommunity.onlinefilmstracker.interfaces.OnFragmentInteractionListener
-import com.BSLCommunity.onlinefilmstracker.models.BookmarksModel
-import com.BSLCommunity.onlinefilmstracker.models.UserModel
 import com.BSLCommunity.onlinefilmstracker.objects.UserData
 import com.BSLCommunity.onlinefilmstracker.presenters.UserPresenter
 import com.BSLCommunity.onlinefilmstracker.views.MainActivity
+import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.UserView
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-class UserFragment : Fragment() {
+class UserFragment : Fragment(), UserView {
     private lateinit var currentView: View
     private lateinit var userPresenter: UserPresenter
     private lateinit var popupWindowView: RelativeLayout
@@ -46,8 +39,7 @@ class UserFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         currentView = inflater.inflate(R.layout.fragment_user, container, false)
-        userPresenter = UserPresenter()
-        Log.d("FRAGMENT_TEST", "user init")
+        userPresenter = UserPresenter(this, requireContext())
 
         authPanel = currentView.findViewById(R.id.fragment_user_ll_auth_panel)
         exitPanel = currentView.findViewById(R.id.fragment_user_tv_exit)
@@ -99,26 +91,25 @@ class UserFragment : Fragment() {
 
             currentView.findViewById<TextView>(R.id.fragment_user_tv_login).setOnClickListener {
                 // login
-                loadAuthPage(true)
+                userPresenter.setAuthWindow(UserPresenter.WindowType.LOGIN)
             }
 
             currentView.findViewById<TextView>(R.id.fragment_user_tv_register).setOnClickListener {
                 //register
-                loadAuthPage(false)
+                userPresenter.setAuthWindow(UserPresenter.WindowType.REGISTRATION)
             }
         }
     }
 
-    private fun loadAuthPage(isLogin: Boolean) {
+    override fun showAuthWindow(type: UserPresenter.WindowType, link: String) {
         webView.visibility = View.GONE
         popupWindowCloseBtn?.visibility = View.GONE
         popupWindowLoadingBar.visibility = View.VISIBLE
 
-        webView.webViewClient = AuthWebViewClient(isLogin, ::authCallback)
-
+        webView.webViewClient = AuthWebViewClient(type, ::authCallback)
         popupWindow.showAtLocation(popupWindowView, Gravity.CENTER, 0, 0)
         if (!isLoaded) {
-            webView.loadUrl(BookmarksModel.MAIN_PAGE)
+            webView.loadUrl(link)
             isLoaded = true
         }
     }
@@ -130,9 +121,9 @@ class UserFragment : Fragment() {
         if (isLogged) {
             webView.visibility = View.GONE
 
-            UserData.setLoggedIn(isLogged, requireContext())
             setAuthPanel(isLogged)
-            setUserAvatar()
+            userPresenter.enter()
+            userPresenter.getUserAvatar()
 
             activity?.let {
                 (it as MainActivity).updatePager()
@@ -147,27 +138,17 @@ class UserFragment : Fragment() {
 
     private fun initExitButton() {
         exitPanel.setOnClickListener {
-            activity?.let {
-                UserData.setLoggedIn(false, it)
-                setAuthPanel(false)
-                CookieManager.getInstance().removeAllCookies(null)
-                CookieManager.getInstance().flush()
+            setAuthPanel(false)
+            userPresenter.exit()
 
-                activity?.let { it1 ->
-                    (it1 as MainActivity).updatePager()
-                }
+            activity?.let { it1 ->
+                (it1 as MainActivity).updatePager()
             }
+
         }
     }
 
-    private fun setUserAvatar() {
-        GlobalScope.launch {
-            val link: String = UserModel.getUserAvatarLink()
-            UserData.setAvatar(link, requireContext())
-
-            withContext(Dispatchers.Main) {
-                Picasso.get().load(link).into(requireActivity().findViewById<ImageView>(R.id.activity_main_iv_user))
-            }
-        }
+    override fun setUserAvatar(link: String) {
+        Picasso.get().load(link).into(requireActivity().findViewById<ImageView>(R.id.activity_main_iv_user))
     }
 }

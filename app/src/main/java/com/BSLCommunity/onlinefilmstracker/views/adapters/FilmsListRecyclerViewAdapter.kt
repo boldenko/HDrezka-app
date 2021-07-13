@@ -1,7 +1,6 @@
 package com.BSLCommunity.onlinefilmstracker.views.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +22,6 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val film = films[position]
-        Log.d("FILM_DEBUG", "binded ${film.title} on position $position")
         Picasso.get().load(film.posterPath).into(holder.filmPoster, object : Callback {
             override fun onSuccess() {
                 holder.progressView.visibility = View.GONE

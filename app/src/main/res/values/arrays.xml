@@ -73,7 +73,17 @@
     </string-array>
     <string-array name="providers">
         <item>hdrezka.tv</item>
-        <item>hdrezka.ag</item>
+        <item>rezka.ag</item>
+        <item>hdrezka.me</item>
+        <item>hdrezka.co</item>
+        <item>hdrezka.club</item>
+    </string-array>
+    <string-array name="providersIds">
+        <item>http://hdrezka.tv</item>
+        <item>https://rezka.ag</item>
+        <item>http://hdrezka.me</item>
+        <item>http://hdrezka.co</item>
+        <item>https://hdrezka.club</item>
     </string-array>
     <string-array name="screens">
         <item>@string/newest</item>

@@ -4,21 +4,18 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import com.BSLCommunity.onlinefilmstracker.R
+import com.BSLCommunity.onlinefilmstracker.interfaces.IProgressState
+import com.BSLCommunity.onlinefilmstracker.interfaces.OnFragmentInteractionListener
 import com.BSLCommunity.onlinefilmstracker.presenters.SearchPresenter
 import com.BSLCommunity.onlinefilmstracker.utils.FragmentOpener
-import com.BSLCommunity.onlinefilmstracker.interfaces.OnFragmentInteractionListener
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmListCallView
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.SearchView
 
@@ -30,6 +27,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
     private lateinit var imm: InputMethodManager
     private lateinit var hintLayout: LinearLayout
     private lateinit var fragmentListener: OnFragmentInteractionListener
+    private lateinit var clearBtn: TextView
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -38,7 +36,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentView = inflater.inflate(R.layout.fragment_search, container, false)
-        Log.d("FRAGMENT_TEST", "search init")
+        clearBtn = currentView.findViewById<TextView>(R.id.fragment_search_tv_clear)
 
         filmsListFragment = FilmsListFragment()
         filmsListFragment.setCallView(this)
@@ -56,7 +54,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
     override fun onFilmsListCreated() {
         searchPresenter = SearchPresenter(this, filmsListFragment)
         searchPresenter.initFilms()
-        filmsListFragment.setProgressBarState(false)
+        filmsListFragment.setProgressBarState(IProgressState.StateType.LOADED)
         super.onStart()
     }
 
@@ -67,12 +65,12 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
                 autoCompleteTextView.dismissDropDown()
                 val text: String = autoCompleteTextView.text.toString()
 
-                Log.d("TEXT_TEST", text)
                 //проверяем ведденный текст
                 if (text.isEmpty()) {
-                    Toast.makeText(context, "Enter film name!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.enter_film_name), Toast.LENGTH_SHORT).show()
                 } else {
                     hintLayout.visibility = View.GONE
+                    imm.hideSoftInputFromWindow(autoCompleteTextView.windowToken, 0)
                     searchPresenter.setQuery(text)
                 }
             }
@@ -91,6 +89,12 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (!autoCompleteTextView.isPerformingCompletion) {
                     searchPresenter.getFilms(s.toString())
+
+                    if (s.toString().isNotEmpty()) {
+                        clearBtn.visibility = View.VISIBLE
+                    } else {
+                        clearBtn.visibility = View.GONE
+                    }
                 }
             }
         })
@@ -100,6 +104,10 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
             imm.hideSoftInputFromWindow(autoCompleteTextView.windowToken, 0)
             autoCompleteTextView.dismissDropDown()
             FragmentOpener.openFilm(searchPresenter.activeSearchFilms[position], this, fragmentListener)
+        }
+
+        clearBtn.setOnClickListener {
+            autoCompleteTextView.setText("")
         }
     }
 

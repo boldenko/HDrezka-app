@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.webkit.WebView
@@ -28,12 +27,14 @@ import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 
 class FilmFragment : Fragment(), FilmView {
+    private val FILM_ARG = "film"
     private lateinit var currentView: View
     private lateinit var filmPresenter: FilmPresenter
     private lateinit var fragmentListener: OnFragmentInteractionListener
     private lateinit var playerView: WebView
     private lateinit var scrollView: NestedScrollView
     private lateinit var commentsList: RecyclerView
+    private var commentsAdded: Boolean = false
     private var modalDialog: Dialog? = null
 
     override fun onAttach(context: Context) {
@@ -43,13 +44,12 @@ class FilmFragment : Fragment(), FilmView {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentView = inflater.inflate(R.layout.fragment_film, container, false)
-        Log.d("FRAGMENT_TEST", "film init")
 
         currentView.findViewById<ProgressBar>(R.id.fragment_film_pb_loading).visibility = View.VISIBLE
         playerView = currentView.findViewById(R.id.fragment_film_wv_player)
         commentsList = currentView.findViewById(R.id.fragment_film_rv_comments)
 
-        filmPresenter = FilmPresenter(this, (arguments?.getSerializable("film") as Film?)!!)
+        filmPresenter = FilmPresenter(this, (arguments?.getSerializable(FILM_ARG) as Film?)!!)
         filmPresenter.initFilmData()
         filmPresenter.initPlayer()
 
@@ -60,7 +60,10 @@ class FilmFragment : Fragment(), FilmView {
                 val diff = view.bottom - (scrollView.height + scrollView.scrollY)
 
                 if (diff == 0) {
-                    filmPresenter.initComments()
+                    if (!commentsAdded) {
+                        filmPresenter.initComments()
+                        commentsAdded = true
+                    }
                     filmPresenter.getNextComments()
                 }
             }
@@ -74,6 +77,7 @@ class FilmFragment : Fragment(), FilmView {
     @SuppressLint("SetJavaScriptEnabled")
     override fun setPlayer(link: String) {
         playerView.settings.javaScriptEnabled = true
+        playerView.settings.domStorageEnabled = true
         playerView.webViewClient = PlayerWebViewClient {
             currentView.findViewById<ProgressBar>(R.id.fragment_film_pb_player_loading).visibility = View.GONE
             playerView.visibility = View.VISIBLE
@@ -122,7 +126,7 @@ class FilmFragment : Fragment(), FilmView {
 
                     layout.findViewById<TextView>(R.id.actor_name).text = actor.name
 
-                    if (actor.photoLink.isNotEmpty() && actor.photoLink != "https://static.hdrezka.ac/i/nopersonphoto.png") {
+                    if (actor.photoLink.isNotEmpty() && actor.photoLink != SettingsData.staticProvider + "/i/nopersonphoto.png") {
                         val actorProgress: ProgressBar = layout.findViewById(R.id.actor_loading)
                         val actorLayout: LinearLayout = layout.findViewById(R.id.actor_layout)
 
@@ -180,13 +184,6 @@ class FilmFragment : Fragment(), FilmView {
             genreView.text = genre
             genresLayout.addView(genreView)
         }
-    }
-
-    override fun setFilmLink(link: String) {
-        /*val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
-        currentFragment.findViewById<Button>(R.id.fragment_film_bt_film_link).setOnClickListener {
-            startActivity(intent)
-        }*/
     }
 
     override fun setFullSizeImage(posterPath: String) {
@@ -327,12 +324,12 @@ class FilmFragment : Fragment(), FilmView {
 
             activity?.let {
                 val builder = MaterialAlertDialogBuilder(it)
-                builder.setTitle("Выбери разделы закладок")
+                builder.setTitle(getString(R.string.choose_bookmarks))
                 builder.setMultiChoiceItems(data, checkedItems) { dialog, which, isChecked ->
                     filmPresenter.setBookmark(bookmarks[which].catId)
                     checkedItems[which] = isChecked
                 }
-                builder.setPositiveButton("ОК") { dialog, id ->
+                builder.setPositiveButton(getString(R.string.ok)) { dialog, id ->
                     dialog.dismiss()
                 }
                 val d = builder.create()

@@ -24,16 +24,21 @@ import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import kotlin.system.exitProcess
 
-
 class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnection {
     private var isSettingsOpened: Boolean = false
     private lateinit var mainFragment: ViewPagerFragment
+    private var savedInstanceState: Bundle? = null
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        this.savedInstanceState = savedInstanceState
+        initApp()
+    }
+
+    private fun initApp() {
         if (isInternetAvailable(applicationContext)) {
             if (savedInstanceState == null) {
                 requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -47,7 +52,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                 setUserAvatar()
             }
         } else {
-            showErrorDialog()
+            showConnectionError(IConnection.ErrorType.NO_INTERNET)
         }
     }
 
@@ -142,23 +147,30 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         return connection
     }
 
-    override fun showErrorDialog() {
-        val dialog = MaterialAlertDialogBuilder(this)
-        dialog.setTitle("Ошибка. Отсутствует интернет соеденение")
-        dialog.setPositiveButton("Выйти") { dialog, id ->
-            exitProcess(0)
-        }
-        val d = dialog.create()
-        d.show()
-    }
-
     fun updatePager() {
         mainFragment.setAdapter()
     }
 
     private fun setUserAvatar() {
         UserData.avatarLink?.let {
-            Picasso.get().load(it).networkPolicy(NetworkPolicy.OFFLINE).into(findViewById<ImageView>(R.id.activity_main_iv_user))
+            if(UserData.avatarLink!!.isNotEmpty()){
+                Picasso.get().load(it).networkPolicy(NetworkPolicy.OFFLINE).into(findViewById<ImageView>(R.id.activity_main_iv_user))
+            }
+        }
+    }
+
+    override fun showConnectionError(type: IConnection.ErrorType) {
+        if (type == IConnection.ErrorType.NO_INTERNET) {
+            val dialog = MaterialAlertDialogBuilder(this)
+            dialog.setTitle(getString(R.string.no_connection))
+            dialog.setPositiveButton(getString(R.string.exit)) { dialog, id ->
+                exitProcess(0)
+            }
+            dialog.setNegativeButton(getString(R.string.retry)) { dialog, id ->
+                initApp()
+            }
+            val d = dialog.create()
+            d.show()
         }
     }
 }

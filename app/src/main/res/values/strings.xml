@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">HDrezka Client</string>
+    <string name="app_name">HDrezka App</string>
     <string name="runtime">Время: %1$s</string>
     <string name="directors">Режиссер: %1$s</string>
     <string name="countries">Страна: %1$s</string>
@@ -24,9 +24,24 @@
     <string name="multfilms">Мультфильмы</string>
     <string name="anime">Аниме</string>
     <string name="filters">Фильтры</string>
-    <string name="slow_search">Поиск идет слишком долго. Остановить?</string>
     <string name="watch_later">Досмотреть</string>
     <string name="imdb">IMDb: %1$s</string>
     <string name="kp">Кинопоиск: %1$s</string>
     <string name="wa">World Art: %1$s</string>
+    <string name="no_connection">Ошибка. Отсутствует интернет соеденение</string>
+    <string name="exit">Выйти</string>
+    <string name="retry">Повторить</string>
+    <string name="register_user_only">Данный раздел доступен только зарегистрированным пользователям</string>
+    <string name="nothing_found">Ничего не можем найти в закладках по данному запросу</string>
+    <string name="empty_bookmarks">В закладках еще ничего нет</string>
+    <string name="error">Произошла ошибка</string>
+    <string name="enter_film_name">Введите название фильма!</string>
+    <string name="empty_watch_later">В этот раздел попадают все просматриваемые тобой сериалы</string>
+    <string name="choose_bookmarks">Выбери разделы закладок</string>
+    <string name="ok">Выбрать</string>
+    <string name="spoiler">Спойлер</string>
+    <string name="cat_interface">Интерфейс</string>
+    <string name="cat_app">Приложение</string>
+    <string name="cat_main_screen">Выбрать главный экран</string>
+    <string name="cat_provider">Выбрать провайдера</string>
 </resources>

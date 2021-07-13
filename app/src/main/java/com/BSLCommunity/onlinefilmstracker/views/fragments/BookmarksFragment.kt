@@ -1,7 +1,6 @@
 package com.BSLCommunity.onlinefilmstracker.views.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,10 +11,11 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.constants.BookmarkFilterType
-import com.BSLCommunity.onlinefilmstracker.models.UserModel
-import com.BSLCommunity.onlinefilmstracker.presenters.BookmarksPresenter
+import com.BSLCommunity.onlinefilmstracker.interfaces.IConnection
 import com.BSLCommunity.onlinefilmstracker.interfaces.IMsg
+import com.BSLCommunity.onlinefilmstracker.interfaces.IProgressState
 import com.BSLCommunity.onlinefilmstracker.objects.UserData
+import com.BSLCommunity.onlinefilmstracker.presenters.BookmarksPresenter
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.BookmarksView
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmListCallView
 import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
@@ -31,7 +31,6 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentView = inflater.inflate(R.layout.fragment_bookmarks, container, false)
-        Log.d("FRAGMENT_TEST", "book init")
 
         filmsListFragment = FilmsListFragment()
         filmsListFragment.setCallView(this)
@@ -90,7 +89,7 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
     override fun setNoBookmarks() {
         progressBarSpinnerLayout.visibility = View.GONE
         spinnersLayout.visibility = View.GONE
-        filmsListFragment.setProgressBarState(false)
+        filmsListFragment.setProgressBarState(IProgressState.StateType.LOADED)
         showMsg(IMsg.MsgType.NOTHING_ADDED)
     }
 
@@ -98,7 +97,6 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
         when (parent.id) {
             R.id.fragment_bookmarks_sp_sort -> {
                 if (checked > 2) {
-                    Log.d("DEEBUG", "sort selected")
                     bookmarksPresenter.setFilter(bookmarksPresenter.sortFilters[position], BookmarkFilterType.SORT)
                 } else {
                     checked++
@@ -106,14 +104,12 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
             }
             R.id.fragment_bookmarks_sp_show -> {
                 if (checked > 1) {
-                    Log.d("DEEBUG", "show selected")
                     bookmarksPresenter.setFilter(bookmarksPresenter.showFilters[position], BookmarkFilterType.SHOW)
                 } else {
                     checked++
                 }
             }
             R.id.fragment_bookmarks_sp_list -> {
-                Log.d("DEEBUG", "list selected")
                 bookmarksPresenter.bookmarks?.get(position)?.let { bookmarksPresenter.setBookmark(it) }
             }
         }
@@ -126,10 +122,14 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
         msgView.visibility = View.VISIBLE
 
         when (type) {
-            IMsg.MsgType.NOT_AUTHORIZED -> msgView.text = "Данный раздел доступен только зарегистрированным пользователям"
-            IMsg.MsgType.NOTHING_FOUND -> msgView.text = "Ничего не можем найти в закладках по данному запросу"
-            IMsg.MsgType.NOTHING_ADDED -> msgView.text = "В закладках еще ничего нет"
+            IMsg.MsgType.NOT_AUTHORIZED -> msgView.text = getString(R.string.register_user_only)
+            IMsg.MsgType.NOTHING_FOUND -> msgView.text = getString(R.string.nothing_found)
+            IMsg.MsgType.NOTHING_ADDED -> msgView.text = getString(R.string.empty_bookmarks)
         }
+    }
+
+    override fun showConnectionError(type: IConnection.ErrorType) {
+        TODO("Not yet implemented")
     }
 
     override fun triggerEnd() {
