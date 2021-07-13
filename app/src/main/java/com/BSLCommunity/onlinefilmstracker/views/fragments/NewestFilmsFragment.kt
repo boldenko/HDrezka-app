@@ -5,10 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.RadioButton
-import android.widget.RadioGroup
+import android.widget.*
 import androidx.fragment.app.Fragment
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.constants.AppliedFilter
@@ -52,19 +49,19 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
 
             // Year range slider
             filtersDialogView.findViewById<RangeSlider>(R.id.year_range_slider).addOnChangeListener { slider, value, fromUser ->
-                newestFilmsPresenter.setFilter(AppliedFilter.YEAR, arrayListOf(slider.values[0].toString(), slider.values[1].toString()))
+                newestFilmsPresenter.setFilter(AppliedFilter.YEAR, arrayOf(slider.values[0].toString(), slider.values[1].toString()))
             }
 
             // Rating range slider
             filtersDialogView.findViewById<RangeSlider>(R.id.rating_range_slider).addOnChangeListener { slider, value, fromUser ->
-                newestFilmsPresenter.setFilter(AppliedFilter.RATING, arrayListOf(slider.values[0].toString(), slider.values[1].toString()))
+                newestFilmsPresenter.setFilter(AppliedFilter.RATING, arrayOf(slider.values[0].toString(), slider.values[1].toString()))
             }
 
             // Film type buttons
             filtersDialogView.findViewById<RadioGroup>(R.id.film_types).setOnCheckedChangeListener { group, checkedId ->
                 run {
                     val value: String = group.findViewById<RadioButton>(checkedId).text as String
-                    newestFilmsPresenter.setFilter(AppliedFilter.TYPE, arrayListOf(value))
+                    newestFilmsPresenter.setFilter(AppliedFilter.TYPE, arrayOf(value))
                 }
             }
 
@@ -106,34 +103,52 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
                 dialog.dismiss()
             }
             filtersDialog.setNegativeButton("Отменить") { dialog, id ->
+                newestFilmsPresenter.dismissFilters()
                 dialog.dismiss()
+            }
+            filtersDialog.setNeutralButton("Убрать") { dialog, id ->
+                newestFilmsPresenter.clearFilters()
+                Toast.makeText(requireContext(), "Фильтры убраны!", Toast.LENGTH_LONG).show()
             }
             val d = filtersDialog.create()
             currentView.findViewById<Button>(R.id.fragment_newest_films_bt_filters).setOnClickListener {
+                newestFilmsPresenter.initFilters()
                 d.show()
             }
         }
     }
 
     private fun createFilter(title: String, btn: Button, filterType: AppliedFilter, data: Array<String>) {
-        val checkedItems: ArrayList<String> = ArrayList()
 
         activity?.let {
             val builder = MaterialAlertDialogBuilder(it)
             builder.setTitle(title)
-            builder.setMultiChoiceItems(data, BooleanArray(data.size)) { dialog, which, isChecked ->
-                if (isChecked) {
-                    checkedItems.add(data[which])
-                } else {
-                    checkedItems.remove(data[which])
-                }
-            }
-            builder.setPositiveButton("ОК") { dialog, id ->
-                newestFilmsPresenter.setFilter(filterType, checkedItems)
-                dialog.dismiss()
-            }
-            val d = builder.create()
             btn.setOnClickListener {
+                var checkedItems: Array<String?> = arrayOfNulls(data.size)
+
+                newestFilmsPresenter.getFilter(filterType)?.let {
+                    checkedItems = it.clone()
+                }
+
+                val booleanArray = BooleanArray(data.size)
+                for ((index, item) in data.withIndex()) {
+                    booleanArray[index] = item == checkedItems[index]
+                }
+
+                builder.setPositiveButton("ОК") { dialog, id ->
+                    newestFilmsPresenter.setFilter(filterType, checkedItems)
+                    dialog.dismiss()
+                }
+
+                builder.setMultiChoiceItems(data, booleanArray) { dialog, which, isChecked ->
+                    if (isChecked) {
+                        checkedItems[which] = data[which]
+                    } else {
+                        checkedItems[which] = null
+                    }
+                }
+                val d = builder.create()
+
                 d.show()
             }
         }

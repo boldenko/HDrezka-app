@@ -3,11 +3,11 @@ package com.BSLCommunity.onlinefilmstracker.presenters
 import android.util.ArrayMap
 import android.util.Log
 import com.BSLCommunity.onlinefilmstracker.constants.AppliedFilter
+import com.BSLCommunity.onlinefilmstracker.interfaces.IConnection
 import com.BSLCommunity.onlinefilmstracker.models.FilmModel
 import com.BSLCommunity.onlinefilmstracker.models.FilmsListModel
 import com.BSLCommunity.onlinefilmstracker.models.NewestFilmsModel
 import com.BSLCommunity.onlinefilmstracker.objects.Film
-import com.BSLCommunity.onlinefilmstracker.interfaces.IConnection
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmsListView
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.NewestFilmsView
 import kotlinx.coroutines.GlobalScope
@@ -22,7 +22,8 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView, private
     private val allFilms: ArrayList<Film> = ArrayList() // all loaded films
     private val activeFilms: ArrayList<Film> = ArrayList() // current active films
     private var sortedFilmsCount: Int = 0 // current sorted films
-    private var appliedFilters: ArrayMap<AppliedFilter, ArrayList<String>> = ArrayMap() // applied filters
+    private var appliedFilters: ArrayMap<AppliedFilter, Array<String?>> = ArrayMap() // applied filters
+    private var appliedFiltersTmp: ArrayMap<AppliedFilter, Array<String?>>? = null
 
     fun initFilms() {
         filmsListView.setFilms(activeFilms)
@@ -78,8 +79,13 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView, private
         }
     }
 
-    fun setFilter(key: AppliedFilter, value: ArrayList<String>) {
+    fun initFilters() {
+        appliedFiltersTmp = ArrayMap(appliedFilters)
+    }
+
+    fun setFilter(key: AppliedFilter, value: Array<String?>) {
         appliedFilters[key] = value
+        appliedFiltersTmp
     }
 
     fun applyFilters() {
@@ -89,12 +95,40 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView, private
         addFilms(allFilms)
     }
 
+    fun dismissFilters() {
+        appliedFiltersTmp?.let {
+            appliedFilters = it
+        }
+    }
+
+    fun clearFilters() {
+        appliedFilters.clear()
+        applyFilters()
+    }
+
+    fun getFilter(key: AppliedFilter): Array<String?>? {
+        return appliedFilters[key]
+    }
+
     // true - film соотвествует критериям
     // false - фильм не соотвествует критериям
     private fun checkFilmForFilters(film: Film): Boolean {
         val applyList: ArrayMap<AppliedFilter, Boolean> = ArrayMap()
 
+        val filters: ArrayMap<AppliedFilter, ArrayList<String>> = ArrayMap()
         for (filterEntry in appliedFilters) {
+            val list: ArrayList<String> = ArrayList()
+            for (item in filterEntry.value) {
+                if (item != null) {
+                    list.add(item)
+                }
+            }
+            if(list.size > 0){
+                filters[filterEntry.key] = list
+            }
+        }
+
+        for (filterEntry in filters) {
             when (filterEntry.key) {
                 AppliedFilter.COUNTRIES -> {
                     film.countries?.let {
