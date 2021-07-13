@@ -45,6 +45,8 @@ class PlayerWebViewClient(val callback: () -> Unit) : WebViewClient() {
                     "document.getElementsByClassName('b-post__support_holder')[0].style.display='none';" +
                     "document.getElementById('cdnplayer-container').style.width='100%';" +
                     "document.getElementById('cdnplayer').style.width='100%';" +
+                    "document.getElementsByClassName('b-post__status_wrapper')[0].style.width = '100%';" +
+                    "document.getElementsByClassName('b-post__status__tracker__download')[0].style.display = 'none';" +
                     "const playIcon = document.getElementById('oframecdnplayer').childNodes[18];" +
                     "playIcon.style.left = '50%';" +
                     "const mo = new MutationObserver(() => {" +
@@ -60,9 +62,9 @@ class PlayerWebViewClient(val callback: () -> Unit) : WebViewClient() {
                     "voices.style.minWidth = 'unset';}}" +
                     "}});" +
                     "mo2.observe(parent, {childList: true, subtree: true});" +
-                    "const timeLine = document.getElementById('oframecdnplayer').childNodes[9];" +
+                  /*  "const timeLine = document.getElementById('oframecdnplayer').childNodes[9];" +
                     "timeLine.style.width = '100%';" +
-                    "timeLine.childNodes[0].style.width = '70%';" +
+                    "timeLine.childNodes[0].style.width = '70%';" +*/
                     "const loadIcon = document.getElementById('oframecdnplayer').childNodes[13];" +
                     "loadIcon.style.left = '50%';" +
                     "const mo3 = new MutationObserver(() => {" +

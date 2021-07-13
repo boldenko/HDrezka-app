@@ -24,8 +24,15 @@ import com.squareup.picasso.Picasso
 
 
 class CommentsRecyclerViewAdapter(private val context: Context, private val comments: ArrayList<Comment>) : RecyclerView.Adapter<CommentsRecyclerViewAdapter.ViewHolder>() {
+    enum class CommentColor {
+        DARK,
+        LIGHT
+    }
+
     private val spoilerTag = "||"
     private val spoilerText = "Спойлер"
+    private var isNextColor = true
+    private var lastColor: CommentColor = CommentColor.DARK
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.inflate_comment, parent, false)
@@ -61,20 +68,36 @@ class CommentsRecyclerViewAdapter(private val context: Context, private val comm
             holder.textView.createSpoilerText(spoilers)
         }
 
-
         val params = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        params.setMargins(UnitsConverter.getPX(context, comment.indent * 16), UnitsConverter.getPX(context, 6), 0, 0)
+        params.setMargins(UnitsConverter.getPX(context, comment.indent * 20), UnitsConverter.getPX(context, 6), 0, 0)
         holder.layout.layoutParams = params
-        if (position % 2 == 0) {
-            holder.layout.setBackgroundColor(ContextCompat.getColor(context, R.color.light_bg))
-        }
+
 
         if (comment.indent > 0) {
-            holder.indentView.visibility = View.VISIBLE
+            holder.indentLineView.visibility = View.VISIBLE
+            isNextColor = false
+        } else {
+            isNextColor = true
         }
+
+        if (isNextColor) {
+            lastColor = when (lastColor) {
+                CommentColor.LIGHT -> CommentColor.DARK
+                CommentColor.DARK -> CommentColor.LIGHT
+            }
+        }
+
+        holder.layout.setBackgroundColor(
+            ContextCompat.getColor(
+                context, when (lastColor) {
+                    CommentColor.DARK -> R.color.dark_background
+                    CommentColor.LIGHT -> R.color.light_bg
+                }
+            )
+        )
     }
 
     private fun TextView.createSpoilerText(spoilers: ArrayList<String>) {
@@ -150,6 +173,6 @@ class CommentsRecyclerViewAdapter(private val context: Context, private val comm
         val avatarProgressBar: ProgressBar = view.findViewById(R.id.inflate_comment_avatar_loading)
         val infoView: TextView = view.findViewById(R.id.inflate_comment_nickname_date)
         val textView: TextView = view.findViewById(R.id.inflate_comment_text)
-        val indentView: View = view.findViewById(R.id.inflate_comment_indent)
+        val indentLineView: View = view.findViewById(R.id.inflate_comment_indent)
     }
 }

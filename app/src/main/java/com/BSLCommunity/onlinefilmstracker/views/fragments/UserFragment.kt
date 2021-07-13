@@ -65,12 +65,6 @@ class UserFragment : Fragment() {
         return currentView
     }
 
-    override fun onResume() {
-        Toast.makeText(context, "r", Toast.LENGTH_LONG).show()
-        super.onResume()
-    }
-
-
     private fun setAuthPanel(isLogged: Boolean) {
         if (isLogged) {
             popupWindowCloseBtn?.visibility = View.GONE

@@ -8,8 +8,8 @@ import com.BSLCommunity.onlinefilmstracker.R
 
 object SettingsData {
     private var prefs: SharedPreferences? = null
-    private var provider: String? = null
-    private var mainScreen: Int? = null
+    var provider: String? = null
+    var mainScreen: Int? = null
 
     fun init(context: Context) {
         prefs = PreferenceManager.getDefaultSharedPreferences(context)
