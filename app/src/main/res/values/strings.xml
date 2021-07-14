@@ -44,4 +44,25 @@
     <string name="cat_app">Приложение</string>
     <string name="cat_main_screen">Выбрать главный экран</string>
     <string name="cat_provider">Выбрать провайдера</string>
+    <string name="sort_hint">Сортировать</string>
+    <string name="show_hint">Отобразить</string>
+    <string name="catalogue">Каталог</string>
+    <string name="choose_cat_hint">Выберите категорию</string>
+    <string name="choose_genre_hint">Выберите жанр</string>
+    <string name="choose_countries">Выберите страны</string>
+    <string name="choose_genres">Выберите жанры</string>
+    <string name="exclude_countries">Исключить страны</string>
+    <string name="exclude_genres">Исключить жанры</string>
+    <string name="set">Установить</string>
+    <string name="cancel">Отменить</string>
+    <string name="clear">Очистить</string>
+    <string name="filters_cleared">Фильтры убраны</string>
+    <string name="search_hint">Поиск фильмов и сериалов</string>
+    <string name="auth">Авторизация</string>
+    <string name="register">Регистрация</string>
+    <string name="app_settings">Настройки приложения</string>
+    <string name="error_occured">Произошла ошибка</string>
+    <string name="error_empty">Ничего не найдено</string>
+    <string name="error_timeout">Превышен лимит ожидания</string>
+    <string name="error_parsing">Ошибка при получении данных</string>
 </resources>

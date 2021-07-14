@@ -19,7 +19,7 @@
             android:layout_weight="0.8"
             android:padding="8dp"
             android:textColor="@color/white"
-            android:textSize="18sp" />
+            android:textSize="@dimen/normal_text" />
 
         <RelativeLayout
             android:layout_width="0dp"

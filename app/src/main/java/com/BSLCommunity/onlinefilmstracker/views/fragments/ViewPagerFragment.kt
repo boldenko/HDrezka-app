@@ -57,7 +57,7 @@ class ViewPagerFragment : Fragment() {
     }
 
     fun setAdapter() {
-        val fragmentList = arrayListOf(
+        val fragmentList: ArrayList<Fragment> = arrayListOf(
             NewestFilmsFragment(),
             CategoriesFragment(),
             SearchFragment(),

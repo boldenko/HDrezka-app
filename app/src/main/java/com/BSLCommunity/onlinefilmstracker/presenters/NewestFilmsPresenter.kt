@@ -2,11 +2,11 @@ package com.BSLCommunity.onlinefilmstracker.presenters
 
 import android.util.ArrayMap
 import com.BSLCommunity.onlinefilmstracker.constants.AppliedFilter
-import com.BSLCommunity.onlinefilmstracker.interfaces.IConnection
 import com.BSLCommunity.onlinefilmstracker.interfaces.IProgressState
 import com.BSLCommunity.onlinefilmstracker.models.FilmModel
 import com.BSLCommunity.onlinefilmstracker.models.NewestFilmsModel
 import com.BSLCommunity.onlinefilmstracker.objects.Film
+import com.BSLCommunity.onlinefilmstracker.utils.ExceptionHelper.catchException
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmsListView
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.NewestFilmsView
 import kotlinx.coroutines.GlobalScope
@@ -37,16 +37,17 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView, private
         isLoading = true
         filmsListView.setProgressBarState(IProgressState.StateType.LOADING)
         GlobalScope.launch {
-            if (newestFilms.size == 0) {
-                try {
+            try {
+                if (newestFilms.size == 0) {
                     newestFilms = NewestFilmsModel.getNewestFilms(currentPage)
                     currentPage++
-                } catch (e: Exception) {
-                    newestFilmsView.showConnectionError(IConnection.ErrorType.PARSING_ERROR)
-                    return@launch
                 }
+                FilmModel.getFilmsData(newestFilms, FILMS_PER_PAGE, ::processFilms)
+            } catch (e: Exception) {
+                catchException(e, newestFilmsView)
+                isLoading = false
+                return@launch
             }
-            FilmModel.getFilmsData(newestFilms, FILMS_PER_PAGE, ::processFilms)
         }
     }
 

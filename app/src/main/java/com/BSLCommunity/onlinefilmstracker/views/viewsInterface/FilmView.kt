@@ -1,8 +1,9 @@
 package com.BSLCommunity.onlinefilmstracker.views.viewsInterface
 
+import com.BSLCommunity.onlinefilmstracker.interfaces.IConnection
 import com.BSLCommunity.onlinefilmstracker.objects.*
 
-interface FilmView {
+interface FilmView : IConnection {
     fun setFilmBaseData(film: Film)
 
     fun setActors(actors: ArrayList<Actor?>)

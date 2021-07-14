@@ -5,8 +5,9 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Build
+import android.net.wifi.WifiManager
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -29,6 +30,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     private lateinit var mainFragment: ViewPagerFragment
     private var savedInstanceState: Bundle? = null
 
+
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +39,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         this.savedInstanceState = savedInstanceState
         initApp()
     }
+
 
     private fun initApp() {
         if (isInternetAvailable(applicationContext)) {
@@ -47,7 +50,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                 SettingsData.init(applicationContext)
 
                 mainFragment = ViewPagerFragment()
-                onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null)
+                onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null)
                 createUserMenu()
                 setUserAvatar()
             }
@@ -59,7 +62,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     private fun createUserMenu() {
         findViewById<ImageView>(R.id.activity_main_iv_user).setOnClickListener {
             if (!isSettingsOpened) {
-                onFragmentInteraction(mainFragment, UserFragment(), Action.NEXT_FRAGMENT_HIDE, true, null, null)
+                onFragmentInteraction(mainFragment, UserFragment(), Action.NEXT_FRAGMENT_HIDE, true, null, null, null)
                 isSettingsOpened = true
             }
         }
@@ -69,10 +72,11 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         if (isSettingsOpened) {
             isSettingsOpened = false
         }
+
         super.onBackPressed()
     }
 
-    override fun onFragmentInteraction(fragmentSource: Fragment?, fragmentReceiver: Fragment, action: Action, isBackStack: Boolean, backStackTag: String?, data: Bundle?) {
+    override fun onFragmentInteraction(fragmentSource: Fragment?, fragmentReceiver: Fragment, action: Action, isBackStack: Boolean, backStackTag: String?, data: Bundle?, callback: (() -> Unit)?) {
         val fTrans: FragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentReceiver.arguments = data
 
@@ -115,33 +119,29 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
             Action.RETURN_FRAGMENT_BY_TAG -> supportFragmentManager.popBackStack(backStackTag, 0)
             Action.POP_BACK_STACK -> supportFragmentManager.popBackStack()
         }
+
+        supportFragmentManager.addOnBackStackChangedListener {
+            if (callback != null) {
+                callback()
+            }
+        }
     }
 
     private fun isInternetAvailable(context: Context): Boolean {
-        var connection = false
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val networkCapabilities = connectivityManager.activeNetwork ?: return false
-            val actNw = connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
-            connection = when {
-                actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-                actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-                actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-                else -> false
-            }
-        } else {
-            connectivityManager.run {
-                connectivityManager.activeNetworkInfo?.run {
-                    connection = when (type) {
-                        ConnectivityManager.TYPE_WIFI -> true
-                        ConnectivityManager.TYPE_MOBILE -> true
-                        ConnectivityManager.TYPE_ETHERNET -> true
-                        else -> false
-                    }
+        val networkCapabilities = connectivityManager.activeNetwork ?: return false
+        val actNw = connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+        var connection = when {
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+            else -> false
+        }
 
-                }
-            }
+        if (!connection) {
+            val wm = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager?
+            connection = wm?.isWifiEnabled ?: false
         }
 
         return connection
@@ -153,7 +153,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
 
     private fun setUserAvatar() {
         UserData.avatarLink?.let {
-            if(UserData.avatarLink!!.isNotEmpty()){
+            if (UserData.avatarLink!!.isNotEmpty()) {
                 Picasso.get().load(it).networkPolicy(NetworkPolicy.OFFLINE).into(findViewById<ImageView>(R.id.activity_main_iv_user))
             }
         }

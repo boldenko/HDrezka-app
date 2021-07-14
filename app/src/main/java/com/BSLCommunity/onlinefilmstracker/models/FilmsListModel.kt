@@ -9,7 +9,7 @@ object FilmsListModel {
     const val FILM_LINK = "div.b-content__inline_item-cover a"
 
     fun getFilmsFromPage(url: String): ArrayList<Film> {
-        try {
+      /*  try {*/
             val films: ArrayList<Film> = ArrayList()
             val doc: Document = Jsoup.connect(url).get()
 
@@ -17,8 +17,8 @@ object FilmsListModel {
                 films.add(Film(element.select(FILM_LINK).attr("href")))
             }
             return films
-        } catch (e: Exception) {
+       /* } catch (e: Exception) {
             throw e
-        }
+        }*/
     }
 }

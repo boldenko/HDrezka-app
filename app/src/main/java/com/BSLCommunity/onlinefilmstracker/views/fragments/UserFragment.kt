@@ -12,9 +12,11 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.clients.AuthWebViewClient
+import com.BSLCommunity.onlinefilmstracker.interfaces.IConnection
 import com.BSLCommunity.onlinefilmstracker.interfaces.OnFragmentInteractionListener
 import com.BSLCommunity.onlinefilmstracker.objects.UserData
 import com.BSLCommunity.onlinefilmstracker.presenters.UserPresenter
+import com.BSLCommunity.onlinefilmstracker.utils.ExceptionHelper
 import com.BSLCommunity.onlinefilmstracker.views.MainActivity
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.UserView
 import com.squareup.picasso.Picasso
@@ -51,7 +53,7 @@ class UserFragment : Fragment(), UserView {
         }
 
         currentView.findViewById<TextView>(R.id.fragment_user_tv_settings).setOnClickListener {
-            fragmentListener.onFragmentInteraction(this, SettingsFragment(), OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, true, null, null)
+            fragmentListener.onFragmentInteraction(this, SettingsFragment(), OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, true, null, null, null)
         }
 
         return currentView
@@ -106,7 +108,7 @@ class UserFragment : Fragment(), UserView {
         popupWindowCloseBtn?.visibility = View.GONE
         popupWindowLoadingBar.visibility = View.VISIBLE
 
-        webView.webViewClient = AuthWebViewClient(type, ::authCallback)
+        webView.webViewClient = AuthWebViewClient(type, this, ::authCallback)
         popupWindow.showAtLocation(popupWindowView, Gravity.CENTER, 0, 0)
         if (!isLoaded) {
             webView.loadUrl(link)
@@ -150,5 +152,9 @@ class UserFragment : Fragment(), UserView {
 
     override fun setUserAvatar(link: String) {
         Picasso.get().load(link).into(requireActivity().findViewById<ImageView>(R.id.activity_main_iv_user))
+    }
+
+    override fun showConnectionError(type: IConnection.ErrorType) {
+        ExceptionHelper.showToastError(requireContext(), type)
     }
 }

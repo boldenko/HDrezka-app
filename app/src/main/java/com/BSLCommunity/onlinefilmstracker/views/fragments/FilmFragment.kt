@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.webkit.WebView
@@ -14,9 +15,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.clients.PlayerChromeClient
 import com.BSLCommunity.onlinefilmstracker.clients.PlayerWebViewClient
+import com.BSLCommunity.onlinefilmstracker.interfaces.IConnection
 import com.BSLCommunity.onlinefilmstracker.interfaces.OnFragmentInteractionListener
 import com.BSLCommunity.onlinefilmstracker.objects.*
 import com.BSLCommunity.onlinefilmstracker.presenters.FilmPresenter
+import com.BSLCommunity.onlinefilmstracker.utils.ExceptionHelper
 import com.BSLCommunity.onlinefilmstracker.utils.FragmentOpener
 import com.BSLCommunity.onlinefilmstracker.utils.UnitsConverter
 import com.BSLCommunity.onlinefilmstracker.views.adapters.CommentsRecyclerViewAdapter
@@ -40,6 +43,11 @@ class FilmFragment : Fragment(), FilmView {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         fragmentListener = context as OnFragmentInteractionListener
+    }
+
+    override fun onDestroy() {
+        playerView.destroy()
+        super.onDestroy()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -78,7 +86,7 @@ class FilmFragment : Fragment(), FilmView {
     override fun setPlayer(link: String) {
         playerView.settings.javaScriptEnabled = true
         playerView.settings.domStorageEnabled = true
-        playerView.webViewClient = PlayerWebViewClient {
+        playerView.webViewClient = PlayerWebViewClient(this) {
             currentView.findViewById<ProgressBar>(R.id.fragment_film_pb_player_loading).visibility = View.GONE
             playerView.visibility = View.VISIBLE
         }
@@ -356,5 +364,9 @@ class FilmFragment : Fragment(), FilmView {
         } else {
             View.GONE
         }
+    }
+
+    override fun showConnectionError(type: IConnection.ErrorType) {
+        ExceptionHelper.showToastError(requireContext(), type)
     }
 }

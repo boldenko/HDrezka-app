@@ -5,6 +5,7 @@ import com.BSLCommunity.onlinefilmstracker.interfaces.IProgressState
 import com.BSLCommunity.onlinefilmstracker.models.CategoriesModel
 import com.BSLCommunity.onlinefilmstracker.models.FilmModel
 import com.BSLCommunity.onlinefilmstracker.objects.Film
+import com.BSLCommunity.onlinefilmstracker.utils.ExceptionHelper.catchException
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.CategoriesView
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmsListView
 import kotlinx.coroutines.Dispatchers
@@ -23,11 +24,16 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
 
     fun initCategories() {
         GlobalScope.launch {
-            val categories: ArrayMap<String, ArrayList<Pair<String, String>>> = CategoriesModel.getCategories()
+            try {
+                val categories: ArrayMap<String, ArrayList<Pair<String, String>>> = CategoriesModel.getCategories()
 
-            withContext(Dispatchers.Main) {
-                categoriesView.setCategories(categories)
-                filmsListView.setFilms(activeFilms)
+                withContext(Dispatchers.Main) {
+                    categoriesView.setCategories(categories)
+                    filmsListView.setFilms(activeFilms)
+                }
+            } catch (e: Exception) {
+                catchException(e, categoriesView)
+                return@launch
             }
         }
     }
@@ -50,17 +56,29 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
         isLoading = true
         filmsListView.setProgressBarState(IProgressState.StateType.LOADING)
         if (loadedFilms.size > 0) {
-            FilmModel.getFilmsData(loadedFilms, FILMS_PER_PAGE, ::addFilms)
+            try {
+                FilmModel.getFilmsData(loadedFilms, FILMS_PER_PAGE, ::addFilms)
+            } catch (e: Exception) {
+                catchException(e, categoriesView)
+                isLoading = false
+                return
+            }
         } else {
             GlobalScope.launch {
-                // if page is not empty
-                selectedCategoryLink?.let {
-                    loadedFilms.addAll(CategoriesModel.getFilmsFromCategory(it, curPage))
-                    curPage++
-                }
+                try {
+                    // if page is not empty
+                    selectedCategoryLink?.let {
+                        loadedFilms.addAll(CategoriesModel.getFilmsFromCategory(it, curPage))
+                        curPage++
+                    }
 
-                if (loadedFilms.size > 0) {
-                    FilmModel.getFilmsData(loadedFilms, FILMS_PER_PAGE, ::addFilms)
+                    if (loadedFilms.size > 0) {
+                        FilmModel.getFilmsData(loadedFilms, FILMS_PER_PAGE, ::addFilms)
+                    }
+                } catch (e: Exception) {
+                    catchException(e, categoriesView)
+                    isLoading = false
+                    return@launch
                 }
             }
         }

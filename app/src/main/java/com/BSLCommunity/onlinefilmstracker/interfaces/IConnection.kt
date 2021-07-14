@@ -4,6 +4,7 @@ interface IConnection {
     enum class ErrorType {
         NO_INTERNET,
         PARSING_ERROR,
+        EMPTY,
         TIMEOUT
     }
 

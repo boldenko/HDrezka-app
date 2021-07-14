@@ -13,7 +13,7 @@
         android:ellipsize="marquee"
         android:fadingEdge="horizontal"
         android:singleLine="true"
-        android:textSize="18sp"
+        android:textSize="@dimen/normal_text"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/white" />
 

@@ -11,7 +11,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="6dp"
         android:layout_weight="0.1"
         android:orientation="horizontal"
         android:weightSum="1">
@@ -23,11 +22,11 @@
             android:layout_weight="0.5"
             app:smsp_arrowColor="@color/white"
             app:smsp_floatingLabelColor="@color/white"
-            app:smsp_hint="Выберете категорию"
+            app:smsp_hint="@string/choose_cat_hint"
             app:smsp_hintColor="@color/white"
+            app:smsp_hintSize="@dimen/small_text"
             app:smsp_itemColor="@color/white"
             app:smsp_itemListHintColor="@color/white"
-            app:smsp_itemSize="20dp"
             app:smsp_selectedItemListColor="@color/main_color_3" />
 
         <com.chivorn.smartmaterialspinner.SmartMaterialSpinner
@@ -37,11 +36,11 @@
             android:layout_weight="0.5"
             app:smsp_arrowColor="@color/white"
             app:smsp_floatingLabelColor="@color/white"
-            app:smsp_hint="Выберете жанр"
+            app:smsp_hint="@string/choose_genre_hint"
             app:smsp_hintColor="@color/white"
+            app:smsp_hintSize="@dimen/small_text"
             app:smsp_itemColor="@color/white"
             app:smsp_itemListHintColor="@color/white"
-            app:smsp_itemSize="20dp"
             app:smsp_selectedItemListColor="@color/main_color_3" />
     </LinearLayout>
 
@@ -51,9 +50,9 @@
         android:layout_height="0dp"
         android:layout_weight="0.9"
         android:gravity="center"
-        android:text="Выберете категорию"
+        android:text="@string/choose_cat_hint"
         android:textColor="@color/white"
-        android:textSize="18sp" />
+        android:textSize="@dimen/head_text" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_categories_fcv_container"

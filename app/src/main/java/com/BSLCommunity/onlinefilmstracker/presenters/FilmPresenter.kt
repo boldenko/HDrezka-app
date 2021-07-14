@@ -7,6 +7,7 @@ import com.BSLCommunity.onlinefilmstracker.models.FilmModel
 import com.BSLCommunity.onlinefilmstracker.objects.Actor
 import com.BSLCommunity.onlinefilmstracker.objects.Comment
 import com.BSLCommunity.onlinefilmstracker.objects.Film
+import com.BSLCommunity.onlinefilmstracker.utils.ExceptionHelper.catchException
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -23,23 +24,28 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
 
     fun initFilmData() {
         GlobalScope.launch {
-            if (!film.hasMainData) {
-                FilmModel.getMainData(film)
-            }
+            try {
+                if (!film.hasMainData) {
+                    FilmModel.getMainData(film)
+                }
 
-            if (!film.hasAdditionalData) {
-                FilmModel.getAdditionalData(film)
-            }
+                if (!film.hasAdditionalData) {
+                    FilmModel.getAdditionalData(film)
+                }
 
-            withContext(Dispatchers.Main) {
-                filmView.setFilmBaseData(film)
-                film.genres?.let { filmView.setGenres(it) }
-                film.countries?.let { filmView.setCountries(it) }
-                film.directors?.let { filmView.setDirectors(it) }
-                film.bookmarks?.let { filmView.setBookmarksList(it) }
-                film.seriesSchedule?.let { filmView.setSchedule(it) }
-                film.collection?.let { filmView.setCollection(it) }
-                film.related?.let { filmView.setRelated(it) }
+                withContext(Dispatchers.Main) {
+                    filmView.setFilmBaseData(film)
+                    film.genres?.let { filmView.setGenres(it) }
+                    film.countries?.let { filmView.setCountries(it) }
+                    film.directors?.let { filmView.setDirectors(it) }
+                    film.bookmarks?.let { filmView.setBookmarksList(it) }
+                    film.seriesSchedule?.let { filmView.setSchedule(it) }
+                    film.collection?.let { filmView.setCollection(it) }
+                    film.related?.let { filmView.setRelated(it) }
+                }
+            } catch (e: Exception) {
+                catchException(e, filmView)
+                return@launch
             }
         }
     }
@@ -55,16 +61,21 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
 
             for ((index, actorLink) in film.actorsLinks!!.withIndex()) {
                 GlobalScope.launch {
-                    actors[index] = ActorModel.getActorMainInfo(actorLink)
+                    try {
+                        actors[index] = ActorModel.getActorMainInfo(actorLink)
 
-                    if (index == film.actorsLinks!!.size - 1) {
-                        withContext(Dispatchers.Main) {
-                            val list: ArrayList<Actor?> = ArrayList()
-                            for (item in actors) {
-                                list.add(item)
+                        if (index == film.actorsLinks!!.size - 1) {
+                            withContext(Dispatchers.Main) {
+                                val list: ArrayList<Actor?> = ArrayList()
+                                for (item in actors) {
+                                    list.add(item)
+                                }
+                                filmView.setActors(list)
                             }
-                            filmView.setActors(list)
                         }
+                    } catch (e: Exception) {
+                        catchException(e, filmView)
+                        return@launch
                     }
                 }
             }
@@ -78,7 +89,12 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
     fun setBookmark(bookmarkId: String) {
         film.filmId?.let {
             GlobalScope.launch {
-                BookmarksModel.postBookmark(it, bookmarkId)
+                try {
+                    BookmarksModel.postBookmark(it, bookmarkId)
+                } catch (e: Exception) {
+                    catchException(e, filmView)
+                    return@launch
+                }
             }
         }
     }
@@ -111,17 +127,29 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
             isCommentsLoading = true
 
             GlobalScope.launch {
-                film.filmId?.let {
-                    CommentsModel.getCommentsFromPage(commentsPage, it)
-                }?.let {
-                    loadedComments.addAll(it)
-                }
+                try {
+                    film.filmId?.let {
+                        CommentsModel.getCommentsFromPage(commentsPage, it)
+                    }?.let {
+                        loadedComments.addAll(it)
+                    }
 
-                commentsPage++
-                isCommentsLoading = false
+                    commentsPage++
+                    isCommentsLoading = false
 
-                withContext(Dispatchers.Main) {
-                    getNextComments()
+                    withContext(Dispatchers.Main) {
+                        getNextComments()
+                    }
+                } catch (e: Exception) {
+                    if (e.message != "Empty list") {
+                        catchException(e, filmView)
+                    }
+                    isCommentsLoading = false
+
+                    withContext(Dispatchers.Main) {
+                        filmView.setCommentsProgressState(false)
+                    }
+                    return@launch
                 }
             }
         }

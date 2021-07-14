@@ -2,7 +2,6 @@ package com.BSLCommunity.onlinefilmstracker.views.fragments
 
 import android.os.Bundle
 import android.util.ArrayMap
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,9 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import com.BSLCommunity.onlinefilmstracker.R
+import com.BSLCommunity.onlinefilmstracker.interfaces.IConnection
 import com.BSLCommunity.onlinefilmstracker.presenters.CategoriesPresenter
+import com.BSLCommunity.onlinefilmstracker.utils.ExceptionHelper
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.CategoriesView
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmListCallView
 import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
@@ -89,5 +90,9 @@ class CategoriesFragment : Fragment(), CategoriesView, AdapterView.OnItemSelecte
     override fun showList() {
         currentView.findViewById<TextView>(R.id.fragment_categories_tv_msg).visibility = View.GONE
         currentView.findViewById<FragmentContainerView>(R.id.fragment_categories_fcv_container).visibility = View.VISIBLE
+    }
+
+    override fun showConnectionError(type: IConnection.ErrorType) {
+        ExceptionHelper.showToastError(requireContext(), type)
     }
 }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="filters_text_size">14sp</dimen>
-    <dimen name="head_text">24sp</dimen>
-    <dimen name="normal_text">16sp</dimen>
-    <dimen name="small_text">12sp</dimen>
+    <dimen name="head_text">@dimen/_18ssp</dimen>
+    <dimen name="normal_text">@dimen/_12ssp</dimen>
+    <dimen name="small_text">@dimen/_10ssp</dimen>
 </resources>

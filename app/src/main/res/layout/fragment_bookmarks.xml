@@ -28,11 +28,12 @@
             android:spinnerMode="dialog"
             app:smsp_arrowColor="@color/white"
             app:smsp_floatingLabelColor="@color/white"
-            app:smsp_hint="Сортировать"
+
+            app:smsp_hint="@string/sort_hint"
             app:smsp_hintColor="@color/white"
+            app:smsp_hintSize="@dimen/small_text"
             app:smsp_itemColor="@color/white"
             app:smsp_itemListHintColor="@color/white"
-            app:smsp_itemSize="20dp"
             app:smsp_selectedItemListColor="@color/main_color_3" />
 
         <com.chivorn.smartmaterialspinner.SmartMaterialSpinner
@@ -43,12 +44,13 @@
             android:layout_weight="1"
             android:spinnerMode="dialog"
             app:smsp_arrowColor="@color/white"
+
             app:smsp_floatingLabelColor="@color/white"
-            app:smsp_hint="Отобразить"
+            app:smsp_hint="@string/show_hint"
             app:smsp_hintColor="@color/white"
+            app:smsp_hintSize="@dimen/small_text"
             app:smsp_itemColor="@color/white"
             app:smsp_itemListHintColor="@color/white"
-            app:smsp_itemSize="20dp"
             app:smsp_selectedItemListColor="@color/main_color_3" />
 
         <com.chivorn.smartmaterialspinner.SmartMaterialSpinner
@@ -58,15 +60,16 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:spinnerMode="dialog"
+
             app:smsp_arrowColor="@color/white"
             app:smsp_enableSearchHeader="false"
             app:smsp_floatingLabelColor="@color/white"
-            app:smsp_hint="Каталог"
+            app:smsp_hint="@string/catalogue"
             app:smsp_hintColor="@color/white"
+            app:smsp_hintSize="@dimen/small_text"
             app:smsp_isSearchable="true"
             app:smsp_itemColor="@color/white"
             app:smsp_itemListHintColor="@color/white"
-            app:smsp_itemSize="20dp"
             app:smsp_selectedItemListColor="@color/main_color_3" />
     </LinearLayout>
 
@@ -75,9 +78,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="Вы не авторизированы"
+        android:text="@string/register_user_only"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="@dimen/head_text"
         android:visibility="gone" />
 
     <androidx.fragment.app.FragmentContainerView

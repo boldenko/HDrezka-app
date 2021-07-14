@@ -16,6 +16,7 @@ import com.BSLCommunity.onlinefilmstracker.interfaces.IMsg
 import com.BSLCommunity.onlinefilmstracker.interfaces.IProgressState
 import com.BSLCommunity.onlinefilmstracker.objects.UserData
 import com.BSLCommunity.onlinefilmstracker.presenters.BookmarksPresenter
+import com.BSLCommunity.onlinefilmstracker.utils.ExceptionHelper
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.BookmarksView
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmListCallView
 import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
@@ -129,7 +130,7 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
     }
 
     override fun showConnectionError(type: IConnection.ErrorType) {
-        TODO("Not yet implemented")
+        ExceptionHelper.showToastError(requireContext(), type)
     }
 
     override fun triggerEnd() {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -11,17 +11,18 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="15dp"
             android:orientation="vertical">
 
 
             <TableLayout
-                android:layout_marginTop="0dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp">
 
                 <TableRow>
+
                     <Button
                         android:id="@+id/bt_countries"
                         android:layout_width="0dp"
@@ -30,38 +31,40 @@
                         android:layout_weight="0.5"
                         android:text="@string/choose_country"
                         android:textAllCaps="false"
-                        android:textSize="@dimen/filters_text_size" />
+                        android:textSize="@dimen/normal_text" />
 
                     <Button
-                        android:textAllCaps="false"
                         android:id="@+id/bt_countries_inverted"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginStart="5dp"
                         android:layout_weight="0.5"
                         android:text="@string/exclude_country"
-                        android:textSize="@dimen/filters_text_size" />
-                </TableRow>
-                <TableRow>
-                    <Button
                         android:textAllCaps="false"
+                        android:textSize="@dimen/normal_text" />
+                </TableRow>
+
+                <TableRow>
+
+                    <Button
                         android:id="@+id/bt_genres"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="5dp"
                         android:layout_weight="0.5"
                         android:text="@string/choose_genre"
-                        android:textSize="@dimen/filters_text_size" />
+                        android:textAllCaps="false"
+                        android:textSize="@dimen/normal_text" />
 
                     <Button
-                        android:textAllCaps="false"
                         android:id="@+id/bt_genres_inverted"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginStart="5dp"
                         android:layout_weight="0.5"
                         android:text="@string/exclude_genre"
-                        android:textSize="@dimen/filters_text_size" />
+                        android:textAllCaps="false"
+                        android:textSize="@dimen/normal_text" />
                 </TableRow>
             </TableLayout>
 
@@ -70,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/choose_rating"
-                android:textSize="@dimen/filters_text_size" />
+                android:textSize="@dimen/normal_text" />
 
             <com.google.android.material.slider.RangeSlider
                 android:id="@+id/rating_range_slider"
@@ -86,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/choose_release_date"
-                android:textSize="@dimen/filters_text_size" />
+                android:textSize="@dimen/normal_text" />
 
             <com.google.android.material.slider.RangeSlider
                 android:id="@+id/year_range_slider"
@@ -109,37 +112,75 @@
                     android:layout_height="wrap_content"
                     android:checked="true"
                     android:text="@string/all"
-                    android:textSize="@dimen/filters_text_size" />
+                    android:textSize="@dimen/normal_text" />
 
                 <RadioButton
                     android:id="@+id/type_films"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/films"
-                    android:textSize="@dimen/filters_text_size" />
+                    android:textSize="@dimen/normal_text" />
 
                 <RadioButton
                     android:id="@+id/type_serials"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/serials"
-                    android:textSize="@dimen/filters_text_size" />
+                    android:textSize="@dimen/normal_text" />
 
                 <RadioButton
                     android:id="@+id/type_multfilms"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/multfilms"
-                    android:textSize="@dimen/filters_text_size" />
+                    android:textSize="@dimen/normal_text" />
 
                 <RadioButton
                     android:id="@+id/type_anime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/anime"
-                    android:textSize="@dimen/filters_text_size" />
+                    android:textSize="@dimen/normal_text" />
             </RadioGroup>
 
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+
+    <LinearLayout
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:weightSum="3">
+
+        <TextView
+            android:id="@+id/filter_clear"
+            android:padding="10dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.1"
+            android:text="@string/clear"
+            android:textColor="@color/main_color_3"
+            android:textSize="@dimen/normal_text" />
+
+        <TextView
+            android:id="@+id/filter_cancel"
+            android:padding="10dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.95"
+            android:text="@string/cancel"
+            android:textColor="@color/main_color_3"
+            android:textSize="@dimen/normal_text" />
+
+        <TextView
+            android:id="@+id/filter_set"
+            android:padding="10dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.95"
+            android:text="@string/ok"
+            android:textColor="@color/main_color_3"
+            android:textSize="@dimen/normal_text" />
+    </LinearLayout>
+</RelativeLayout>

@@ -7,6 +7,8 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.TextNode
 import org.jsoup.select.Elements
+import java.lang.Error
+import java.lang.Exception
 
 object CommentsModel {
     private const val COMMENT_LINK = "/ajax/get_comments/"
@@ -50,6 +52,10 @@ object CommentsModel {
             val indent: Int = el.attr("data-indent")[0].toString().toInt()
 
             comments.add(Comment(avatarPath, nickname, text, date, indent))
+        }
+
+        if(comments.size == 0){
+            throw Exception("Empty list")
         }
 
         return comments

@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.BSLCommunity.onlinefilmstracker.R
+import com.BSLCommunity.onlinefilmstracker.interfaces.IConnection
 import com.BSLCommunity.onlinefilmstracker.interfaces.IMsg
 import com.BSLCommunity.onlinefilmstracker.interfaces.IProgressState
 import com.BSLCommunity.onlinefilmstracker.interfaces.OnFragmentInteractionListener
@@ -19,6 +20,7 @@ import com.BSLCommunity.onlinefilmstracker.objects.Film
 import com.BSLCommunity.onlinefilmstracker.objects.UserData
 import com.BSLCommunity.onlinefilmstracker.objects.WatchLater
 import com.BSLCommunity.onlinefilmstracker.presenters.WatchLaterPresenter
+import com.BSLCommunity.onlinefilmstracker.utils.ExceptionHelper
 import com.BSLCommunity.onlinefilmstracker.utils.FragmentOpener
 import com.BSLCommunity.onlinefilmstracker.views.adapters.WatchLaterRecyclerViewAdapter
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.WatchLaterView
@@ -96,6 +98,10 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
             IProgressState.StateType.LOADED -> View.GONE
             IProgressState.StateType.LOADING -> View.VISIBLE
         }
+    }
+
+    override fun showConnectionError(type: IConnection.ErrorType) {
+        ExceptionHelper.showToastError(requireContext(), type)
     }
 
     override fun redrawWatchLaterList() {

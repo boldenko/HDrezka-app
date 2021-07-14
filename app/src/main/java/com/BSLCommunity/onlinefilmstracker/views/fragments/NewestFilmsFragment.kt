@@ -42,7 +42,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
             val filtersDialog = MaterialAlertDialogBuilder(it)
 
             // Get the layout inflater
-            val filtersDialogView: LinearLayout = requireActivity().layoutInflater.inflate(R.layout.dialog_filters, null) as LinearLayout
+            val filtersDialogView: RelativeLayout = requireActivity().layoutInflater.inflate(R.layout.dialog_filters, null) as RelativeLayout
 
             // Year range slider
             filtersDialogView.findViewById<RangeSlider>(R.id.year_range_slider).addOnChangeListener { slider, value, fromUser ->
@@ -64,7 +64,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
 
             // Countries filter
             createFilter(
-                "Выберите страны",
+                getString(R.string.choose_countries),
                 filtersDialogView.findViewById(R.id.bt_countries),
                 AppliedFilter.COUNTRIES,
                 resources.getStringArray(R.array.countries)
@@ -72,7 +72,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
 
             // Genres filter
             createFilter(
-                "Выберите жанры",
+                getString(R.string.choose_genres),
                 filtersDialogView.findViewById(R.id.bt_genres),
                 AppliedFilter.GENRES,
                 resources.getStringArray(R.array.genres)
@@ -80,7 +80,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
 
             // Inverted Countries filter
             createFilter(
-                "Исключить страны",
+                getString(R.string.exclude_countries),
                 filtersDialogView.findViewById(R.id.bt_countries_inverted),
                 AppliedFilter.COUNTRIES_INVERTED,
                 resources.getStringArray(R.array.countries)
@@ -88,26 +88,27 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
 
             // Inverted Genres filter
             createFilter(
-                "Исключить жанры",
+                getString(R.string.exclude_genres),
                 filtersDialogView.findViewById(R.id.bt_genres_inverted),
                 AppliedFilter.GENRES_INVERTED,
                 resources.getStringArray(R.array.genres)
             )
 
             filtersDialog.setView(filtersDialogView)
-            filtersDialog.setPositiveButton("Установить") { dialog, id ->
-                newestFilmsPresenter.applyFilters()
-                dialog.dismiss()
-            }
-            filtersDialog.setNegativeButton("Отменить") { dialog, id ->
-                newestFilmsPresenter.dismissFilters()
-                dialog.dismiss()
-            }
-            filtersDialog.setNeutralButton("Убрать") { dialog, id ->
-                newestFilmsPresenter.clearFilters()
-                Toast.makeText(requireContext(), "Фильтры убраны!", Toast.LENGTH_LONG).show()
-            }
             val d = filtersDialog.create()
+
+            filtersDialogView.findViewById<TextView>(R.id.filter_set).setOnClickListener {
+                newestFilmsPresenter.applyFilters()
+                d.dismiss()
+            }
+            filtersDialogView.findViewById<TextView>(R.id.filter_cancel).setOnClickListener {
+                newestFilmsPresenter.dismissFilters()
+                d.dismiss()
+            }
+            filtersDialogView.findViewById<TextView>(R.id.filter_clear).setOnClickListener {
+                newestFilmsPresenter.clearFilters()
+                Toast.makeText(requireContext(), getString(R.string.filters_cleared), Toast.LENGTH_LONG).show()
+            }
             currentView.findViewById<Button>(R.id.fragment_newest_films_bt_filters).setOnClickListener {
                 newestFilmsPresenter.initFilters()
                 d.show()
@@ -131,7 +132,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
                     booleanArray[index] = item == checkedItems[index]
                 }
 
-                builder.setPositiveButton("ОК") { dialog, id ->
+                builder.setPositiveButton(getString(R.string.ok)) { dialog, id ->
                     newestFilmsPresenter.setFilter(filterType, checkedItems)
                     dialog.dismiss()
                 }

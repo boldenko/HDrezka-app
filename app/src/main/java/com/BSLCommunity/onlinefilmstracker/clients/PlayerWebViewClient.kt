@@ -2,11 +2,13 @@ package com.BSLCommunity.onlinefilmstracker.clients
 
 import android.annotation.TargetApi
 import android.os.Build
+import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.BSLCommunity.onlinefilmstracker.interfaces.IConnection
 
-class PlayerWebViewClient(val callback: () -> Unit) : WebViewClient() {
+class PlayerWebViewClient(val mainView: IConnection, val callback: () -> Unit) : WebViewClient() {
 
     @TargetApi(Build.VERSION_CODES.N)
     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
@@ -20,71 +22,87 @@ class PlayerWebViewClient(val callback: () -> Unit) : WebViewClient() {
         return true
     }
 
+    override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+        mainView.showConnectionError(IConnection.ErrorType.TIMEOUT)
+        super.onReceivedError(view, request, error)
+    }
+
     override fun onPageFinished(view: WebView?, url: String?) {
         // Move player at top
         view?.evaluateJavascript(
             "javascript:" +
                     "document.querySelector('meta[name=\"viewport\"]').setAttribute('content', 'width=device-width,initial-scale=1.0');" +
-                    "const player = document.getElementById('player'); " +
-                    "const translators = document.getElementsByClassName('b-translators__block')[0]; " +
-                    "const parent = document.getElementsByTagName('body')[0]; " +
-                    "parent.prepend(player);" +
-                    "if(translators){" +
-                    "parent.prepend(translators);" +
-                    "}", null
+                    "document.body.insertAdjacentElement('afterbegin', document.getElementById('player'));" +
+                    "var translators = document.getElementsByClassName('b-translators__block')[0];" +
+                    "if(translators){ document.body.insertAdjacentElement('afterbegin', translators);}", null
         )
 
-        // Hide different elements
         view?.evaluateJavascript(
-            "javascript:(function() {" +
-                    "parent.style.minWidth = 'unset';" +
-                    "const translatorItems = document.getElementsByClassName('b-translator__item');" +
-                    "Array.from(translatorItems).forEach(translatorItem => translatorItem.style.minWidth = '40%');" +
+            "javascript: (function() {" +
+                    "document.body.style.minWidth = 'unset';" +
+                    "" + // fix width translations
+                    "const translatorArray = document.getElementsByClassName('b-translator__item');" +
+                    "for (var i = 0; i < translatorArray.length; i++) {" +
+                    "    translatorArray[i].style.minWidth = '40%';" +
+                    "}" +
+                    "" +  // hide main body
                     "document.getElementById('wrapper').style.display='none';" +
                     "document.getElementById('footer').style.display='none';" +
+                    "" + // fix elements sizes
                     "document.getElementsByClassName('b-post__support_holder')[0].style.display='none';" +
                     "document.getElementById('cdnplayer-container').style.width='100%';" +
                     "document.getElementById('cdnplayer').style.width='100%';" +
-                    "const playIcon = document.getElementById('oframecdnplayer').childNodes[18];" +
+                    "" + //  fix play button position
+                    "var playIcon = document.getElementById('oframecdnplayer').childNodes[18];" +
                     "playIcon.style.left = '50%';" +
-                    "const mo = new MutationObserver(() => {" +
-                    "playIcon.style.left = '50%';" +
+                    "var mo = new MutationObserver(function(){" +
+                    "   playIcon.style.left = '50%';" +
                     "});" +
                     "mo.observe(playIcon, { attributes: true, attributeFilter: ['style'] });" +
-                    "const mo2 = new MutationObserver((mutationsList, observer) => {" +
-                    "for(let mutation of mutationsList) {" +
-                    "if (mutation.type === 'childList') {" +
-                    "const voices = document.getElementsByClassName('tooltipster-base')[0];" +
-                    "if(voices){" +
-                    "voices.style.left = 'unset';" +
-                    "voices.style.minWidth = 'unset';}}" +
+                    "" + // fix voices
+                    "var mo2 = new MutationObserver(function(mutationsList, observer) {" +
+                    "   for(var i = 0; i<mutationsList.length; i++) {" +
+                    "       if (mutation[i].type == 'childList') {" +
+                    "           var voices = document.getElementsByClassName('tooltipster-base')[0];" +
+                    "           if(voices){" +
+                    "               voices.style.left = 'unset';" +
+                    "               voices.style.minWidth = 'unset';" +
+                    "       }}" +
                     "}});" +
-                    "mo2.observe(parent, {childList: true, subtree: true});" +
-                    /*  "const timeLine = document.getElementById('oframecdnplayer').childNodes[9];" +
-                      "timeLine.style.width = '100%';" +
-                      "timeLine.childNodes[0].style.width = '70%';" +*/
-                    "const loadIcon = document.getElementById('oframecdnplayer').childNodes[13];" +
+                    "mo2.observe(document.body, {childList: true, subtree: true});" +
+                    "" + // fix load spinner position
+                    "var loadIcon = document.getElementById('oframecdnplayer').childNodes[13];" +
                     "loadIcon.style.left = '50%';" +
-                    "const mo3 = new MutationObserver(() => {" +
-                    "loadIcon.style.left = '50%';" +
+                    "var mo3 = new MutationObserver(function() {" +
+                    "   loadIcon.style.left = '50%';" +
                     "});" +
                     "mo3.observe(loadIcon, { attributes: true, attributeFilter: ['style'] });" +
-                    // advert banner  // "document.body.classList.remove('active-brand');" +
+                    "" + // remove advertisements
+                    "var bannerCont = document.getElementsByClassName('banner-container')[0];" +
+                    "if(bannerCont) {bannerCont.style.display = 'none'; bannerCont.parentElement.parentElement.style.height = '0px';}" +
+                    "document.body.classList.remove('active-brand');" +
                     "function setPos(){" +
-                    "let isChanged = false;" +
-                    "for (let i = 0; i < document.body.childNodes.length; ++i) {" +
-                    "const node = document.body.childNodes[i];" +
-                    "if(node.childNodes.length > 0 && node.style.position == 'fixed'){node.style.display = 'none'; isChanged = true; return;}" +
-                    "} " +
-                    "if(!isChanged){setTimeout(setPos, 1000);}" +
+                    "   var isChanged = false;" +
+                    "   for (var i = 0; i < document.body.childNodes.length; i++) {" +
+                    "       var node = document.body.childNodes[i];" +
+                    "       if(node.childNodes.length > 0 && node.style.position == 'fixed'){" +
+                    "           node.style.display = 'none'; " +
+                    "           isChanged = true; " +
+                    "           return;}" +
+                    "   } " +
+                    "   if(!isChanged){" +
+                    "       setTimeout(setPos, 1000);}" +
                     "} " +
                     "setTimeout(setPos, 1000);" +
-                    "})();", null
+                    "" + // remove tracker
+                    "document.body.style.height = 'unset';" +
+                    "var trackerWrapper = document.getElementsByClassName('b-post__status_wrapper')[0];" +
+                    "if(trackerWrapper) {trackerWrapper.style.width = '100%';}" +
+                    "var trackerDownload = document.getElementsByClassName('b-post__status__tracker__download')[0];" +
+                    "if(trackerDownload) {trackerDownload.style.display = 'none';}" +
+                    "" +
+                    "})()", null
         )
-
-        view?.evaluateJavascript("javascript: document.body.style.height = 'unset';", null)
-        view?.evaluateJavascript("javascript: document.getElementsByClassName('b-post__status_wrapper')[0].style.width = '100%';", null)
-        view?.evaluateJavascript("javascript: document.getElementsByClassName('b-post__status__tracker__download')[0].style.display = 'none';", null)
 
         callback()
 
