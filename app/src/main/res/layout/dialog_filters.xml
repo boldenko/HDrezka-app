@@ -147,40 +147,46 @@
     </ScrollView>
 
     <LinearLayout
-        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="@color/white"
         android:weightSum="3">
 
-        <TextView
+        <Button
             android:id="@+id/filter_clear"
-            android:padding="10dp"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.1"
+            android:gravity="center"
+            android:padding="10dp"
             android:text="@string/clear"
             android:textColor="@color/main_color_3"
-            android:textSize="@dimen/normal_text" />
+            android:textSize="@dimen/small_text" />
 
-        <TextView
+        <Button
             android:id="@+id/filter_cancel"
-            android:padding="10dp"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.95"
+            android:gravity="center"
+            android:padding="10dp"
             android:text="@string/cancel"
             android:textColor="@color/main_color_3"
-            android:textSize="@dimen/normal_text" />
+            android:textSize="@dimen/small_text" />
 
-        <TextView
+        <Button
             android:id="@+id/filter_set"
-            android:padding="10dp"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.95"
+            android:gravity="center"
+            android:padding="10dp"
             android:text="@string/ok"
             android:textColor="@color/main_color_3"
-            android:textSize="@dimen/normal_text" />
+            android:textSize="@dimen/small_text" />
     </LinearLayout>
 </RelativeLayout>

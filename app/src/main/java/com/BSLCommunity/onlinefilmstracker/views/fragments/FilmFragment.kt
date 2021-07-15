@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.webkit.WebView
@@ -86,7 +85,7 @@ class FilmFragment : Fragment(), FilmView {
     override fun setPlayer(link: String) {
         playerView.settings.javaScriptEnabled = true
         playerView.settings.domStorageEnabled = true
-        playerView.webViewClient = PlayerWebViewClient(this) {
+        playerView.webViewClient = PlayerWebViewClient(requireContext(), this) {
             currentView.findViewById<ProgressBar>(R.id.fragment_film_pb_player_loading).visibility = View.GONE
             playerView.visibility = View.VISIBLE
         }
@@ -196,7 +195,7 @@ class FilmFragment : Fragment(), FilmView {
 
     override fun setFullSizeImage(posterPath: String) {
         val dialog = Dialog(requireActivity())
-        val layout: LinearLayout = layoutInflater.inflate(R.layout.modal_image, null) as LinearLayout
+        val layout: RelativeLayout = layoutInflater.inflate(R.layout.modal_image, null) as RelativeLayout
         Picasso.get().load(posterPath).into(layout.findViewById(R.id.modal_image), object : Callback {
             override fun onSuccess() {
                 layout.findViewById<ProgressBar>(R.id.modal_progress).visibility = View.GONE
@@ -216,6 +215,9 @@ class FilmFragment : Fragment(), FilmView {
         dialog.window?.attributes = lp;
 
         modalDialog = dialog
+        layout.findViewById<Button>(R.id.modal_bt_close).setOnClickListener {
+            dialog.dismiss()
+        }
     }
 
     private fun openFullSizeImage() {

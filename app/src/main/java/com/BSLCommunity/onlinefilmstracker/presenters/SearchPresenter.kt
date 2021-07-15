@@ -49,6 +49,12 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
 
     fun setQuery(text: String) {
         query = text
+
+        activeSearchFilms.clear()
+        activeListFilms.clear()
+        loadedListFilms.clear()
+        currentPage = 1
+        isLoading = false
         getNextFilms()
     }
 
@@ -68,8 +74,13 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
                 }
                 FilmModel.getFilmsData(loadedListFilms, FILMS_PER_PAGE, ::addFilms)
             } catch (e: Exception) {
-                catchException(e, searchView)
+                if (e.message != "Empty list") {
+                    catchException(e, searchView)
+                }
                 isLoading = false
+                withContext(Dispatchers.Main) {
+                    filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
+                }
                 return@launch
             }
         }

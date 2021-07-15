@@ -9,8 +9,10 @@ import com.BSLCommunity.onlinefilmstracker.objects.Film
 import com.BSLCommunity.onlinefilmstracker.utils.ExceptionHelper.catchException
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmsListView
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.NewestFilmsView
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView, private val filmsListView: FilmsListView) {
     private val FILMS_PER_PAGE: Int = 9
@@ -44,8 +46,14 @@ class NewestFilmsPresenter(private val newestFilmsView: NewestFilmsView, private
                 }
                 FilmModel.getFilmsData(newestFilms, FILMS_PER_PAGE, ::processFilms)
             } catch (e: Exception) {
-                catchException(e, newestFilmsView)
+                if (e.message != "Empty list") {
+                    catchException(e, newestFilmsView)
+                }
+
                 isLoading = false
+                withContext(Dispatchers.Main) {
+                    filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
+                }
                 return@launch
             }
         }

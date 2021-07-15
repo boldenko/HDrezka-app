@@ -10,6 +10,7 @@ import com.BSLCommunity.onlinefilmstracker.R
 import com.BSLCommunity.onlinefilmstracker.constants.AppliedFilter
 import com.BSLCommunity.onlinefilmstracker.interfaces.IConnection
 import com.BSLCommunity.onlinefilmstracker.presenters.NewestFilmsPresenter
+import com.BSLCommunity.onlinefilmstracker.utils.ExceptionHelper
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.FilmListCallView
 import com.BSLCommunity.onlinefilmstracker.views.viewsInterface.NewestFilmsView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -97,15 +98,15 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
             filtersDialog.setView(filtersDialogView)
             val d = filtersDialog.create()
 
-            filtersDialogView.findViewById<TextView>(R.id.filter_set).setOnClickListener {
+            filtersDialogView.findViewById<Button>(R.id.filter_set).setOnClickListener {
                 newestFilmsPresenter.applyFilters()
                 d.dismiss()
             }
-            filtersDialogView.findViewById<TextView>(R.id.filter_cancel).setOnClickListener {
+            filtersDialogView.findViewById<Button>(R.id.filter_cancel).setOnClickListener {
                 newestFilmsPresenter.dismissFilters()
                 d.dismiss()
             }
-            filtersDialogView.findViewById<TextView>(R.id.filter_clear).setOnClickListener {
+            filtersDialogView.findViewById<Button>(R.id.filter_clear).setOnClickListener {
                 newestFilmsPresenter.clearFilters()
                 Toast.makeText(requireContext(), getString(R.string.filters_cleared), Toast.LENGTH_LONG).show()
             }
@@ -156,8 +157,6 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
     }
 
     override fun showConnectionError(type: IConnection.ErrorType) {
-        if (type == IConnection.ErrorType.PARSING_ERROR) {
-            Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show()
-        }
+        ExceptionHelper.showToastError(requireContext(), type)
     }
 }

@@ -1,29 +1,39 @@
 package com.BSLCommunity.onlinefilmstracker.clients
 
 import android.annotation.TargetApi
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.core.content.ContextCompat.startActivity
 import com.BSLCommunity.onlinefilmstracker.interfaces.IConnection
 
-class PlayerWebViewClient(val mainView: IConnection, val callback: () -> Unit) : WebViewClient() {
+class PlayerWebViewClient(val context: Context, val mainView: IConnection, val callback: () -> Unit) : WebViewClient() {
 
     @TargetApi(Build.VERSION_CODES.N)
     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-        view.loadUrl(request.url.toString())
+        if (!checkUrl(request.url.toString())) {
+            view.loadUrl(request.url.toString())
+        }
         return true
     }
 
     // Для старых устройств
     override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-        view.loadUrl(url)
+        if (!checkUrl(url)) {
+            view.loadUrl(url)
+        }
         return true
     }
 
     override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
-        mainView.showConnectionError(IConnection.ErrorType.TIMEOUT)
+        if (error?.errorCode == ERROR_TIMEOUT) {
+            mainView.showConnectionError(IConnection.ErrorType.TIMEOUT)
+        }
         super.onReceivedError(view, request, error)
     }
 
@@ -107,5 +117,15 @@ class PlayerWebViewClient(val mainView: IConnection, val callback: () -> Unit) :
         callback()
 
         super.onPageFinished(view, url)
+    }
+
+    private fun checkUrl(url: String): Boolean {
+        return if (url == "https://t.me/hdrezka") {
+            val linkIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            context.startActivity(linkIntent)
+            true
+        } else {
+            false
+        }
     }
 }

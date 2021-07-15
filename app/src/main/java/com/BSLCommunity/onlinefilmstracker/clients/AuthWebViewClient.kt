@@ -30,7 +30,9 @@ class AuthWebViewClient(val type: UserPresenter.WindowType, val mainView: IConne
     }
 
     override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
-        mainView.showConnectionError(IConnection.ErrorType.TIMEOUT)
+        if (error?.errorCode == ERROR_TIMEOUT) {
+            mainView.showConnectionError(IConnection.ErrorType.TIMEOUT)
+        }
         super.onReceivedError(view, request, error)
     }
 
@@ -98,7 +100,7 @@ class AuthWebViewClient(val type: UserPresenter.WindowType, val mainView: IConne
 
 
     private fun checkUrl(url: String): Boolean {
-        return if (url == SettingsData.provider + "/" || url == "https://rezka.ag/") {
+        return if (url == SettingsData.provider + "/" || url == "https://rezka.ag/" || (url.contains("__q_hash")) && url.contains("oauth.vk.com")) {
             callback(true)
             true
         } else {

@@ -80,7 +80,7 @@
         android:gravity="center"
         android:text="@string/register_user_only"
         android:textColor="@color/white"
-        android:textSize="@dimen/head_text"
+        android:textSize="@dimen/normal_text"
         android:visibility="gone" />
 
     <androidx.fragment.app.FragmentContainerView

@@ -76,8 +76,14 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
                         FilmModel.getFilmsData(loadedFilms, FILMS_PER_PAGE, ::addFilms)
                     }
                 } catch (e: Exception) {
-                    catchException(e, categoriesView)
+                    if (e.message != "Empty list") {
+                        catchException(e, categoriesView)
+
+                    }
                     isLoading = false
+                    withContext(Dispatchers.Main) {
+                        filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
+                    }
                     return@launch
                 }
             }

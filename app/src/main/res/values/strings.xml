@@ -34,7 +34,6 @@
     <string name="register_user_only">Данный раздел доступен только зарегистрированным пользователям</string>
     <string name="nothing_found">Ничего не можем найти в закладках по данному запросу</string>
     <string name="empty_bookmarks">В закладках еще ничего нет</string>
-    <string name="error">Произошла ошибка</string>
     <string name="enter_film_name">Введите название фильма!</string>
     <string name="empty_watch_later">В этот раздел попадают все просматриваемые тобой сериалы</string>
     <string name="choose_bookmarks">Выбери разделы закладок</string>
