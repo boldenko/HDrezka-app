@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".views.fragments.FilmsListFragment">
+    tools:context="com.falcofemoralis.hdrezkaapp.views.fragments.FilmsListFragment">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/fragment_films_list_nsv_films"
@@ -12,11 +12,11 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/fragment_films_list_rv_films"
-            android:name="com.BSLCommunity.onlinefilmstracker.fragments.FilmsListFragment"
+            android:name="com.falcofemoralis.onlinefilmstracker.fragments.FilmsListFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            tools:context=".views.fragments.FilmsListFragment"
+            tools:context="com.falcofemoralis.hdrezkaapp.views.fragments.FilmsListFragment"
             tools:listitem="@layout/inflate_film" />
     </androidx.core.widget.NestedScrollView>
 

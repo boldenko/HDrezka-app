@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".views.fragments.SearchFragment">
+    tools:context="com.falcofemoralis.hdrezkaapp.views.fragments.SearchFragment">
 
     <FrameLayout
         android:layout_width="match_parent"

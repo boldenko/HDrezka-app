@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".views.fragments.NewestFilmsFragment">
+    tools:context="com.falcofemoralis.hdrezkaapp.views.fragments.NewestFilmsFragment">
 
     <Button
         android:id="@+id/fragment_newest_films_bt_filters"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
+        android:layout_margin="7dp"
         android:text="@string/filters" />
 
     <androidx.fragment.app.FragmentContainerView

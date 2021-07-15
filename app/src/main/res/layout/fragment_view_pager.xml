@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="1"
-    tools:context=".views.fragments.ViewPagerFragment">
+    tools:context="com.falcofemoralis.hdrezkaapp.views.fragments.ViewPagerFragment">
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/fragment_pager_viewPager2"

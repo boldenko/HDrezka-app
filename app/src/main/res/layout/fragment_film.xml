@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_margin="20dp"
     android:orientation="vertical"
-    tools:context="views.fragments.FilmFragment">
+    tools:context="com.falcofemoralis.hdrezkaapp.views.fragments.FilmFragment">
 
     <ProgressBar
         android:id="@+id/fragment_film_pb_loading"

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".views.fragments.BookmarksFragment">
+    tools:context="com.falcofemoralis.hdrezkaapp.views.fragments.BookmarksFragment">
 
     <ProgressBar
         android:id="@+id/fragment_bookmarks_pb_spinner_loading"

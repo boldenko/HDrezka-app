@@ -8,11 +8,11 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.BSLCommunity.onlinefilmstracker"
+        applicationId "com.falcofemoralis.onlinefilmstracker"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 6
-        versionName "1.0.6-beta"
+        versionCode 1
+        versionName "1.0.0-release"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

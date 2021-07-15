@@ -1,0 +1,162 @@
+package com.falcofemoralis.hdrezkaapp.views.fragments
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.*
+import androidx.fragment.app.Fragment
+import com.falcofemoralis.hdrezkaapp.R
+import com.falcofemoralis.hdrezkaapp.constants.AppliedFilter
+import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
+import com.falcofemoralis.hdrezkaapp.presenters.NewestFilmsPresenter
+import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
+import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmListCallView
+import com.falcofemoralis.hdrezkaapp.views.viewsInterface.NewestFilmsView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.slider.RangeSlider
+
+class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
+    private lateinit var currentView: View
+    private lateinit var newestFilmsPresenter: NewestFilmsPresenter
+    private lateinit var filmsListFragment: FilmsListFragment
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        currentView = inflater.inflate(R.layout.fragment_newest_films, container, false) as LinearLayout
+
+        filmsListFragment = FilmsListFragment()
+        filmsListFragment.setCallView(this)
+        childFragmentManager.beginTransaction().replace(R.id.fragment_newest_films_fcv_container, filmsListFragment).commit()
+
+        createFilters()
+
+        return currentView
+    }
+
+    override fun onFilmsListCreated() {
+        newestFilmsPresenter = NewestFilmsPresenter(this, filmsListFragment)
+        newestFilmsPresenter.initFilms()
+    }
+
+    private fun createFilters() {
+        activity?.let {
+            val filtersDialog = MaterialAlertDialogBuilder(it)
+
+            // Get the layout inflater
+            val filtersDialogView: RelativeLayout = requireActivity().layoutInflater.inflate(R.layout.dialog_filters, null) as RelativeLayout
+
+            // Year range slider
+            filtersDialogView.findViewById<RangeSlider>(R.id.year_range_slider).addOnChangeListener { slider, value, fromUser ->
+                newestFilmsPresenter.setFilter(AppliedFilter.YEAR, arrayOf(slider.values[0].toString(), slider.values[1].toString()))
+            }
+
+            // Rating range slider
+            filtersDialogView.findViewById<RangeSlider>(R.id.rating_range_slider).addOnChangeListener { slider, value, fromUser ->
+                newestFilmsPresenter.setFilter(AppliedFilter.RATING, arrayOf(slider.values[0].toString(), slider.values[1].toString()))
+            }
+
+            // Film type buttons
+            filtersDialogView.findViewById<RadioGroup>(R.id.film_types).setOnCheckedChangeListener { group, checkedId ->
+                run {
+                    val value: String = group.findViewById<RadioButton>(checkedId).text as String
+                    newestFilmsPresenter.setFilter(AppliedFilter.TYPE, arrayOf(value))
+                }
+            }
+
+            // Countries filter
+            createFilter(
+                getString(R.string.choose_countries),
+                filtersDialogView.findViewById(R.id.bt_countries),
+                AppliedFilter.COUNTRIES,
+                resources.getStringArray(R.array.countries)
+            )
+
+            // Genres filter
+            createFilter(
+                getString(R.string.choose_genres),
+                filtersDialogView.findViewById(R.id.bt_genres),
+                AppliedFilter.GENRES,
+                resources.getStringArray(R.array.genres)
+            )
+
+            // Inverted Countries filter
+            createFilter(
+                getString(R.string.exclude_countries),
+                filtersDialogView.findViewById(R.id.bt_countries_inverted),
+                AppliedFilter.COUNTRIES_INVERTED,
+                resources.getStringArray(R.array.countries)
+            )
+
+            // Inverted Genres filter
+            createFilter(
+                getString(R.string.exclude_genres),
+                filtersDialogView.findViewById(R.id.bt_genres_inverted),
+                AppliedFilter.GENRES_INVERTED,
+                resources.getStringArray(R.array.genres)
+            )
+
+            filtersDialog.setView(filtersDialogView)
+            val d = filtersDialog.create()
+
+            filtersDialogView.findViewById<Button>(R.id.filter_set).setOnClickListener {
+                newestFilmsPresenter.applyFilters()
+                d.dismiss()
+            }
+            filtersDialogView.findViewById<Button>(R.id.filter_cancel).setOnClickListener {
+                newestFilmsPresenter.dismissFilters()
+                d.dismiss()
+            }
+            filtersDialogView.findViewById<Button>(R.id.filter_clear).setOnClickListener {
+                newestFilmsPresenter.clearFilters()
+                Toast.makeText(requireContext(), getString(R.string.filters_cleared), Toast.LENGTH_LONG).show()
+            }
+            currentView.findViewById<Button>(R.id.fragment_newest_films_bt_filters).setOnClickListener {
+                newestFilmsPresenter.initFilters()
+                d.show()
+            }
+        }
+    }
+
+    private fun createFilter(title: String, btn: Button, filterType: AppliedFilter, data: Array<String>) {
+        activity?.let {
+            val builder = MaterialAlertDialogBuilder(it)
+            builder.setTitle(title)
+            btn.setOnClickListener {
+                var checkedItems: Array<String?> = arrayOfNulls(data.size)
+
+                newestFilmsPresenter.getFilter(filterType)?.let {
+                    checkedItems = it.clone()
+                }
+
+                val booleanArray = BooleanArray(data.size)
+                for ((index, item) in data.withIndex()) {
+                    booleanArray[index] = item == checkedItems[index]
+                }
+
+                builder.setPositiveButton(getString(R.string.ok)) { dialog, id ->
+                    newestFilmsPresenter.setFilter(filterType, checkedItems)
+                    dialog.dismiss()
+                }
+
+                builder.setMultiChoiceItems(data, booleanArray) { dialog, which, isChecked ->
+                    if (isChecked) {
+                        checkedItems[which] = data[which]
+                    } else {
+                        checkedItems[which] = null
+                    }
+                }
+                val d = builder.create()
+
+                d.show()
+            }
+        }
+    }
+
+    override fun triggerEnd() {
+        newestFilmsPresenter.getNextFilms()
+    }
+
+    override fun showConnectionError(type: IConnection.ErrorType) {
+        ExceptionHelper.showToastError(requireContext(), type)
+    }
+}
