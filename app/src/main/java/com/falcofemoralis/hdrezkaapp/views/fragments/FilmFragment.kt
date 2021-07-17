@@ -6,14 +6,17 @@ import android.content.Context
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.*
+import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.widget.*
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.clients.PlayerChromeClient
 import com.falcofemoralis.hdrezkaapp.clients.PlayerWebViewClient
+import com.falcofemoralis.hdrezkaapp.constants.UpdateItem
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
 import com.falcofemoralis.hdrezkaapp.objects.*
@@ -21,12 +24,14 @@ import com.falcofemoralis.hdrezkaapp.presenters.FilmPresenter
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
 import com.falcofemoralis.hdrezkaapp.utils.UnitsConverter
+import com.falcofemoralis.hdrezkaapp.views.MainActivity
 import com.falcofemoralis.hdrezkaapp.views.adapters.CommentsRecyclerViewAdapter
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmView
 import com.github.aakira.expandablelayout.ExpandableLinearLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+
 
 class FilmFragment : Fragment(), FilmView {
     private val FILM_ARG = "film"
@@ -85,6 +90,7 @@ class FilmFragment : Fragment(), FilmView {
     override fun setPlayer(link: String) {
         playerView.settings.javaScriptEnabled = true
         playerView.settings.domStorageEnabled = true
+        playerView.addJavascriptInterface(WebAppInterface(requireActivity()), "Android")
         playerView.webViewClient = PlayerWebViewClient(requireContext(), this) {
             currentView.findViewById<ProgressBar>(R.id.fragment_film_pb_player_loading).visibility = View.GONE
             playerView.visibility = View.VISIBLE
@@ -92,6 +98,13 @@ class FilmFragment : Fragment(), FilmView {
 
         playerView.webChromeClient = activity?.let { PlayerChromeClient(it) }
         playerView.loadUrl(link)
+    }
+
+    class WebAppInterface(private val act: FragmentActivity) {
+        @JavascriptInterface
+        fun updateWatchLater() {
+            (act as MainActivity).redrawPage(UpdateItem.WATCH_LATER_CHANGED)
+        }
     }
 
     override fun setFilmBaseData(film: Film) {
@@ -337,6 +350,9 @@ class FilmFragment : Fragment(), FilmView {
                 builder.setTitle(getString(R.string.choose_bookmarks))
                 builder.setMultiChoiceItems(data, checkedItems) { dialog, which, isChecked ->
                     filmPresenter.setBookmark(bookmarks[which].catId)
+                    requireActivity().let {
+                        (it as MainActivity).redrawPage(UpdateItem.BOOKMARKS_CHANGED)
+                    }
                     checkedItems[which] = isChecked
                 }
                 builder.setPositiveButton(getString(R.string.ok)) { dialog, id ->

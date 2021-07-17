@@ -113,6 +113,26 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
                     "})()", null
         )
 
+        // update watch later fragment
+        view?.evaluateJavascript(
+            "\$(document).ajaxComplete(function(event,request, settings){" +
+                    "Android.updateWatchLater();" +
+                    "});", null
+        )
+
+        // block player advert
+        view?.evaluateJavascript("" +
+                "XMLHttpRequest.prototype.open = (function (open) {" +
+                "    return function (method, url, async) {" +
+                "        if (url.match(/franecki.net/g)) {" +
+                "            console.log(url);" +
+                "            console.log('blocked');" +
+                "        } else {" +
+                "            open.apply(this, arguments);" +
+                "        }" +
+                "    };" +
+                "})(XMLHttpRequest.prototype.open);", null)
+
         callback()
 
         super.onPageFinished(view, url)

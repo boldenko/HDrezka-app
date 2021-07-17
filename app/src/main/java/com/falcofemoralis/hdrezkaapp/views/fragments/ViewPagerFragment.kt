@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.falcofemoralis.hdrezkaapp.R
+import com.falcofemoralis.hdrezkaapp.constants.UpdateItem
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.views.adapters.ViewPagerAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -16,6 +17,7 @@ class ViewPagerFragment : Fragment() {
     private lateinit var currentView: View
     private lateinit var viewPager2: ViewPager2
     private lateinit var bottomNavigationView: BottomNavigationView
+    private lateinit var fragmentList: ArrayList<Fragment>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentView = inflater.inflate(R.layout.fragment_view_pager, container, false)
@@ -57,7 +59,7 @@ class ViewPagerFragment : Fragment() {
     }
 
     fun setAdapter() {
-        val fragmentList: ArrayList<Fragment> = arrayListOf(
+        fragmentList = arrayListOf(
             NewestFilmsFragment(),
             CategoriesFragment(),
             SearchFragment(),
@@ -68,6 +70,13 @@ class ViewPagerFragment : Fragment() {
         viewPager2.adapter = ViewPagerAdapter(fragmentList, requireActivity().supportFragmentManager, lifecycle)
         SettingsData.mainScreen?.let {
             viewPager2.setCurrentItem(it, false)
+        }
+    }
+
+    fun updatePage(item: UpdateItem) {
+        when (item) {
+            UpdateItem.BOOKMARKS_CHANGED -> (fragmentList[3] as BookmarksFragment).redrawBookmarks()
+            UpdateItem.WATCH_LATER_CHANGED -> (fragmentList[4] as WatchLaterFragment).updateAdapter()
         }
     }
 }

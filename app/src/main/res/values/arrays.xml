@@ -55,10 +55,6 @@
         <item>0.0</item>
         <item>10.0</item>
     </array>
-    <array name="initial_year_slider_values">
-        <item>1960</item>
-        <item>2021</item>
-    </array>
     <string-array name="sort">
         <item>По дате добавления</item>
         <item>По году выпуска</item>

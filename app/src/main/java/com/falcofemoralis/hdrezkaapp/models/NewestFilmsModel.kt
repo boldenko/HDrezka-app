@@ -6,7 +6,7 @@ import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 object NewestFilmsModel {
     private const val NEWEST = "/new/page/"
 
-    fun getNewestFilms(page: Int): ArrayList<Film> {
-        return FilmsListModel.getFilmsFromPage(SettingsData.provider + NEWEST + page)
+    fun getNewestFilms(page: Int, filter: String): ArrayList<Film> {
+        return FilmsListModel.getFilmsFromPage(SettingsData.provider + NEWEST + page + "/?filter=$filter")
     }
 }

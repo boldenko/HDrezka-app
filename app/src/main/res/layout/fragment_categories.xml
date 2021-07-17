@@ -13,13 +13,13 @@
         android:layout_height="0dp"
         android:layout_weight="0.1"
         android:orientation="horizontal"
-        android:weightSum="1">
+        android:weightSum="3">
 
         <com.chivorn.smartmaterialspinner.SmartMaterialSpinner
             android:id="@+id/fragment_categories_sp_types"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
+            android:layout_weight="1"
             app:smsp_arrowColor="@color/white"
             app:smsp_floatingLabelColor="@color/white"
             app:smsp_hint="@string/choose_cat_hint"
@@ -33,10 +33,24 @@
             android:id="@+id/fragment_categories_sp_genres"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
+            android:layout_weight="1"
             app:smsp_arrowColor="@color/white"
             app:smsp_floatingLabelColor="@color/white"
             app:smsp_hint="@string/choose_genre_hint"
+            app:smsp_hintColor="@color/white"
+            app:smsp_hintSize="@dimen/small_text"
+            app:smsp_itemColor="@color/white"
+            app:smsp_itemListHintColor="@color/white"
+            app:smsp_selectedItemListColor="@color/main_color_3" />
+
+        <com.chivorn.smartmaterialspinner.SmartMaterialSpinner
+            android:id="@+id/fragment_categories_sp_years"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:smsp_arrowColor="@color/white"
+            app:smsp_floatingLabelColor="@color/white"
+            app:smsp_hint="@string/choose_year_hint"
             app:smsp_hintColor="@color/white"
             app:smsp_hintSize="@dimen/small_text"
             app:smsp_itemColor="@color/white"

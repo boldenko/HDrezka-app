@@ -138,4 +138,9 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
         filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
         bookmarksView.showMsg(type)
     }
+
+    fun redrawBookmarks(){
+        reset()
+        getNextFilms()
+    }
 }

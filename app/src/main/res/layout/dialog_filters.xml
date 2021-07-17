@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -14,7 +14,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
             android:orientation="vertical">
-
 
             <TableLayout
                 android:layout_width="match_parent"
@@ -87,18 +86,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/choose_release_date"
+                android:text="@string/type_header"
                 android:textSize="@dimen/normal_text" />
-
-            <com.google.android.material.slider.RangeSlider
-                android:id="@+id/year_range_slider"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:stepSize="1"
-                android:valueFrom="1960"
-                android:valueTo="2021"
-                app:values="@array/initial_year_slider_values" />
 
             <RadioGroup
                 android:id="@+id/film_types"
@@ -108,7 +97,7 @@
 
                 <RadioButton
                     android:id="@+id/type_all"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:checked="true"
                     android:text="@string/all"
@@ -116,35 +105,71 @@
 
                 <RadioButton
                     android:id="@+id/type_films"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/films"
                     android:textSize="@dimen/normal_text" />
 
                 <RadioButton
                     android:id="@+id/type_serials"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/serials"
                     android:textSize="@dimen/normal_text" />
 
                 <RadioButton
                     android:id="@+id/type_multfilms"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/multfilms"
                     android:textSize="@dimen/normal_text" />
 
                 <RadioButton
                     android:id="@+id/type_anime"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/anime"
                     android:textSize="@dimen/normal_text" />
             </RadioGroup>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sort_header"
+                android:textSize="@dimen/normal_text" />
+
+            <RadioGroup
+                android:id="@+id/film_sort"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
+
+                <RadioButton
+                    android:id="@+id/sort_last"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/last"
+                    android:textSize="@dimen/normal_text" />
+
+                <RadioButton
+                    android:id="@+id/sort_popular"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/popular"
+                    android:textSize="@dimen/normal_text" />
+
+                <RadioButton
+                    android:id="@+id/sort_now"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/now"
+                    android:layout_marginBottom="25dp"
+                    android:textSize="@dimen/normal_text" />
+
+            </RadioGroup>
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"

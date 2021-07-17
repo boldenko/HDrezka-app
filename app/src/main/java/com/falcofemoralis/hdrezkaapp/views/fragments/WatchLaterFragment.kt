@@ -2,6 +2,7 @@ package com.falcofemoralis.hdrezkaapp.views.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,6 +72,8 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
     }
 
     override fun setWatchLaterList(list: ArrayList<WatchLater>) {
+        Log.d("WC_TEST", "setWatchLaterList")
+
         listView.adapter = WatchLaterRecyclerViewAdapter(list, ::listCallback)
         progressBar.visibility = View.GONE
     }
@@ -106,5 +109,12 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
 
     override fun redrawWatchLaterList() {
         listView.adapter?.notifyDataSetChanged()
+    }
+
+    fun updateAdapter() {
+        if (UserData.isLoggedIn == true) {
+            Log.d("WC_TEST", "update adapter!")
+            watchLaterPresenter.updateList()
+        }
     }
 }

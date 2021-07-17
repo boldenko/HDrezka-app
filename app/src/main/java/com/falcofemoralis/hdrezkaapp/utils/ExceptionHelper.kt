@@ -22,6 +22,7 @@ object ExceptionHelper {
                         IConnection.ErrorType.TIMEOUT -> context.getString(R.string.error_timeout)
                         IConnection.ErrorType.PARSING_ERROR -> context.getString(R.string.error_parsing)
                         IConnection.ErrorType.NO_INTERNET -> context.getString(R.string.no_connection)
+                        IConnection.ErrorType.NO_ACCESS -> context.getString(R.string.no_access)
                         IConnection.ErrorType.ERROR -> context.getString(R.string.error_occured)
                     }, Toast.LENGTH_SHORT
                 ).show()
@@ -30,13 +31,15 @@ object ExceptionHelper {
     }
 
     fun catchException(e: Exception, view: IConnection) {
+        e.printStackTrace()
+
         val type: IConnection.ErrorType = when (e) {
             is SocketTimeoutException -> IConnection.ErrorType.TIMEOUT
             is HttpStatusException -> {
-                if (e.statusCode == 404) {
-                    IConnection.ErrorType.EMPTY
-                } else {
-                    IConnection.ErrorType.ERROR
+                when (e.statusCode) {
+                    404 -> IConnection.ErrorType.EMPTY
+                    500 -> IConnection.ErrorType.NO_ACCESS
+                    else -> IConnection.ErrorType.ERROR
                 }
             }
             is ParseError -> IConnection.ErrorType.PARSING_ERROR

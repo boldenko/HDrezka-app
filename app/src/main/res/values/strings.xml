@@ -64,4 +64,11 @@
     <string name="error_empty">Ничего не найдено</string>
     <string name="error_timeout">Превышен лимит ожидания</string>
     <string name="error_parsing">Ошибка при получении данных</string>
+    <string name="no_access">Нету доступа к сайту. Смените провайдера</string>
+    <string name="choose_year_hint">Выберите год</string>
+    <string name="sort_header">Сортировать</string>
+    <string name="type_header">Выбрать тип</string>
+    <string name="last">Последние поступления</string>
+    <string name="popular">Популярные</string>
+    <string name="now">Сейчас смотрят</string>
 </resources>

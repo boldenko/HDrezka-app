@@ -1,8 +1,6 @@
 package com.falcofemoralis.hdrezkaapp.views
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.content.pm.ActivityInfo
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
@@ -12,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.falcofemoralis.hdrezkaapp.R
+import com.falcofemoralis.hdrezkaapp.constants.UpdateItem
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener.Action
@@ -29,8 +28,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     private lateinit var mainFragment: ViewPagerFragment
     private var savedInstanceState: Bundle? = null
 
-
-    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -43,7 +40,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     private fun initApp() {
         if (isInternetAvailable(applicationContext)) {
             if (savedInstanceState == null) {
-                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                // requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
                 UserData.init(applicationContext)
                 SettingsData.init(applicationContext)
@@ -171,5 +168,9 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
             val d = dialog.create()
             d.show()
         }
+    }
+
+    fun redrawPage(item: UpdateItem){
+        mainFragment.updatePage(item)
     }
 }

@@ -136,4 +136,8 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
     override fun triggerEnd() {
         bookmarksPresenter.getNextFilms()
     }
+
+    fun redrawBookmarks(){
+        bookmarksPresenter.redrawBookmarks()
+    }
 }

@@ -1,10 +1,11 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
+import android.util.Log
+import com.falcofemoralis.hdrezkaapp.interfaces.IMsg
+import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
 import com.falcofemoralis.hdrezkaapp.models.FilmModel
 import com.falcofemoralis.hdrezkaapp.models.WatchLaterModel
 import com.falcofemoralis.hdrezkaapp.objects.WatchLater
-import com.falcofemoralis.hdrezkaapp.interfaces.IMsg
-import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper.catchException
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.WatchLaterView
 import kotlinx.coroutines.Dispatchers
@@ -21,15 +22,20 @@ class WatchLaterPresenter(private val watchLaterView: WatchLaterView) {
         GlobalScope.launch {
             try {
                 loadedWatchLaterList = WatchLaterModel.getWatchLaterList()
+                Log.d("WC_TEST", "downloaded new list!")
+                Log.d("WC_TEST", loadedWatchLaterList.toString())
 
                 withContext(Dispatchers.Main) {
                     if (loadedWatchLaterList.size > 0) {
+                        Log.d("WC_TEST", "${loadedWatchLaterList.size}")
+
                         watchLaterView.setWatchLaterList(activeWatchLaterList)
                         getNextWatchLater()
                     } else {
                         watchLaterView.showMsg(IMsg.MsgType.NOTHING_FOUND)
                     }
-                }            } catch (e: Exception) {
+                }
+            } catch (e: Exception) {
                 catchException(e, watchLaterView)
                 return@launch
             }
@@ -73,5 +79,10 @@ class WatchLaterPresenter(private val watchLaterView: WatchLaterView) {
                 }
             }
         }
+    }
+
+    fun updateList(){
+        activeWatchLaterList.clear()
+        initList()
     }
 }

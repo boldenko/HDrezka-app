@@ -6,7 +6,8 @@ interface IConnection {
         PARSING_ERROR,
         EMPTY,
         TIMEOUT,
-        ERROR
+        ERROR,
+        NO_ACCESS
     }
 
     fun showConnectionError(type: ErrorType)

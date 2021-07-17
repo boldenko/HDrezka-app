@@ -7,5 +7,6 @@ enum class AppliedFilter {
     GENRES_INVERTED,
     RATING,
     YEAR,
-    TYPE
+    TYPE,
+    SORT
 }

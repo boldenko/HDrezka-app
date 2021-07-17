@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jsoup.HttpStatusException
 
 class CategoriesPresenter(private val categoriesView: CategoriesView, private val filmsListView: FilmsListView) {
     private val FILMS_PER_PAGE: Int = 9
@@ -22,14 +23,35 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
     private var isLoading: Boolean = false
     private var selectedCategoryLink: String? = null
 
+    var categories: ArrayMap<Pair<String, String>, ArrayList<Pair<String, String>>> = ArrayMap()
+    var typesNames: ArrayList<String> = ArrayList()
+    var genresNames: ArrayMap<String, ArrayList<String>> = ArrayMap()
+    var yearsNames: ArrayList<String> = ArrayList()
+
     fun initCategories() {
         GlobalScope.launch {
             try {
-                val categories: ArrayMap<String, ArrayList<Pair<String, String>>> = CategoriesModel.getCategories()
+                categories = CategoriesModel.getCategories()
+                yearsNames = CategoriesModel.getYears()
 
-                withContext(Dispatchers.Main) {
-                    categoriesView.setCategories(categories)
-                    filmsListView.setFilms(activeFilms)
+                if (categories.size > 0 && yearsNames.size > 0) {
+                    for ((key, value) in categories) {
+                        typesNames.add(key.first)
+
+                        val list: ArrayList<String> = ArrayList()
+                        for (genre in value) {
+                            list.add(genre.first)
+                        }
+
+                        genresNames[key.first] = list
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        categoriesView.setCategories()
+                        filmsListView.setFilms(activeFilms)
+                    }
+                } else {
+                    catchException(HttpStatusException("no access", 500, ""), categoriesView)
                 }
             } catch (e: Exception) {
                 catchException(e, categoriesView)
@@ -38,9 +60,26 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
         }
     }
 
-    fun setCategory(link: String?) {
-        link?.let {
+    fun setCategory(typePos: Int?, genrePos: Int?, yearPos: Int?) {
+        var link = ""
+        typePos?.let {
+            link += categories.keyAt(typePos).second + "best/"
+
+            genrePos?.let {
+                link = categories.valueAt(typePos)[genrePos].second
+
+                yearPos?.let {
+                    val year: String = yearsNames[yearPos]
+                    if (year != "за все время") {
+                        link += "$year/"
+                    }
+                }
+            }
+        }
+
+        link.let {
             selectedCategoryLink = link
+            curPage = 1
             activeFilms.clear()
             loadedFilms.clear()
             categoriesView.showList()
