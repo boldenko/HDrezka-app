@@ -20,6 +20,7 @@ object WatchLaterModel {
             els.removeFirst()
 
             for (el in els) {
+                val id = el.attr("id").replace("videosave-", "")
                 val date = el.select("div.date").text()
                 val a = el.select("div.title a")
                 val name = "${a.text()} ${el.select("div.title small").text()}"
@@ -27,10 +28,19 @@ object WatchLaterModel {
                 val info = el.select("div.info")[0].ownText()
                 val additionalInfo = el.select("div.info span.info-holder a").text()
 
-                watchLaterList.add(WatchLater(date, filmLInk, name, info, "$info $additionalInfo"))
+                watchLaterList.add(WatchLater(id, date, filmLInk, name, info, "$info $additionalInfo"))
             }
         }
 
         return watchLaterList
+    }
+
+    fun removeItem(id: String) {
+        Jsoup.connect(SettingsData.provider + "/engine/ajax/cdn_saves_remove.php")
+            .data("id", id)
+            .userAgent("Mozilla")
+            .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
+            .ignoreContentType(true)
+            .post()
     }
 }

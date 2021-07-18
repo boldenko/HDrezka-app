@@ -3,10 +3,7 @@ package com.falcofemoralis.hdrezkaapp.views.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.objects.Film
@@ -14,7 +11,7 @@ import com.falcofemoralis.hdrezkaapp.objects.WatchLater
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 
-class WatchLaterRecyclerViewAdapter(private val watchLaterList: ArrayList<WatchLater>, private val openFilm: (film: Film) -> Unit) :
+class WatchLaterRecyclerViewAdapter(private val watchLaterList: ArrayList<WatchLater>, private val openFilm: (film: Film) -> Unit, private val deleteHandler: (id: String, pos: Int) -> Unit) :
     RecyclerView.Adapter<WatchLaterRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -42,6 +39,10 @@ class WatchLaterRecyclerViewAdapter(private val watchLaterList: ArrayList<WatchL
         holder.layout.setOnClickListener {
             openFilm(Film(watchLaterItem.filmLInk))
         }
+
+        holder.deleteView.setOnClickListener{
+            deleteHandler(watchLaterItem.id, position)
+        }
     }
 
     override fun getItemCount(): Int = watchLaterList.size
@@ -53,5 +54,6 @@ class WatchLaterRecyclerViewAdapter(private val watchLaterList: ArrayList<WatchL
         val dateView: TextView = view.findViewById(R.id.watchLater_date)
         val nameView: TextView = view.findViewById(R.id.watchLater_name)
         val infoView: TextView = view.findViewById(R.id.watchLater_info)
+        val deleteView: TextView = view.findViewById(R.id.watchLater_delete)
     }
 }

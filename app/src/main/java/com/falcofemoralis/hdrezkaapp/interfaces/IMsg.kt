@@ -7,4 +7,6 @@ interface IMsg {
         NOTHING_ADDED
     }
     fun showMsg(type: MsgType)
+
+    fun hideMsg()
 }

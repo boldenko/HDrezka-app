@@ -22,13 +22,9 @@ class WatchLaterPresenter(private val watchLaterView: WatchLaterView) {
         GlobalScope.launch {
             try {
                 loadedWatchLaterList = WatchLaterModel.getWatchLaterList()
-                Log.d("WC_TEST", "downloaded new list!")
-                Log.d("WC_TEST", loadedWatchLaterList.toString())
 
                 withContext(Dispatchers.Main) {
                     if (loadedWatchLaterList.size > 0) {
-                        Log.d("WC_TEST", "${loadedWatchLaterList.size}")
-
                         watchLaterView.setWatchLaterList(activeWatchLaterList)
                         getNextWatchLater()
                     } else {
@@ -81,8 +77,25 @@ class WatchLaterPresenter(private val watchLaterView: WatchLaterView) {
         }
     }
 
-    fun updateList(){
+    fun updateList() {
         activeWatchLaterList.clear()
         initList()
+    }
+
+    fun deleteWatchLaterItem(id: String, pos: Int) {
+        GlobalScope.launch {
+            try {
+                WatchLaterModel.removeItem(id)
+                activeWatchLaterList.removeAt(pos)
+
+                withContext(Dispatchers.Main) {
+                    watchLaterView.redrawWatchLaterList()
+                    getNextWatchLater()
+                }
+            } catch (e: Exception) {
+                catchException(e, watchLaterView)
+                return@launch
+            }
+        }
     }
 }

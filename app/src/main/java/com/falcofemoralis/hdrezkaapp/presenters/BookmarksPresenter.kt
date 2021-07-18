@@ -97,6 +97,10 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
                 if (loadedFilms.size > 0) {
                     try {
                         FilmModel.getFilmsData(loadedFilms, FILMS_PER_PAGE, ::addFilms)
+
+                        withContext(Dispatchers.Main) {
+                            bookmarksView.hideMsg()
+                        }
                     } catch (e: Exception) {
                         catchException(e, bookmarksView)
                         isLoading = false

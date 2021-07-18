@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.constants.BookmarkFilterType
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
@@ -19,7 +20,6 @@ import com.falcofemoralis.hdrezkaapp.presenters.BookmarksPresenter
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.BookmarksView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmListCallView
-import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
 
 class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterView.OnItemSelectedListener {
     private lateinit var currentView: View
@@ -129,6 +129,10 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
         }
     }
 
+    override fun hideMsg() {
+        msgView.visibility = View.GONE
+    }
+
     override fun showConnectionError(type: IConnection.ErrorType) {
         ExceptionHelper.showToastError(requireContext(), type)
     }
@@ -137,7 +141,7 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
         bookmarksPresenter.getNextFilms()
     }
 
-    fun redrawBookmarks(){
+    fun redrawBookmarks() {
         bookmarksPresenter.redrawBookmarks()
     }
 }
