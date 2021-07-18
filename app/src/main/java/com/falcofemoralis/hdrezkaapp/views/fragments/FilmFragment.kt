@@ -74,6 +74,7 @@ class FilmFragment : Fragment(), FilmView {
                 if (diff == 0) {
                     if (!commentsAdded) {
                         filmPresenter.initComments()
+                       // createCommentEditor()
                         commentsAdded = true
                     }
                     filmPresenter.getNextComments()
@@ -146,7 +147,7 @@ class FilmFragment : Fragment(), FilmView {
 
                     layout.findViewById<TextView>(R.id.actor_name).text = actor.name
 
-                    if (actor.photoLink.isNotEmpty() && actor.photoLink != SettingsData.staticProvider + "/i/nopersonphoto.png") {
+                    if (actor.photoLink != null && actor.photoLink!!.isNotEmpty() && actor.photoLink != SettingsData.staticProvider + "/i/nopersonphoto.png") {
                         val actorProgress: ProgressBar = layout.findViewById(R.id.actor_loading)
                         val actorLayout: LinearLayout = layout.findViewById(R.id.actor_layout)
 
@@ -163,6 +164,9 @@ class FilmFragment : Fragment(), FilmView {
                                 e.printStackTrace()
                             }
                         })
+                        actorLayout.setOnClickListener {
+                           // FragmentOpener.openActor(actor, this, fragmentListener)
+                        }
                     } else {
                         actorsLayout.addView(layout)
                     }
@@ -358,6 +362,8 @@ class FilmFragment : Fragment(), FilmView {
                 builder.setPositiveButton(getString(R.string.ok)) { dialog, id ->
                     dialog.dismiss()
                 }
+                /*builder.setNeutralButton("Новый раздел") { dialog, id ->
+                }*/
                 val d = builder.create()
                 btn.setOnClickListener {
                     d.show()
@@ -386,5 +392,9 @@ class FilmFragment : Fragment(), FilmView {
 
     override fun showConnectionError(type: IConnection.ErrorType) {
         ExceptionHelper.showToastError(requireContext(), type)
+    }
+
+    fun createCommentEditor(){
+        // TODO
     }
 }
