@@ -1,30 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="countries">
-        <item>США</item>
-        <item>Корея Южная</item>
-        <item>Великобритания</item>
-        <item>Франция</item>
-        <item>Германия</item>
-        <item>Украина</item>
-        <item>Россия</item>
-        <item>СССР</item>
-        <item>Китай</item>
-        <item>Япония</item>
-        <item>Канада</item>
-        <item>Италия</item>
-        <item>Швеция</item>
-        <item>Турция</item>
-        <item>Гонконг</item>
         <item>Австралия</item>
-        <item>Мексика</item>
-        <item>Эстония</item>
+        <item>Австрия</item>
+        <item>Аргентина</item>
+        <item>Бельгия</item>
+        <item>Бразилия</item>
+        <item>Болгария</item>
+        <item>Великобритания</item>
+        <item>Германия</item>
+        <item>Гонконг</item>
+        <item>Дания</item>
+        <item>Индия</item>
         <item>Испания</item>
+        <item>Италия</item>
+        <item>Канада</item>
+        <item>Китай</item>
+        <item>Корея Южная</item>
+        <item>Мексика</item>
         <item>Нидерланды</item>
         <item>Новая Зеландия</item>
-        <item>Филиппины</item>
-        <item>Бразилия</item>
+        <item>Норвегия</item>
+        <item>Польша</item>
+        <item>Россия</item>
+        <item>СССР</item>
+        <item>США</item>
+        <item>Таиланд</item>
         <item>Тайвань</item>
+        <item>Турция</item>
+        <item>Украина</item>
+        <item>Филиппины</item>
+        <item>Франция</item>
+        <item>Чехния</item>
+        <item>Швейцария</item>
+        <item>Швеция</item>
+        <item>ЮАР</item>
+        <item>Япония</item>
     </string-array>
     <string-array name="genres">
         <item>Фантастика</item>
