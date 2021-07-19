@@ -76,7 +76,7 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
     }
 
     private fun listCallback(film: Film) {
-        FragmentOpener.openFilm(film, this, fragmentListener)
+        FragmentOpener.openWithData(this, fragmentListener, film, "film")
     }
 
     private fun deleteWatchLater(id: String, pos: Int) {

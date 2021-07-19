@@ -8,11 +8,11 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.falcofemoralis.onlinefilmstracker"
+        applicationId "com.falcofemoralis.hdrezkaapp"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 3
-        versionName "1.1.0-release"
+        versionCode 4
+        versionName "1.1.1-release"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

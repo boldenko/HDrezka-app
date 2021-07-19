@@ -6,6 +6,7 @@ import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -26,6 +27,7 @@ import kotlin.system.exitProcess
 class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnection {
     private var isSettingsOpened: Boolean = false
     private lateinit var mainFragment: ViewPagerFragment
+    private lateinit var currentFragment: Fragment
     private var savedInstanceState: Bundle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,7 +60,9 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     private fun createUserMenu() {
         findViewById<ImageView>(R.id.activity_main_iv_user).setOnClickListener {
             if (!isSettingsOpened) {
-                onFragmentInteraction(mainFragment, UserFragment(), Action.NEXT_FRAGMENT_HIDE, true, null, null, null)
+                val f = if (mainFragment.isVisible) mainFragment
+                else currentFragment
+                onFragmentInteraction(f, UserFragment(), Action.NEXT_FRAGMENT_HIDE, true, null, null, null)
                 isSettingsOpened = true
             }
         }
@@ -93,6 +97,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                         break
                     }
                 }
+                currentFragment = fragmentReceiver
 
                 if (f == null) {
                     fTrans.add(R.id.activity_main_fcv_container, fragmentReceiver)
@@ -170,7 +175,11 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         }
     }
 
-    fun redrawPage(item: UpdateItem){
+    fun showSimpleMsg(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+    }
+
+    fun redrawPage(item: UpdateItem) {
         mainFragment.updatePage(item)
     }
 }

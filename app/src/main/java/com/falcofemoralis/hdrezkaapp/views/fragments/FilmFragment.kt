@@ -74,7 +74,7 @@ class FilmFragment : Fragment(), FilmView {
                 if (diff == 0) {
                     if (!commentsAdded) {
                         filmPresenter.initComments()
-                       // createCommentEditor()
+                        // createCommentEditor()
                         commentsAdded = true
                     }
                     filmPresenter.getNextComments()
@@ -119,7 +119,13 @@ class FilmFragment : Fragment(), FilmView {
 
         currentView.findViewById<TextView>(R.id.fragment_film_tv_title).text = film.title
         currentView.findViewById<TextView>(R.id.fragment_film_tv_origtitle).text = film.origTitle
-        currentView.findViewById<TextView>(R.id.fragment_film_tv_releaseDate).text = getString(R.string.release_date, "${film.date} ${film.year}")
+
+        val dateView = currentView.findViewById<TextView>(R.id.fragment_film_tv_releaseDate)
+        if (film.date != null) {
+            dateView.text = getString(R.string.release_date, "${film.date} ${film.year}")
+        } else {
+            dateView.visibility = View.GONE
+        }
         currentView.findViewById<TextView>(R.id.fragment_film_tv_runtime).text = getString(R.string.runtime, film.runtime)
         currentView.findViewById<TextView>(R.id.fragment_film_tv_type).text = getString(R.string.film_type, film.type)
         currentView.findViewById<TextView>(R.id.fragment_film_tv_plot).text = film.description
@@ -165,7 +171,7 @@ class FilmFragment : Fragment(), FilmView {
                             }
                         })
                         actorLayout.setOnClickListener {
-                           // FragmentOpener.openActor(actor, this, fragmentListener)
+                            // FragmentOpener.openActor(actor, this, fragmentListener)
                         }
                     } else {
                         actorsLayout.addView(layout)
@@ -290,7 +296,7 @@ class FilmFragment : Fragment(), FilmView {
                 requireContext().theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
                 layout.setBackgroundResource(outValue.resourceId)
                 layout.setOnClickListener {
-                    FragmentOpener.openFilm(film, this, fragmentListener)
+                    FragmentOpener.openWithData(this, fragmentListener, film, "film")
                 }
             } else {
                 layout.findViewById<TextView>(R.id.inflate_collection_item_name).setTextColor(requireContext().getColor(R.color.gray))
@@ -331,7 +337,7 @@ class FilmFragment : Fragment(), FilmView {
             params.setMargins(m, m, m, m)
             layout.layoutParams = params
             layout.setOnClickListener {
-                FragmentOpener.openFilm(film, this, fragmentListener)
+                FragmentOpener.openWithData(this, fragmentListener, film, "film")
             }
 
             relatedLayout.addView(layout)
@@ -394,7 +400,7 @@ class FilmFragment : Fragment(), FilmView {
         ExceptionHelper.showToastError(requireContext(), type)
     }
 
-    fun createCommentEditor(){
+    fun createCommentEditor() {
         // TODO
     }
 }

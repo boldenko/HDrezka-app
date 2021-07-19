@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.CookieManager
+import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.falcofemoralis.hdrezkaapp.R
@@ -32,14 +33,31 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             "providers" -> {
-                requireActivity().let {
-                    SettingsData.setProvider(it.applicationContext)
-                    UserData.reset(it)
-                    CookieManager.getInstance().removeAllCookies(null)
-                    CookieManager.getInstance().flush()
-                    (it as MainActivity).updatePager()
+                activity.let {
+                    if (it != null) {
+                        SettingsData.provider = PreferenceManager.getDefaultSharedPreferences(it).getString("providers", it.resources.getStringArray(R.array.providersIds)[0])
+                        applyProvider(it)
+                    }
+                }
+            }
+            "ownProvider" -> {
+                activity.let {
+                    if (it != null) {
+                        SettingsData.provider = PreferenceManager.getDefaultSharedPreferences(it).getString("ownProvider", "")
+                        if (SettingsData.provider.isNullOrEmpty()) {
+                            SettingsData.provider = PreferenceManager.getDefaultSharedPreferences(it).getString("providers", it.resources.getStringArray(R.array.providersIds)[0])
+                        }
+                        applyProvider(it)
+                    }
                 }
             }
         }
+    }
+
+    private fun applyProvider(it: FragmentActivity) {
+        UserData.reset(it)
+        CookieManager.getInstance().removeAllCookies(null)
+        CookieManager.getInstance().flush()
+        (it as MainActivity).updatePager()
     }
 }

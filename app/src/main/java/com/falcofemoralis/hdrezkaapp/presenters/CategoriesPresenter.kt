@@ -1,10 +1,9 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
 import android.util.ArrayMap
-import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
 import com.falcofemoralis.hdrezkaapp.models.CategoriesModel
-import com.falcofemoralis.hdrezkaapp.models.FilmModel
 import com.falcofemoralis.hdrezkaapp.objects.Film
+import com.falcofemoralis.hdrezkaapp.objects.Filters
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper.catchException
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.CategoriesView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmsListView
@@ -14,15 +13,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jsoup.HttpStatusException
 
-class CategoriesPresenter(private val categoriesView: CategoriesView, private val filmsListView: FilmsListView) {
-    private val FILMS_PER_PAGE: Int = 9
-
-    private var curPage = 1
-    private var loadedFilms: ArrayList<Film> = ArrayList()
-    private var activeFilms: ArrayList<Film> = ArrayList()
-    private var isLoading: Boolean = false
+class CategoriesPresenter(private val categoriesView: CategoriesView, private val filmsListView: FilmsListView) : Filters.IFilter, FilmsListPresenter.IFilmsList {
+    private var currentPage = 1
     private var selectedCategoryLink: String? = null
 
+    var filters: Filters = Filters(this)
+    var filmsListPresenter: FilmsListPresenter = FilmsListPresenter(filmsListView, categoriesView, filters, this)
     var categories: ArrayMap<Pair<String, String>, ArrayList<Pair<String, String>>> = ArrayMap()
     var typesNames: ArrayList<String> = ArrayList()
     var genresNames: ArrayMap<String, ArrayList<String>> = ArrayMap()
@@ -48,7 +44,7 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
 
                     withContext(Dispatchers.Main) {
                         categoriesView.setCategories()
-                        filmsListView.setFilms(activeFilms)
+                        filmsListView.setFilms(filmsListPresenter.activeFilms)
                     }
                 } else {
                     catchException(HttpStatusException("no access", 500, ""), categoriesView)
@@ -79,60 +75,24 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
 
         link.let {
             selectedCategoryLink = link
-            curPage = 1
-            activeFilms.clear()
-            loadedFilms.clear()
+            currentPage = 1
+            filmsListPresenter.reset()
+            filmsListPresenter.filmList.clear()
             categoriesView.showList()
-            getNextFilms()
+            filmsListPresenter.getNextFilms()
         }
     }
 
-    fun getNextFilms() {
-        if (isLoading) {
-            return
+    override fun getMoreFilms(): ArrayList<Film> {
+        var films: ArrayList<Film> = ArrayList()
+        selectedCategoryLink?.let {
+            films = CategoriesModel.getFilmsFromCategory(it, currentPage)
+            currentPage++
         }
-
-        isLoading = true
-        filmsListView.setProgressBarState(IProgressState.StateType.LOADING)
-        if (loadedFilms.size > 0) {
-            try {
-                FilmModel.getFilmsData(loadedFilms, FILMS_PER_PAGE, ::addFilms)
-            } catch (e: Exception) {
-                catchException(e, categoriesView)
-                isLoading = false
-                return
-            }
-        } else {
-            GlobalScope.launch {
-                try {
-                    // if page is not empty
-                    selectedCategoryLink?.let {
-                        loadedFilms.addAll(CategoriesModel.getFilmsFromCategory(it, curPage))
-                        curPage++
-                    }
-
-                    if (loadedFilms.size > 0) {
-                        FilmModel.getFilmsData(loadedFilms, FILMS_PER_PAGE, ::addFilms)
-                    }
-                } catch (e: Exception) {
-                    if (e.message != "Empty list") {
-                        catchException(e, categoriesView)
-
-                    }
-                    isLoading = false
-                    withContext(Dispatchers.Main) {
-                        filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
-                    }
-                    return@launch
-                }
-            }
-        }
+        return films
     }
 
-    private fun addFilms(films: ArrayList<Film>) {
-        isLoading = false
-        activeFilms.addAll(films)
-        filmsListView.redrawFilms()
-        filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
+    override fun applyFilters() {
+        filmsListPresenter.applyFilter()
     }
 }

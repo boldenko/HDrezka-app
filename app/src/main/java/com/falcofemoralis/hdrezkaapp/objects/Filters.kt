@@ -1,44 +1,73 @@
 package com.falcofemoralis.hdrezkaapp.objects
 
 import android.util.ArrayMap
+import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
 import com.falcofemoralis.hdrezkaapp.R
-import com.falcofemoralis.hdrezkaapp.constants.AppliedFilter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.RangeSlider
+
 
 class Filters(private val iFilter: IFilter) {
     interface IFilter {
         fun applyFilters()
     }
 
+    enum class AppliedFilter {
+        COUNTRIES,
+        COUNTRIES_INVERTED,
+        GENRES,
+        GENRES_INVERTED,
+        RATING,
+        TYPE,
+        SORT
+    }
+
     var appliedFilters: ArrayMap<AppliedFilter, Array<String?>> = ArrayMap() // applied filters
     private var appliedFiltersTmp: ArrayMap<AppliedFilter, Array<String?>>? = null
     private var activity: FragmentActivity? = null
+    private var dialog: AlertDialog? = null
+    private var ratingSliderView: RangeSlider? = null
+    private var typeView: RadioGroup? = null
+    private var sortView: RadioGroup? = null
+    private var countriesView: Button? = null
+    private var invertedCountriesView: Button? = null
+    private var genresView: Button? = null
+    private var invertedGenresView: Button? = null
+    private var typeHeaderView: TextView? = null
+    private var ratingHeaderView: TextView? = null
+    private var sortHeaderView: TextView? = null
 
-    fun createFilters(activity: FragmentActivity, btn: Button) {
+    fun createFilters(activity: FragmentActivity, btn: View) {
         this.activity = activity
 
         val filtersDialog = MaterialAlertDialogBuilder(activity)
 
         // Get the layout inflater
-        val filtersDialogView: RelativeLayout = activity.layoutInflater.inflate(R.layout.dialog_filters, null) as RelativeLayout
+        val filtersDialogView: FrameLayout = activity.layoutInflater.inflate(R.layout.dialog_filters, null) as FrameLayout
 
         // Rating range slider
-        filtersDialogView.findViewById<RangeSlider>(R.id.rating_range_slider).addOnChangeListener { slider, value, fromUser ->
+        ratingSliderView = filtersDialogView.findViewById(R.id.rating_range_slider)
+        ratingHeaderView = filtersDialogView.findViewById(R.id.rating_slider_header)
+        ratingSliderView?.addOnChangeListener { slider, value, fromUser ->
             setFilter(AppliedFilter.RATING, arrayOf(slider.values[0].toString(), slider.values[1].toString()))
         }
 
         // Film type buttons
-        filtersDialogView.findViewById<RadioGroup>(R.id.film_types).setOnCheckedChangeListener { group, checkedId ->
+        typeView = filtersDialogView.findViewById(R.id.film_types)
+        typeHeaderView = filtersDialogView.findViewById(R.id.film_types_header)
+        typeView?.setOnCheckedChangeListener { group, checkedId ->
             run {
                 setFilter(AppliedFilter.TYPE, arrayOf(group.findViewById<RadioButton>(checkedId).text as String?))
             }
         }
 
         // Film sort buttons
-        filtersDialogView.findViewById<RadioGroup>(R.id.film_sort).setOnCheckedChangeListener { group, checkedId ->
+        sortView = filtersDialogView.findViewById(R.id.film_sort)
+        sortHeaderView = filtersDialogView.findViewById(R.id.film_sort_header)
+        sortView?.setOnCheckedChangeListener { group, checkedId ->
             run {
                 val pos: Int = when (checkedId) {
                     R.id.sort_last -> 0
@@ -52,48 +81,52 @@ class Filters(private val iFilter: IFilter) {
 
 
         // Countries filter
+        countriesView = filtersDialogView.findViewById(R.id.bt_countries)
         createFilter(
             activity.getString(R.string.choose_countries),
-            filtersDialogView.findViewById(R.id.bt_countries),
+            countriesView,
             AppliedFilter.COUNTRIES,
             activity.resources.getStringArray(R.array.countries)
         )
 
         // Genres filter
+        genresView = filtersDialogView.findViewById(R.id.bt_genres)
         createFilter(
             activity.getString(R.string.choose_genres),
-            filtersDialogView.findViewById(R.id.bt_genres),
+            genresView,
             AppliedFilter.GENRES,
             activity.resources.getStringArray(R.array.genres)
         )
 
         // Inverted Countries filter
+        invertedCountriesView = filtersDialogView.findViewById(R.id.bt_countries_inverted)
         createFilter(
             activity.getString(R.string.exclude_countries),
-            filtersDialogView.findViewById(R.id.bt_countries_inverted),
+            invertedCountriesView,
             AppliedFilter.COUNTRIES_INVERTED,
             activity.resources.getStringArray(R.array.countries)
         )
 
         // Inverted Genres filter
+        invertedGenresView = filtersDialogView.findViewById(R.id.bt_genres_inverted)
         createFilter(
             activity.getString(R.string.exclude_genres),
-            filtersDialogView.findViewById(R.id.bt_genres_inverted),
+            invertedGenresView,
             AppliedFilter.GENRES_INVERTED,
             activity.resources.getStringArray(R.array.genres)
         )
 
         filtersDialog.setView(filtersDialogView)
-        val d = filtersDialog.create()
+        dialog = filtersDialog.create()
 
         filtersDialogView.findViewById<Button>(R.id.filter_set).setOnClickListener {
             //applyFilters()
             iFilter.applyFilters()
-            d.dismiss()
+            dialog?.dismiss()
         }
         filtersDialogView.findViewById<Button>(R.id.filter_cancel).setOnClickListener {
             dismissFilters()
-            d.dismiss()
+            dialog?.dismiss()
         }
         filtersDialogView.findViewById<Button>(R.id.filter_clear).setOnClickListener {
             clearFilters()
@@ -101,16 +134,16 @@ class Filters(private val iFilter: IFilter) {
         }
         btn.setOnClickListener {
             initFilters()
-            d.show()
+            dialog?.show()
         }
-
     }
 
-    fun createFilter(title: String, btn: Button, filterType: AppliedFilter, data: Array<String>) {
+
+    private fun createFilter(title: String, btn: Button?, filterType: AppliedFilter, data: Array<String>) {
         activity?.let {
             val builder = MaterialAlertDialogBuilder(it)
             builder.setTitle(title)
-            btn.setOnClickListener {
+            btn?.setOnClickListener {
                 var checkedItems: Array<String?> = arrayOfNulls(data.size)
 
                 getFilter(filterType)?.let {
@@ -135,14 +168,13 @@ class Filters(private val iFilter: IFilter) {
                     }
                 }
                 val d = builder.create()
-
                 d.show()
             }
         }
     }
 
 
-    fun initFilters() {
+    private fun initFilters() {
         appliedFiltersTmp = ArrayMap(appliedFilters)
     }
 
@@ -151,19 +183,19 @@ class Filters(private val iFilter: IFilter) {
         appliedFiltersTmp
     }
 
-    fun dismissFilters() {
+    private fun dismissFilters() {
         appliedFiltersTmp?.let {
             appliedFilters = it
         }
     }
 
-    fun clearFilters() {
+    private fun clearFilters() {
         appliedFilters.clear()
         //applyFilters()
         iFilter.applyFilters()
     }
 
-    fun getFilter(key: AppliedFilter): Array<String?>? {
+    private fun getFilter(key: AppliedFilter): Array<String?>? {
         return appliedFilters[key]
     }
 
@@ -246,18 +278,18 @@ class Filters(private val iFilter: IFilter) {
                     }
                 }
 
-                AppliedFilter.YEAR -> {
-                    if (film.year != null && film.year?.isNotEmpty() == true) {
-                        val min: Float = filterEntry.value[0].toFloat()
-                        val max: Float = filterEntry.value[1].toFloat()
-                        val filmYear: Float = film.year!!.take(4).toFloat()
+                /*              AppliedFilter.YEAR -> {
+                                  if (film.year != null && film.year?.isNotEmpty() == true) {
+                                      val min: Float = filterEntry.value[0].toFloat()
+                                      val max: Float = filterEntry.value[1].toFloat()
+                                      val filmYear: Float = film.year!!.take(4).toFloat()
 
-                        applyList[AppliedFilter.YEAR] = filmYear in min..max
-                    } else {
-                        applyList[AppliedFilter.YEAR] = false
-                    }
-                }
-
+                                      applyList[AppliedFilter.YEAR] = filmYear in min..max
+                                  } else {
+                                      applyList[AppliedFilter.YEAR] = false
+                                  }
+                              }
+              */
                 AppliedFilter.TYPE -> {
                     if (filterEntry.value[0] == "Все") {
                         continue
@@ -276,5 +308,31 @@ class Filters(private val iFilter: IFilter) {
         }
 
         return isApply
+    }
+
+    fun removeBlock(blocks: ArrayList<AppliedFilter>) {
+        for (block in blocks) {
+
+            val view = when (block) {
+                AppliedFilter.COUNTRIES -> countriesView
+                AppliedFilter.COUNTRIES_INVERTED -> invertedCountriesView
+                AppliedFilter.GENRES -> genresView
+                AppliedFilter.GENRES_INVERTED -> invertedGenresView
+                AppliedFilter.RATING -> {
+                    ratingHeaderView?.visibility = View.GONE
+                    ratingSliderView
+                }
+                AppliedFilter.SORT -> {
+                    sortHeaderView?.visibility = View.GONE
+                    sortView
+                }
+                AppliedFilter.TYPE -> {
+                    typeHeaderView?.visibility = View.GONE
+                    typeView
+                }
+            }
+
+            view?.visibility = View.GONE
+        }
     }
 }

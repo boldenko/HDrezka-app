@@ -215,20 +215,25 @@ object FilmModel {
         var count = 0
         for ((index, film) in filmsToLoad.withIndex()) {
             GlobalScope.launch {
-                loadedFilms[index] = getMainData(film)
-                count++
+                try {
+                    loadedFilms[index] = getMainData(film)
 
-                if (count >= filmsToLoad.size) {
-                    val list: ArrayList<Film> = ArrayList()
-                    for (item in loadedFilms) {
-                        if (item != null) {
-                            list.add(item)
+                    count++
+
+                    if (count >= filmsToLoad.size) {
+                        val list: ArrayList<Film> = ArrayList()
+                        for (item in loadedFilms) {
+                            if (item != null) {
+                                list.add(item)
+                            }
+                        }
+
+                        withContext(Dispatchers.Main) {
+                            callback(list)
                         }
                     }
-
-                    withContext(Dispatchers.Main) {
-                        callback(list)
-                    }
+                } catch (e: Exception) {
+                    throw e
                 }
             }
         }

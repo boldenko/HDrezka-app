@@ -42,12 +42,12 @@
     <string name="cat_interface">Интерфейс</string>
     <string name="cat_app">Приложение</string>
     <string name="cat_main_screen">Выбрать главный экран</string>
-    <string name="cat_provider">Выбрать провайдера</string>
+    <string name="cat_provider">Выбрать зеркало</string>
     <string name="sort_hint">Сортировать</string>
     <string name="show_hint">Отобразить</string>
     <string name="catalogue">Каталог</string>
-    <string name="choose_cat_hint">Выберите категорию</string>
-    <string name="choose_genre_hint">Выберите жанр</string>
+    <string name="choose_cat_hint">Категория</string>
+    <string name="choose_genre_hint">Жанр</string>
     <string name="choose_countries">Выберите страны</string>
     <string name="choose_genres">Выберите жанры</string>
     <string name="exclude_countries">Исключить страны</string>
@@ -65,11 +65,16 @@
     <string name="error_timeout">Превышен лимит ожидания</string>
     <string name="error_parsing">Ошибка при получении данных</string>
     <string name="no_access">Нету доступа к сайту. Смените провайдера</string>
-    <string name="choose_year_hint">Выберите год</string>
+    <string name="choose_year_hint">Год</string>
     <string name="sort_header">Сортировать</string>
     <string name="type_header">Выбрать тип</string>
     <string name="last">Последние поступления</string>
     <string name="popular">Популярные</string>
     <string name="now">Сейчас смотрят</string>
     <string name="add">Добавить</string>
+    <string name="choose_country_hint">Страна</string>
+    <string name="country">Страна</string>
+    <string name="no_provider_entered">Свое зеркало не было веденно!</string>
+    <string name="own_provider_hint">Нужно указать полную ссылку с http/https. Например: https://rezka.ag</string>
+    <string name="own_provider">Личное зеркало</string>
 </resources>

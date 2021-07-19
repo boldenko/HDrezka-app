@@ -37,7 +37,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
     }
 
     override fun triggerEnd() {
-        newestFilmsPresenter.getNextFilms()
+        newestFilmsPresenter.filmsListPresenter.getNextFilms()
     }
 
     override fun showConnectionError(type: IConnection.ErrorType) {

@@ -105,7 +105,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
         autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             imm.hideSoftInputFromWindow(autoCompleteTextView.windowToken, 0)
             autoCompleteTextView.dismissDropDown()
-            FragmentOpener.openFilm(searchPresenter.activeSearchFilms[position], this, fragmentListener)
+            FragmentOpener.openWithData(this, fragmentListener, searchPresenter.activeSearchFilms[position], "film")
         }
 
         clearBtn.setOnClickListener {

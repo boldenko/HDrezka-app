@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/filters_scroll"
         android:layout_width="match_parent"
+        android:paddingBottom="35dp"
         android:layout_height="wrap_content">
 
         <LinearLayout
@@ -68,6 +70,7 @@
             </TableLayout>
 
             <TextView
+                android:id="@+id/rating_slider_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -84,6 +87,7 @@
                 app:values="@array/initial_rating_slider_values" />
 
             <TextView
+                android:id="@+id/film_types_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/type_header"
@@ -133,6 +137,7 @@
             </RadioGroup>
 
             <TextView
+                android:id="@+id/film_sort_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/sort_header"
@@ -164,7 +169,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/now"
-                    android:layout_marginBottom="25dp"
                     android:textSize="@dimen/normal_text" />
 
             </RadioGroup>
@@ -174,8 +178,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
         android:background="@color/white"
+        android:gravity="center"
         android:weightSum="3">
 
         <Button
@@ -214,4 +219,4 @@
             android:textColor="@color/main_color_3"
             android:textSize="@dimen/small_text" />
     </LinearLayout>
-</RelativeLayout>
+</FrameLayout>

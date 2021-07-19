@@ -34,14 +34,18 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
         holder.titleView.text = film.title
 
         var info = ""
-        info += film.year
+        film.year?.let {
+            info += film.year
+        }
         film.countries?.let {
             if (film.countries!!.size > 0) {
-                info += ", " + film.countries!![0]
+                info = addComma(info)
+                info += film.countries!![0]
             }
         }
         if (film.ratingIMDB?.isNotEmpty() == true) {
-            info += ", " + film.ratingIMDB
+            info = addComma(info)
+            info += film.ratingIMDB
         }
 
         holder.infoView.text = info
@@ -61,6 +65,14 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
         holder.layout.setOnClickListener {
             openFilm(film)
         }
+    }
+
+    private fun addComma(text: String): String {
+        var info = text
+        if (text.isNotEmpty()) {
+            info += ", "
+        }
+        return info
     }
 
     override fun getItemCount(): Int = films.size

@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentContainerView
 import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
+import com.falcofemoralis.hdrezkaapp.objects.Filters
 import com.falcofemoralis.hdrezkaapp.presenters.CategoriesPresenter
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.CategoriesView
@@ -28,6 +29,14 @@ class CategoriesFragment : Fragment(), CategoriesView, AdapterView.OnItemSelecte
     private var genrePos: Int? = null
     private var yearPos: Int? = null
 
+    enum class SpinnerState {
+        FREE,
+        AWAIT,
+    }
+
+    private var genresSpinnerState: SpinnerState = SpinnerState.FREE
+    private var yearsSpinnerState: SpinnerState = SpinnerState.FREE
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentView = inflater.inflate(R.layout.fragment_categories, container, false)
 
@@ -39,11 +48,16 @@ class CategoriesFragment : Fragment(), CategoriesView, AdapterView.OnItemSelecte
         genresSpinner = currentView.findViewById(R.id.fragment_categories_sp_genres)
         yearsSpinner = currentView.findViewById(R.id.fragment_categories_sp_years)
 
+        genresSpinner.onItemSelectedListener = this
+        yearsSpinner.onItemSelectedListener = this
+
         return currentView
     }
 
     override fun onFilmsListCreated() {
         categoriesPresenter = CategoriesPresenter(this, filmsListFragment)
+        categoriesPresenter.filters.createFilters(requireActivity(), currentView.findViewById(R.id.fragment_categories_tv_countries))
+        categoriesPresenter.filters.removeBlock(arrayListOf(Filters.AppliedFilter.TYPE, Filters.AppliedFilter.SORT, Filters.AppliedFilter.RATING, Filters.AppliedFilter.GENRES_INVERTED, Filters.AppliedFilter.GENRES))
         categoriesPresenter.initCategories()
     }
 
@@ -56,31 +70,39 @@ class CategoriesFragment : Fragment(), CategoriesView, AdapterView.OnItemSelecte
         when (parent.id) {
             R.id.fragment_categories_sp_types -> {
                 typePos = position
+                genresSpinnerState = SpinnerState.AWAIT
+                yearsSpinnerState = SpinnerState.AWAIT
                 genresSpinner.setSelection(0)
                 yearsSpinner.setSelection(0)
                 genresSpinner.item = categoriesPresenter.genresNames[categoriesPresenter.typesNames[position]]
                 yearsSpinner.item = categoriesPresenter.yearsNames
-                genresSpinner.onItemSelectedListener = this
-                yearsSpinner.onItemSelectedListener = this
+                categoriesPresenter.setCategory(typePos, genrePos, yearPos)
             }
             R.id.fragment_categories_sp_genres -> {
-                genrePos = position
+                if (genresSpinnerState == SpinnerState.FREE) {
+                    genrePos = position
+                    categoriesPresenter.setCategory(typePos, genrePos, yearPos)
+                } else if (genresSpinnerState == SpinnerState.AWAIT) {
+                    genresSpinnerState = SpinnerState.FREE
+                }
             }
             R.id.fragment_categories_sp_years -> {
-                yearPos = position
+                if (yearsSpinnerState == SpinnerState.FREE) {
+                    yearPos = position
+                    categoriesPresenter.setCategory(typePos, genrePos, yearPos)
+                } else if (yearsSpinnerState == SpinnerState.AWAIT) {
+                    yearsSpinnerState = SpinnerState.FREE
+                }
             }
-
-
         }
 
-        categoriesPresenter.setCategory(typePos, genrePos, yearPos)
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
     }
 
     override fun triggerEnd() {
-        categoriesPresenter.getNextFilms()
+        categoriesPresenter.filmsListPresenter.getNextFilms()
     }
 
     override fun showList() {

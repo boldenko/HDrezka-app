@@ -8,6 +8,7 @@
         <item>Германия</item>
         <item>Украина</item>
         <item>Россия</item>
+        <item>СССР</item>
         <item>Китай</item>
         <item>Япония</item>
         <item>Канада</item>
@@ -73,6 +74,9 @@
         <item>hdrezka.me</item>
         <item>hdrezka.co</item>
         <item>hdrezka.club</item>
+        <item>rezkily.com</item>
+        <item>metaivi.com</item>
+        <item>cokinopoisk.com</item>
     </string-array>
     <string-array name="providersIds">
         <item>http://hdrezka.tv</item>
@@ -80,6 +84,9 @@
         <item>http://hdrezka.me</item>
         <item>http://hdrezka.co</item>
         <item>https://hdrezka.club</item>
+        <item>http://rezkily.com</item>
+        <item>http://metaivi.com</item>
+        <item>http://cokinopoisk.com</item>
     </string-array>
     <string-array name="screens">
         <item>@string/newest</item>

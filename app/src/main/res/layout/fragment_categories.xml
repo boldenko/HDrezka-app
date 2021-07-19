@@ -5,21 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="1"
     tools:context="com.falcofemoralis.hdrezkaapp.views.fragments.CategoriesFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.1"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="3">
+        android:weightSum="4">
 
         <com.chivorn.smartmaterialspinner.SmartMaterialSpinner
             android:id="@+id/fragment_categories_sp_types"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:spinnerMode="dialog"
             app:smsp_arrowColor="@color/white"
             app:smsp_floatingLabelColor="@color/white"
             app:smsp_hint="@string/choose_cat_hint"
@@ -34,6 +33,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:spinnerMode="dialog"
             app:smsp_arrowColor="@color/white"
             app:smsp_floatingLabelColor="@color/white"
             app:smsp_hint="@string/choose_genre_hint"
@@ -48,6 +48,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:spinnerMode="dialog"
             app:smsp_arrowColor="@color/white"
             app:smsp_floatingLabelColor="@color/white"
             app:smsp_hint="@string/choose_year_hint"
@@ -56,13 +57,23 @@
             app:smsp_itemColor="@color/white"
             app:smsp_itemListHintColor="@color/white"
             app:smsp_selectedItemListColor="@color/main_color_3" />
+
+        <TextView
+            android:id="@+id/fragment_categories_tv_countries"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/country"
+            android:foreground="?attr/selectableItemBackground"
+            android:textColor="@color/white"
+            android:textSize="@dimen/small_text" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/fragment_categories_tv_msg"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.9"
+        android:layout_height="fill_parent"
         android:gravity="center"
         android:text="@string/choose_cat_hint"
         android:textColor="@color/white"

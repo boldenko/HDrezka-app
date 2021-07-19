@@ -14,15 +14,18 @@ object SettingsData {
     fun init(context: Context) {
         prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
-        provider = prefs?.getString("providers", context.resources.getStringArray(R.array.providersIds)[0])
-        mainScreen = prefs?.getString("screens", "0")?.toInt()
+        provider = prefs?.getString("ownProvider", "")
+        if(provider == null || provider!!.isEmpty()){
+            provider = prefs?.getString("providers", context.resources.getStringArray(R.array.providersIds)[0])
+            mainScreen = prefs?.getString("screens", "0")?.toInt()
+        }
     }
 
-    fun setProvider(context: Context) {
+  /*  fun setProviderFromSettings(provider: String) {
       //  val providerTmp = provider
-        provider = prefs?.getString("providers", context.resources.getStringArray(R.array.providersIds)[0])
-     /*   val cm: CookieManager = CookieManager.getInstance()
+        this.provider = provider
+     *//*   val cm: CookieManager = CookieManager.getInstance()
         val test = cm.getCookie(providerTmp)
-        cm.setCookie(provider, cm.getCookie(providerTmp))*/
-    }
+        cm.setCookie(provider, cm.getCookie(providerTmp))*//*
+    }*/
 }
