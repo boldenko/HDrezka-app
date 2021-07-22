@@ -7,7 +7,8 @@ interface IConnection {
         EMPTY,
         TIMEOUT,
         ERROR,
-        NO_ACCESS
+        BLOCKED_SITE,
+        MALFORMED_URL
     }
 
     fun showConnectionError(type: ErrorType)

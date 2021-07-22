@@ -38,12 +38,9 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         initApp()
     }
 
-
     private fun initApp() {
         if (isInternetAvailable(applicationContext)) {
             if (savedInstanceState == null) {
-                // requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
                 UserData.init(applicationContext)
                 SettingsData.init(applicationContext)
 
@@ -59,12 +56,16 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
 
     private fun createUserMenu() {
         findViewById<ImageView>(R.id.activity_main_iv_user).setOnClickListener {
-            if (!isSettingsOpened) {
-                val f = if (mainFragment.isVisible) mainFragment
-                else currentFragment
-                onFragmentInteraction(f, UserFragment(), Action.NEXT_FRAGMENT_HIDE, true, null, null, null)
-                isSettingsOpened = true
-            }
+            openUserMenu()
+        }
+    }
+
+    fun openUserMenu() {
+        if (!isSettingsOpened) {
+            val f = if (mainFragment.isVisible) mainFragment
+            else currentFragment
+            onFragmentInteraction(f, UserFragment(), Action.NEXT_FRAGMENT_HIDE, true, null, null, null)
+            isSettingsOpened = true
         }
     }
 

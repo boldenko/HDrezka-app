@@ -4,11 +4,14 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.os.PowerManager
 import android.util.TypedValue
 import android.view.*
+import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.widget.*
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -39,6 +42,7 @@ class FilmFragment : Fragment(), FilmView {
     private lateinit var filmPresenter: FilmPresenter
     private lateinit var fragmentListener: OnFragmentInteractionListener
     private lateinit var playerView: WebView
+    private lateinit var progressBar: ProgressBar
     private lateinit var scrollView: NestedScrollView
     private lateinit var commentsList: RecyclerView
     private var commentsAdded: Boolean = false
@@ -51,15 +55,18 @@ class FilmFragment : Fragment(), FilmView {
 
     override fun onDestroy() {
         playerView.destroy()
+        activity?.window?.clearFlags(FLAG_KEEP_SCREEN_ON)
+
         super.onDestroy()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentView = inflater.inflate(R.layout.fragment_film, container, false)
 
-        currentView.findViewById<ProgressBar>(R.id.fragment_film_pb_loading).visibility = View.VISIBLE
+        progressBar = currentView.findViewById(R.id.fragment_film_pb_loading)
         playerView = currentView.findViewById(R.id.fragment_film_wv_player)
         commentsList = currentView.findViewById(R.id.fragment_film_rv_comments)
+        activity?.window?.addFlags(FLAG_KEEP_SCREEN_ON)
 
         filmPresenter = FilmPresenter(this, (arguments?.getSerializable(FILM_ARG) as Film?)!!)
         filmPresenter.initFilmData()
@@ -81,6 +88,8 @@ class FilmFragment : Fragment(), FilmView {
                 }
             }
         })
+        scrollView.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
 
         currentView.findViewById<ImageView>(R.id.fragment_film_iv_poster).setOnClickListener { openFullSizeImage() }
 
@@ -130,8 +139,9 @@ class FilmFragment : Fragment(), FilmView {
         currentView.findViewById<TextView>(R.id.fragment_film_tv_type).text = getString(R.string.film_type, film.type)
         currentView.findViewById<TextView>(R.id.fragment_film_tv_plot).text = film.description
 
-        currentView.findViewById<ProgressBar>(R.id.fragment_film_pb_loading).visibility = View.GONE
+        // data loaded
         scrollView.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
     }
 
     private fun setRating(viewId: Int, stringId: Int, rating: String?, votes: String?) {

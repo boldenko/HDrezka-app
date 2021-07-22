@@ -13,13 +13,13 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/fragment_film_sv_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -11,7 +11,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jsoup.HttpStatusException
 
 class CategoriesPresenter(private val categoriesView: CategoriesView, private val filmsListView: FilmsListView) : Filters.IFilter, FilmsListPresenter.IFilmsList {
     private var currentPage = 1
@@ -30,24 +29,21 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
                 categories = CategoriesModel.getCategories()
                 yearsNames = CategoriesModel.getYears()
 
-                if (categories.size > 0 && yearsNames.size > 0) {
-                    for ((key, value) in categories) {
-                        typesNames.add(key.first)
+                //  if (categories.size > 0 && yearsNames.size > 0) {
+                for ((key, value) in categories) {
+                    typesNames.add(key.first)
 
-                        val list: ArrayList<String> = ArrayList()
-                        for (genre in value) {
-                            list.add(genre.first)
-                        }
-
-                        genresNames[key.first] = list
+                    val list: ArrayList<String> = ArrayList()
+                    for (genre in value) {
+                        list.add(genre.first)
                     }
 
-                    withContext(Dispatchers.Main) {
-                        categoriesView.setCategories()
-                        filmsListView.setFilms(filmsListPresenter.activeFilms)
-                    }
-                } else {
-                    catchException(HttpStatusException("no access", 500, ""), categoriesView)
+                    genresNames[key.first] = list
+                }
+
+                withContext(Dispatchers.Main) {
+                    categoriesView.setCategories()
+                    filmsListView.setFilms(filmsListPresenter.activeFilms)
                 }
             } catch (e: Exception) {
                 catchException(e, categoriesView)

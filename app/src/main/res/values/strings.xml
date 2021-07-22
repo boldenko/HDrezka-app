@@ -64,7 +64,7 @@
     <string name="error_empty">Ничего не найдено</string>
     <string name="error_timeout">Превышен лимит ожидания</string>
     <string name="error_parsing">Ошибка при получении данных</string>
-    <string name="no_access">Нету доступа к сайту. Смените провайдера</string>
+    <string name="no_access">Отсутствует доступ к сайту. Смените зеркало на другое</string>
     <string name="choose_year_hint">Год</string>
     <string name="sort_header">Сортировать</string>
     <string name="type_header">Выбрать тип</string>
@@ -77,4 +77,6 @@
     <string name="no_provider_entered">Свое зеркало не было веденно!</string>
     <string name="own_provider_hint">Нужно указать полную ссылку с http/https. Например: https://rezka.ag</string>
     <string name="own_provider">Личное зеркало</string>
+    <string name="malformed_url">Некорректный URL</string>
+    <string name="to_settings">В настройки</string>
 </resources>
