@@ -73,7 +73,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         if (isSettingsOpened) {
             isSettingsOpened = false
         }
-
         super.onBackPressed()
     }
 

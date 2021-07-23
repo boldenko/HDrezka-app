@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="20dp"
+    android:layout_margin="10dp"
     android:orientation="vertical"
     tools:context="com.falcofemoralis.hdrezkaapp.views.fragments.FilmFragment">
 
@@ -196,6 +196,8 @@
             </LinearLayout>
 
             <!-- Plot -->
+
+            <!-- Player -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -220,7 +222,6 @@
                     android:textSize="@dimen/normal_text" />
             </LinearLayout>
 
-            <!-- Player -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -282,7 +283,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="15dp"
-                    android:text="График выхода серий"
+                    android:text="@string/series_timetable"
                     android:textColor="@color/white"
                     android:textSize="@dimen/head_text" />
 
@@ -307,7 +308,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="15dp"
-                    android:text="Все части"
+                    android:text="@string/collection"
                     android:textColor="@color/white"
                     android:textSize="@dimen/head_text" />
 
@@ -330,7 +331,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="15dp"
-                    android:text="Смотреть ещё"
+                    android:text="@string/related"
                     android:textColor="@color/white"
                     android:textSize="@dimen/head_text" />
 
@@ -346,6 +347,7 @@
                 </HorizontalScrollView>
             </LinearLayout>
 
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -356,85 +358,21 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="15dp"
-                    android:text="Комментарии"
+                    android:text="@string/comments"
                     android:textColor="@color/white"
                     android:textSize="@dimen/head_text" />
 
-                <LinearLayout
-                    android:visibility="gone"
+                <TextView
+                    android:id="@+id/fragment_film_view_comment_editor_opener"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="20dp"
-                        android:layout_margin="5dp"
-                        android:weightSum="5">
-
-                        <ImageView
-                            android:id="@+id/fragment_film_iv_comment_b"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.8"
-                            android:src="@drawable/ic_comment_b" />
-
-                        <ImageView
-                            android:id="@+id/fragment_film_iv_comment_i"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.8"
-                            android:src="@drawable/ic_comment_i" />
-
-                        <ImageView
-                            android:id="@+id/fragment_film_iv_comment_u"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.8"
-                            android:src="@drawable/ic_comment_u" />
-
-                        <ImageView
-                            android:id="@+id/fragment_film_iv_comment_s"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.8"
-                            android:src="@drawable/ic_comment_s" />
-
-                        <ImageView
-                            android:id="@+id/fragment_film_iv_comment_spoiler"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1.8"
-                            android:src="@drawable/ic_comment_spoiler" />
-                    </LinearLayout>
-
-                    <EditText
-                        android:id="@+id/fragment_film_et_new_comment"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:background="@color/light_bg"
-                        android:hint="Написать отзыв"
-                        android:paddingStart="20dp"
-                        android:paddingTop="15dp"
-                        android:paddingEnd="20dp"
-                        android:paddingBottom="15dp"
-                        android:textColor="@color/white"
-                        android:textColorHint="@color/gray"
-                        android:textSize="@dimen/normal_text" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/add" />
-                    </LinearLayout>
-                </LinearLayout>
+                    android:layout_height="match_parent"
+                    android:background="@color/light_bg"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:orientation="vertical"
+                    android:padding="10dp"
+                    android:text="@string/new_comment_hint"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/normal_text" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/fragment_film_rv_comments"
@@ -452,5 +390,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:background="@drawable/comment_editor_bg"
+        android:elevation="10dp"
+        android:id="@+id/fragment_film_ll_comment_editor_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:animateLayoutChanges="true"
         android:visibility="gone" />
 </RelativeLayout>

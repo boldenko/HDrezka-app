@@ -1,9 +1,11 @@
 package com.falcofemoralis.hdrezkaapp.views.viewsInterface
 
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
+import com.falcofemoralis.hdrezkaapp.interfaces.IOnBackPressed
 import com.falcofemoralis.hdrezkaapp.objects.*
+import com.falcofemoralis.hdrezkaapp.views.elements.CommentEditor
 
-interface FilmView : IConnection {
+interface FilmView : IConnection, CommentEditor.ICommentEditor {
     fun setFilmBaseData(film: Film)
 
     fun setActors(actors: ArrayList<Actor?>)
@@ -26,9 +28,11 @@ interface FilmView : IConnection {
 
     fun setBookmarksList(bookmarks: ArrayList<Bookmark>)
 
-    fun setCommentsList(list: ArrayList<Comment>)
+    fun setCommentsList(list: ArrayList<Comment>, filmId: String)
 
     fun redrawComments()
 
     fun setCommentsProgressState(state: Boolean)
+
+    fun setCommentEditor(filmId: String)
 }

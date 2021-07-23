@@ -1,4 +1,4 @@
-package com.falcofemoralis.hdrezkaapp.objects
+package com.falcofemoralis.hdrezkaapp.views.elements
 
 import android.util.ArrayMap
 import android.view.View
@@ -6,11 +6,12 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
 import com.falcofemoralis.hdrezkaapp.R
+import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.RangeSlider
 
 
-class Filters(private val iFilter: IFilter) {
+class FiltersMenu(private val iFilter: IFilter) {
     interface IFilter {
         fun applyFilters()
     }

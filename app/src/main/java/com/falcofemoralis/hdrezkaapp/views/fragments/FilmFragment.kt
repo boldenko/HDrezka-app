@@ -1,17 +1,18 @@
 package com.falcofemoralis.hdrezkaapp.views.fragments
 
+import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.os.PowerManager
+import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+import android.view.inputmethod.InputMethodManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.widget.*
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -29,6 +30,7 @@ import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
 import com.falcofemoralis.hdrezkaapp.utils.UnitsConverter
 import com.falcofemoralis.hdrezkaapp.views.MainActivity
 import com.falcofemoralis.hdrezkaapp.views.adapters.CommentsRecyclerViewAdapter
+import com.falcofemoralis.hdrezkaapp.views.elements.CommentEditor
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmView
 import com.github.aakira.expandablelayout.ExpandableLinearLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -45,6 +47,8 @@ class FilmFragment : Fragment(), FilmView {
     private lateinit var progressBar: ProgressBar
     private lateinit var scrollView: NestedScrollView
     private lateinit var commentsList: RecyclerView
+    private lateinit var commentEditor: CommentEditor
+    private lateinit var imm: InputMethodManager
     private var commentsAdded: Boolean = false
     private var modalDialog: Dialog? = null
 
@@ -81,7 +85,6 @@ class FilmFragment : Fragment(), FilmView {
                 if (diff == 0) {
                     if (!commentsAdded) {
                         filmPresenter.initComments()
-                        // createCommentEditor()
                         commentsAdded = true
                     }
                     filmPresenter.getNextComments()
@@ -294,9 +297,10 @@ class FilmFragment : Fragment(), FilmView {
         }
 
         val collectionLayout: LinearLayout = currentView.findViewById(R.id.fragment_film_tv_collection_list)
-        for ((index, film) in collection.withIndex()) {
+        for (i in collection.lastIndex downTo 0) {
+            val film = collection.reversed()[i]
             val layout: LinearLayout = layoutInflater.inflate(R.layout.inflate_colletion_item, null) as LinearLayout
-            layout.findViewById<TextView>(R.id.inflate_collection_item_n).text = (index + 1).toString()
+            layout.findViewById<TextView>(R.id.inflate_collection_item_n).text = (i + 1).toString()
             layout.findViewById<TextView>(R.id.inflate_collection_item_name).text = film.title
             layout.findViewById<TextView>(R.id.inflate_collection_item_year).text = film.year
             layout.findViewById<TextView>(R.id.inflate_collection_item_rating).text = film.ratingKP
@@ -390,8 +394,12 @@ class FilmFragment : Fragment(), FilmView {
         }
     }
 
-    override fun setCommentsList(list: ArrayList<Comment>) {
-        commentsList.adapter = CommentsRecyclerViewAdapter(requireContext(), list)
+    override fun showConnectionError(type: IConnection.ErrorType) {
+        ExceptionHelper.showToastError(requireContext(), type)
+    }
+
+    override fun setCommentsList(list: ArrayList<Comment>, filmId: String) {
+        commentsList.adapter = CommentsRecyclerViewAdapter(requireContext(), list, commentEditor)
     }
 
     override fun redrawComments() {
@@ -406,11 +414,67 @@ class FilmFragment : Fragment(), FilmView {
         }
     }
 
-    override fun showConnectionError(type: IConnection.ErrorType) {
-        ExceptionHelper.showToastError(requireContext(), type)
+    override fun setCommentEditor(filmId: String) {
+        commentEditor = CommentEditor(currentView.findViewById(R.id.fragment_film_ll_comment_editor_container) as LinearLayout, requireContext(), filmId, this, this)
+        imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+        currentView.findViewById<TextView>(R.id.fragment_film_view_comment_editor_opener).setOnClickListener {
+            commentEditor.setCommentSource(0, 0, 0, "")
+            changeCommentEditorState(true)
+        }
     }
 
-    fun createCommentEditor() {
-        // TODO
+    override fun changeCommentEditorState(isKeyboard: Boolean) {
+        if (commentEditor.editorContainer.visibility == View.VISIBLE) {
+            if (commentsAdded) {
+                if (isKeyboard) imm.hideSoftInputFromWindow(commentEditor.textArea.windowToken, 0)
+                commentEditor.editorContainer.animate().translationY(commentEditor.editorContainer.height.toFloat()).setListener(object : Animator.AnimatorListener {
+                    override fun onAnimationStart(animation: Animator?) {
+                    }
+
+                    override fun onAnimationEnd(animation: Animator?) {
+                        commentEditor.editorContainer.visibility = View.GONE
+                    }
+
+                    override fun onAnimationCancel(animation: Animator?) {
+                    }
+
+                    override fun onAnimationRepeat(animation: Animator?) {
+                    }
+                })
+            }
+        } else {
+            commentEditor.editorContainer.visibility = View.VISIBLE
+            commentEditor.textArea.requestFocus()
+            if (isKeyboard) imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+            commentEditor.editorContainer.animate().translationY(0F).setListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator?) {
+                }
+
+                override fun onAnimationEnd(animation: Animator?) {
+                }
+
+                override fun onAnimationCancel(animation: Animator?) {
+                }
+
+                override fun onAnimationRepeat(animation: Animator?) {
+                }
+            })
+        }
+    }
+
+    override fun onCommentPost(comment: Comment, position: Int) {
+        Log.d("COMMENT_TEST", comment.toString())
+        filmPresenter.addComment(comment, position)
+        commentEditor.editorContainer.visibility = View.GONE
+    }
+
+    override fun onDialogVisible() {
+        commentEditor.editorContainer.visibility = View.GONE
+        imm.hideSoftInputFromWindow(commentEditor.textArea.windowToken, 0)
+    }
+
+    override fun onNothingEntered() {
+        Toast.makeText(requireContext(), getString(R.string.enter_comment_text), Toast.LENGTH_SHORT).show()
     }
 }

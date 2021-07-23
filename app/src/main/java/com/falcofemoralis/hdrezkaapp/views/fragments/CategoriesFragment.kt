@@ -11,7 +11,7 @@ import androidx.fragment.app.FragmentContainerView
 import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
-import com.falcofemoralis.hdrezkaapp.objects.Filters
+import com.falcofemoralis.hdrezkaapp.views.elements.FiltersMenu
 import com.falcofemoralis.hdrezkaapp.presenters.CategoriesPresenter
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.CategoriesView
@@ -57,7 +57,7 @@ class CategoriesFragment : Fragment(), CategoriesView, AdapterView.OnItemSelecte
     override fun onFilmsListCreated() {
         categoriesPresenter = CategoriesPresenter(this, filmsListFragment)
         categoriesPresenter.filters.createFilters(requireActivity(), currentView.findViewById(R.id.fragment_categories_tv_countries))
-        categoriesPresenter.filters.removeBlock(arrayListOf(Filters.AppliedFilter.TYPE, Filters.AppliedFilter.SORT, Filters.AppliedFilter.RATING, Filters.AppliedFilter.GENRES_INVERTED, Filters.AppliedFilter.GENRES))
+        categoriesPresenter.filters.removeBlock(arrayListOf(FiltersMenu.AppliedFilter.TYPE, FiltersMenu.AppliedFilter.SORT, FiltersMenu.AppliedFilter.RATING, FiltersMenu.AppliedFilter.GENRES_INVERTED, FiltersMenu.AppliedFilter.GENRES))
         categoriesPresenter.initCategories()
     }
 

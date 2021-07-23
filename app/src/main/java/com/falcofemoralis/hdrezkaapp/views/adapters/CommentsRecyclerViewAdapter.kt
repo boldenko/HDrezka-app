@@ -7,6 +7,7 @@ import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,16 +20,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.objects.Comment
 import com.falcofemoralis.hdrezkaapp.utils.UnitsConverter
+import com.falcofemoralis.hdrezkaapp.views.elements.CommentEditor
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 
 
-class CommentsRecyclerViewAdapter(private val context: Context, private val comments: ArrayList<Comment>) : RecyclerView.Adapter<CommentsRecyclerViewAdapter.ViewHolder>() {
+class CommentsRecyclerViewAdapter(private val context: Context, private val comments: ArrayList<Comment>, private val commentEditor: CommentEditor) :
+    RecyclerView.Adapter<CommentsRecyclerViewAdapter.ViewHolder>() {
     enum class CommentColor {
         DARK,
         LIGHT
     }
 
+    private val INDENT_WEIGHT = 20
     private val spoilerTag = "||"
     private val spoilerText = context.getString(R.string.spoiler)
     private var isNextColor = true
@@ -40,8 +44,17 @@ class CommentsRecyclerViewAdapter(private val context: Context, private val comm
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        // init
+        if (position == 0) {
+            lastColor = CommentColor.DARK
+        }
+
         val comment = comments[position]
 
+        // set header
+        holder.infoView.text = "${comment.nickname}, ${comment.date}"
+
+        // load image
         Picasso.get().load(comment.avatarPath).into(holder.avatarView, object : Callback {
             override fun onSuccess() {
                 holder.avatarProgressBar.visibility = View.GONE
@@ -51,8 +64,8 @@ class CommentsRecyclerViewAdapter(private val context: Context, private val comm
             override fun onError(e: Exception) {
             }
         })
-        holder.infoView.text = "${comment.nickname}, ${comment.date}"
 
+        // set text with spoilers
         holder.textView.text = ""
         val spoilers: ArrayList<String> = ArrayList()
         for (item in comment.text) {
@@ -68,28 +81,29 @@ class CommentsRecyclerViewAdapter(private val context: Context, private val comm
             holder.textView.createSpoilerText(spoilers)
         }
 
+        // set indent margin
         val params = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        params.setMargins(UnitsConverter.getPX(context, comment.indent * 20), UnitsConverter.getPX(context, 6), 0, 0)
+        params.setMargins(UnitsConverter.getPX(context, comment.indent * INDENT_WEIGHT), UnitsConverter.getPX(context, 6), 0, 0)
         holder.layout.layoutParams = params
-
 
         if (comment.indent > 0) {
             holder.indentLineView.visibility = View.VISIBLE
             isNextColor = false
         } else {
+            holder.indentLineView.visibility = View.GONE
             isNextColor = true
         }
 
+        // mix color
         if (isNextColor) {
             lastColor = when (lastColor) {
                 CommentColor.LIGHT -> CommentColor.DARK
                 CommentColor.DARK -> CommentColor.LIGHT
             }
         }
-
         holder.layout.setBackgroundColor(
             ContextCompat.getColor(
                 context, when (lastColor) {
@@ -98,6 +112,32 @@ class CommentsRecyclerViewAdapter(private val context: Context, private val comm
                 }
             )
         )
+
+        // set reply btn
+        var isNextComment = true
+        var nextCommentPos = 0
+        var n = 1
+        while (isNextComment) {
+            if (position + n == comments.size) {
+                isNextComment = false
+                nextCommentPos = position + n
+            } else {
+                val nextComment: Comment = comments[position + n]
+                if (nextComment.indent == comment.indent || comment.indent > nextComment.indent) {
+                    nextCommentPos = position + n
+                    isNextComment = false
+                } else {
+                    n++
+                }
+            }
+        }
+
+        holder.replyBtn.setOnClickListener {
+            if (commentEditor.editorContainer.visibility == View.GONE) {
+                commentEditor.iCommentEditor.changeCommentEditorState(true)
+            }
+            commentEditor.setCommentSource(nextCommentPos, comment.id, comment.indent + 1, comment.nickname)
+        }
     }
 
     private fun TextView.createSpoilerText(spoilers: ArrayList<String>) {
@@ -174,5 +214,6 @@ class CommentsRecyclerViewAdapter(private val context: Context, private val comm
         val infoView: TextView = view.findViewById(R.id.inflate_comment_nickname_date)
         val textView: TextView = view.findViewById(R.id.inflate_comment_text)
         val indentLineView: View = view.findViewById(R.id.inflate_comment_indent)
+        val replyBtn: TextView = view.findViewById(R.id.inflate_comment_reply)
     }
 }

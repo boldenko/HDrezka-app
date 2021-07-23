@@ -100,8 +100,11 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
     }
 
     fun initComments() {
-        filmView.setCommentsList(activeComments)
-        getNextComments()
+        film.filmId?.let {
+            filmView.setCommentEditor(it)
+            filmView.setCommentsList(activeComments, it)
+            getNextComments()
+        }
     }
 
     fun getNextComments() {
@@ -153,5 +156,10 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
                 }
             }
         }
+    }
+
+    fun addComment(comment: Comment, position: Int) {
+        activeComments.add(position, comment)
+        filmView.redrawComments()
     }
 }

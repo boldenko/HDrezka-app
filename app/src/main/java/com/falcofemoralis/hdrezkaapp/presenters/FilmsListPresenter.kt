@@ -4,7 +4,7 @@ import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
 import com.falcofemoralis.hdrezkaapp.models.FilmModel
 import com.falcofemoralis.hdrezkaapp.objects.Film
-import com.falcofemoralis.hdrezkaapp.objects.Filters
+import com.falcofemoralis.hdrezkaapp.views.elements.FiltersMenu
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmsListView
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +15,7 @@ import kotlinx.coroutines.withContext
 class FilmsListPresenter(
     private val filmsListView: FilmsListView,
     private val view: IConnection,
-    private val filters: Filters,
+    private val filters: FiltersMenu,
     private val iFilmsList: IFilmsList
 ) {
     interface IFilmsList {

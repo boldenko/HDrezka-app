@@ -79,4 +79,16 @@
     <string name="own_provider">Личное зеркало</string>
     <string name="malformed_url">Некорректный URL</string>
     <string name="to_settings">В настройки</string>
+    <string name="new_comment_header">Вы действительно хотите добавить новый комментарий?</string>
+    <string name="new_comment_alert">Комментарий, содержащий мат или оскорбления других участников, будет удален!</string>
+    <string name="reply">Ответить</string>
+    <string name="enter_comment_text">Введите текст комментария!</string>
+    <string name="edit">Изменить</string>
+    <string name="delete">Удалить</string>
+    <string name="post_comment_hint">Написать отзыв</string>
+    <string name="new_comment_hint">Добавить новый комментарий</string>
+    <string name="comments">Комментарии</string>
+    <string name="related">Смотреть ещё</string>
+    <string name="collection">Все части</string>
+    <string name="series_timetable">График выхода серий</string>
 </resources>

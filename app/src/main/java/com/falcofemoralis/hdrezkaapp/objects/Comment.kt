@@ -1,6 +1,7 @@
 package com.falcofemoralis.hdrezkaapp.objects
 
 data class Comment(
+    val id: Int,
     val avatarPath: String,
     val nickname: String,
     val text: ArrayList<Pair<TextType, String>>,
