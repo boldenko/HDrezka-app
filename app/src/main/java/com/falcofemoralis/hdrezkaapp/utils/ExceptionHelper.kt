@@ -26,6 +26,7 @@ object ExceptionHelper {
                     ErrorType.NO_INTERNET -> R.string.no_connection
                     ErrorType.BLOCKED_SITE -> R.string.no_access
                     ErrorType.MALFORMED_URL -> R.string.malformed_url
+                    ErrorType.MODERATE_BY_ADMIN -> R.string.comment_need_apply
                     ErrorType.ERROR -> R.string.error_occured
                 }
 
@@ -57,6 +58,7 @@ object ExceptionHelper {
             is HttpStatusException -> {
                 when (e.statusCode) {
                     404 -> ErrorType.EMPTY
+                    403 -> ErrorType.MODERATE_BY_ADMIN
                     else -> ErrorType.ERROR
                 }
             }

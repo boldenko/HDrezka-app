@@ -6,11 +6,26 @@ data class Comment(
     val nickname: String,
     val text: ArrayList<Pair<TextType, String>>,
     val date: String,
-    val indent: Int
+    var indent: Int,
+    var likes: Int,
+    var isDisabled: Boolean,
+    var isControls: Boolean
 ) {
+    var deleteHash: String? = null
+    var isSelfDisabled: Boolean = false
+
     enum class TextType {
         REGULAR,
         SPOILER,
         BOLD,
+        INCLINED,
+        UNDERLINE,
+        CROSSED,
+        BREAK
+    }
+
+    enum class LikeType{
+        PLUS,
+        MINUS
     }
 }

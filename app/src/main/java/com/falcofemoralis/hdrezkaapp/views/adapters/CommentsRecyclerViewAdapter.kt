@@ -1,13 +1,14 @@
 package com.falcofemoralis.hdrezkaapp.views.adapters
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,16 +17,35 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.text.bold
+import androidx.core.text.italic
+import androidx.core.text.strikeThrough
+import androidx.core.text.underline
+import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.falcofemoralis.hdrezkaapp.R
+import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
+import com.falcofemoralis.hdrezkaapp.models.CommentsModel
 import com.falcofemoralis.hdrezkaapp.objects.Comment
+import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.utils.UnitsConverter
 import com.falcofemoralis.hdrezkaapp.views.elements.CommentEditor
+import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmView
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
-class CommentsRecyclerViewAdapter(private val context: Context, private val comments: ArrayList<Comment>, private val commentEditor: CommentEditor) :
+class CommentsRecyclerViewAdapter(
+    private val context: Context,
+    private val comments: ArrayList<Comment>,
+    private val commentEditor: CommentEditor?,
+    private val iConnection: IConnection,
+    private val filmView: FilmView
+) :
     RecyclerView.Adapter<CommentsRecyclerViewAdapter.ViewHolder>() {
     enum class CommentColor {
         DARK,
@@ -68,15 +88,29 @@ class CommentsRecyclerViewAdapter(private val context: Context, private val comm
         // set text with spoilers
         holder.textView.text = ""
         val spoilers: ArrayList<String> = ArrayList()
-        for (item in comment.text) {
+        val str = SpannableStringBuilder()
+        for ((i, item) in comment.text.withIndex()) {
             when (item.first) {
-                Comment.TextType.REGULAR -> holder.textView.text = "${holder.textView.text}${item.second} "
+                Comment.TextType.REGULAR -> str.append(item.second)
                 Comment.TextType.SPOILER -> {
                     spoilers.add(item.second)
-                    holder.textView.text = "${holder.textView.text}$spoilerTag${item.second}$spoilerTag "
+                    holder.textView.text = str.append("$spoilerTag${item.second}$spoilerTag")
+                }
+                Comment.TextType.BOLD -> str.bold { append(item.second) }
+                Comment.TextType.INCLINED -> str.italic { append(item.second) }
+                Comment.TextType.CROSSED -> str.strikeThrough { append(item.second) }
+                Comment.TextType.UNDERLINE -> str.underline { append(item.second) }
+                Comment.TextType.BREAK -> str.append("\n")
+
+            }
+            if (i != comment.text.size - 1) {
+                if (comment.text[i + 1].first != Comment.TextType.REGULAR) {
+                    str.append(" ")
                 }
             }
         }
+        holder.textView.text = str
+
         if (spoilers.size > 0) {
             holder.textView.createSpoilerText(spoilers)
         }
@@ -113,30 +147,103 @@ class CommentsRecyclerViewAdapter(private val context: Context, private val comm
             )
         )
 
-        // set reply btn
-        var isNextComment = true
-        var nextCommentPos = 0
-        var n = 1
-        while (isNextComment) {
-            if (position + n == comments.size) {
-                isNextComment = false
-                nextCommentPos = position + n
-            } else {
-                val nextComment: Comment = comments[position + n]
-                if (nextComment.indent == comment.indent || comment.indent > nextComment.indent) {
-                    nextCommentPos = position + n
+
+        if (commentEditor != null) {
+            // set reply btn
+            var isNextComment = true
+            var nextCommentPos = 0
+            var n = 1
+            while (isNextComment) {
+                if (position + n == comments.size) {
                     isNextComment = false
+                    nextCommentPos = position + n
                 } else {
-                    n++
+                    val nextComment: Comment = comments[position + n]
+                    if (nextComment.indent == comment.indent || comment.indent > nextComment.indent) {
+                        nextCommentPos = position + n
+                        isNextComment = false
+                    } else {
+                        n++
+                    }
+                }
+            }
+
+            holder.replyBtn.setOnClickListener {
+                if (commentEditor.editorContainer.visibility == View.GONE) {
+                    commentEditor.iCommentEditor.changeCommentEditorState(true)
+                }
+                commentEditor.setCommentSource(nextCommentPos, comment.id, comment.indent + 1, comment.nickname)
+            }
+        } else {
+            holder.replyBtn.visibility = View.GONE
+        }
+
+        if (commentEditor != null) {
+            // set like btn
+
+            setLike(holder, comment.likes, comment.isDisabled or comment.isSelfDisabled)
+            holder.likeBtn.setOnClickListener {
+                if (!comment.isSelfDisabled) {
+                    val type = if (comment.isDisabled) {
+                        Comment.LikeType.MINUS
+                    } else {
+                        Comment.LikeType.PLUS
+                    }
+
+                    GlobalScope.launch {
+                        try {
+                            CommentsModel.postLike(comment, type)
+                            withContext(Dispatchers.Main) {
+                                setLike(holder, comment.likes, comment.isDisabled)
+                            }
+                        } catch (e: Exception) {
+                            ExceptionHelper.catchException(e, iConnection)
+                        }
+                    }
+
+
+                    if (!comment.isDisabled) {
+
+                    }
                 }
             }
         }
 
-        holder.replyBtn.setOnClickListener {
-            if (commentEditor.editorContainer.visibility == View.GONE) {
-                commentEditor.iCommentEditor.changeCommentEditorState(true)
+        // controls btn
+        val visible = if (comment.isControls) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
+
+        holder.deleteBtn.visibility = visible
+        if (visible == View.VISIBLE) {
+            holder.deleteBtn.setOnClickListener {
+                GlobalScope.launch {
+                    try {
+                        CommentsModel.deleteComment(comment)
+                        comments.removeAt(position)
+
+                        withContext(Dispatchers.Main) {
+                            filmView.redrawComments()
+                        }
+                    } catch (e: Exception) {
+                        ExceptionHelper.catchException(e, iConnection)
+                    }
+                }
             }
-            commentEditor.setCommentSource(nextCommentPos, comment.id, comment.indent + 1, comment.nickname)
+        }
+    }
+
+    private fun setLike(holder: ViewHolder, n: Int, isDisabled: Boolean) {
+        holder.likeCounter.text = "($n)"
+
+        if (isDisabled) {
+            holder.likeCounter.setTextColor(ContextCompat.getColor(context, R.color.active_like))
+            ImageViewCompat.setImageTintList(holder.likeIcon, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.active_like)))
+        } else {
+            holder.likeCounter.setTextColor(ContextCompat.getColor(context, R.color.main_color_3))
+            ImageViewCompat.setImageTintList(holder.likeIcon, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.main_color_3)))
         }
     }
 
@@ -215,5 +322,11 @@ class CommentsRecyclerViewAdapter(private val context: Context, private val comm
         val textView: TextView = view.findViewById(R.id.inflate_comment_text)
         val indentLineView: View = view.findViewById(R.id.inflate_comment_indent)
         val replyBtn: TextView = view.findViewById(R.id.inflate_comment_reply)
+        val likeBtn: LinearLayout = view.findViewById(R.id.inflate_comment_like)
+        val likeCounter: TextView = view.findViewById(R.id.inflate_comment_like_counter)
+        val likeIcon: ImageView = view.findViewById(R.id.inflate_comment_like_icon)
+
+        //   val editBtn: TextView = view.findViewById(R.id.inflate_comment_edit)
+        val deleteBtn: TextView = view.findViewById(R.id.inflate_comment_delete)
     }
 }

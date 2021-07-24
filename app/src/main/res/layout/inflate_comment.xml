@@ -67,9 +67,9 @@
                 android:textSize="@dimen/normal_text" />
 
             <RelativeLayout
-                android:layout_marginTop="6dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -79,18 +79,21 @@
                     <LinearLayout
                         android:id="@+id/inflate_comment_like"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:foreground="?attr/selectableItemBackground">
 
                         <ImageView
+                            android:id="@+id/inflate_comment_like_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_marginEnd="2dp"
+                            android:layout_marginEnd="1dp"
                             android:src="@drawable/ic_baseline_thumb_up_24" />
 
                         <TextView
+                            android:id="@+id/inflate_comment_like_counter"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="10dp"
+                            android:layout_marginEnd="6dp"
                             android:text="(0)"
                             android:textColor="@color/main_color_3"
                             android:textSize="@dimen/small_text" />
@@ -111,7 +114,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true">
 
-                    <TextView
+           <!--         <TextView
                         android:id="@+id/inflate_comment_edit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -119,7 +122,7 @@
                         android:foreground="?attr/selectableItemBackground"
                         android:text="@string/edit"
                         android:textColor="@color/main_color_3"
-                        android:textSize="@dimen/small_text" />
+                        android:textSize="@dimen/small_text" />-->
 
                     <TextView
                         android:id="@+id/inflate_comment_delete"

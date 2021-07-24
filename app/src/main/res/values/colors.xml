@@ -14,4 +14,5 @@
     <color name="gray">#AFAFAF</color>
     <color name="light_bg">#162135</color>
     <color name="editor_background">#020C1E</color>
+    <color name="active_like">#1CAE09</color>
 </resources>

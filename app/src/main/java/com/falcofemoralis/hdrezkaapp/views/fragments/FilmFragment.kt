@@ -47,10 +47,10 @@ class FilmFragment : Fragment(), FilmView {
     private lateinit var progressBar: ProgressBar
     private lateinit var scrollView: NestedScrollView
     private lateinit var commentsList: RecyclerView
-    private lateinit var commentEditor: CommentEditor
     private lateinit var imm: InputMethodManager
     private var commentsAdded: Boolean = false
     private var modalDialog: Dialog? = null
+    private var commentEditor: CommentEditor? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -399,7 +399,7 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun setCommentsList(list: ArrayList<Comment>, filmId: String) {
-        commentsList.adapter = CommentsRecyclerViewAdapter(requireContext(), list, commentEditor)
+        commentsList.adapter = CommentsRecyclerViewAdapter(requireContext(), list, commentEditor, this, this)
     }
 
     override fun redrawComments() {
@@ -415,25 +415,52 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun setCommentEditor(filmId: String) {
-        commentEditor = CommentEditor(currentView.findViewById(R.id.fragment_film_ll_comment_editor_container) as LinearLayout, requireContext(), filmId, this, this)
-        imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val commentEditorCont: LinearLayout = currentView.findViewById(R.id.fragment_film_ll_comment_editor_container) as LinearLayout
+        val commentEditorOpener: TextView = currentView.findViewById<TextView>(R.id.fragment_film_view_comment_editor_opener)
 
-        currentView.findViewById<TextView>(R.id.fragment_film_view_comment_editor_opener).setOnClickListener {
-            commentEditor.setCommentSource(0, 0, 0, "")
-            changeCommentEditorState(true)
+        if (UserData.isLoggedIn == true) {
+            commentEditor = CommentEditor(commentEditorCont, requireContext(), filmId, this, this)
+            imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+            commentEditorOpener.setOnClickListener {
+                commentEditor?.setCommentSource(0, 0, 0, "")
+                changeCommentEditorState(true)
+            }
+        } else {
+            commentEditorCont.visibility = View.GONE
+            commentEditorOpener.visibility = View.GONE
         }
     }
 
     override fun changeCommentEditorState(isKeyboard: Boolean) {
-        if (commentEditor.editorContainer.visibility == View.VISIBLE) {
-            if (commentsAdded) {
-                if (isKeyboard) imm.hideSoftInputFromWindow(commentEditor.textArea.windowToken, 0)
-                commentEditor.editorContainer.animate().translationY(commentEditor.editorContainer.height.toFloat()).setListener(object : Animator.AnimatorListener {
+        if (commentEditor != null) {
+            if (commentEditor?.editorContainer?.visibility == View.VISIBLE) {
+                if (commentsAdded) {
+                    if (isKeyboard) imm.hideSoftInputFromWindow(commentEditor?.textArea?.windowToken, 0)
+                    commentEditor?.editorContainer?.animate()?.translationY(commentEditor?.editorContainer?.height!!.toFloat())?.setListener(object : Animator.AnimatorListener {
+                        override fun onAnimationStart(animation: Animator?) {
+                        }
+
+                        override fun onAnimationEnd(animation: Animator?) {
+                            commentEditor?.editorContainer?.visibility = View.GONE
+                        }
+
+                        override fun onAnimationCancel(animation: Animator?) {
+                        }
+
+                        override fun onAnimationRepeat(animation: Animator?) {
+                        }
+                    })
+                }
+            } else {
+                commentEditor?.editorContainer?.visibility = View.VISIBLE
+                commentEditor?.textArea?.requestFocus()
+                if (isKeyboard) imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+                commentEditor?.editorContainer?.animate()?.translationY(0F)?.setListener(object : Animator.AnimatorListener {
                     override fun onAnimationStart(animation: Animator?) {
                     }
 
                     override fun onAnimationEnd(animation: Animator?) {
-                        commentEditor.editorContainer.visibility = View.GONE
                     }
 
                     override fun onAnimationCancel(animation: Animator?) {
@@ -443,35 +470,18 @@ class FilmFragment : Fragment(), FilmView {
                     }
                 })
             }
-        } else {
-            commentEditor.editorContainer.visibility = View.VISIBLE
-            commentEditor.textArea.requestFocus()
-            if (isKeyboard) imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
-            commentEditor.editorContainer.animate().translationY(0F).setListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(animation: Animator?) {
-                }
-
-                override fun onAnimationEnd(animation: Animator?) {
-                }
-
-                override fun onAnimationCancel(animation: Animator?) {
-                }
-
-                override fun onAnimationRepeat(animation: Animator?) {
-                }
-            })
         }
     }
 
     override fun onCommentPost(comment: Comment, position: Int) {
         Log.d("COMMENT_TEST", comment.toString())
         filmPresenter.addComment(comment, position)
-        commentEditor.editorContainer.visibility = View.GONE
+        commentEditor?.editorContainer?.visibility = View.GONE
     }
 
     override fun onDialogVisible() {
-        commentEditor.editorContainer.visibility = View.GONE
-        imm.hideSoftInputFromWindow(commentEditor.textArea.windowToken, 0)
+        commentEditor?.editorContainer?.visibility = View.GONE
+        imm.hideSoftInputFromWindow(commentEditor?.textArea?.windowToken, 0)
     }
 
     override fun onNothingEntered() {

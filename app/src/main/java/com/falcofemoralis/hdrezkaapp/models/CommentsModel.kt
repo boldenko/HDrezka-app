@@ -1,11 +1,13 @@
 package com.falcofemoralis.hdrezkaapp.models
 
-import android.util.Log
+import android.util.ArrayMap
+import android.webkit.CookieManager
 import com.falcofemoralis.hdrezkaapp.objects.Comment
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import org.json.JSONObject
 import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.TextNode
 import org.jsoup.select.Elements
@@ -13,7 +15,8 @@ import org.jsoup.select.Elements
 object CommentsModel {
     private const val COMMENT_LINK = "/ajax/get_comments/"
     private const val COMMENT_ADD = "/ajax/add_comment/"
-    private const val COMMENT_LIKE = "/ajax/comments_likes/"
+    private const val COMMENT_LIKE = "/engine/ajax/comments_like.php"
+    private const val DELETE_COMMENT = "/engine/ajax/deletecomments.php"
 
     // filmId = news_id
     // t = unix time
@@ -22,6 +25,7 @@ object CommentsModel {
         val unixTime = System.currentTimeMillis()
         val result: String = Jsoup.connect(SettingsData.provider + COMMENT_LINK + "?t=$unixTime&news_id=$filmId&cstart=$page&type=0&comment_id=0&skin=hdrezka")
             .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
             .ignoreContentType(true)
             .execute()
             .body()
@@ -55,50 +59,123 @@ object CommentsModel {
                     text.add(Pair(Comment.TextType.REGULAR, textItem.text()))
                 }
                 is Element -> {
-                    if (textItem.hasClass("text_spoiler")) {
-                        text.add(Pair(Comment.TextType.SPOILER, textItem.text()))
-                    } else if (textItem.text() != "спойлер") {
-                        text.add(Pair(Comment.TextType.REGULAR, textItem.text()))
+                    val type: Comment.TextType = when (textItem.tagName()) {
+                        "b" -> Comment.TextType.BOLD
+                        "i" -> Comment.TextType.INCLINED
+                        "u" -> Comment.TextType.UNDERLINE
+                        "s" -> Comment.TextType.CROSSED
+                        "br" -> Comment.TextType.BREAK
+                        else -> {
+                            if (textItem.hasClass("text_spoiler")) {
+                                Comment.TextType.SPOILER
+                            } else {
+                                Comment.TextType.REGULAR
+                            }
+                        }
+                    }
+
+                    if (textItem.text() != "спойлер") {
+                        text.add(Pair(type, textItem.text()))
                     }
                 }
             }
         }
-        val indent: Int = el.attr("data-indent")[0].toString().toInt()
+        val indentElement: String = el.attr("data-indent")
+        var indent = 0
+        if (indentElement.isNotEmpty()) {
+            indent = indentElement.toInt()
+        }
 
-        return Comment(id, avatarPath, nickname, text, date, indent)
+        val likes = el.select("span.b-comment__likes_count i")[0].text().toInt()
+        val isDisabled = el.select("span.show-likes-comment")[0].hasClass("disabled")
+        val isSelfDisabled = el.select("span.show-likes-comment")[0].hasClass("self-disabled")
+
+        val editorButtons = el.select("div.actions")[0].select("ul.edit li a")
+        var isControls = false
+        if (editorButtons.size > 0) {
+            isControls = true
+        }
+
+        val comment = Comment(id, avatarPath, nickname, text, date, indent, likes, isDisabled, isControls)
+        for (btn in editorButtons) {
+            if (btn.text() == "Удалить") {
+                comment.deleteHash = btn.attr("onclick").replace("sof.comments.deleteComment(${comment.id}, '", "").replace("', 0, 'ajax');", "")
+            }
+        }
+
+        comment.isSelfDisabled = isSelfDisabled
+
+        return comment
     }
 
     fun postComment(filmId: String, text: String, parent: Int, indent: Int): Comment {
-        // NEW
-        val success: Boolean = true
-        //comments: Лучшая часть!
-        //post_id: 25923
-        //type: 0
-        //parent: 0
-        //g_recaptcha_response:
-        //has_adb: 1
+        val data: ArrayMap<String, String> = ArrayMap()
+        data["comments"] = text
+        data["post_id"] = filmId
+        data["parent"] = parent.toString()
+        data["type"] = "0"
+        data["g_recaptcha_response"] = ""
+        data["has_adb"] = "1"
 
-        // TO SOMEONE
-        //comments: Согласен, но все же с юмором переборщили)
-        //post_id: 25923 <-- film id?
-        //type: 0
-        //parent: 2379004 <-- COMMENT ID?
-        //g_recaptcha_response:
-        //has_adb: 1
-        Log.d("COMMENT_EDITOR_TEST", "addComment($filmId, $text)")
+        val result: Document? = Jsoup.connect(SettingsData.provider + COMMENT_ADD)
+            .data(data)
+            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider) + "; allowed_comments=1")
+            .ignoreContentType(true)
+            .post()
 
-        //{success: true, comment_id: 2386263,…}
-        //comment_id: 2386263
-        //message: "<div id='comment-id-2386263'><div class=\"b-comment clearfix\">\r\n    <div class=\"ava\">\r\n        <img src=\"https://static.hdrezka.ac/uploads/fotos/2020/10/9/l26372e4a0f81be52i21b.jpg\" height=\"60\" width=\"60\" alt=\"Papygai4ik\" />\r\n    </div>\r\n    <div class=\"message\">\r\n        <div class=\"info\">\r\n            <!-- <span class=\"b-comment__answers_ctrl\" data-show=\"1\">скрыть ответы</span> -->\r\n            \r\n            <span class=\"name\">Papygai4ik</span>,\r\n            <span class=\"date\">оставлен сегодня, 19:21</span>\r\n            <a class=\"share-link\" href=\"#comment2386263\" data-id=\"2386263\">#</a>\r\n            \r\n        </div>\r\n        <div class=\"text\"><div id='comm-id-2386263'>В 15 серии <!--dle_spoiler--><div class=\"title_spoiler\"><img id=\"image-sp2d923aa262064e8dc4e657a3680b2f15\" style=\"vertical-align: middle;border: none;\" alt=\"\" src=\"http://hdrezka.tv/templates/hdrezka/dleimages/spoiler-plus.gif\" /><a href=\"javascript:ShowOrHide('sp2d923aa262064e8dc4e657a3680b2f15')\">спойлер<img class=\"attention\" height=\"15\" width=\"16\" src=\"http://hdrezka.tv/templates/hdrezka/images/spoiler-attention.png\" alt=\"\" /></a></div><div id=\"sp2d923aa262064e8dc4e657a3680b2f15\" class=\"text_spoiler\" style=\"display:none;\"><!--spoiler_text-->опять разговоры)<!--spoiler_text_end--></div><!--/dle_spoiler--></div></div>\r\n        <div class=\"actions\">\r\n            <ul class=\"edit\">\r\n                \r\n                <li><a onclick=\"ajax_comm_edit('2386263', 'ajax'); return false;\" href=\"http://hdrezka.tv/index.php?do=comments&amp;action=comm_edit&amp;id=2386263&amp;area=ajax\">Изменить</a></li>\r\n                <li><a href=\"javascript:void(0)\" onclick=\"sof.comments.deleteComment(2386263, 'cc049189a849dd8e5b2c1f0caca8f010', 0, 'ajax');\">Удалить</a></li>\r\n                \r\n            </ul>\r\n            <span class=\"b-comment__quoteuser\" onclick=\"sof.comments.quoteUser('Papygai4ik', '2386263', '0');\">Ответить</span>\r\n            <span data-likes_num=\"0\" class=\"show-likes-comment b-comment__like_it self-disabled disabled\" data-comment_id=\"2386263\"><i>Поддерживаю!</i></span>\r\n            <span class=\"b-comment__likes_count\">(<i>0</i>)</span>\r\n            \r\n        </div>\r\n    </div>    \r\n</div>\r\n</div>"
-        //success: true
-        if (success) {
-            return Comment(0, SettingsData.staticProvider + "/i/nopersonphoto.png", "Victor", arrayListOf(Pair(Comment.TextType.REGULAR, text)), "2020-05-06", indent)
+        if (result != null) {
+            val bodyString: String = result.select("body").text()
+            val jsonObject = JSONObject(bodyString)
+
+            val isSuccess: Boolean = jsonObject.getBoolean("success")
+            val msg = jsonObject.getString("message")
+
+            if (msg == "[\"Он отобразится на сайте после проверки администрацией.\"]") {
+                throw HttpStatusException("comment must be apply by admin", 403, SettingsData.provider)
+            }
+
+            val doc = Jsoup.parse(msg)
+            if (isSuccess) {
+                val comment: Comment = getCommentData(doc)
+                comment.indent = indent
+                return comment
+            } else {
+                throw HttpStatusException("failed to post comment", 400, SettingsData.provider)
+            }
         } else {
             throw HttpStatusException("failed to post comment", 400, SettingsData.provider)
         }
     }
 
-    fun addLike() {
-        //comment_id: 2379004
+    fun postLike(comment: Comment, type: Comment.LikeType) {
+        Jsoup.connect(SettingsData.provider + COMMENT_LIKE + "?id=${comment.id}")
+            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
+            .ignoreContentType(true)
+            .execute()
+            .body()
+
+        if (type == Comment.LikeType.PLUS) {
+            comment.likes += 1
+            comment.isDisabled = true
+        } else {
+            comment.likes -= 1
+            comment.isDisabled = false
+        }
+    }
+
+    fun deleteComment(comment: Comment) {
+        Jsoup.connect(
+            SettingsData.provider + DELETE_COMMENT +
+                    "?id=${comment.id}" +
+                    "&dle_allow_hash=${comment.deleteHash}"
+                    + "&type=0&area=ajax"
+        )
+            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
+            .ignoreContentType(true)
+            .execute()
+            .body()
     }
 }

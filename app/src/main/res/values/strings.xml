@@ -91,4 +91,5 @@
     <string name="related">Смотреть ещё</string>
     <string name="collection">Все части</string>
     <string name="series_timetable">График выхода серий</string>
+    <string name="comment_need_apply">Комментарий отобразится на сайте после проверки администрацией</string>
 </resources>
