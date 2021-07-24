@@ -42,6 +42,7 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
                     film.seriesSchedule?.let { filmView.setSchedule(it) }
                     film.collection?.let { filmView.setCollection(it) }
                     film.related?.let { filmView.setRelated(it) }
+                    film.title?.let { filmView.setShareBtn(it, film.link) }
                 }
             } catch (e: Exception) {
                 catchException(e, filmView)

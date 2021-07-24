@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
@@ -390,7 +391,19 @@ class FilmFragment : Fragment(), FilmView {
                 }
             }
         } else {
+            currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_title_layout).layoutParams = LinearLayout.LayoutParams(0, WindowManager.LayoutParams.WRAP_CONTENT, 0.85f)
             btn.visibility = View.GONE
+        }
+    }
+
+    override fun setShareBtn(title: String, link: String) {
+        val btn: ImageView = currentView.findViewById(R.id.fragment_film_iv_share)
+        btn.setOnClickListener {
+            val sharingIntent = Intent(Intent.ACTION_SEND)
+            sharingIntent.type = "text/plain"
+            val body: String = getString(R.string.share_body, title, link)
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, body)
+            startActivity(sharingIntent)
         }
     }
 

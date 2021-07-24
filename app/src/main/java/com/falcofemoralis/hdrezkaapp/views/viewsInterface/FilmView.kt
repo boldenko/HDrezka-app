@@ -35,4 +35,6 @@ interface FilmView : IConnection, CommentEditor.ICommentEditor {
     fun setCommentsProgressState(state: Boolean)
 
     fun setCommentEditor(filmId: String)
+
+    fun setShareBtn(title: String, link: String)
 }
