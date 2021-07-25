@@ -1,6 +1,5 @@
 package com.falcofemoralis.hdrezkaapp.models
 
-import android.util.Log
 import android.webkit.CookieManager
 import com.falcofemoralis.hdrezkaapp.objects.Bookmark
 import com.falcofemoralis.hdrezkaapp.objects.Film
@@ -115,7 +114,11 @@ object FilmModel {
                 }
             } else {
                 for (directorElement in els) {
-                    directors.add(directorElement.select("span a span").text())
+                    var name = directorElement.select("span a span").text()
+                    if (name.isEmpty()) {
+                        name = directorElement.text()
+                    }
+                    directors.add(name)
                 }
             }
         }

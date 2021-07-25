@@ -5,8 +5,11 @@ import android.webkit.CookieManager
 import com.falcofemoralis.hdrezkaapp.objects.Bookmark
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
+import org.json.JSONObject
+import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 
 object BookmarksModel {
@@ -53,6 +56,36 @@ object BookmarksModel {
         }
 
         return films
+    }
+
+    fun postCatalog(name: String): Bookmark {
+        val data: ArrayMap<String, String> = ArrayMap()
+        data["name"] = name
+        data["action"] = "add_cat"
+
+        val result: Element? = Jsoup.connect(SettingsData.provider + POST_URL)
+            .data(data)
+            .userAgent("Mozilla")
+            .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
+            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            .ignoreContentType(true)
+            .post()
+
+        if (result != null) {
+            val bodyString: String = result.select("body").text()
+            val jsonObject = JSONObject(bodyString)
+
+            val isSuccess: Boolean = jsonObject.getBoolean("success")
+            if (isSuccess) {
+                val id = jsonObject.getString("id")
+                val catName = jsonObject.getString("name") + " (1)"
+                return Bookmark(id, "", catName, 1)
+            } else {
+                throw HttpStatusException("failed to post catalog because: ${jsonObject.getString("message")}", 400, SettingsData.provider)
+            }
+        } else {
+            throw HttpStatusException("failed to post catalog because body is empty", 404, SettingsData.provider)
+        }
     }
 
     fun postBookmark(filmId: String, catId: String) {

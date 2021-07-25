@@ -46,7 +46,7 @@
     <string name="sort_hint">Сортировать</string>
     <string name="show_hint">Отобразить</string>
     <string name="catalogue">Каталог</string>
-    <string name="choose_cat_hint">Категория</string>
+    <string name="choose_cat_hint">Выберите категорию в фильтрах</string>
     <string name="choose_genre_hint">Жанр</string>
     <string name="choose_countries">Выберите страны</string>
     <string name="choose_genres">Выберите жанры</string>
@@ -92,7 +92,7 @@
     <string name="collection">Все части</string>
     <string name="series_timetable">График выхода серий</string>
     <string name="comment_need_apply">Комментарий отобразится на сайте после проверки администрацией</string>
-    <string name="share_body">Смотреть %1$s онлайн по ссылке:\n\n %2$s</string>
+    <string name="share_body">Смотреть %1$s:\n\n %2$s</string>
     <string name="provider_1">hdrezka.tv</string>
     <string name="provider_2">rezka.ag</string>
     <string name="provider_3">hdrezka.me</string>
@@ -102,4 +102,7 @@
     <string name="provider_7">metaivi.com</string>
     <string name="provider_8">cokinopoisk.com</string>
     <string name="need_register">Данное действие доступно только зарегистрированным пользователям</string>
+    <string name="new_cat">Новый раздел</string>
+    <string name="created_cat">Раздел создан</string>
+    <string name="new_cat_hint">Введите название раздела</string>
 </resources>

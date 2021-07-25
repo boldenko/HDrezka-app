@@ -39,4 +39,6 @@ interface FilmView : IConnection, CommentEditor.ICommentEditor {
     fun setShareBtn(title: String, link: String)
 
     fun changeWatchState(state: Boolean, btn: ImageView)
+
+    fun updateBookmarksPager()
 }

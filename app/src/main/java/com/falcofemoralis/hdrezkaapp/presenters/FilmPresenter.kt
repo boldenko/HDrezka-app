@@ -5,10 +5,7 @@ import com.falcofemoralis.hdrezkaapp.models.ActorModel
 import com.falcofemoralis.hdrezkaapp.models.BookmarksModel
 import com.falcofemoralis.hdrezkaapp.models.CommentsModel
 import com.falcofemoralis.hdrezkaapp.models.FilmModel
-import com.falcofemoralis.hdrezkaapp.objects.Actor
-import com.falcofemoralis.hdrezkaapp.objects.Comment
-import com.falcofemoralis.hdrezkaapp.objects.Film
-import com.falcofemoralis.hdrezkaapp.objects.Schedule
+import com.falcofemoralis.hdrezkaapp.objects.*
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper.catchException
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmView
 import kotlinx.coroutines.Dispatchers
@@ -179,6 +176,25 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
                 } catch (e: Exception) {
                     catchException(e, filmView)
                 }
+            }
+        }
+    }
+
+    fun createNewCatalogue(name: String) {
+        GlobalScope.launch {
+            try {
+                val bookmark: Bookmark = BookmarksModel.postCatalog(name)
+                film.filmId?.let { BookmarksModel.postBookmark(it, bookmark.catId) }
+                bookmark.isChecked = true
+                film.bookmarks?.add(0, bookmark)
+
+                //redraw bookmarks
+                withContext(Dispatchers.Main) {
+                    film.bookmarks?.let { filmView.setBookmarksList(it) }
+                    filmView.updateBookmarksPager()
+                }
+            } catch (e: Exception) {
+                catchException(e, filmView)
             }
         }
     }

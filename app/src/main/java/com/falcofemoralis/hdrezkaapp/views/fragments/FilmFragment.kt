@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
@@ -15,6 +14,8 @@ import android.view.inputmethod.InputMethodManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.widget.*
+import android.widget.LinearLayout
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import androidx.core.widget.NestedScrollView
@@ -55,6 +56,7 @@ class FilmFragment : Fragment(), FilmView {
     private var commentsAdded: Boolean = false
     private var modalDialog: Dialog? = null
     private var commentEditor: CommentEditor? = null
+    private var bookmarksDialog: AlertDialog? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -398,6 +400,12 @@ class FilmFragment : Fragment(), FilmView {
         }
     }
 
+    override fun updateBookmarksPager() {
+        requireActivity().let {
+            (it as MainActivity).redrawPage(UpdateItem.BOOKMARKS_CHANGED)
+        }
+    }
+
     override fun setBookmarksList(bookmarks: ArrayList<Bookmark>) {
         val btn: ImageView = currentView.findViewById(R.id.fragment_film_iv_bookmark)
         if (UserData.isLoggedIn == true) {
@@ -414,19 +422,41 @@ class FilmFragment : Fragment(), FilmView {
                 builder.setTitle(getString(R.string.choose_bookmarks))
                 builder.setMultiChoiceItems(data, checkedItems) { dialog, which, isChecked ->
                     filmPresenter.setBookmark(bookmarks[which].catId)
-                    requireActivity().let {
-                        (it as MainActivity).redrawPage(UpdateItem.BOOKMARKS_CHANGED)
-                    }
+                    updateBookmarksPager()
                     checkedItems[which] = isChecked
                 }
                 builder.setPositiveButton(getString(R.string.ok)) { dialog, id ->
                     dialog.dismiss()
                 }
-                /*builder.setNeutralButton("Новый раздел") { dialog, id ->
-                }*/
-                val d = builder.create()
+
+                // new catalog btn
+                val catalogDialogBuilder = MaterialAlertDialogBuilder(it)
+                catalogDialogBuilder.setTitle(getString(R.string.new_cat))
+
+                val dialogCatLayout: LinearLayout = layoutInflater.inflate(R.layout.dialog_new_cat, null) as LinearLayout
+                val input: EditText = dialogCatLayout.findViewById(R.id.dialog_cat_input)
+
+                catalogDialogBuilder.setView(dialogCatLayout)
+                catalogDialogBuilder.setPositiveButton(getString(R.string.ok)) { dialog, id ->
+                    filmPresenter.createNewCatalogue(input.text.toString())
+                    Toast.makeText(requireContext(), getString(R.string.created_cat), Toast.LENGTH_SHORT).show()
+                }
+                catalogDialogBuilder.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
+                    dialog.cancel()
+                }
+
+                val n = catalogDialogBuilder.create()
+
+                builder.setNeutralButton(getString(R.string.new_cat)) { dialog, id ->
+                    n.show()
+                }
+
+                if (bookmarksDialog != null) {
+                    bookmarksDialog?.dismiss()
+                }
+                bookmarksDialog = builder.create()
                 btn.setOnClickListener {
-                    d.show()
+                    bookmarksDialog?.show()
                 }
             }
         } else {
@@ -526,7 +556,6 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun onCommentPost(comment: Comment, position: Int) {
-        Log.d("COMMENT_TEST", comment.toString())
         filmPresenter.addComment(comment, position)
         commentEditor?.editorContainer?.visibility = View.GONE
     }

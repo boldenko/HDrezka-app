@@ -63,6 +63,7 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
 
     private fun reset() {
         curPage = 1
+        bookmarks?.clear()
         activeFilms.clear()
         loadedFilms.clear()
     }
@@ -145,6 +146,7 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
 
     fun redrawBookmarks(){
         reset()
-        getNextFilms()
+       // getNextFilms()
+        initBookmarks()
     }
 }
