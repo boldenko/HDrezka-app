@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
@@ -14,6 +15,8 @@ import android.view.inputmethod.InputMethodManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.widget.*
+import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -279,15 +282,51 @@ class FilmFragment : Fragment(), FilmView {
             }
 
             // fill episodes layout
-            for (item in sch.second) {
+            for ((i, item) in sch.second.withIndex()) {
                 val itemLayout: LinearLayout = layoutInflater.inflate(R.layout.inflate_schedule_item, null) as LinearLayout
                 itemLayout.findViewById<TextView>(R.id.inflate_item_episode).text = item.episode
                 itemLayout.findViewById<TextView>(R.id.inflate_item_name).text = item.name
                 itemLayout.findViewById<TextView>(R.id.inflate_item_date).text = item.date
-                itemLayout.findViewById<TextView>(R.id.inflate_item_next_episode).text = item.nextEpisodeIn
+
+                val watchBtn = itemLayout.findViewById<ImageView>(R.id.inflate_item_watch)
+                val nextEpisodeIn = itemLayout.findViewById<TextView>(R.id.inflate_item_next_episode)
+                if (item.nextEpisodeIn == "✓") {
+                    watchBtn.visibility = View.VISIBLE
+
+                    changeWatchState(item.isWatched, watchBtn)
+                    watchBtn.setOnClickListener {
+                        if (UserData.isLoggedIn == true) {
+                            filmPresenter.updateWatch(item, watchBtn)
+                        } else {
+                            Toast.makeText(requireContext(), getString(R.string.need_register), Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    nextEpisodeIn.visibility = View.GONE
+                } else {
+                    watchBtn.visibility = View.GONE
+                    nextEpisodeIn.visibility = View.VISIBLE
+                    nextEpisodeIn.text = item.nextEpisodeIn
+                }
+
+
+                val color = if (i % 2 == 0) {
+                    R.color.light_bg
+                } else {
+                    R.color.dark_background
+                }
+                itemLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), color))
+
                 expandedList.addView(itemLayout)
             }
             scheduleLayout.addView(layout)
+        }
+    }
+
+    override fun changeWatchState(state: Boolean, btn: ImageView) {
+        if (state) {
+            ImageViewCompat.setImageTintList(btn, ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.active_watch)))
+        } else {
+            ImageViewCompat.setImageTintList(btn, ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.white)))
         }
     }
 

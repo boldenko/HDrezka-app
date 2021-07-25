@@ -80,14 +80,14 @@
         <item>Аниме</item>
     </string-array>
     <string-array name="providers">
-        <item>hdrezka.tv</item>
-        <item>rezka.ag</item>
-        <item>hdrezka.me</item>
-        <item>hdrezka.co</item>
-        <item>hdrezka.club</item>
-        <item>rezkily.com</item>
-        <item>metaivi.com</item>
-        <item>cokinopoisk.com</item>
+        <item>@string/provider_1</item>
+        <item>@string/provider_2</item>
+        <item>@string/provider_3</item>
+        <item>@string/provider_4</item>
+        <item>@string/provider_5</item>
+        <item>@string/provider_6</item>
+        <item>@string/provider_7</item>
+        <item>@string/provider_8</item>
     </string-array>
     <string-array name="providersIds">
         <item>http://hdrezka.tv</item>

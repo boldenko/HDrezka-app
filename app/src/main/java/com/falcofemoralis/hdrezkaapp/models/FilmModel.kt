@@ -1,5 +1,6 @@
 package com.falcofemoralis.hdrezkaapp.models
 
+import android.util.Log
 import android.webkit.CookieManager
 import com.falcofemoralis.hdrezkaapp.objects.Bookmark
 import com.falcofemoralis.hdrezkaapp.objects.Film
@@ -9,6 +10,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -21,6 +24,8 @@ object FilmModel {
     private const val FILM_IMDB_RATING = "span.imdb span"
     private const val FILM_KP_RATING = "span.kp span"
     private const val FILM_WA_RATING = "span.wa span"
+
+    private const val WATCH_ADD = "/engine/ajax/schedule_watched.php"
 
     fun getMainData(film: Film): Film {
         val filmPage: Document = Jsoup.connect(film.link).get()
@@ -84,7 +89,9 @@ object FilmModel {
     }
 
     fun getAdditionalData(film: Film): Film {
-        val document: Document = Jsoup.connect(film.link).header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider)).get()
+        val document: Document = Jsoup.connect(film.link)
+            .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider) + "; allowed_comments=1;")
+            .get()
         film.origTitle = document.select("div.b-post__origtitle").text()
         film.description = document.select("div.b-post__description_text").text()
         film.votesIMDB = document.select("span.imdb i").text()
@@ -128,15 +135,30 @@ object FilmModel {
             val listSchedule: ArrayList<Schedule> = ArrayList()
             val list: Elements = block.select("div.b-post__schedule_list table tbody tr")
             for (el in list) {
+                if (el.select("td").hasClass("load-more")) {
+                    continue
+                }
+
                 val episode: String = el.select("td.td-1").text()
                 val name: String = el.select("td.td-2 b").text()
+                val watch: Element? = el.selectFirst("td.td-3 i")
+                var isWatched = false
+                var watchId: Int? = null
+
+                if (watch != null) {
+                    isWatched = watch.hasClass("watched")
+                    watchId = watch.attr("data-id").toInt()
+                }
+
                 val date: String = el.select("td.td-4").text()
                 val nextEpisodeIn: String = el.select("td.td-5").text()
 
-                val schedule = Schedule(episode, name, date)
+                val schedule = Schedule(episode, name, date, isWatched)
                 if (nextEpisodeIn.isNotEmpty()) {
                     schedule.nextEpisodeIn = nextEpisodeIn
                 }
+
+                schedule.watchId = watchId
 
                 listSchedule.add(schedule)
             }
@@ -243,5 +265,24 @@ object FilmModel {
         val filmPage: Document = Jsoup.connect(filmLink).get()
         val posterElement: Element = filmPage.select(FILM_POSTER)[0]
         return posterElement.select("img").attr("src")
+    }
+
+    fun postWatch(watchId: Int) {
+        val result: Element? = Jsoup.connect(SettingsData.provider + WATCH_ADD)
+            .data("id", watchId.toString())
+            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider) + "; allowed_comments=1;")
+            .ignoreContentType(true)
+            .post()
+
+        if (result != null) {
+            val bodyString: String = result.select("body").text()
+            val jsonObject = JSONObject(bodyString)
+
+            val isSuccess: Boolean = jsonObject.getBoolean("success")
+            if (!isSuccess) {
+                throw HttpStatusException("failed to post watch because: ${jsonObject.getString("message")}", 400, SettingsData.provider)
+            }
+        }
     }
 }

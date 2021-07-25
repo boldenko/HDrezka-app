@@ -15,8 +15,10 @@ import com.falcofemoralis.hdrezkaapp.constants.UpdateItem
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener.Action
+import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.objects.UserData
+import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
 import com.falcofemoralis.hdrezkaapp.views.fragments.UserFragment
 import com.falcofemoralis.hdrezkaapp.views.fragments.ViewPagerFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -48,6 +50,11 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                 onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null)
                 createUserMenu()
                 setUserAvatar()
+
+                if (intent.data != null) {
+                    val link = SettingsData.provider + intent.data.toString().replace("${intent.data!!.scheme}://", "").replace(intent.data!!.host ?: "", "")
+                    FragmentOpener.openWithData(mainFragment, this, Film(link), "film")
+                }
             }
         } else {
             showConnectionError(IConnection.ErrorType.NO_INTERNET)

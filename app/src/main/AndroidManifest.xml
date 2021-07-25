@@ -27,6 +27,36 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http"
+                    android:pathPrefix="/"
+                    android:host="@string/provider_1" />
+                <data android:scheme="https"
+                    android:pathPrefix="/"
+                    android:host="@string/provider_2" />
+                <data android:scheme="http"
+                    android:pathPrefix="/"
+                    android:host="@string/provider_3" />
+                <data android:scheme="http"
+                    android:pathPrefix="/"
+                    android:host="@string/provider_4" />
+                <data android:scheme="http"
+                    android:pathPrefix="/"
+                    android:host="@string/provider_5" />
+                <data android:scheme="http"
+                    android:pathPrefix="/"
+                    android:host="@string/provider_6" />
+                <data android:scheme="http"
+                    android:pathPrefix="/"
+                    android:host="@string/provider_7" />
+                <data android:scheme="http"
+                    android:pathPrefix="/"
+                    android:host="@string/provider_8" />
+            </intent-filter>
         </activity>
     </application>
 

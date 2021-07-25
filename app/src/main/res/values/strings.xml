@@ -92,5 +92,14 @@
     <string name="collection">Все части</string>
     <string name="series_timetable">График выхода серий</string>
     <string name="comment_need_apply">Комментарий отобразится на сайте после проверки администрацией</string>
-    <string name="share_body">Смотреть %1$s онлайн\n\n %2$s по ссылке:</string>
+    <string name="share_body">Смотреть %1$s онлайн по ссылке:\n\n %2$s</string>
+    <string name="provider_1">hdrezka.tv</string>
+    <string name="provider_2">rezka.ag</string>
+    <string name="provider_3">hdrezka.me</string>
+    <string name="provider_4">hdrezka.co</string>
+    <string name="provider_5">hdrezka.club</string>
+    <string name="provider_6">rezkily.com</string>
+    <string name="provider_7">metaivi.com</string>
+    <string name="provider_8">cokinopoisk.com</string>
+    <string name="need_register">Данное действие доступно только зарегистрированным пользователям</string>
 </resources>

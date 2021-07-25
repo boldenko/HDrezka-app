@@ -1,5 +1,6 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
+import android.widget.ImageView
 import com.falcofemoralis.hdrezkaapp.models.ActorModel
 import com.falcofemoralis.hdrezkaapp.models.BookmarksModel
 import com.falcofemoralis.hdrezkaapp.models.CommentsModel
@@ -7,6 +8,7 @@ import com.falcofemoralis.hdrezkaapp.models.FilmModel
 import com.falcofemoralis.hdrezkaapp.objects.Actor
 import com.falcofemoralis.hdrezkaapp.objects.Comment
 import com.falcofemoralis.hdrezkaapp.objects.Film
+import com.falcofemoralis.hdrezkaapp.objects.Schedule
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper.catchException
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmView
 import kotlinx.coroutines.Dispatchers
@@ -162,5 +164,22 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
     fun addComment(comment: Comment, position: Int) {
         activeComments.add(position, comment)
         filmView.redrawComments()
+    }
+
+    fun updateWatch(scheduleItem: Schedule, btn: ImageView) {
+        GlobalScope.launch {
+            scheduleItem.watchId?.let {
+                try {
+                    FilmModel.postWatch(it)
+                    scheduleItem.isWatched = !scheduleItem.isWatched
+
+                    withContext(Dispatchers.Main) {
+                        filmView.changeWatchState(scheduleItem.isWatched, btn)
+                    }
+                } catch (e: Exception) {
+                    catchException(e, filmView)
+                }
+            }
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.falcofemoralis.hdrezkaapp.views.viewsInterface
 
+import android.widget.ImageView
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
-import com.falcofemoralis.hdrezkaapp.interfaces.IOnBackPressed
 import com.falcofemoralis.hdrezkaapp.objects.*
 import com.falcofemoralis.hdrezkaapp.views.elements.CommentEditor
 
@@ -37,4 +37,6 @@ interface FilmView : IConnection, CommentEditor.ICommentEditor {
     fun setCommentEditor(filmId: String)
 
     fun setShareBtn(title: String, link: String)
+
+    fun changeWatchState(state: Boolean, btn: ImageView)
 }
