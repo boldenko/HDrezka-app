@@ -11,9 +11,9 @@ import androidx.fragment.app.FragmentContainerView
 import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
-import com.falcofemoralis.hdrezkaapp.views.elements.FiltersMenu
 import com.falcofemoralis.hdrezkaapp.presenters.CategoriesPresenter
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
+import com.falcofemoralis.hdrezkaapp.views.elements.FiltersMenu
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.CategoriesView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmListCallView
 
@@ -24,6 +24,7 @@ class CategoriesFragment : Fragment(), CategoriesView, AdapterView.OnItemSelecte
     private lateinit var genresSpinner: SmartMaterialSpinner<String>
     private lateinit var yearsSpinner: SmartMaterialSpinner<String>
     private lateinit var filmsListFragment: FilmsListFragment
+    private lateinit var filtersMenu: FiltersMenu
 
     private var typePos: Int? = null
     private var genrePos: Int? = null
@@ -56,8 +57,12 @@ class CategoriesFragment : Fragment(), CategoriesView, AdapterView.OnItemSelecte
 
     override fun onFilmsListCreated() {
         categoriesPresenter = CategoriesPresenter(this, filmsListFragment)
-        categoriesPresenter.filters.createFilters(requireActivity(), currentView.findViewById(R.id.fragment_categories_tv_countries))
-        categoriesPresenter.filters.removeBlock(arrayListOf(FiltersMenu.AppliedFilter.TYPE, FiltersMenu.AppliedFilter.SORT, FiltersMenu.AppliedFilter.RATING, FiltersMenu.AppliedFilter.GENRES_INVERTED, FiltersMenu.AppliedFilter.GENRES))
+        filtersMenu = FiltersMenu(categoriesPresenter, requireActivity(), currentView.findViewById(R.id.fragment_categories_films_bt_filters))
+        filtersMenu
+            .createDialogFilter(FiltersMenu.AppliedFilter.COUNTRIES, resources.getStringArray(R.array.countries), false)
+            .createDialogFilter(FiltersMenu.AppliedFilter.COUNTRIES_INVERTED, resources.getStringArray(R.array.countries), false)
+            .apply()
+
         categoriesPresenter.initCategories()
     }
 

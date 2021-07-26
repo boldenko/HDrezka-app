@@ -21,7 +21,7 @@
             android:spinnerMode="dialog"
             app:smsp_arrowColor="@color/white"
             app:smsp_floatingLabelColor="@color/white"
-            app:smsp_hint="@string/choose_cat_hint"
+            app:smsp_hint="@string/categories"
             app:smsp_hintColor="@color/white"
             app:smsp_hintSize="@dimen/small_text"
             app:smsp_itemColor="@color/white"
@@ -35,10 +35,12 @@
             android:layout_weight="1"
             android:spinnerMode="dialog"
             app:smsp_arrowColor="@color/white"
+            app:smsp_enableSearchHeader="false"
             app:smsp_floatingLabelColor="@color/white"
             app:smsp_hint="@string/choose_genre_hint"
             app:smsp_hintColor="@color/white"
             app:smsp_hintSize="@dimen/small_text"
+            app:smsp_isSearchable="true"
             app:smsp_itemColor="@color/white"
             app:smsp_itemListHintColor="@color/white"
             app:smsp_selectedItemListColor="@color/main_color_3" />
@@ -50,22 +52,24 @@
             android:layout_weight="1"
             android:spinnerMode="dialog"
             app:smsp_arrowColor="@color/white"
+            app:smsp_enableSearchHeader="false"
             app:smsp_floatingLabelColor="@color/white"
             app:smsp_hint="@string/choose_year_hint"
             app:smsp_hintColor="@color/white"
             app:smsp_hintSize="@dimen/small_text"
+            app:smsp_isSearchable="true"
             app:smsp_itemColor="@color/white"
             app:smsp_itemListHintColor="@color/white"
             app:smsp_selectedItemListColor="@color/main_color_3" />
 
         <TextView
-            android:id="@+id/fragment_categories_tv_countries"
+            android:id="@+id/fragment_categories_films_bt_filters"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
             android:text="@string/country"
-            android:foreground="?attr/selectableItemBackground"
             android:textColor="@color/white"
             android:textSize="@dimen/small_text" />
     </LinearLayout>

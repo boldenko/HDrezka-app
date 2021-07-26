@@ -67,6 +67,20 @@
                         android:textAllCaps="false"
                         android:textSize="@dimen/normal_text" />
                 </TableRow>
+
+                <TableRow>
+
+                    <Button
+                        android:id="@+id/bt_years"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="0.5"
+                        android:text="@string/choose_year_hint"
+                        android:textAllCaps="false"
+                        android:textSize="@dimen/normal_text" />
+                </TableRow>
+
             </TableLayout>
 
             <TextView

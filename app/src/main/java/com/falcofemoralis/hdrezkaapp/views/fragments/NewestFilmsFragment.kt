@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.presenters.NewestFilmsPresenter
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
+import com.falcofemoralis.hdrezkaapp.views.elements.FiltersMenu
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmListCallView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.NewestFilmsView
 
@@ -18,6 +18,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
     private lateinit var currentView: View
     private lateinit var newestFilmsPresenter: NewestFilmsPresenter
     private lateinit var filmsListFragment: FilmsListFragment
+    private lateinit var filtersMenu: FiltersMenu
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentView = inflater.inflate(R.layout.fragment_newest_films, container, false) as LinearLayout
@@ -31,7 +32,16 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
 
     override fun onFilmsListCreated() {
         newestFilmsPresenter = NewestFilmsPresenter(this, filmsListFragment)
-        newestFilmsPresenter.filters.createFilters(requireActivity(), currentView.findViewById(R.id.fragment_newest_films_bt_filters))
+        filtersMenu = FiltersMenu(newestFilmsPresenter, requireActivity(), currentView.findViewById(R.id.fragment_newest_films_bt_filters))
+        filtersMenu
+            .createDialogFilter(FiltersMenu.AppliedFilter.COUNTRIES, resources.getStringArray(R.array.countries), false)
+            .createDialogFilter(FiltersMenu.AppliedFilter.GENRES, resources.getStringArray(R.array.genres), false)
+            .createDialogFilter(FiltersMenu.AppliedFilter.COUNTRIES_INVERTED, resources.getStringArray(R.array.countries), false)
+            .createDialogFilter(FiltersMenu.AppliedFilter.GENRES_INVERTED, resources.getStringArray(R.array.genres), false)
+            .createRatingFilter()
+            .createTypesFilter(true)
+            .createSortFilter()
+            .apply()
         newestFilmsPresenter.initFilms()
         requireActivity()
     }

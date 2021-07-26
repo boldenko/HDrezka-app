@@ -28,7 +28,6 @@
             android:spinnerMode="dialog"
             app:smsp_arrowColor="@color/white"
             app:smsp_floatingLabelColor="@color/white"
-
             app:smsp_hint="@string/sort_hint"
             app:smsp_hintColor="@color/white"
             app:smsp_hintSize="@dimen/small_text"
@@ -44,7 +43,6 @@
             android:layout_weight="1"
             android:spinnerMode="dialog"
             app:smsp_arrowColor="@color/white"
-
             app:smsp_floatingLabelColor="@color/white"
             app:smsp_hint="@string/show_hint"
             app:smsp_hintColor="@color/white"
@@ -60,7 +58,6 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:spinnerMode="dialog"
-
             app:smsp_arrowColor="@color/white"
             app:smsp_enableSearchHeader="false"
             app:smsp_floatingLabelColor="@color/white"

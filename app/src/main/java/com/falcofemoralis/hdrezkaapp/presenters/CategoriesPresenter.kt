@@ -3,8 +3,8 @@ package com.falcofemoralis.hdrezkaapp.presenters
 import android.util.ArrayMap
 import com.falcofemoralis.hdrezkaapp.models.CategoriesModel
 import com.falcofemoralis.hdrezkaapp.objects.Film
-import com.falcofemoralis.hdrezkaapp.views.elements.FiltersMenu
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper.catchException
+import com.falcofemoralis.hdrezkaapp.views.elements.FiltersMenu
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.CategoriesView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmsListView
 import kotlinx.coroutines.Dispatchers
@@ -12,17 +12,15 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class CategoriesPresenter(private val categoriesView: CategoriesView, private val filmsListView: FilmsListView) : FiltersMenu.IFilter, FilmsListPresenter.IFilmsList {
+class CategoriesPresenter(private val categoriesView: CategoriesView, private val filmsListView: FilmsListView) : FiltersMenu.IFilters, FilmsListPresenter.IFilmsList {
     private var currentPage = 1
     private var selectedCategoryLink: String? = null
 
-    var filters: FiltersMenu = FiltersMenu(this)
-    var filmsListPresenter: FilmsListPresenter = FilmsListPresenter(filmsListView, categoriesView, filters, this)
+    var filmsListPresenter: FilmsListPresenter = FilmsListPresenter(filmsListView, categoriesView, this)
     var categories: ArrayMap<Pair<String, String>, ArrayList<Pair<String, String>>> = ArrayMap()
     var typesNames: ArrayList<String> = ArrayList()
     var genresNames: ArrayMap<String, ArrayList<String>> = ArrayMap()
     var yearsNames: ArrayList<String> = ArrayList()
-
 
     fun initCategories() {
         GlobalScope.launch {
@@ -89,7 +87,12 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
         return films
     }
 
-    override fun applyFilters() {
+    override fun onFilterCreated(appliedFilters: ArrayMap<FiltersMenu.AppliedFilter, Array<String?>>) {
+
+    }
+
+    override fun onApplyFilters(appliedFilters: ArrayMap<FiltersMenu.AppliedFilter, Array<String?>>) {
+        filmsListPresenter.appliedFilters = appliedFilters
         filmsListPresenter.applyFilter()
     }
 }
