@@ -8,6 +8,8 @@ import com.falcofemoralis.hdrezkaapp.views.elements.CommentEditor
 interface FilmView : IConnection, CommentEditor.ICommentEditor {
     fun setFilmBaseData(film: Film)
 
+    fun setFilmRatings(film: Film)
+
     fun setActors(actors: ArrayList<Actor?>)
 
     fun setDirectors(directors: ArrayList<String>)
@@ -41,4 +43,8 @@ interface FilmView : IConnection, CommentEditor.ICommentEditor {
     fun changeWatchState(state: Boolean, btn: ImageView)
 
     fun updateBookmarksPager()
+
+    fun updateBookmarksFilmsPager()
+
+    fun setHRrating(rating: Float, isActive: Boolean)
 }

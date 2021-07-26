@@ -76,6 +76,7 @@ class ViewPagerFragment : Fragment() {
     fun updatePage(item: UpdateItem) {
         when (item) {
             UpdateItem.BOOKMARKS_CHANGED -> (fragmentList[3] as BookmarksFragment).redrawBookmarks()
+            UpdateItem.BOOKMARKS_FILMS_CHANGED -> (fragmentList[3] as BookmarksFragment).redrawBookmarksFilms()
             UpdateItem.WATCH_LATER_CHANGED -> (fragmentList[4] as WatchLaterFragment).updateAdapter()
         }
     }

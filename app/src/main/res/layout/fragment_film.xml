@@ -70,7 +70,7 @@
                     android:contentDescription="bookmarks button"
                     android:focusable="true"
                     android:foreground="?attr/selectableItemBackground"
-                    android:src="@drawable/ic_baseline_star_24" />
+                    android:src="@drawable/ic_baseline_star_bookmark_24" />
 
                 <ImageView
                     android:id="@+id/fragment_film_iv_share"
@@ -153,6 +153,16 @@
                         android:text="WA Rating"
                         android:textColor="@color/white"
                         android:textSize="@dimen/normal_text" />
+
+                    <TextView
+                        android:id="@+id/fragment_film_tv_ratingHR"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:text="HR Rating"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/normal_text" />
+
 
                     <TextView
                         android:id="@+id/fragment_film_tv_directors"
@@ -245,6 +255,52 @@
                     android:layout_height="wrap_content"
                     android:visibility="gone" />
             </LinearLayout>
+
+            <!--Rating-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.willy.ratingbar.ScaleRatingBar
+                    android:id="@+id/fragment_film_srb_rating_hdrezka_select"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:elevation="10dp"
+                    app:srb_clearRatingEnabled="true"
+                    app:srb_clickable="true"
+                    app:srb_drawableEmpty="@drawable/ic_baseline_star_transparent_24"
+                    app:srb_drawableFilled="@drawable/ic_baseline_star_active_24"
+                    app:srb_isIndicator="false"
+                    app:srb_numStars="10"
+                    app:srb_scrollable="true"
+                    app:srb_starHeight="30dp"
+                    app:srb_starPadding="5dp"
+                    app:srb_starWidth="30dp"
+                    app:srb_stepSize="1" />
+
+                <com.willy.ratingbar.ScaleRatingBar
+                    android:id="@+id/fragment_film_srb_rating_hdrezka"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:elevation="5dp"
+                    app:srb_clearRatingEnabled="true"
+                    app:srb_clickable="false"
+                    app:srb_drawableEmpty="@drawable/ic_baseline_star_empty_24"
+                    app:srb_drawableFilled="@drawable/ic_baseline_star_24"
+                    app:srb_isIndicator="true"
+                    app:srb_minimumStars="1"
+                    app:srb_numStars="10"
+                    app:srb_scrollable="false"
+                    app:srb_starHeight="30dp"
+                    app:srb_starPadding="5dp"
+                    app:srb_starWidth="30dp"
+                    app:srb_stepSize="0.1" />
+
+
+            </RelativeLayout>
+
 
             <!-- Actors -->
             <LinearLayout

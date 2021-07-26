@@ -7,6 +7,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.text.SpannableStringBuilder
+import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
@@ -17,6 +19,8 @@ import android.widget.*
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.text.bold
+import androidx.core.text.underline
 import androidx.core.widget.ImageViewCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -41,6 +45,7 @@ import com.github.aakira.expandablelayout.ExpandableLinearLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+import com.willy.ratingbar.ScaleRatingBar
 
 
 class FilmFragment : Fragment(), FilmView {
@@ -131,9 +136,6 @@ class FilmFragment : Fragment(), FilmView {
         filmPresenter.initFullSizeImage()
 
         Picasso.get().load(film.posterPath).into(currentView.findViewById<ImageView>(R.id.fragment_film_iv_poster))
-        setRating(R.id.fragment_film_tv_ratingIMDB, R.string.imdb, film.ratingIMDB, film.votesIMDB)
-        setRating(R.id.fragment_film_tv_ratingKP, R.string.kp, film.ratingKP, film.votesKP)
-        setRating(R.id.fragment_film_tv_ratingWA, R.string.wa, film.ratingWA, film.votesWA)
 
         currentView.findViewById<TextView>(R.id.fragment_film_tv_title).text = film.title
         currentView.findViewById<TextView>(R.id.fragment_film_tv_origtitle).text = film.origTitle
@@ -152,11 +154,21 @@ class FilmFragment : Fragment(), FilmView {
         scrollView.visibility = View.VISIBLE
         progressBar.visibility = View.GONE
     }
+    
+    override fun setFilmRatings(film:Film){
+        setRating(R.id.fragment_film_tv_ratingIMDB, R.string.imdb, film.ratingIMDB, film.votesIMDB)
+        setRating(R.id.fragment_film_tv_ratingKP, R.string.kp, film.ratingKP, film.votesKP)
+        setRating(R.id.fragment_film_tv_ratingWA, R.string.wa, film.ratingWA, film.votesWA)
+        setRating(R.id.fragment_film_tv_ratingHR, R.string.hr, film.ratingHR, "(${film.votesHR})")
+    }
 
     private fun setRating(viewId: Int, stringId: Int, rating: String?, votes: String?) {
         val ratingTextView: TextView = currentView.findViewById(viewId)
         if (rating != null && votes != null && rating.isNotEmpty() && votes.isNotEmpty()) {
-            ratingTextView.text = getString(stringId, "$rating $votes")
+            val ss = SpannableStringBuilder()
+            ss.bold { ss.underline { append(getString(stringId)) } }
+            ss.append(": $rating $votes")
+            ratingTextView.text = ss
         } else {
             ratingTextView.visibility = View.GONE
         }
@@ -292,7 +304,7 @@ class FilmFragment : Fragment(), FilmView {
 
                 val watchBtn = itemLayout.findViewById<ImageView>(R.id.inflate_item_watch)
                 val nextEpisodeIn = itemLayout.findViewById<TextView>(R.id.inflate_item_next_episode)
-                if (item.nextEpisodeIn == "✓") {
+                if (item.nextEpisodeIn == "✓" || item.nextEpisodeIn == "сегодня") {
                     watchBtn.visibility = View.VISIBLE
 
                     changeWatchState(item.isWatched, watchBtn)
@@ -406,6 +418,12 @@ class FilmFragment : Fragment(), FilmView {
         }
     }
 
+    override fun updateBookmarksFilmsPager() {
+        requireActivity().let {
+            (it as MainActivity).redrawPage(UpdateItem.BOOKMARKS_FILMS_CHANGED)
+        }
+    }
+
     override fun setBookmarksList(bookmarks: ArrayList<Bookmark>) {
         val btn: ImageView = currentView.findViewById(R.id.fragment_film_iv_bookmark)
         if (UserData.isLoggedIn == true) {
@@ -422,7 +440,7 @@ class FilmFragment : Fragment(), FilmView {
                 builder.setTitle(getString(R.string.choose_bookmarks))
                 builder.setMultiChoiceItems(data, checkedItems) { dialog, which, isChecked ->
                     filmPresenter.setBookmark(bookmarks[which].catId)
-                    updateBookmarksPager()
+                    updateBookmarksFilmsPager()
                     checkedItems[which] = isChecked
                 }
                 builder.setPositiveButton(getString(R.string.ok)) { dialog, id ->
@@ -567,5 +585,21 @@ class FilmFragment : Fragment(), FilmView {
 
     override fun onNothingEntered() {
         Toast.makeText(requireContext(), getString(R.string.enter_comment_text), Toast.LENGTH_SHORT).show()
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun setHRrating(rating: Float, isActive: Boolean) {
+        val selectableRatingBar: ScaleRatingBar = currentView.findViewById(R.id.fragment_film_srb_rating_hdrezka_select)
+        val ratingBar: ScaleRatingBar = currentView.findViewById(R.id.fragment_film_srb_rating_hdrezka)
+
+        selectableRatingBar.setIsIndicator(isActive)
+        ratingBar.rating = rating
+        selectableRatingBar.setOnTouchListener { view, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_UP) {
+                selectableRatingBar.visibility = View.GONE
+                filmPresenter.updateRating(selectableRatingBar.rating)
+            }
+            false
+        }
     }
 }

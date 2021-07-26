@@ -25,9 +25,10 @@
     <string name="anime">Аниме</string>
     <string name="filters">Фильтры</string>
     <string name="watch_later">Досмотреть</string>
-    <string name="imdb">IMDb: %1$s</string>
-    <string name="kp">Кинопоиск: %1$s</string>
-    <string name="wa">World Art: %1$s</string>
+    <string name="imdb">IMDb</string>
+    <string name="kp">Кинопоиск</string>
+    <string name="wa">World Art</string>
+    <string name="hr">HDrezka</string>
     <string name="no_connection">Ошибка. Отсутствует интернет соеденение</string>
     <string name="exit">Выйти</string>
     <string name="retry">Повторить</string>

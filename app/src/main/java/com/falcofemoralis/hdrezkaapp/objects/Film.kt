@@ -16,12 +16,15 @@ open class Film(
     var ratingIMDB: String? = null
     var ratingKP: String? = null
     var ratingWA: String? = null
+    var ratingHR: String? = null
+    var isHRratingActive: Boolean = false
     var genres: ArrayList<String>? = null
     var origTitle: String? = null
     var description: String? = null
     var votesIMDB: String? = null
     var votesKP: String? = null
     var votesWA: String? = null
+    var votesHR: String? = null
     var runtime: String? = null
     var actorsLinks: ArrayList<String>? = null
     var directors: ArrayList<String>? = null

@@ -23,6 +23,7 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
     var genresNames: ArrayMap<String, ArrayList<String>> = ArrayMap()
     var yearsNames: ArrayList<String> = ArrayList()
 
+
     fun initCategories() {
         GlobalScope.launch {
             try {

@@ -144,4 +144,8 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
     fun redrawBookmarks() {
         bookmarksPresenter.redrawBookmarks()
     }
+
+    fun redrawBookmarksFilms() {
+        bookmarksPresenter.redrawBookmarksFilms()
+    }
 }

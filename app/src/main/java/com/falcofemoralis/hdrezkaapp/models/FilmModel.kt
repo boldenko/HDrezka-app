@@ -25,6 +25,7 @@ object FilmModel {
     private const val FILM_WA_RATING = "span.wa span"
 
     private const val WATCH_ADD = "/engine/ajax/schedule_watched.php"
+    private const val RATING_ADD = "/engine/ajax/rating.php"
 
     fun getMainData(film: Film): Film {
         val filmPage: Document = Jsoup.connect(film.link).get()
@@ -98,6 +99,11 @@ object FilmModel {
         film.votesWA = document.select("span.wa i").text()
         film.runtime = document.select("td[itemprop=duration]").text()
         film.filmId = document.select("div.b-userset__fav_holder").attr("data-post_id")
+
+        val hrRatingEl = document.select("div.b-post__rating")
+        film.ratingHR = hrRatingEl.select("span.num").text()
+        film.votesHR = hrRatingEl.select("span.votes span").text()
+        film.isHRratingActive = hrRatingEl.select("div.b-post__rating_wrapper").isNullOrEmpty()
 
         val actorsLinks: ArrayList<String> = ArrayList()
         val directors: ArrayList<String> = ArrayList()
@@ -286,6 +292,27 @@ object FilmModel {
             if (!isSuccess) {
                 throw HttpStatusException("failed to post watch because: ${jsonObject.getString("message")}", 400, SettingsData.provider)
             }
+        }
+    }
+
+    fun postRating(film: Film, rating: Float) {
+        val result: String = Jsoup
+            .connect(SettingsData.provider + RATING_ADD + "?news_id=${film.filmId}&go_rate=${rating}&skin=hdrezka")
+            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
+            .ignoreContentType(true)
+            .execute()
+            .body()
+
+        val jsonObject = JSONObject(result)
+        val isSuccess: Boolean = jsonObject.getBoolean("success")
+
+        if (isSuccess) {
+            film.ratingHR = jsonObject.getString("num")
+            film.votesHR = jsonObject.getString("votes")
+            film.isHRratingActive = !film.isHRratingActive!!
+        } else {
+            throw HttpStatusException("failed to post comment", 400, SettingsData.provider)
         }
     }
 }

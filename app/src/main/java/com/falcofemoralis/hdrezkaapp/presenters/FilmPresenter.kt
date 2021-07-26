@@ -34,6 +34,7 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
 
                 withContext(Dispatchers.Main) {
                     filmView.setFilmBaseData(film)
+                    filmView.setFilmRatings(film)
                     film.genres?.let { filmView.setGenres(it) }
                     film.countries?.let { filmView.setCountries(it) }
                     film.directors?.let { filmView.setDirectors(it) }
@@ -42,6 +43,13 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
                     film.collection?.let { filmView.setCollection(it) }
                     film.related?.let { filmView.setRelated(it) }
                     film.title?.let { filmView.setShareBtn(it, film.link) }
+                    film.ratingHR.let {
+                        film.isHRratingActive?.let { it1 ->
+                            if (it != null) {
+                                filmView.setHRrating(it.toFloat(), it1)
+                            }
+                        }
+                    }
                 }
             } catch (e: Exception) {
                 catchException(e, filmView)
@@ -193,6 +201,18 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
                     film.bookmarks?.let { filmView.setBookmarksList(it) }
                     filmView.updateBookmarksPager()
                 }
+            } catch (e: Exception) {
+                catchException(e, filmView)
+            }
+        }
+    }
+
+    fun updateRating(rating: Float) {
+        GlobalScope.launch {
+            try {
+                FilmModel.postRating(film, rating)
+                film.ratingHR?.let { filmView.setHRrating(it.toFloat(), film.isHRratingActive) }
+                filmView.setFilmRatings(film)
             } catch (e: Exception) {
                 catchException(e, filmView)
             }
