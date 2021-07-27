@@ -1,7 +1,9 @@
 package com.falcofemoralis.hdrezkaapp.models
 
 import android.util.ArrayMap
+import com.falcofemoralis.hdrezkaapp.constants.CareerType
 import com.falcofemoralis.hdrezkaapp.objects.Actor
+import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import org.json.JSONObject
 import org.jsoup.HttpStatusException
@@ -67,7 +69,27 @@ object ActorModel {
     }
 
     fun getActorFilms(actor: Actor) {
-        // val document: Document = Jsoup.connect(actorLink).get()
+        val document: Document = Jsoup.connect(actor.link).get()
 
+        val careerEls = document.select("div.b-person__career")
+        val careers: ArrayList<Pair<String, ArrayList<Film>>> = ArrayList()
+        for (el in careerEls) {
+            val header = el.select("h2").text()
+           // val info = el.select("span.b-person__career_stats").text()
+            val films: ArrayList<Film> = FilmsListModel.getFilmsFromPage(Jsoup.parse(el.toString()))
+
+       /*     val type: CareerType = when (name) {
+                "Актер" -> CareerType.ACTOR
+                "Режиссер" -> CareerType.DIRECTOR
+                "Сценарист" -> CareerType.SCRIPTWRITER
+                "Продюсер" -> CareerType.PRODUCER
+                "Оператор" -> CareerType.OPERATOR
+                "Монтажер" -> CareerType.EDITOR
+                else -> CareerType.ACTOR
+            }*/
+            careers.add(Pair(header, films))
+        }
+
+        actor.personCareerFilms = careers
     }
 }

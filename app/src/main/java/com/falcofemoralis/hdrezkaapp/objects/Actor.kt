@@ -19,5 +19,5 @@ data class Actor(
     var name: String? = null
     var nameOrig: String? = null
     var photo: String? = null
-    var personCareerFilms: ArrayMap<CareerType, ArrayList<Film>>? = null
+    var personCareerFilms: ArrayList<Pair<String, ArrayList<Film>>>? = null
 }

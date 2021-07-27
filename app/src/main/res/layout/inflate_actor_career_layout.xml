@@ -14,13 +14,13 @@
         android:textSize="@dimen/head_text"
         android:textStyle="bold" />
 
-    <TextView
+<!--    <TextView
         android:id="@+id/career_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="В базе 1 фильм и 1 сериал"
         android:textColor="@color/white"
-        android:textSize="@dimen/normal_text" />
+        android:textSize="@dimen/normal_text" />-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/career_films"

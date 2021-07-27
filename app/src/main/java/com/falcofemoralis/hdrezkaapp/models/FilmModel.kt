@@ -250,13 +250,15 @@ object FilmModel {
         val relatedFilms: ArrayList<Film> = ArrayList()
         val relatedElements = document.select("div.b-content__inline_item")
         for (el in relatedElements) {
+            val id = el.attr("data-id")
             val cover: String = el.select("div.b-content__inline_item-cover a img").attr("src")
             val a = el.select("div.b-content__inline_item-link a")
             val link: String = a.attr("href")
             val title: String = a.text()
             val misc: String = el.select("div.misc").text()
 
-            val relatedFilm = Film(link)
+            val relatedFilm = Film(id)
+            relatedFilm.link = link
             relatedFilm.posterPath = cover
             relatedFilm.title = title
             relatedFilm.relatedMisc = misc
