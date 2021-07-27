@@ -46,16 +46,8 @@ object BookmarksModel {
             url += "&genre=${show}"
         }
 
-        val document: Document = Jsoup.connect(url).header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider)).get()
-
-        val films: ArrayList<Film> = ArrayList()
-
-        val elements: Elements = document.select(FilmsListModel.FILMS)
-        for (el in elements) {
-            films.add(Film(el.select(FilmsListModel.FILM_ID).attr("href")))
-        }
-
-        return films
+        val doc: Document = Jsoup.connect(url).header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider)).get()
+        return FilmsListModel.getFilmsFromPage(doc)
     }
 
     fun postCatalog(name: String): Bookmark {

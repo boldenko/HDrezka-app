@@ -363,7 +363,7 @@ class FilmFragment : Fragment(), FilmView {
             layout.findViewById<TextView>(R.id.inflate_collection_item_year).text = film.year
             layout.findViewById<TextView>(R.id.inflate_collection_item_rating).text = film.ratingKP
 
-            if (film.link.isNotEmpty()) {
+            if (film.link?.isNotEmpty() == true) {
                 val outValue = TypedValue()
                 requireContext().theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
                 layout.setBackgroundResource(outValue.resourceId)

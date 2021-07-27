@@ -25,24 +25,62 @@ object FilmModel {
     private const val WATCH_ADD = "/engine/ajax/schedule_watched.php"
     private const val RATING_ADD = "/engine/ajax/rating.php"
 
+    private const val GET_FILM_POST = "/engine/ajax/quick_content.php"
+
     fun getMainData(film: Film): Film {
+        if (film.filmId == null) {
+            getMainDataByLink(film)
+        } else {
+            getMainDataById(film)
+        }
+
+        film.hasMainData = true
+
+        return film
+    }
+
+    private fun getMainDataById(film: Film): Film {
+        val data: ArrayMap<String, String> = ArrayMap()
+        data["id"] = film.filmId
+        data["is_touch"] = "1"
+
+        val doc: Document? = Jsoup.connect(SettingsData.provider + GET_FILM_POST)
+            .data(data)
+            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            .ignoreContentType(true)
+            .post()
+
+        if (doc != null) {
+            val titleEl = doc.select("div.b-content__bubble_title a")
+            film.link = titleEl.attr("href")
+            film.type = getTypeByName(doc.select("i.entity").text())
+            film.title = titleEl.text()
+            film.ratingIMDB = doc.select("span.imdb b").text()
+            film.ratingKP = doc.select("span.kp b").text()
+            film.ratingWA = doc.select("span.wa b").text()
+            // film.date =
+            // film.year
+            //  film.countries
+            val genres: ArrayList<String> = ArrayList()
+            val genresEls = doc.select("div.b-content__bubble_text a")
+            for (el in genresEls) {
+                genres.add(el.text())
+            }
+            film.genres = genres
+        } else {
+            throw HttpStatusException("failed to get film", 400, SettingsData.provider)
+        }
+
+        return film
+    }
+
+    private fun getMainDataByLink(film: Film): Film {
         val filmPage: Document = Jsoup.connect(film.link).get()
         val table: Elements = filmPage.select(FILM_TABLE_INFO)
 
-        val genre: String = film.link.split("/")[3]
-        film.type = when (genre) {
-            "series" -> "Сериал"
-            "cartoons" -> "Мультфильм"
-            "films" -> "Фильм"
-            "animation" -> "Аниме"
-            else -> genre
-        }
+        film.type = film.link?.split("/")?.get(3)?.let { getTypeByName(it) }
 
         film.title = filmPage.select(FILM_TITLE).text()
-
-        val posterElement: Element = filmPage.select(FILM_POSTER)[0]
-        film.fullSizePosterPath = posterElement.attr("href")
-        film.posterPath = posterElement.select("img").attr("src")
 
         // Parse info table
         for (tr in table) {
@@ -81,9 +119,17 @@ object FilmModel {
             }
         }
 
-        film.hasMainData = true
-
         return film
+    }
+
+    private fun getTypeByName(name: String): String {
+        return when (name) {
+            "series" -> "Сериал"
+            "cartoons" -> "Мультфильм"
+            "films" -> "Фильм"
+            "animation" -> "Аниме"
+            else -> name
+        }
     }
 
     fun getAdditionalData(film: Film): Film {
@@ -102,6 +148,10 @@ object FilmModel {
         film.ratingHR = hrRatingEl.select("span.num").text()
         film.votesHR = hrRatingEl.select("span.votes span").text()
         film.isHRratingActive = hrRatingEl.select("div.b-post__rating_wrapper").isNullOrEmpty()
+
+        val posterElement: Element = document.select(FILM_POSTER)[0]
+        film.fullSizePosterPath = posterElement.attr("href")
+        film.posterPath = posterElement.select("img").attr("src")
 
         val actors: ArrayList<Actor> = ArrayList()
         val directors: ArrayList<String> = ArrayList()
@@ -183,10 +233,11 @@ object FilmModel {
 
             val a = el.select("div.title a")
             if (a.size > 0) {
-                subFilm = Film(a.attr("href"))
+                subFilm = Film(null)
+                subFilm.link = a.attr("href")
                 subFilm.title = a.text()
             } else {
-                subFilm = Film("")
+                subFilm = Film(null)
                 subFilm.title = el.select("div.title").text()
             }
 

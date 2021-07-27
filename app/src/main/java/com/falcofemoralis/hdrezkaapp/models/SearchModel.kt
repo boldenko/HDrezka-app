@@ -40,6 +40,7 @@ object SearchModel {
     }
 
     fun getFilmsFromSearchPage(query: String, page: Int): ArrayList<Film> {
-        return FilmsListModel.getFilmsFromPage(SettingsData.provider + SEARCH_QUERY + query + "&page=$page")
+        val doc: Document = Jsoup.connect(SettingsData.provider + SEARCH_QUERY + query + "&page=$page").get()
+        return FilmsListModel.getFilmsFromPage(doc)
     }
 }

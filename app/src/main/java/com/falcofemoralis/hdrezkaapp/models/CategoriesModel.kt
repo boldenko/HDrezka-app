@@ -49,6 +49,7 @@ object CategoriesModel {
     }
 
     fun getFilmsFromCategory(catLink: String, page: Int): ArrayList<Film> {
-        return FilmsListModel.getFilmsFromPage(SettingsData.provider + catLink + "page/" + page)
+        val doc: Document = Jsoup.connect(SettingsData.provider + catLink + "page/" + page).get()
+        return FilmsListModel.getFilmsFromPage(doc)
     }
 }

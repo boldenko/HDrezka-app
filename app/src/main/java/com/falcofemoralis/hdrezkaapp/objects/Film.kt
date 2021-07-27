@@ -3,9 +3,9 @@ package com.falcofemoralis.hdrezkaapp.objects
 import java.io.Serializable
 
 open class Film(
-    var link: String
-) : Serializable {
     var filmId: String? = null
+) : Serializable {
+    var link: String? = null
     var type: String? = null
     var title: String? = null
     var date: String? = null
