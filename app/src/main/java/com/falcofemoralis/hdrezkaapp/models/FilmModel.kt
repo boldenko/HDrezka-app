@@ -1,10 +1,8 @@
 package com.falcofemoralis.hdrezkaapp.models
 
+import android.util.ArrayMap
 import android.webkit.CookieManager
-import com.falcofemoralis.hdrezkaapp.objects.Bookmark
-import com.falcofemoralis.hdrezkaapp.objects.Film
-import com.falcofemoralis.hdrezkaapp.objects.Schedule
-import com.falcofemoralis.hdrezkaapp.objects.SettingsData
+import com.falcofemoralis.hdrezkaapp.objects.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -105,7 +103,7 @@ object FilmModel {
         film.votesHR = hrRatingEl.select("span.votes span").text()
         film.isHRratingActive = hrRatingEl.select("div.b-post__rating_wrapper").isNullOrEmpty()
 
-        val actorsLinks: ArrayList<String> = ArrayList()
+        val actors: ArrayList<Actor> = ArrayList()
         val directors: ArrayList<String> = ArrayList()
         val personsElements: Elements = document.select("div.persons-list-holder")
         for (el in personsElements) {
@@ -113,9 +111,11 @@ object FilmModel {
 
             if (el.select("span.inline h2").text() == "В ролях актеры") {
                 for (actorElement in els) {
-                    val actorLink: String = actorElement.select("span a").attr("href")
-                    if (actorLink.isNotEmpty()) {
-                        actorsLinks.add(actorLink)
+                    val pEl = actorElement.select("span.person-name-item")
+                    val id: String = pEl.attr("data-id")
+                    if (id.isNotEmpty()) {
+                        actors.add(Actor(id.toInt(), pEl.attr("data-pid").toInt()))
+
                     }
                 }
             } else {
@@ -129,7 +129,7 @@ object FilmModel {
             }
         }
         film.directors = directors
-        film.actorsLinks = actorsLinks
+        film.actors = actors
 
         val seriesSchedule: ArrayList<Pair<String, ArrayList<Schedule>>> = ArrayList()
         val seasonsElements: Elements = document.select("div.b-post__schedule div.b-post__schedule_block")

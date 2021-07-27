@@ -42,7 +42,7 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
                     film.seriesSchedule?.let { filmView.setSchedule(it) }
                     film.collection?.let { filmView.setCollection(it) }
                     film.related?.let { filmView.setRelated(it) }
-                    film.title?.let { filmView.setShareBtn(it, film.link) }
+                    film.title?.let { film.link?.let { it1 -> filmView.setShareBtn(it, it1) } }
                     film.ratingHR.let {
                         film.isHRratingActive?.let { it1 ->
                             if (it != null) {
@@ -63,21 +63,24 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
     }
 
     fun initActors() {
-        if (film.actorsLinks != null) {
+        if (film.actors != null) {
 
-            val actors = arrayOfNulls<Actor>(film.actorsLinks!!.size)
+            val actors = arrayOfNulls<Actor>(film.actors!!.size)
 
-            for ((index, actorLink) in film.actorsLinks!!.withIndex()) {
+            for ((index, actor) in film.actors!!.withIndex()) {
                 GlobalScope.launch {
                     try {
-                        actors[index] = ActorModel.getActorMainInfo(actorLink)
+                        actors[index] = ActorModel.getActorMainInfo(actor)
 
-                        if (index == film.actorsLinks!!.size - 1) {
-                            withContext(Dispatchers.Main) {
-                                val list: ArrayList<Actor?> = ArrayList()
-                                for (item in actors) {
+                        if (index == actors.size - 1) {
+                            val list: ArrayList<Actor> = ArrayList()
+                            for (item in actors) {
+                                if(item != null){
                                     list.add(item)
                                 }
+                            }
+
+                            withContext(Dispatchers.Main) {
                                 filmView.setActors(list)
                             }
                         }
@@ -91,7 +94,7 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
     }
 
     fun initPlayer() {
-        filmView.setPlayer(film.link)
+        film.link?.let { filmView.setPlayer(it) }
     }
 
     fun setBookmark(bookmarkId: String) {

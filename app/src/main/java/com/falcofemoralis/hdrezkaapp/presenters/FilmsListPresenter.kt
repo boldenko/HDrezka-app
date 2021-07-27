@@ -30,9 +30,14 @@ class FilmsListPresenter(
     val activeFilms: ArrayList<Film> = ArrayList() // current active films
     private var sortedFilmsCount: Int = 0 // current sorted films
     var appliedFilters: ArrayMap<FiltersMenu.AppliedFilter, Array<String?>> = ArrayMap()
+    private var token = ""
 
     fun addMoreFilms(films: ArrayList<Film>) {
         filmList.addAll(films)
+    }
+
+    fun setToken(token: String) {
+        this.token = token
     }
 
     fun getNextFilms() {
@@ -47,6 +52,15 @@ class FilmsListPresenter(
                 if (filmList.size == 0) {
                     filmList.addAll(iFilmsList.getMoreFilms())
                 }
+
+                val tokenTmp = token
+                fun processFilms(films: ArrayList<Film>) {
+                    if (tokenTmp == token) {
+                        allFilms.addAll(films)
+                        addFilms(films)
+                    }
+                }
+
                 FilmModel.getFilmsData(filmList, FILMS_PER_PAGE, ::processFilms)
             } catch (e: Exception) {
                 if (e.message != "Empty list") {
@@ -60,11 +74,6 @@ class FilmsListPresenter(
                 return@launch
             }
         }
-    }
-
-    private fun processFilms(films: ArrayList<Film>) {
-        allFilms.addAll(films)
-        addFilms(films)
     }
 
     fun addFilms(films: ArrayList<Film>) {
@@ -106,7 +115,7 @@ class FilmsListPresenter(
 
     // true - film соотвествует критериям
     // false - фильм не соотвествует критериям
-    fun checkFilmForFilters(film: Film): Boolean {
+    private fun checkFilmForFilters(film: Film): Boolean {
         val applyList: ArrayMap<FiltersMenu.AppliedFilter, Boolean> = ArrayMap()
 
         val filters: ArrayMap<FiltersMenu.AppliedFilter, ArrayList<String>> = ArrayMap()

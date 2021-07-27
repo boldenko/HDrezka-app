@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.SpannableStringBuilder
-import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
@@ -32,6 +31,7 @@ import com.falcofemoralis.hdrezkaapp.clients.PlayerWebViewClient
 import com.falcofemoralis.hdrezkaapp.constants.UpdateItem
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
+import com.falcofemoralis.hdrezkaapp.models.ActorModel
 import com.falcofemoralis.hdrezkaapp.objects.*
 import com.falcofemoralis.hdrezkaapp.presenters.FilmPresenter
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
@@ -154,8 +154,8 @@ class FilmFragment : Fragment(), FilmView {
         scrollView.visibility = View.VISIBLE
         progressBar.visibility = View.GONE
     }
-    
-    override fun setFilmRatings(film:Film){
+
+    override fun setFilmRatings(film: Film) {
         setRating(R.id.fragment_film_tv_ratingIMDB, R.string.imdb, film.ratingIMDB, film.votesIMDB)
         setRating(R.id.fragment_film_tv_ratingKP, R.string.kp, film.ratingKP, film.votesKP)
         setRating(R.id.fragment_film_tv_ratingWA, R.string.wa, film.ratingWA, film.votesWA)
@@ -174,40 +174,44 @@ class FilmFragment : Fragment(), FilmView {
         }
     }
 
-    override fun setActors(actors: ArrayList<Actor?>) {
+    override fun setActors(actors: ArrayList<Actor>?) {
         val actorsLayout: LinearLayout = currentView.findViewById(R.id.fragment_film_ll_actorsLayout)
+
+        if (actors == null) {
+            return
+        }
 
         context?.let {
             for (actor in actors.reversed()) {
-                if (actor != null) {
-                    val layout: LinearLayout = LayoutInflater.from(it).inflate(R.layout.inflate_actor, null) as LinearLayout
+                val layout: LinearLayout = LayoutInflater.from(it).inflate(R.layout.inflate_actor, null) as LinearLayout
 
-                    layout.findViewById<TextView>(R.id.actor_name).text = actor.name
+                layout.findViewById<TextView>(R.id.actor_name).text = actor.name
+                layout.findViewById<TextView>(R.id.actor_career).text = actor.careers
 
-                    if (actor.photoLink != null && actor.photoLink!!.isNotEmpty() && actor.photoLink != SettingsData.staticProvider + "/i/nopersonphoto.png") {
-                        val actorProgress: ProgressBar = layout.findViewById(R.id.actor_loading)
-                        val actorLayout: LinearLayout = layout.findViewById(R.id.actor_layout)
+                if (actor.photo != null && actor.photo!!.isNotEmpty() && actor.photo != SettingsData.staticProvider + ActorModel.NO_PHOTO) {
+                    val actorProgress: ProgressBar = layout.findViewById(R.id.actor_loading)
+                    val actorLayout: LinearLayout = layout.findViewById(R.id.actor_layout)
 
-                        actorProgress.visibility = View.VISIBLE
-                        actorLayout.visibility = View.GONE
-                        Picasso.get().load(actor.photoLink).into(layout.findViewById(R.id.actor_photo), object : Callback {
-                            override fun onSuccess() {
-                                actorProgress.visibility = View.GONE
-                                actorLayout.visibility = View.VISIBLE
-                                actorsLayout.addView(layout, 0)
-                            }
-
-                            override fun onError(e: Exception) {
-                                e.printStackTrace()
-                            }
-                        })
-                        actorLayout.setOnClickListener {
-                            // FragmentOpener.openActor(actor, this, fragmentListener)
+                    actorProgress.visibility = View.VISIBLE
+                    actorLayout.visibility = View.GONE
+                    Picasso.get().load(actor.photo).into(layout.findViewById(R.id.actor_photo), object : Callback {
+                        override fun onSuccess() {
+                            actorProgress.visibility = View.GONE
+                            actorLayout.visibility = View.VISIBLE
+                            actorsLayout.addView(layout, 0)
                         }
-                    } else {
-                        actorsLayout.addView(layout)
+
+                        override fun onError(e: Exception) {
+                            e.printStackTrace()
+                        }
+                    })
+                    actorLayout.setOnClickListener {
+                        FragmentOpener.openWithData(this, fragmentListener, actor, "actor")
                     }
+                } else {
+                    actorsLayout.addView(layout)
                 }
+
             }
         }
     }

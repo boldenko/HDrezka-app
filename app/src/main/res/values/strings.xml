@@ -106,4 +106,10 @@
     <string name="new_cat">Новый раздел</string>
     <string name="created_cat">Раздел создан</string>
     <string name="new_cat_hint">Введите название раздела</string>
+    <string name="career"><b>Карьера</b>: %1$s</string>
+    <string name="birthplace">Место рождения: %1$s</string>
+    <string name="birthdate">Дата рождения: %1$s</string>
+    <string name="deathdate">Дата смерти: %1$s</string>
+    <string name="deathplace">Место смерти: %1$s</string>
+    <string name="death_in">в возрасте</string>
 </resources>

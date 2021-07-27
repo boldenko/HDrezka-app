@@ -1,15 +1,23 @@
 package com.falcofemoralis.hdrezkaapp.objects
 
+import android.util.ArrayMap
+import com.falcofemoralis.hdrezkaapp.constants.CareerType
 import java.io.Serializable
 
 data class Actor(
-    val link: String,
-    val name: String
+    val id: Int,
+    val pid: Int
 ) : Serializable {
-    var photoLink: String? = null
-    var fullSizePhotoLink: String? = null
-    var career: String? = null
-    var born: String? = null
-    var city: String? = null
-    var height: String? = null
+    var age: String? = null
+    var diedOnAge: String? = null
+    var birthday: String? = null
+    var birthplace: String? = null
+    var careers: String? = null
+    var deathday: String? = null
+    var deathplace: String? = null
+    var link: String? = null
+    var name: String? = null
+    var nameOrig: String? = null
+    var photo: String? = null
+    var personCareerFilms: ArrayMap<CareerType, ArrayList<Film>>? = null
 }

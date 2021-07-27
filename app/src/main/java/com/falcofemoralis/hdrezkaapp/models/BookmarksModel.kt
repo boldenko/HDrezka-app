@@ -52,7 +52,7 @@ object BookmarksModel {
 
         val elements: Elements = document.select(FilmsListModel.FILMS)
         for (el in elements) {
-            films.add(Film(el.select(FilmsListModel.FILM_LINK).attr("href")))
+            films.add(Film(el.select(FilmsListModel.FILM_ID).attr("href")))
         }
 
         return films

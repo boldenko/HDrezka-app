@@ -3,6 +3,9 @@ package com.falcofemoralis.hdrezkaapp.utils
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
+import com.falcofemoralis.hdrezkaapp.objects.Actor
+import com.falcofemoralis.hdrezkaapp.objects.Film
+import com.falcofemoralis.hdrezkaapp.views.fragments.ActorFragment
 import com.falcofemoralis.hdrezkaapp.views.fragments.FilmFragment
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -20,7 +23,13 @@ object FragmentOpener {
         isCommitInProgress = true
         val dataBundle = Bundle()
         dataBundle.putSerializable(dataTag, data)
-        fragmentListener.onFragmentInteraction(source, FilmFragment(), OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, true, null, dataBundle, ::callback)
+
+        val frag = when (data) {
+            is Actor -> ActorFragment()
+            is Film -> FilmFragment()
+            else -> Fragment()
+        }
+        fragmentListener.onFragmentInteraction(source, frag, OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, true, null, dataBundle, ::callback)
     }
 
     fun callback() {

@@ -34,5 +34,14 @@
             android:gravity="center"
             android:textColor="#FFFFFF"
             android:textSize="@dimen/small_text" />
+
+        <TextView
+            android:id="@+id/actor_career"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:breakStrategy="balanced"
+            android:gravity="center"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/small_text" />
     </LinearLayout>
 </LinearLayout>

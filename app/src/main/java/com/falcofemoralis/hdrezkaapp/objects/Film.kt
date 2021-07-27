@@ -3,7 +3,7 @@ package com.falcofemoralis.hdrezkaapp.objects
 import java.io.Serializable
 
 open class Film(
-    val link: String,
+    var link: String
 ) : Serializable {
     var filmId: String? = null
     var type: String? = null
@@ -26,7 +26,7 @@ open class Film(
     var votesWA: String? = null
     var votesHR: String? = null
     var runtime: String? = null
-    var actorsLinks: ArrayList<String>? = null
+    var actors: ArrayList<Actor>? = null
     var directors: ArrayList<String>? = null
     var additionalInfo: String? = null
     var hasMainData: Boolean = false

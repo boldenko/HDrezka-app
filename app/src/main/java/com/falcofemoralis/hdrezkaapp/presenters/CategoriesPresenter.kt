@@ -74,6 +74,7 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
             filmsListPresenter.reset()
             filmsListPresenter.filmList.clear()
             categoriesView.showList()
+            filmsListPresenter.setToken(link)
             filmsListPresenter.getNextFilms()
         }
     }

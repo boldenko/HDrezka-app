@@ -10,7 +10,7 @@ interface FilmView : IConnection, CommentEditor.ICommentEditor {
 
     fun setFilmRatings(film: Film)
 
-    fun setActors(actors: ArrayList<Actor?>)
+    fun setActors(actors: ArrayList<Actor>?)
 
     fun setDirectors(directors: ArrayList<String>)
 
