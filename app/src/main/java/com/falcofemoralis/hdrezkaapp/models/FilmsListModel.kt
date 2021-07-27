@@ -14,6 +14,12 @@ object FilmsListModel {
             val film = Film(el.attr("data-id"))
             film.link = el.attr("data-url")
             film.posterPath = el.select(FILM_IMG).attr("src")
+
+            val text = el.select("div.b-content__inline_item-link div").text()
+            val separated = text.split(",")
+            film.year = separated[0]
+            film.countries = ArrayList()
+            film.countries!!.add(separated[1].drop(1))
             films.add(film)
         }
 

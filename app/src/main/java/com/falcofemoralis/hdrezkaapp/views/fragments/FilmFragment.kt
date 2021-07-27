@@ -112,10 +112,13 @@ class FilmFragment : Fragment(), FilmView {
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun setPlayer(link: String) {
+        val container: LinearLayout = currentView.findViewById(R.id.fragment_film_ll_player_container)
+
         playerView.settings.javaScriptEnabled = true
         playerView.settings.domStorageEnabled = true
         playerView.addJavascriptInterface(WebAppInterface(requireActivity()), "Android")
         playerView.webViewClient = PlayerWebViewClient(requireContext(), this) {
+            container.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
             currentView.findViewById<ProgressBar>(R.id.fragment_film_pb_player_loading).visibility = View.GONE
             playerView.visibility = View.VISIBLE
         }

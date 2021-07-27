@@ -58,9 +58,6 @@ object FilmModel {
             film.ratingIMDB = doc.select("span.imdb b").text()
             film.ratingKP = doc.select("span.kp b").text()
             film.ratingWA = doc.select("span.wa b").text()
-            // film.date =
-            // film.year
-            //  film.countries
             val genres: ArrayList<String> = ArrayList()
             val genresEls = doc.select("div.b-content__bubble_text a")
             for (el in genresEls) {
@@ -76,48 +73,9 @@ object FilmModel {
 
     private fun getMainDataByLink(film: Film): Film {
         val filmPage: Document = Jsoup.connect(film.link).get()
-        val table: Elements = filmPage.select(FILM_TABLE_INFO)
 
         film.type = film.link?.split("/")?.get(3)?.let { getTypeByName(it) }
-
         film.title = filmPage.select(FILM_TITLE).text()
-
-        // Parse info table
-        for (tr in table) {
-            val td: Elements = tr.select("td")
-            if (td.size > 0) {
-                val h2Els: Elements = td[0].select("h2")
-                if (h2Els.size > 0) {
-                    val h2: Element = h2Els[0]
-
-                    when (h2.text()) {
-                        "Рейтинги" -> {
-                            film.ratingIMDB = td[1].select(FILM_IMDB_RATING).text()
-                            film.ratingKP = td[1].select(FILM_KP_RATING).text()
-                            film.ratingWA = td[1].select(FILM_WA_RATING).text()
-                        }
-                        "Дата выхода" -> {
-                            film.date = td[1].ownText()
-                            film.year = td[1].select("a").text()
-                        }
-                        "Страна" -> {
-                            val countries: ArrayList<String> = ArrayList()
-                            for (el in td[1].select("a")) {
-                                countries.add(el.text())
-                            }
-                            film.countries = countries
-                        }
-                        "Жанр" -> {
-                            val genres: ArrayList<String> = ArrayList()
-                            for (el in td[1].select("a")) {
-                                genres.add(el.select("span").text())
-                            }
-                            film.genres = genres
-                        }
-                    }
-                }
-            }
-        }
 
         return film
     }
@@ -143,6 +101,33 @@ object FilmModel {
         film.votesWA = document.select("span.wa i").text()
         film.runtime = document.select("td[itemprop=duration]").text()
         film.filmId = document.select("div.b-userset__fav_holder").attr("data-post_id")
+
+
+        val table: Elements = document.select(FILM_TABLE_INFO)
+        // Parse info table
+        for (tr in table) {
+            val td: Elements = tr.select("td")
+            if (td.size > 0) {
+                val h2Els: Elements = td[0].select("h2")
+                if (h2Els.size > 0) {
+                    val h2: Element = h2Els[0]
+
+                    when (h2.text()) {
+                        "Дата выхода" -> {
+                            film.date = td[1].ownText()
+                            film.year = td[1].select("a").text()
+                        }
+                        "Страна" -> {
+                            val countries: ArrayList<String> = ArrayList()
+                            for (el in td[1].select("a")) {
+                                countries.add(el.text())
+                            }
+                            film.countries = countries
+                        }
+                    }
+                }
+            }
+        }
 
         val hrRatingEl = document.select("div.b-post__rating")
         film.ratingHR = hrRatingEl.select("span.num").text()

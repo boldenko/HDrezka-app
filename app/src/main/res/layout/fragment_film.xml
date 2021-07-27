@@ -239,9 +239,11 @@
 
             <!-- Player -->
             <LinearLayout
+                android:id="@+id/fragment_film_ll_player_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="350dp"
                 android:layout_marginBottom="5dp"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <ProgressBar

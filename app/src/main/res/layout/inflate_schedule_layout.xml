@@ -16,7 +16,7 @@
             android:id="@+id/inflate_layout_header"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_weight="0.8"
+            android:layout_weight="0.9"
             android:padding="8dp"
             android:textColor="@color/white"
             android:textSize="@dimen/normal_text" />
@@ -24,7 +24,7 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_weight="0.2"
+            android:layout_weight="0.1"
             android:gravity="center">
 
             <View
