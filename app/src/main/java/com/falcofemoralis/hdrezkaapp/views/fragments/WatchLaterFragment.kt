@@ -2,6 +2,7 @@ package com.falcofemoralis.hdrezkaapp.views.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -117,6 +118,7 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
     }
 
     fun updateAdapter() {
+        Log.d("WATCH_LATER_LIST", "List has been updated")
         if (UserData.isLoggedIn == true) {
             watchLaterPresenter.updateList()
         }

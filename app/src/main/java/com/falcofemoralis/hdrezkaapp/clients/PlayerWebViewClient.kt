@@ -71,7 +71,7 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
                     "" + // fix voices
                     "var mo2 = new MutationObserver(function(mutationsList, observer) {" +
                     "   for(var i = 0; i<mutationsList.length; i++) {" +
-                    "       if (mutation[i].type == 'childList') {" +
+                    "       if (mutationsList[i].type == 'childList') {" +
                     "           var voices = document.getElementsByClassName('tooltipster-base')[0];" +
                     "           if(voices){" +
                     "               voices.style.left = 'unset';" +

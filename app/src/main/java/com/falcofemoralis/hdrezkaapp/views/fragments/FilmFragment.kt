@@ -225,18 +225,6 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun setDirectors(directors: ArrayList<Actor>) {
-        /*    var directorsText = ""
-            for ((index, director) in directors.withIndex()) {
-                directorsText += director
-
-                if (index != directors.size - 1) {
-                    directorsText += ", "
-                }
-            }*/
-
-        //currentView.findViewById<TextView>(R.id.fragment_film_tv_directors).text = getString(R.string.directors, directorsText)
-
-        //список людей по ролям т.е список режисеров, продюсеров и писателей
         val directorsView: TextView = currentView.findViewById(R.id.fragment_film_tv_directors)
         val spannablePersonNamesList: ArrayList<SpannableString> = ArrayList()
         for (director in directors) {
@@ -407,7 +395,7 @@ class FilmFragment : Fragment(), FilmView {
             layout.findViewById<TextView>(R.id.inflate_collection_item_year).text = film.year
             layout.findViewById<TextView>(R.id.inflate_collection_item_rating).text = film.ratingKP
 
-            if (film.link?.isNotEmpty() == true) {
+            if (film.filmLink?.isNotEmpty() == true) {
                 val outValue = TypedValue()
                 requireContext().theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
                 layout.setBackgroundResource(outValue.resourceId)

@@ -25,7 +25,7 @@ class UserPresenter(private val userView: UserView, private val context: Context
     fun getUserAvatar() {
         GlobalScope.launch {
             try {
-                val link: String = UserModel.getUserAvatarLink()
+                val link: String? = UserModel.getUserAvatarLink()
                 UserData.setAvatar(link, context)
 
                 withContext(Dispatchers.Main) {

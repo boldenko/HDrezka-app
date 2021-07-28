@@ -107,109 +107,127 @@
 
             </TableLayout>
 
-            <TextView
-                android:id="@+id/rating_slider_header"
+            <LinearLayout
+                android:id="@+id/rating_slider_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/choose_rating"
-                android:textSize="@dimen/normal_text" />
+                android:orientation="vertical">
 
-            <com.google.android.material.slider.RangeSlider
-                android:id="@+id/rating_range_slider"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/choose_rating"
+                    android:textSize="@dimen/normal_text" />
+
+                <com.google.android.material.slider.RangeSlider
+                    android:id="@+id/rating_range_slider"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:stepSize="0.1"
+                    android:valueFrom="0.0"
+                    android:valueTo="10.0"
+                    app:values="@array/initial_rating_slider_values" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/film_types_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:stepSize="0.1"
-                android:valueFrom="0.0"
-                android:valueTo="10.0"
-                app:values="@array/initial_rating_slider_values" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/film_types_header"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/type_header"
+                    android:textSize="@dimen/normal_text" />
+
+                <RadioGroup
+                    android:id="@+id/film_types"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp">
+
+                    <RadioButton
+                        android:id="@+id/type_all"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/all"
+                        android:textSize="@dimen/normal_text" />
+
+                    <RadioButton
+                        android:id="@+id/type_films"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/films"
+                        android:textSize="@dimen/normal_text" />
+
+                    <RadioButton
+                        android:id="@+id/type_serials"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/serials"
+                        android:textSize="@dimen/normal_text" />
+
+                    <RadioButton
+                        android:id="@+id/type_multfilms"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/multfilms"
+                        android:textSize="@dimen/normal_text" />
+
+                    <RadioButton
+                        android:id="@+id/type_anime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/anime"
+                        android:textSize="@dimen/normal_text" />
+                </RadioGroup>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/film_sort_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/type_header"
-                android:textSize="@dimen/normal_text" />
+                android:orientation="vertical">
 
-            <RadioGroup
-                android:id="@+id/film_types"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp">
-
-                <RadioButton
-                    android:id="@+id/type_all"
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="@string/all"
+                    android:text="@string/sort_header"
                     android:textSize="@dimen/normal_text" />
 
-                <RadioButton
-                    android:id="@+id/type_films"
+                <RadioGroup
+                    android:id="@+id/film_sort"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/films"
-                    android:textSize="@dimen/normal_text" />
+                    android:layout_marginBottom="10dp">
 
-                <RadioButton
-                    android:id="@+id/type_serials"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/serials"
-                    android:textSize="@dimen/normal_text" />
+                    <RadioButton
+                        android:id="@+id/sort_last"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/last"
+                        android:textSize="@dimen/normal_text" />
 
-                <RadioButton
-                    android:id="@+id/type_multfilms"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/multfilms"
-                    android:textSize="@dimen/normal_text" />
+                    <RadioButton
+                        android:id="@+id/sort_popular"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/popular"
+                        android:textSize="@dimen/normal_text" />
 
-                <RadioButton
-                    android:id="@+id/type_anime"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/anime"
-                    android:textSize="@dimen/normal_text" />
-            </RadioGroup>
+                    <RadioButton
+                        android:id="@+id/sort_now"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/now"
+                        android:textSize="@dimen/normal_text" />
 
-            <TextView
-                android:id="@+id/film_sort_header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/sort_header"
-                android:textSize="@dimen/normal_text" />
-
-            <RadioGroup
-                android:id="@+id/film_sort"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp">
-
-                <RadioButton
-                    android:id="@+id/sort_last"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="@string/last"
-                    android:textSize="@dimen/normal_text" />
-
-                <RadioButton
-                    android:id="@+id/sort_popular"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/popular"
-                    android:textSize="@dimen/normal_text" />
-
-                <RadioButton
-                    android:id="@+id/sort_now"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/now"
-                    android:textSize="@dimen/normal_text" />
-
-            </RadioGroup>
+                </RadioGroup>
+            </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

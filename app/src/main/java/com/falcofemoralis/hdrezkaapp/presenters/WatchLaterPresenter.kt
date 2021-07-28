@@ -24,6 +24,8 @@ class WatchLaterPresenter(private val watchLaterView: WatchLaterView) {
                 loadedWatchLaterList = WatchLaterModel.getWatchLaterList()
 
                 withContext(Dispatchers.Main) {
+                    activeWatchLaterList.clear()
+
                     if (loadedWatchLaterList.size > 0) {
                         watchLaterView.setWatchLaterList(activeWatchLaterList)
                         getNextWatchLater()
@@ -53,6 +55,8 @@ class WatchLaterPresenter(private val watchLaterView: WatchLaterView) {
             }
 
             loadFilmData(dataToLoad)
+        } else{
+            watchLaterView.setProgressBarState(IProgressState.StateType.LOADED)
         }
     }
 

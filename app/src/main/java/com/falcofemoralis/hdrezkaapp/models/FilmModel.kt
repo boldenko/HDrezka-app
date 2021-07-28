@@ -41,23 +41,28 @@ object FilmModel {
 
     private fun getMainDataById(film: Film): Film {
         val data: ArrayMap<String, String> = ArrayMap()
-        data["id"] = film.filmId
+        data["id"] = film.filmId.toString()
         data["is_touch"] = "1"
 
-        val doc: Document? = Jsoup.connect(SettingsData.provider + GET_FILM_POST)
-            .data(data)
-            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-            .ignoreContentType(true)
-            .post()
+        val doc: Document?
+        try {
+            doc = Jsoup.connect(SettingsData.provider + GET_FILM_POST)
+                .data(data)
+                .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+                .ignoreContentType(true)
+                .post()
+        } catch (e: Exception) {
+            throw e
+        }
 
         if (doc != null) {
             val titleEl = doc.select("div.b-content__bubble_title a")
-            film.link = titleEl.attr("href")
+            film.filmLink = titleEl.attr("href")
             film.type = getTypeByName(doc.select("i.entity").text())
             film.title = titleEl.text()
             film.ratingIMDB = doc.select("span.imdb b").text()
             film.ratingKP = doc.select("span.kp b").text()
-            film.ratingWA = doc.select("span.wa b").text()
+       //    film.ratingWA = doc.select("span.wa b").text()
             val genres: ArrayList<String> = ArrayList()
             val genresEls = doc.select("div.b-content__bubble_text a")
             for (el in genresEls) {
@@ -72,10 +77,30 @@ object FilmModel {
     }
 
     private fun getMainDataByLink(film: Film): Film {
-        val filmPage: Document = Jsoup.connect(film.link).get()
+        val filmPage: Document = Jsoup.connect(film.filmLink).get()
 
-        film.type = film.link?.split("/")?.get(3)?.let { getTypeByName(it) }
+        film.type = film.filmLink?.split("/")?.get(3)?.let { getTypeByName(it) }
         film.title = filmPage.select(FILM_TITLE).text()
+
+        // Parse info table
+        val table: Elements = filmPage.select(FILM_TABLE_INFO)
+        for (tr in table) {
+            val td: Elements = tr.select("td")
+            if (td.size > 0) {
+                val h2Els: Elements = td[0].select("h2")
+                if (h2Els.size > 0) {
+                    val h2: Element = h2Els[0]
+
+                    when (h2.text()) {
+                        "Рейтинги" -> {
+                            film.ratingIMDB = td[1].select(FILM_IMDB_RATING).text()
+                            film.ratingKP = td[1].select(FILM_KP_RATING).text()
+                          //  film.ratingWA = td[1].select(FILM_WA_RATING).text()
+                        }
+                    }
+                }
+            }
+        }
 
         return film
     }
@@ -91,7 +116,7 @@ object FilmModel {
     }
 
     fun getAdditionalData(film: Film): Film {
-        val document: Document = Jsoup.connect(film.link)
+        val document: Document = Jsoup.connect(film.filmLink)
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider) + "; allowed_comments=1;")
             .get()
         film.origTitle = document.select("div.b-post__origtitle").text()
@@ -100,8 +125,7 @@ object FilmModel {
         film.votesKP = document.select("span.kp i").text()
         film.votesWA = document.select("span.wa i").text()
         film.runtime = document.select("td[itemprop=duration]").text()
-        film.filmId = document.select("div.b-userset__fav_holder").attr("data-post_id")
-
+        film.filmId = document.select("div.b-userset__fav_holder").attr("data-post_id").toInt()
 
         val table: Elements = document.select(FILM_TABLE_INFO)
         // Parse info table
@@ -113,6 +137,9 @@ object FilmModel {
                     val h2: Element = h2Els[0]
 
                     when (h2.text()) {
+                        "Рейтинги" -> {
+                            film.ratingWA = td[1].select(FILM_WA_RATING).text()
+                        }
                         "Дата выхода" -> {
                             film.date = td[1].ownText()
                             film.year = td[1].select("a").text()
@@ -221,11 +248,10 @@ object FilmModel {
 
             val a = el.select("div.title a")
             if (a.size > 0) {
-                subFilm = Film(null)
-                subFilm.link = a.attr("href")
+                subFilm = Film(a.attr("href"))
                 subFilm.title = a.text()
             } else {
-                subFilm = Film(null)
+                subFilm = Film()
                 subFilm.title = el.select("div.title").text()
             }
 
@@ -245,8 +271,8 @@ object FilmModel {
             val title: String = a.text()
             val misc: String = el.select("div.misc").text()
 
-            val relatedFilm = Film(id)
-            relatedFilm.link = link
+            val relatedFilm = Film(id.toInt())
+            relatedFilm.filmLink = link
             relatedFilm.posterPath = cover
             relatedFilm.title = title
             relatedFilm.relatedMisc = misc

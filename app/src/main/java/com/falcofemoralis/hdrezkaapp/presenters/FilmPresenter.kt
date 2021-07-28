@@ -43,9 +43,9 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
                     film.seriesSchedule?.let { filmView.setSchedule(it) }
                     film.collection?.let { filmView.setCollection(it) }
                     film.related?.let { filmView.setRelated(it) }
-                    film.title?.let { film.link?.let { it1 -> filmView.setShareBtn(it, it1) } }
+                    film.title?.let { film.filmLink?.let { it1 -> filmView.setShareBtn(it, it1) } }
                     film.ratingHR.let {
-                        film.isHRratingActive?.let { it1 ->
+                        film.isHRratingActive.let { it1 ->
                             if (it != null) {
                                 filmView.setHRrating(it.toFloat(), it1)
                             }
@@ -95,7 +95,7 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
     }
 
     fun initPlayer() {
-        film.link?.let { filmView.setPlayer(it) }
+        film.filmLink?.let { filmView.setPlayer(it) }
     }
 
     fun setBookmark(bookmarkId: String) {
@@ -113,8 +113,8 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
 
     fun initComments() {
         film.filmId?.let {
-            filmView.setCommentEditor(it)
-            filmView.setCommentsList(activeComments, it)
+            filmView.setCommentEditor(it.toString())
+            filmView.setCommentsList(activeComments, it.toString())
             getNextComments()
         }
     }
@@ -144,7 +144,7 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
             GlobalScope.launch {
                 try {
                     film.filmId?.let {
-                        CommentsModel.getCommentsFromPage(commentsPage, it)
+                        CommentsModel.getCommentsFromPage(commentsPage, it.toString())
                     }?.let {
                         loadedComments.addAll(it)
                     }

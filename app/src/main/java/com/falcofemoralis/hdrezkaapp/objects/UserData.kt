@@ -26,8 +26,10 @@ object UserData {
         FileManager.writeFile(USER_FILE, "1", false, context)
     }
 
-    fun setAvatar(avatarLink: String, context: Context) {
-        FileManager.writeFile(USER_AVATAR, avatarLink, false, context)
+    fun setAvatar(avatarLink: String?, context: Context) {
+        if(avatarLink != null){
+            FileManager.writeFile(USER_AVATAR, avatarLink, false, context)
+        }
     }
 
     fun reset(context: Context) {

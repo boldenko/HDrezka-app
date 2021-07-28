@@ -6,5 +6,5 @@ import com.falcofemoralis.hdrezkaapp.presenters.UserPresenter
 interface UserView : IConnection{
     fun showAuthWindow(type: UserPresenter.WindowType, link: String)
 
-    fun setUserAvatar(link: String)
+    fun setUserAvatar(link: String?)
 }

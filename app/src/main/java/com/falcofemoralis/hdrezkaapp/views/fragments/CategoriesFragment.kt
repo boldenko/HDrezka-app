@@ -64,8 +64,8 @@ class CategoriesFragment : Fragment(), CategoriesView, AdapterView.OnItemSelecte
         filterMenuBtn = currentView.findViewById(R.id.fragment_categories_films_bt_filters)
         filtersMenu = FiltersMenu(categoriesPresenter, requireActivity(), filterMenuBtn)
         filtersMenu
-            .createDialogFilter(FiltersMenu.AppliedFilter.COUNTRIES, resources.getStringArray(R.array.countries), false)
-            .createDialogFilter(FiltersMenu.AppliedFilter.COUNTRIES_INVERTED, resources.getStringArray(R.array.countries), false)
+            .createDialogFilter(FiltersMenu.AppliedFilter.COUNTRIES, resources.getStringArray(R.array.countries))
+            .createDialogFilter(FiltersMenu.AppliedFilter.COUNTRIES_INVERTED, resources.getStringArray(R.array.countries))
             .apply()
 
         categoriesPresenter.initCategories()

@@ -1,6 +1,7 @@
 package com.falcofemoralis.hdrezkaapp.views.elements
 
 import android.util.ArrayMap
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -34,115 +35,90 @@ class FiltersMenu(
     private var filtersDialogBuilder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(activity)
     private val filtersDialogView: FrameLayout = activity.layoutInflater.inflate(R.layout.dialog_filters, null) as FrameLayout
     private var appliedFilters: ArrayMap<AppliedFilter, Array<String?>> = ArrayMap() // applied filters
-    private var appliedFiltersTmp: ArrayMap<AppliedFilter, Array<String?>>? = null
+    private var onSelectionAppliedFilters: ArrayMap<AppliedFilter, Array<String?>> = ArrayMap() // active filters during selecting..
+
+    // private var appliedFiltersTmp: ArrayMap<AppliedFilter, Array<String?>>? = null
     private var dialog: AlertDialog? = null
+    private var ratingSliderView: RangeSlider? = null
+    private var typeGroupView: RadioGroup? = null
+    private var sortGroupView: RadioGroup? = null
 
     init {
         filtersDialogView.findViewById<TextView>(R.id.bt_countries).visibility = View.GONE
         filtersDialogView.findViewById<TextView>(R.id.bt_countries_inverted).visibility = View.GONE
         filtersDialogView.findViewById<TextView>(R.id.bt_genres).visibility = View.GONE
         filtersDialogView.findViewById<TextView>(R.id.bt_genres_inverted).visibility = View.GONE
-        filtersDialogView.findViewById<TextView>(R.id.rating_slider_header).visibility = View.GONE
-        filtersDialogView.findViewById<RangeSlider>(R.id.rating_range_slider).visibility = View.GONE
-        filtersDialogView.findViewById<TextView>(R.id.film_types_header).visibility = View.GONE
-        filtersDialogView.findViewById<RadioGroup>(R.id.film_types).visibility = View.GONE
-        filtersDialogView.findViewById<TextView>(R.id.film_sort_header).visibility = View.GONE
-        filtersDialogView.findViewById<RadioGroup>(R.id.film_sort).visibility = View.GONE
-    }
-
-    fun getAppliedFilter(type: AppliedFilter): Array<String?>? {
-        return appliedFilters[type]
+        filtersDialogView.findViewById<LinearLayout>(R.id.rating_slider_layout).visibility = View.GONE
+        filtersDialogView.findViewById<LinearLayout>(R.id.film_types_layout).visibility = View.GONE
+        filtersDialogView.findViewById<LinearLayout>(R.id.film_sort_layout).visibility = View.GONE
     }
 
     fun apply() {
         filtersDialogBuilder.setView(filtersDialogView)
 
         filtersDialogView.findViewById<Button>(R.id.filter_set).setOnClickListener {
-            //applyFilters()
+            appliedFilters = ArrayMap(onSelectionAppliedFilters)
+            Log.d("TTEST", "On apply: $appliedFilters")
             iFilters.onApplyFilters(appliedFilters)
             dialog?.dismiss()
         }
         filtersDialogView.findViewById<Button>(R.id.filter_cancel).setOnClickListener {
-            dismissFilters()
+            Log.d("TTEST", "On cancel: $appliedFilters")
+
+            val rating: Array<String?>? = appliedFilters[AppliedFilter.RATING]
+            if (rating != null) {
+                ratingSliderView?.setValues(rating[0]!!.toFloat(), rating[1]!!.toFloat())
+            } else {
+                ratingSliderView?.setValues(0f, 10f)
+            }
+
+            val types: Array<String?>? = appliedFilters[AppliedFilter.TYPE]
+            val id1 = if (types != null) {
+                when (types[0]) {
+                    "Все" -> R.id.type_all
+                    "Фильмы" -> R.id.type_films
+                    "Сериалы" -> R.id.type_serials
+                    "Мультфильмы" -> R.id.type_multfilms
+                    "Аниме" -> R.id.type_anime
+                    else -> R.id.type_all
+                }
+            } else {
+                R.id.type_all
+            }
+
+            typeGroupView?.findViewById<RadioButton>(id1)?.isChecked = true
+
+            val sort: Array<String?>? = appliedFilters[AppliedFilter.SORT]
+            val id2 = if (sort != null) {
+                when (sort[0]!!.toInt()) {
+                    0 -> R.id.sort_last
+                    1 -> R.id.sort_popular
+                    2 -> R.id.sort_now
+                    else -> R.id.sort_last
+                }
+            } else {
+                R.id.sort_last
+            }
+            sortGroupView?.findViewById<RadioButton>(id2)?.isChecked = true
+
+            onSelectionAppliedFilters.clear()
             dialog?.dismiss()
         }
         filtersDialogView.findViewById<Button>(R.id.filter_clear).setOnClickListener {
             clearFilters()
+            Log.d("TTEST", "On clear: $appliedFilters")
             Toast.makeText(activity.applicationContext, activity.getString(R.string.filters_cleared), Toast.LENGTH_LONG).show()
         }
 
         dialog = filtersDialogBuilder.create()
         openBtn.setOnClickListener {
-            appliedFiltersTmp = ArrayMap(appliedFilters)
+            Log.d("TTEST", "On open: $appliedFilters")
+            onSelectionAppliedFilters = ArrayMap(appliedFilters)
             dialog?.show()
         }
-
-        iFilters.onFilterCreated(appliedFilters)
     }
 
-    fun createRatingFilter(): FiltersMenu {
-        val ratingSliderView: RangeSlider = filtersDialogView.findViewById(R.id.rating_range_slider)
-        val ratingHeaderView: TextView = filtersDialogView.findViewById(R.id.rating_slider_header)
-
-        ratingSliderView.visibility = View.VISIBLE
-        ratingHeaderView.visibility = View.VISIBLE
-
-        ratingSliderView.addOnChangeListener { slider, value, fromUser ->
-            setFilter(AppliedFilter.RATING, arrayOf(slider.values[0].toString(), slider.values[1].toString()))
-        }
-
-        return this
-    }
-
-    fun createTypesFilter(isAllType: Boolean): FiltersMenu {
-        // Film type buttons
-        val typeView: RadioGroup = filtersDialogView.findViewById(R.id.film_types)
-        val typeHeaderView: TextView = filtersDialogView.findViewById(R.id.film_types_header)
-
-        if (!isAllType) {
-            filtersDialogView.findViewById<RadioButton>(R.id.type_all).visibility = View.GONE
-        }
-
-        typeView.visibility = View.VISIBLE
-        typeHeaderView.visibility = View.VISIBLE
-
-        typeView.setOnCheckedChangeListener { group, checkedId ->
-            run {
-                setFilter(AppliedFilter.TYPE, arrayOf(group.findViewById<RadioButton>(checkedId).text as String?))
-               /* if(isAllType){
-                    val position = when(checkedId){
-
-                    }
-                    iFilters.onDialogApply(AppliedFilter.TYPE,
-                }*/
-            }
-        }
-        return this
-    }
-
-    fun createSortFilter(): FiltersMenu {
-        val sortView: RadioGroup = filtersDialogView.findViewById(R.id.film_sort)
-        val sortHeaderView: TextView = filtersDialogView.findViewById(R.id.film_sort_header)
-
-        sortView.visibility = View.VISIBLE
-        sortHeaderView.visibility = View.VISIBLE
-
-        sortView.setOnCheckedChangeListener { group, checkedId ->
-            run {
-                val pos: Int = when (checkedId) {
-                    R.id.sort_last -> 0
-                    R.id.sort_popular -> 1
-                    R.id.sort_now -> 2
-                    else -> 0
-                }
-                setFilter(AppliedFilter.SORT, arrayOf(pos.toString()))
-            }
-        }
-
-        return this
-    }
-
-    fun createDialogFilter(filterType: AppliedFilter, data: Array<String>, isSingle: Boolean): FiltersMenu {
+    fun createDialogFilter(filterType: AppliedFilter, data: Array<String>): FiltersMenu {
         var titleId: Int? = null
         var btnViewId: Int? = null
 
@@ -175,7 +151,7 @@ class FiltersMenu(
             btnView?.setOnClickListener {
                 var checkedItems: Array<String?> = arrayOfNulls(data.size)
 
-                getAppliedFilter(filterType)?.let {
+                appliedFilters[filterType]?.let {
                     checkedItems = it.clone()
                 }
 
@@ -204,20 +180,74 @@ class FiltersMenu(
         return this
     }
 
-    private fun setFilter(key: AppliedFilter, value: Array<String?>) {
-        appliedFilters[key] = value
-        appliedFiltersTmp
+    fun createRatingFilter(): FiltersMenu {
+        ratingSliderView = filtersDialogView.findViewById(R.id.rating_range_slider)
+        filtersDialogView.findViewById<LinearLayout>(R.id.rating_slider_layout).visibility = View.VISIBLE
+
+        ratingSliderView?.addOnChangeListener { slider, value, fromUser ->
+            setFilter(AppliedFilter.RATING, arrayOf(slider.values[0].toString(), slider.values[1].toString()))
+        }
+
+        return this
     }
 
-    private fun dismissFilters() {
-        appliedFiltersTmp?.let {
-            appliedFilters = it
+    fun createTypesFilter(isAllType: Boolean): FiltersMenu {
+        typeGroupView = filtersDialogView.findViewById(R.id.film_types)
+        filtersDialogView.findViewById<LinearLayout>(R.id.film_types_layout).visibility = View.VISIBLE
+
+        if (!isAllType) {
+            filtersDialogView.findViewById<RadioButton>(R.id.type_all).visibility = View.GONE
         }
+
+        typeGroupView?.setOnCheckedChangeListener { group, checkedId ->
+            run {
+                if (checkedId != -1) {
+                    setFilter(AppliedFilter.TYPE, arrayOf(group.findViewById<RadioButton>(checkedId).text as String?))
+                } else {
+                    group.findViewById<RadioButton>(R.id.type_all).isChecked = true
+                }
+            }
+        }
+        return this
+    }
+
+    fun createSortFilter(): FiltersMenu {
+        sortGroupView = filtersDialogView.findViewById(R.id.film_sort)
+        filtersDialogView.findViewById<LinearLayout>(R.id.film_sort_layout).visibility = View.VISIBLE
+
+        sortGroupView?.setOnCheckedChangeListener { group, checkedId ->
+            run {
+                if (checkedId != -1) {
+                    val pos: Int = when (checkedId) {
+                        R.id.sort_last -> 0
+                        R.id.sort_popular -> 1
+                        R.id.sort_now -> 2
+                        else -> 0
+                    }
+                    setFilter(AppliedFilter.SORT, arrayOf(pos.toString()))
+                } else {
+                    group.findViewById<RadioButton>(R.id.sort_last).isChecked = true
+                }
+            }
+        }
+
+        return this
+    }
+
+    private fun setFilter(key: AppliedFilter, value: Array<String?>) {
+        onSelectionAppliedFilters[key] = value
     }
 
     private fun clearFilters() {
         appliedFilters.clear()
-        //applyFilters()
+        onSelectionAppliedFilters.clear()
+        ratingSliderView?.let {
+            ratingSliderView!!.setValues(0f, 10f)
+        }
+        typeGroupView?.clearCheck()
+        sortGroupView?.clearCheck()
+        appliedFilters[AppliedFilter.SORT] = arrayOf("0")
         iFilters.onApplyFilters(appliedFilters)
+        dialog?.dismiss()
     }
 }

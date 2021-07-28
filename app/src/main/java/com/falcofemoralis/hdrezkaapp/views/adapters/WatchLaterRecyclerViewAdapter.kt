@@ -40,7 +40,7 @@ class WatchLaterRecyclerViewAdapter(private val watchLaterList: ArrayList<WatchL
             openFilm(Film(watchLaterItem.filmLInk))
         }
 
-        holder.deleteView.setOnClickListener{
+        holder.deleteView.setOnClickListener {
             deleteHandler(watchLaterItem.id, position)
         }
     }

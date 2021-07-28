@@ -13,8 +13,8 @@ object FilmsListModel {
         val films: ArrayList<Film> = ArrayList()
 
         for (el in doc.select(FILMS)) {
-            val film = Film(el.attr("data-id"))
-            film.link = el.attr("data-url")
+            val film = Film(el.attr("data-id").toInt())
+            film.filmLink = el.attr("data-url")
             film.posterPath = el.select(FILM_IMG).attr("src")
 
             val text = el.select("div.b-content__inline_item-link div").text()

@@ -80,9 +80,9 @@ object BookmarksModel {
         }
     }
 
-    fun postBookmark(filmId: String, catId: String) {
+    fun postBookmark(filmId: Int, catId: String) {
         val data: ArrayMap<String, String> = ArrayMap()
-        data["post_id"] = filmId
+        data["post_id"] = filmId.toString()
         data["cat_id"] = catId
         data["action"] = "add_post"
 

@@ -1,11 +1,21 @@
 package com.falcofemoralis.hdrezkaapp.objects
 
+import androidx.annotation.Nullable
 import java.io.Serializable
 
-open class Film(
-    var filmId: String? = null
-) : Serializable {
-    var link: String? = null
+open class Film: Serializable {
+    constructor()
+
+    constructor(id: Int){
+        filmId = id
+    }
+
+    constructor(link: String){
+        filmLink = link
+    }
+
+    var filmId: Int? = null
+    var filmLink: String? = null
     var type: String? = null
     var title: String? = null
     var date: String? = null

@@ -1,11 +1,14 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
 import android.util.ArrayMap
+import android.util.Log
 import com.falcofemoralis.hdrezkaapp.models.NewestFilmsModel
 import com.falcofemoralis.hdrezkaapp.objects.Film
+import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.views.elements.FiltersMenu
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmsListView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.NewestFilmsView
+import java.lang.Exception
 
 class NewestFilmsPresenter(
     private val newestFilmsView: NewestFilmsView,
@@ -22,9 +25,15 @@ class NewestFilmsPresenter(
     }
 
     override fun getMoreFilms(): ArrayList<Film> {
-        val films: ArrayList<Film> = NewestFilmsModel.getNewestFilms(currentPage, sortFilter)
-        currentPage++
-        return films
+        try {
+            Log.d("TTEST", sortFilter)
+            val films: ArrayList<Film> = NewestFilmsModel.getNewestFilms(currentPage, sortFilter)
+            currentPage++
+            return films
+        } catch (e: Exception){
+            ExceptionHelper.catchException(e, newestFilmsView)
+            return ArrayList()
+        }
     }
 
     override fun onFilterCreated(appliedFilters: ArrayMap<FiltersMenu.AppliedFilter, Array<String?>>) {
@@ -33,10 +42,12 @@ class NewestFilmsPresenter(
 
     override fun onApplyFilters(appliedFilters: ArrayMap<FiltersMenu.AppliedFilter, Array<String?>>) {
         val sortItem = appliedFilters[FiltersMenu.AppliedFilter.SORT]?.get(0)
+        filmsListPresenter.appliedFilters = appliedFilters
         if (sortItem != null) {
             sortFilter = sortFilters[sortItem.toInt()]
-            currentPage = 1
             filmsListPresenter.reset()
+            filmsListPresenter.filmList.clear()
+            currentPage = 1
             filmsListPresenter.getNextFilms()
         } else {
             filmsListPresenter.applyFilter()

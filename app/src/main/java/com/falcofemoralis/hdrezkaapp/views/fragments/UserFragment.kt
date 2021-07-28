@@ -150,8 +150,10 @@ class UserFragment : Fragment(), UserView {
         }
     }
 
-    override fun setUserAvatar(link: String) {
-        Picasso.get().load(link).into(requireActivity().findViewById<ImageView>(R.id.activity_main_iv_user))
+    override fun setUserAvatar(link: String?) {
+        if(link != null){
+            Picasso.get().load(link).into(requireActivity().findViewById<ImageView>(R.id.activity_main_iv_user))
+        }
     }
 
     override fun showConnectionError(type: IConnection.ErrorType) {

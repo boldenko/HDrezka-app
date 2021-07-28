@@ -27,8 +27,7 @@ object SearchModel {
                 "Фильм"
             }
 
-            val film = Film(null)
-            film.link = link
+            val film = Film(link)
             film.title = title
             film.ratingIMDB = rating // actually kp rating
             film.additionalInfo = additionalInfo
