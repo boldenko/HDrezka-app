@@ -113,6 +113,22 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
                     "})()", null
         )
 
+        // fix translators block width
+        view?.evaluateJavascript(
+            "var translationsHint = document.getElementsByClassName('b-rgstats__help')[0];" +
+                    "translationsHint.addEventListener('click', function (event) {" +
+                    "    var block = document.getElementsByClassName('tooltipster-base')[0];" +
+                    "    block.style.minWidth = 'unset';" +
+                    "    block.style.maxWidth = 'unset';" +
+                    "    block.style.left = 'unset';" +
+                    "    block.style.width = '100%';" +
+                    "    document.getElementsByClassName('tooltipster-arrow-bottom-right')[0].style.display = 'none';" +
+                    "});", null
+        )
+
+        // hide telegram hint
+        view?.evaluateJavascript("\$('#tg-info-block-exclusive-close').click()", null)
+
         // update watch later fragment
         view?.evaluateJavascript(
             "\$(document).ajaxComplete(function(event,request, settings){" +
@@ -121,17 +137,19 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
         )
 
         // block player advert
-        view?.evaluateJavascript("" +
-                "XMLHttpRequest.prototype.open = (function (open) {" +
-                "    return function (method, url, async) {" +
-                "        if (url.match(/franecki.net/g)) {" +
-                "            console.log(url);" +
-                "            console.log('blocked');" +
-                "        } else {" +
-                "            open.apply(this, arguments);" +
-                "        }" +
-                "    };" +
-                "})(XMLHttpRequest.prototype.open);", null)
+        view?.evaluateJavascript(
+            "" +
+                    "XMLHttpRequest.prototype.open = (function (open) {" +
+                    "    return function (method, url, async) {" +
+                    "        if (url.match(/franecki.net/g)) {" +
+                    "            console.log(url);" +
+                    "            console.log('blocked');" +
+                    "        } else {" +
+                    "            open.apply(this, arguments);" +
+                    "        }" +
+                    "    };" +
+                    "})(XMLHttpRequest.prototype.open);", null
+        )
 
         callback()
 

@@ -215,8 +215,11 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
         GlobalScope.launch {
             try {
                 FilmModel.postRating(film, rating)
-                film.ratingHR?.let { filmView.setHRrating(it.toFloat(), film.isHRratingActive) }
-                filmView.setFilmRatings(film)
+
+                withContext(Dispatchers.Main){
+                    film.ratingHR?.let { filmView.setHRrating(it.toFloat(), film.isHRratingActive) }
+                    filmView.setFilmRatings(film)
+                }
             } catch (e: Exception) {
                 catchException(e, filmView)
             }
