@@ -12,7 +12,7 @@ interface FilmView : IConnection, CommentEditor.ICommentEditor {
 
     fun setActors(actors: ArrayList<Actor>?)
 
-    fun setDirectors(directors: ArrayList<String>)
+    fun setDirectors(directors: ArrayList<Actor>)
 
     fun setCountries(countries: ArrayList<String>)
 

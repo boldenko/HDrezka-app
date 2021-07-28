@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jsoup.HttpStatusException
 
 class FilmPresenter(private val filmView: FilmView, private val film: Film) {
     private val COMMENTS_PER_AGE = 18
@@ -154,8 +155,8 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
                     withContext(Dispatchers.Main) {
                         getNextComments()
                     }
-                } catch (e: Exception) {
-                    if (e.message != "Empty list") {
+                } catch (e: HttpStatusException) {
+                    if (e.statusCode != 404) {
                         catchException(e, filmView)
                     }
                     isCommentsLoading = false

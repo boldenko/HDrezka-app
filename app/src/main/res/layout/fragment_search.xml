@@ -37,10 +37,10 @@
             android:visibility="gone" />
     </FrameLayout>
 
-<!--    <LinearLayout
+    <LinearLayout
         android:id="@+id/fragment_search_ll_hint"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:orientation="vertical">
 
         <TextView
@@ -49,9 +49,10 @@
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp"
             android:gravity="center"
-            android:text="Для поиска необходимо ввести название фильма или сериала"
-            android:textColor="@color/white" />
-    </LinearLayout>-->
+            android:text="@string/search_page_hint"
+            android:textColor="@color/white"
+            android:textSize="@dimen/normal_text" />
+    </LinearLayout>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_search_fcv_container"

@@ -1,7 +1,5 @@
 package com.falcofemoralis.hdrezkaapp.objects
 
-import android.util.ArrayMap
-import com.falcofemoralis.hdrezkaapp.constants.CareerType
 import java.io.Serializable
 
 data class Actor(
@@ -20,4 +18,5 @@ data class Actor(
     var nameOrig: String? = null
     var photo: String? = null
     var personCareerFilms: ArrayList<Pair<String, ArrayList<Film>>>? = null
+    var hasMainData = false
 }

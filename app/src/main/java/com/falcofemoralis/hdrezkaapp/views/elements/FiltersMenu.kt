@@ -28,8 +28,7 @@ class FiltersMenu(
         GENRES_INVERTED,
         RATING,
         TYPE,
-        SORT,
-        YEAR
+        SORT
     }
 
     private var filtersDialogBuilder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(activity)
@@ -39,11 +38,10 @@ class FiltersMenu(
     private var dialog: AlertDialog? = null
 
     init {
-        filtersDialogView.findViewById<Button>(R.id.bt_countries).visibility = View.GONE
-        filtersDialogView.findViewById<Button>(R.id.bt_countries_inverted).visibility = View.GONE
-        filtersDialogView.findViewById<Button>(R.id.bt_genres).visibility = View.GONE
-        filtersDialogView.findViewById<Button>(R.id.bt_genres_inverted).visibility = View.GONE
-        filtersDialogView.findViewById<Button>(R.id.bt_years).visibility = View.GONE
+        filtersDialogView.findViewById<TextView>(R.id.bt_countries).visibility = View.GONE
+        filtersDialogView.findViewById<TextView>(R.id.bt_countries_inverted).visibility = View.GONE
+        filtersDialogView.findViewById<TextView>(R.id.bt_genres).visibility = View.GONE
+        filtersDialogView.findViewById<TextView>(R.id.bt_genres_inverted).visibility = View.GONE
         filtersDialogView.findViewById<TextView>(R.id.rating_slider_header).visibility = View.GONE
         filtersDialogView.findViewById<RangeSlider>(R.id.rating_range_slider).visibility = View.GONE
         filtersDialogView.findViewById<TextView>(R.id.film_types_header).visibility = View.GONE
@@ -165,13 +163,9 @@ class FiltersMenu(
                 titleId = R.string.exclude_genres
                 btnViewId = R.id.bt_genres_inverted
             }
-            AppliedFilter.YEAR -> {
-                titleId = R.string.choose_year_hint
-                btnViewId = R.id.bt_years
-            }
         }
         val title = titleId?.let { activity.getString(it) }
-        val btnView: Button? = btnViewId?.let { filtersDialogView.findViewById(it) }
+        val btnView: TextView? = btnViewId?.let { filtersDialogView.findViewById(it) }
 
         btnView?.visibility = View.VISIBLE
 

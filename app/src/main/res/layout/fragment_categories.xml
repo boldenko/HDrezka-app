@@ -10,6 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="horizontal"
         android:weightSum="4">
 
@@ -35,12 +36,10 @@
             android:layout_weight="1"
             android:spinnerMode="dialog"
             app:smsp_arrowColor="@color/white"
-            app:smsp_enableSearchHeader="false"
             app:smsp_floatingLabelColor="@color/white"
             app:smsp_hint="@string/choose_genre_hint"
             app:smsp_hintColor="@color/white"
             app:smsp_hintSize="@dimen/small_text"
-            app:smsp_isSearchable="true"
             app:smsp_itemColor="@color/white"
             app:smsp_itemListHintColor="@color/white"
             app:smsp_selectedItemListColor="@color/main_color_3" />
@@ -52,12 +51,10 @@
             android:layout_weight="1"
             android:spinnerMode="dialog"
             app:smsp_arrowColor="@color/white"
-            app:smsp_enableSearchHeader="false"
             app:smsp_floatingLabelColor="@color/white"
             app:smsp_hint="@string/choose_year_hint"
             app:smsp_hintColor="@color/white"
             app:smsp_hintSize="@dimen/small_text"
-            app:smsp_isSearchable="true"
             app:smsp_itemColor="@color/white"
             app:smsp_itemListHintColor="@color/white"
             app:smsp_selectedItemListColor="@color/main_color_3" />
@@ -69,19 +66,22 @@
             android:layout_weight="1"
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
-            android:text="@string/country"
+            android:text="@string/filters"
             android:textColor="@color/white"
             android:textSize="@dimen/small_text" />
+
     </LinearLayout>
 
     <TextView
         android:id="@+id/fragment_categories_tv_msg"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
         android:gravity="center"
         android:text="@string/choose_cat_hint"
         android:textColor="@color/white"
-        android:textSize="@dimen/head_text" />
+        android:textSize="@dimen/normal_text" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_categories_fcv_container"

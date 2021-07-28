@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">HDrezka App</string>
     <string name="runtime">Время: %1$s</string>
-    <string name="directors">Режиссер: %1$s</string>
+    <string name="directors">Режиссеры:</string>
     <string name="countries">Страна: %1$s</string>
     <string name="release_date">Дата выхода: %1$s</string>
     <string name="film_type">Тип: %1$s</string>
@@ -10,7 +10,7 @@
     <string name="cast">Актеры</string>
     <string name="newest">Новинки</string>
     <string name="search_for_movie">Поиск</string>
-    <string name="categories">Категории</string>
+    <string name="categories">Категория</string>
     <string name="bookmarks">Закладки</string>
     <string name="choose_country">Выбрать страну</string>
     <string name="exclude_country">Исключить страну</string>
@@ -47,7 +47,7 @@
     <string name="sort_hint">Сортировать</string>
     <string name="show_hint">Отобразить</string>
     <string name="catalogue">Каталог</string>
-    <string name="choose_cat_hint">Выберите категорию в фильтрах</string>
+    <string name="choose_cat_hint">Выберите категорию</string>
     <string name="choose_genre_hint">Жанр</string>
     <string name="choose_countries">Выберите страны</string>
     <string name="choose_genres">Выберите жанры</string>
@@ -112,4 +112,5 @@
     <string name="deathdate">Дата смерти: %1$s</string>
     <string name="deathplace">Место смерти: %1$s</string>
     <string name="death_in">в возрасте</string>
+    <string name="search_page_hint">Введите название фильма или сериала в строку поиска</string>
 </resources>

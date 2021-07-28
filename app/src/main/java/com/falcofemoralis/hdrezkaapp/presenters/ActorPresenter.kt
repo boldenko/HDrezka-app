@@ -18,6 +18,10 @@ class ActorPresenter(
     fun initActorData() {
         GlobalScope.launch {
             try {
+                if (!actor.hasMainData) {
+                    ActorModel.getActorMainInfo(actor)
+                }
+
                 ActorModel.getActorFilms(actor)
 
                 actor.personCareerFilms?.let {

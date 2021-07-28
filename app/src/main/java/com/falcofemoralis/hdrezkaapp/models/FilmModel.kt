@@ -139,7 +139,7 @@ object FilmModel {
         film.posterPath = posterElement.select("img").attr("src")
 
         val actors: ArrayList<Actor> = ArrayList()
-        val directors: ArrayList<String> = ArrayList()
+        val directors: ArrayList<Actor> = ArrayList()
         val personsElements: Elements = document.select("div.persons-list-holder")
         for (el in personsElements) {
             val els: Elements = el.select("span.item")
@@ -150,16 +150,19 @@ object FilmModel {
                     val id: String = pEl.attr("data-id")
                     if (id.isNotEmpty()) {
                         actors.add(Actor(id.toInt(), pEl.attr("data-pid").toInt()))
-
                     }
                 }
             } else {
                 for (directorElement in els) {
                     var name = directorElement.select("span a span").text()
+                    val id = directorElement.select("span").attr("data-id").toInt()
+                    val pid = directorElement.select("span").attr("data-pid").toInt()
                     if (name.isEmpty()) {
                         name = directorElement.text()
                     }
-                    directors.add(name)
+                    val actor = Actor(id, pid)
+                    actor.name = name
+                    directors.add(actor)
                 }
             }
         }

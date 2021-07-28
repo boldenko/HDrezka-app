@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jsoup.HttpStatusException
 
 class FilmsListPresenter(
     private val filmsListView: FilmsListView,
@@ -62,8 +63,8 @@ class FilmsListPresenter(
                 }
 
                 FilmModel.getFilmsData(filmList, FILMS_PER_PAGE, ::processFilms)
-            } catch (e: Exception) {
-                if (e.message != "Empty list") {
+            } catch (e: HttpStatusException) {
+                if (e.statusCode != 404) {
                     ExceptionHelper.catchException(e, view)
                 }
 

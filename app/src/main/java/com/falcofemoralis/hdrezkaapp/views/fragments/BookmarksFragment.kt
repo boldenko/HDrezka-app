@@ -97,14 +97,14 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
     override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
         when (parent.id) {
             R.id.fragment_bookmarks_sp_sort -> {
-                if (checked > 2) {
+                if (checked >= 2) {
                     bookmarksPresenter.setFilter(bookmarksPresenter.sortFilters[position], BookmarkFilterType.SORT)
                 } else {
                     checked++
                 }
             }
             R.id.fragment_bookmarks_sp_show -> {
-                if (checked > 1) {
+                if (checked >= 2) {
                     bookmarksPresenter.setFilter(bookmarksPresenter.showFilters[position], BookmarkFilterType.SHOW)
                 } else {
                     checked++

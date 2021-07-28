@@ -7,7 +7,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.text.SpannableString
 import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.util.TypedValue
 import android.view.*
 import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
@@ -219,16 +224,52 @@ class FilmFragment : Fragment(), FilmView {
         }
     }
 
-    override fun setDirectors(directors: ArrayList<String>) {
-        var directorsText = ""
-        for ((index, director) in directors.withIndex()) {
-            directorsText += director
+    override fun setDirectors(directors: ArrayList<Actor>) {
+        /*    var directorsText = ""
+            for ((index, director) in directors.withIndex()) {
+                directorsText += director
 
-            if (index != directors.size - 1) {
-                directorsText += ", "
+                if (index != directors.size - 1) {
+                    directorsText += ", "
+                }
+            }*/
+
+        //currentView.findViewById<TextView>(R.id.fragment_film_tv_directors).text = getString(R.string.directors, directorsText)
+
+        //список людей по ролям т.е список режисеров, продюсеров и писателей
+        val directorsView: TextView = currentView.findViewById(R.id.fragment_film_tv_directors)
+        val spannablePersonNamesList: ArrayList<SpannableString> = ArrayList()
+        for (director in directors) {
+            spannablePersonNamesList.add(setClickableActorName(directorsView, director))
+        }
+
+        directorsView.movementMethod = LinkMovementMethod.getInstance()
+        directorsView.text = getString(R.string.directors)
+        directorsView.append(" ")
+        for ((index, item) in spannablePersonNamesList.withIndex()) {
+            directorsView.append(item)
+
+            if (index != spannablePersonNamesList.size - 1) {
+                directorsView.append(", ")
             }
         }
-        currentView.findViewById<TextView>(R.id.fragment_film_tv_directors).text = getString(R.string.directors, directorsText)
+    }
+
+    private fun setClickableActorName(textView: TextView, actor: Actor): SpannableString {
+        val ss = SpannableString(actor.name)
+        val fr = this
+        val clickableSpan: ClickableSpan = object : ClickableSpan() {
+            override fun onClick(view: View) {
+               FragmentOpener.openWithData(fr, fragmentListener, actor, "actor")
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = false
+            }
+        }
+        ss.setSpan(clickableSpan, 0, ss.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return ss
     }
 
     override fun setCountries(countries: ArrayList<String>) {
@@ -345,7 +386,7 @@ class FilmFragment : Fragment(), FilmView {
 
     override fun changeWatchState(state: Boolean, btn: ImageView) {
         if (state) {
-            ImageViewCompat.setImageTintList(btn, ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.active_watch)))
+            ImageViewCompat.setImageTintList(btn, ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.main_color_3)))
         } else {
             ImageViewCompat.setImageTintList(btn, ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.white)))
         }

@@ -8,8 +8,8 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/filters_scroll"
         android:layout_width="match_parent"
-        android:paddingBottom="35dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="35dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -24,61 +24,85 @@
 
                 <TableRow>
 
-                    <Button
+                    <TextView
                         android:id="@+id/bt_countries"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_marginEnd="5dp"
-                        android:layout_weight="0.5"
+                        android:layout_gravity="center"
+                        android:layout_weight="0.49"
+                        android:background="@drawable/roundedbutton"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
                         android:text="@string/choose_country"
-                        android:textAllCaps="false"
-                        android:textSize="@dimen/normal_text" />
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/normal_text"
+                        android:textStyle="bold" />
 
-                    <Button
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.02" />
+
+                    <TextView
                         android:id="@+id/bt_countries_inverted"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="5dp"
-                        android:layout_weight="0.5"
+                        android:layout_gravity="center"
+                        android:layout_weight="0.49"
+                        android:background="@drawable/roundedbutton"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
                         android:text="@string/exclude_country"
                         android:textAllCaps="false"
-                        android:textSize="@dimen/normal_text" />
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/normal_text"
+                        android:textStyle="bold" />
                 </TableRow>
 
-                <TableRow>
+                <TableRow android:layout_marginTop="10dp">
 
-                    <Button
+                    <TextView
                         android:id="@+id/bt_genres"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_marginEnd="5dp"
-                        android:layout_weight="0.5"
+                        android:layout_gravity="center"
+                        android:layout_weight="0.49"
+                        android:background="@drawable/roundedbutton"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
                         android:text="@string/choose_genre"
                         android:textAllCaps="false"
-                        android:textSize="@dimen/normal_text" />
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/normal_text"
+                        android:textStyle="bold" />
 
-                    <Button
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.02" />
+
+                    <TextView
                         android:id="@+id/bt_genres_inverted"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="5dp"
-                        android:layout_weight="0.5"
+                        android:layout_gravity="center"
+                        android:layout_weight="0.49"
+                        android:background="@drawable/roundedbutton"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
                         android:text="@string/exclude_genre"
                         android:textAllCaps="false"
-                        android:textSize="@dimen/normal_text" />
-                </TableRow>
-
-                <TableRow>
-
-                    <Button
-                        android:id="@+id/bt_years"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="5dp"
-                        android:layout_weight="0.5"
-                        android:text="@string/choose_year_hint"
-                        android:textAllCaps="false"
-                        android:textSize="@dimen/normal_text" />
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/normal_text"
+                        android:textStyle="bold" />
                 </TableRow>
 
             </TableLayout>

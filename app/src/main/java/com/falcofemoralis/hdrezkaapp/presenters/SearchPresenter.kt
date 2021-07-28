@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jsoup.HttpStatusException
 
 class SearchPresenter(private val searchView: SearchView, private val filmsListView: FilmsListView) {
     private val FILMS_PER_PAGE = 9
@@ -73,8 +74,8 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
                     currentPage++
                 }
                 FilmModel.getFilmsData(loadedListFilms, FILMS_PER_PAGE, ::addFilms)
-            } catch (e: Exception) {
-                if (e.message != "Empty list") {
+            } catch (e: HttpStatusException) {
+                if (e.statusCode != 404) {
                     catchException(e, searchView)
                 }
                 isLoading = false

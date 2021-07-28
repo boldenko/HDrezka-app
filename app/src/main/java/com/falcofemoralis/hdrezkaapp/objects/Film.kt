@@ -27,7 +27,7 @@ open class Film(
     var votesHR: String? = null
     var runtime: String? = null
     var actors: ArrayList<Actor>? = null
-    var directors: ArrayList<String>? = null
+    var directors: ArrayList<Actor>? = null
     var additionalInfo: String? = null
     var hasMainData: Boolean = false
     var hasAdditionalData: Boolean = false

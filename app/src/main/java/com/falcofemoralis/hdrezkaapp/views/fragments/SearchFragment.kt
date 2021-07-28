@@ -27,7 +27,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
     private lateinit var filmsListFragment: FilmsListFragment
     private lateinit var autoCompleteTextView: AutoCompleteTextView
     private lateinit var imm: InputMethodManager
-//   private lateinit var hintLayout: LinearLayout
+    private lateinit var hintLayout: LinearLayout
     private lateinit var fragmentListener: OnFragmentInteractionListener
     private lateinit var clearBtn: TextView
 
@@ -46,7 +46,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
 
         autoCompleteTextView = currentView.findViewById(R.id.fragment_search_act_suggest)
         imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-       // hintLayout = currentView.findViewById(R.id.fragment_search_ll_hint)
+        hintLayout = currentView.findViewById(R.id.fragment_search_ll_hint)
 
         initSearchViews()
 
@@ -71,7 +71,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
                 if (text.isEmpty()) {
                     Toast.makeText(context, getString(R.string.enter_film_name), Toast.LENGTH_SHORT).show()
                 } else {
-                   // hintLayout.visibility = View.GONE
+                    hintLayout.visibility = View.GONE
                     imm.hideSoftInputFromWindow(autoCompleteTextView.windowToken, 0)
                     searchPresenter.setQuery(text)
                 }

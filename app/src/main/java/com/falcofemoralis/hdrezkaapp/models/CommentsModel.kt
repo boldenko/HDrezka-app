@@ -40,7 +40,7 @@ object CommentsModel {
         }
 
         if (comments.size == 0) {
-            throw Exception("Empty list")
+            throw HttpStatusException("Empty list", 404, SettingsData.provider)
         }
 
         return comments

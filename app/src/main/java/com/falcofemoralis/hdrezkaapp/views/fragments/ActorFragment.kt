@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,10 +27,13 @@ import com.falcofemoralis.hdrezkaapp.views.viewsInterface.ActorView
 import com.squareup.picasso.Picasso
 
 class ActorFragment : Fragment(), ActorView {
+    private val ACTOR_ARG = "actor"
+
     private lateinit var currentView: View
     private lateinit var actorPresenter: ActorPresenter
     private lateinit var fragmentListener: OnFragmentInteractionListener
-    private val ACTOR_ARG = "actor"
+    private lateinit var scrollView: NestedScrollView
+    private lateinit var progressBar: ProgressBar
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -38,6 +43,10 @@ class ActorFragment : Fragment(), ActorView {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentView = inflater.inflate(R.layout.fragment_actor, container, false)
+
+        scrollView = currentView.findViewById(R.id.fragment_actor_scroll)
+        scrollView.visibility = View.GONE
+        progressBar = currentView.findViewById(R.id.fragment_actor_pb_data_loading)
 
         actorPresenter = ActorPresenter(this, (arguments?.getSerializable(ACTOR_ARG) as Actor?)!!)
         actorPresenter.initActorData()
@@ -63,6 +72,9 @@ class ActorFragment : Fragment(), ActorView {
         setInfo(actor.birthplace, R.id.fragment_actor_films_tv_bornplace, R.string.birthplace)
         setInfo(actor.deathday, R.id.fragment_actor_films_tv_dieddate, R.string.deathdate)
         setInfo(actor.deathplace, R.id.fragment_actor_films_tv_diedplace, R.string.deathplace)
+
+        scrollView.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
     }
 
     private fun setInfo(data: String?, viewId: Int, textId: Int) {

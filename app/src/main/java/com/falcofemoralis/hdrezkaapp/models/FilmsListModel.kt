@@ -1,6 +1,8 @@
 package com.falcofemoralis.hdrezkaapp.models
 
 import com.falcofemoralis.hdrezkaapp.objects.Film
+import com.falcofemoralis.hdrezkaapp.objects.SettingsData
+import org.jsoup.HttpStatusException
 import org.jsoup.nodes.Document
 
 object FilmsListModel {
@@ -24,7 +26,7 @@ object FilmsListModel {
         }
 
         if (films.size == 0) {
-            throw Exception("Empty list")
+            throw HttpStatusException("Empty list", 404, SettingsData.provider)
         }
         return films
     }
