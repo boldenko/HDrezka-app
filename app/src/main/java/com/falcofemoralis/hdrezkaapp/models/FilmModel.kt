@@ -1,6 +1,7 @@
 package com.falcofemoralis.hdrezkaapp.models
 
 import android.util.ArrayMap
+import android.util.Log
 import android.webkit.CookieManager
 import com.falcofemoralis.hdrezkaapp.objects.*
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +27,7 @@ object FilmModel {
     private const val RATING_ADD = "/engine/ajax/rating.php"
 
     private const val GET_FILM_POST = "/engine/ajax/quick_content.php"
+    private const val GET_STREAM_POST = "/ajax/get_cdn_series"
 
     fun getMainData(film: Film): Film {
         if (film.filmId == null) {
@@ -62,7 +64,7 @@ object FilmModel {
             film.title = titleEl.text()
             film.ratingIMDB = doc.select("span.imdb b").text()
             film.ratingKP = doc.select("span.kp b").text()
-       //    film.ratingWA = doc.select("span.wa b").text()
+            //    film.ratingWA = doc.select("span.wa b").text()
             val genres: ArrayList<String> = ArrayList()
             val genresEls = doc.select("div.b-content__bubble_text a")
             for (el in genresEls) {
@@ -95,7 +97,7 @@ object FilmModel {
                         "Рейтинги" -> {
                             film.ratingIMDB = td[1].select(FILM_IMDB_RATING).text()
                             film.ratingKP = td[1].select(FILM_KP_RATING).text()
-                          //  film.ratingWA = td[1].select(FILM_WA_RATING).text()
+                            //  film.ratingWA = td[1].select(FILM_WA_RATING).text()
                         }
                     }
                 }
@@ -293,6 +295,8 @@ object FilmModel {
         }
         film.bookmarks = bookmarks
 
+        getStreams(document, film)
+
         film.hasAdditionalData = true
 
         return film
@@ -381,5 +385,84 @@ object FilmModel {
         } else {
             throw HttpStatusException("failed to post comment", 400, SettingsData.provider)
         }
+    }
+
+    private fun getStreams(document: Document, film: Film) {
+        if (film.type == "Фильм") {
+            val filmTranslations: ArrayList<Pair<String, String>> = ArrayList()
+            val els = document.select(".b-translator__item")
+            for (el in els) {
+                filmTranslations.add(Pair(el.attr("title"), el.attr("data-translator_id")))
+            }
+
+            // no film translations
+            if (filmTranslations.size == 0) {
+                val stringedDoc = document.toString()
+                val index = stringedDoc.indexOf("initCDNMoviesEvents")
+                val subString = stringedDoc.substring(stringedDoc.indexOf("{\"id\"", index), stringedDoc.indexOf("});", index) + 1)
+                filmTranslations.add(Pair("", JSONObject(subString).getString("streams")))
+            }
+
+            film.translations = filmTranslations
+
+            Log.d("MY_DEBUG", film.translations.toString())
+        }
+    }
+
+    fun getStreamsById(filmId: Number, transId: String): String {
+//Request URL: http://hdrezka.tv/ajax/get_cdn_series/?t=1628357630491
+        //Request Method: POST
+        //id: 39914
+        //translator_id: 111
+        //is_camrip: 0
+        //is_ads: 0
+        //is_director: 0
+        //favs: 77c27ef8-7d12-4722-8af0-d161bba7a760
+        //action: get_movie
+
+        val data: ArrayMap<String, String> = ArrayMap()
+        data["id"] = filmId.toString()
+        data["translator_id"] = transId
+        data["action"] = "get_movie"
+
+        val unixTime = System.currentTimeMillis()
+        val result: Document? = Jsoup.connect(SettingsData.provider + GET_STREAM_POST + "/?t=$unixTime")
+            .data(data)
+            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            .ignoreContentType(true)
+            .post()
+
+        if (result != null) {
+            val bodyString: String = result.select("body").text()
+            val jsonObject = JSONObject(bodyString)
+
+            if (jsonObject.getBoolean("success")) {
+                return jsonObject.getString("url")
+            } else {
+                throw HttpStatusException("failed to get stream", 400, SettingsData.provider)
+            }
+        } else {
+            throw HttpStatusException("failed to get stream", 400, SettingsData.provider)
+        }
+    }
+
+    fun parseStreams(_streams: String, isId: Boolean, filmId: Number): ArrayList<Stream> {
+        var streams = _streams
+        val parsedStreams: ArrayList<Stream> = ArrayList()
+
+        if (isId) {
+            streams = getStreamsById(filmId, _streams)
+        }
+
+        val split: Array<String> = streams.split(",").toTypedArray()
+        for (str in split) {
+            if (str.contains(" or ")) {
+                parsedStreams.add(Stream(str.split(" or ").toTypedArray()[1], str.substring(1, str.indexOf("]"))))
+            } else {
+                parsedStreams.add(Stream(str.substring(str.indexOf("]") + 1), str.substring(1, str.indexOf("]"))))
+            }
+        }
+
+        return parsedStreams
     }
 }

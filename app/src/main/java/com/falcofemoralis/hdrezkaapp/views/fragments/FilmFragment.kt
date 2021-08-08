@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -248,7 +249,7 @@ class FilmFragment : Fragment(), FilmView {
         val fr = this
         val clickableSpan: ClickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
-               FragmentOpener.openWithData(fr, fragmentListener, actor, "actor")
+                FragmentOpener.openWithData(fr, fragmentListener, actor, "actor")
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -637,5 +638,43 @@ class FilmFragment : Fragment(), FilmView {
             }
             false
         }
+    }
+
+    override fun showTranslations(translations: ArrayList<Pair<String, String>>) {
+        if (translations.size > 0) {
+            val builder = MaterialAlertDialogBuilder(requireContext())
+            builder.setTitle(getString(R.string.translation))
+            val transNames: ArrayList<String> = ArrayList()
+            for (translation in translations) {
+                transNames.add(translation.first)
+            }
+            builder.setAdapter(ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, transNames)) { dialog, which ->
+                filmPresenter.openStream(translations[which])
+            }
+            builder.show()
+        }
+    }
+
+    override fun showStreams(streams: ArrayList<Stream>, title: String) {
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        builder.setTitle(getString(R.string.choose_quality))
+        val qualities: ArrayList<String> = ArrayList()
+        for (stream in streams) {
+            qualities.add(stream.quality)
+        }
+        builder.setAdapter(ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, qualities)) { dialog, which ->
+            var intent = Intent("android.intent.action.VIEW")
+            val url = streams[which].url.replace("#EXT-X-STREAM-INF:", "")
+            intent.setDataAndType(Uri.parse(url), "video/*")
+            intent.putExtra("title", title)
+            intent = Intent.createChooser(intent, getString(R.string.open_film_in))
+
+            if (intent.resolveActivity(requireContext().packageManager) != null) {
+                startActivity(intent)
+            } else {
+                Toast.makeText(requireContext(), getString(R.string.no_player), Toast.LENGTH_LONG).show()
+            }
+        }
+        builder.show()
     }
 }

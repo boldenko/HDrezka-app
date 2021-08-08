@@ -47,4 +47,8 @@ interface FilmView : IConnection, CommentEditor.ICommentEditor {
     fun updateBookmarksFilmsPager()
 
     fun setHRrating(rating: Float, isActive: Boolean)
+
+    fun showTranslations(translations: ArrayList<Pair<String, String>>)
+
+    fun showStreams(streams: ArrayList<Stream>, title: String)
 }

@@ -25,27 +25,27 @@ class ActorPresenter(
                 ActorModel.getActorFilms(actor)
 
                 actor.personCareerFilms?.let {
-                    val overall = actor.personCareerFilms!!.size
+                    val overall = it.size
                     val list: Array<Pair<String, ArrayList<Film>>?> = arrayOfNulls(overall)
                     var all = 0
 
-                    for ((index, career) in actor.personCareerFilms!!.withIndex()) {
+                    for ((index, career) in it.withIndex()) {
                         FilmModel.getFilmsData(career.second, career.second.size) { films ->
                             list[index] = Pair(career.first, films)
 
                             all++
                             if (all == overall) {
                                 GlobalScope.launch {
-                                    actor.personCareerFilms!!.clear()
+                                    it.clear()
                                     for (item in list) {
                                         if (item != null) {
-                                            actor.personCareerFilms!!.add(item)
+                                            it.add(item)
                                         }
                                     }
 
                                     withContext(Dispatchers.Main) {
                                         actorView.setBaseInfo(actor)
-                                        actor.personCareerFilms?.let { actorView.setCareersList(it) }
+                                        actorView.setCareersList(it)
                                     }
                                 }
                             }

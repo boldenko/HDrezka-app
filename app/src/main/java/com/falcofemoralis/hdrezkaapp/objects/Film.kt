@@ -1,16 +1,15 @@
 package com.falcofemoralis.hdrezkaapp.objects
 
-import androidx.annotation.Nullable
 import java.io.Serializable
 
-open class Film: Serializable {
+open class Film : Serializable {
     constructor()
 
-    constructor(id: Int){
+    constructor(id: Int) {
         filmId = id
     }
 
-    constructor(link: String){
+    constructor(link: String) {
         filmLink = link
     }
 
@@ -46,4 +45,5 @@ open class Film: Serializable {
     var related: ArrayList<Film>? = null
     var relatedMisc: String? = null
     var bookmarks: ArrayList<Bookmark>? = null
+    var translations: ArrayList<Pair<String, String>>? = null
 }

@@ -3,13 +3,16 @@ package com.falcofemoralis.hdrezkaapp.clients
 import android.annotation.TargetApi
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
-import android.webkit.WebResourceError
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.util.Log
+import android.webkit.*
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
+import java.io.BufferedInputStream
+import java.io.IOException
+import java.io.InputStream
+
 
 class PlayerWebViewClient(val context: Context, val mainView: IConnection, val callback: () -> Unit) : WebViewClient() {
 
@@ -29,6 +32,28 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
         return true
     }
 
+/*    override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
+        request?.let {
+            val url = request.url.host
+            Log.d("PLAYER_DEBUG", "CHECK... $url")
+
+            if (url != null && (!url.contains("hdrezka.tv") && !url.contains("voidboost.cc")) ) {
+                Log.d("PLAYER_DEBUG", "Will not load $url")
+                var inputStream: InputStream? = null
+                try {
+                    inputStream = context.assets.open("ad.js")
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+                val caInput: InputStream = BufferedInputStream(inputStream)
+
+                return WebResourceResponse("", "", caInput)
+            }
+        }
+
+        return super.shouldInterceptRequest(view, request)
+    }*/
+
     override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
         if (error?.errorCode == ERROR_TIMEOUT) {
             mainView.showConnectionError(IConnection.ErrorType.TIMEOUT)
@@ -36,40 +61,98 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
         super.onReceivedError(view, request, error)
     }
 
-    override fun onPageFinished(view: WebView?, url: String?) {
-        // Move player at top
+    override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+        // block advert
         view?.evaluateJavascript(
-            "javascript:" +
-                    "document.querySelector('meta[name=\"viewport\"]').setAttribute('content', 'width=device-width,initial-scale=1.0');" +
-                    "document.body.insertAdjacentElement('afterbegin', document.getElementById('player'));" +
-                    "var translators = document.getElementsByClassName('b-translators__block')[0];" +
-                    "if(translators){ document.body.insertAdjacentElement('afterbegin', translators);}", null
+            "XMLHttpRequest.prototype.open = (function (open) {" +
+                    "    return function (method, url, async) {" +
+                    "        if (url.match(/franecki.net/g) || url.match(/biocdn.net/g) || url.match(/franeski.net/g) || url.match(/reichelcormier.bid/g)) {" +
+                    "            console.log('blocked');" +
+                    "        } else {" +
+                    "            open.apply(this, arguments);" +
+                    "        }" +
+                    "    };" +
+                    "})(XMLHttpRequest.prototype.open);", null
         )
 
+        super.onPageStarted(view, url, favicon)
+    }
+
+    override fun onPageFinished(view: WebView?, url: String?) {
+        // Move player at top
+        val script1 = "javascript:document.querySelector('meta[name=\"viewport\"]').setAttribute('content', 'width=device-width,initial-scale=1.0');" +
+                "var idsToHide = ['top-head', 'top-nav', 'comments-form', 'hd-comments-list', 'hd-comments-navigation', 'footer'];" +
+                "for (var i = 0; i < idsToHide.length; ++i) {" +
+                "    var el = document.getElementById(idsToHide[i]);" +
+                "    if (el) {" +
+                "        el.style.setProperty('display', 'none', 'important');" +
+                "    }" +
+                "}" +
+                "var classesToHide = ['post__title'," +
+                "    'b-post__origtitle'," +
+                "    'b-post__infotable clearfix'," +
+                "    'b-post__description'," +
+                "    'b-post__mixedtext'," +
+                "    'b-post__lastepisodeout'," +
+                "    'b-post__social_holder_wrapper'," +
+                "    'b-post__rating_table'," +
+                "    'b-post__actions'," +
+                "    'b-sidetitle'," +
+                "    'b-sidelist__holder'," +
+                "    'b-post__schedule'," +
+                "    'b-post__qa_list_block'," +
+                "    'b-post__mtitle'," +
+                "    'b-wrapper nopadd'," +
+                "    'b-post__status_wrapper'," +
+                "    'b-post__support_holder'," +
+                "    'b-post__title'," +
+                "    'b-sidetitle'," +
+                "    'b-post__partcontent'];" +
+                "for (var i = 0; i < classesToHide.length; ++i) {" +
+                "    var els = document.getElementsByClassName(classesToHide[i]);" +
+                "    for (var j = 0; j < els.length; ++j) {" +
+                "        if (els[j]) {" +
+                "            els[j].style.setProperty('display', 'none', 'important');" +
+                "        }" +
+                "    }" +
+                "}"
         view?.evaluateJavascript(
-            "javascript: (function() {" +
-                    "document.body.style.minWidth = 'unset';" +
-                    "" + // fix width translations
-                    "const translatorArray = document.getElementsByClassName('b-translator__item');" +
-                    "for (var i = 0; i < translatorArray.length; i++) {" +
-                    "    translatorArray[i].style.minWidth = '40%';" +
-                    "}" +
-                    "" +  // hide main body
-                    "document.getElementById('wrapper').style.display='none';" +
-                    "document.getElementById('footer').style.display='none';" +
-                    "" + // fix elements sizes
-                    "document.getElementsByClassName('b-post__support_holder')[0].style.display='none';" +
-                    "document.getElementById('cdnplayer-container').style.width='100%';" +
-                    "document.getElementById('cdnplayer').style.width='100%';" +
-                    "" + //  fix play button position
-                    "var playIcon = document.getElementById('oframecdnplayer').childNodes[18];" +
+            script1, null
+        )
+
+        val script2 = "javascript: (function() {" +
+                "document.body.style.minWidth = 'unset';" +
+                "document.getElementsByTagName('html')[0].style.height = 'unset';" +
+                "" + // fix width translations
+                "const translatorArray = document.getElementsByClassName('b-translator__item');" +
+                "for (var i = 0; i < translatorArray.length; i++) {" +
+                "    translatorArray[i].style.minWidth = '40%';" +
+                "}" +
+                "" + // fix elements sizes
+                "document.getElementById('cdnplayer-container').style.setProperty('width', '100%', 'important');" +
+                "document.getElementById('cdnplayer').style.setProperty('width', '100%', 'important');" +
+                "var elMain = document.getElementById('main');" +
+                "if (elMain) {" +
+                "    elMain.style.setProperty('padding', '0', 'important');" +
+                "}" +
+                "var bCont = document.getElementsByClassName('b-container');" +
+                "if (bCont) {" +
+                "    bCont[0].style.setProperty('width', 'unset', 'important');" +
+                "}" +
+                "var bContCol = document.getElementsByClassName('b-content__columns');" +
+                "if (bContCol) {" +
+                "    bContCol[0].style.setProperty('padding', '0', 'important');" +
+                "    bCont[0].style.setProperty('padding', '0', 'important');" +
+                "}" +
+                "" + //  fix play button position
+/*                    "var playIcon = document.getElementById('oframecdnplayer').childNodes[18];" +
                     "playIcon.style.left = '50%';" +
                     "var mo = new MutationObserver(function(){" +
                     "   playIcon.style.left = '50%';" +
                     "});" +
-                    "mo.observe(playIcon, { attributes: true, attributeFilter: ['style'] });" +
-                    "" + // fix voices
-                    "var mo2 = new MutationObserver(function(mutationsList, observer) {" +
+                    "mo.observe(playIcon, { attributes: true, attributeFilter: ['style'] });" +*/
+                "" + // fix voices
+/*                    "var mo2 = new MutationObserver(function(mutationsList, observer) {" +
                     "   for(var i = 0; i<mutationsList.length; i++) {" +
                     "       if (mutationsList[i].type == 'childList') {" +
                     "           var voices = document.getElementsByClassName('tooltipster-base')[0];" +
@@ -78,53 +161,54 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
                     "               voices.style.minWidth = 'unset';" +
                     "       }}" +
                     "}});" +
-                    "mo2.observe(document.body, {childList: true, subtree: true});" +
-                    "" + // fix load spinner position
-                    "var loadIcon = document.getElementById('oframecdnplayer').childNodes[13];" +
+                    "mo2.observe(document.body, {childList: true, subtree: true});" +*/
+                "" + // fix load spinner position
+/*                    "var loadIcon = document.getElementById('oframecdnplayer').childNodes[13];" +
                     "loadIcon.style.left = '50%';" +
                     "var mo3 = new MutationObserver(function() {" +
                     "   loadIcon.style.left = '50%';" +
                     "});" +
-                    "mo3.observe(loadIcon, { attributes: true, attributeFilter: ['style'] });" +
-                    "" + // remove advertisements
-                    "var bannerCont = document.getElementsByClassName('banner-container')[0];" +
-                    "if(bannerCont) {bannerCont.style.display = 'none'; bannerCont.parentElement.parentElement.style.height = '0px';}" +
-                    "document.body.classList.remove('active-brand');" +
-                    "function setPos(){" +
-                    "   var isChanged = false;" +
-                    "   for (var i = 0; i < document.body.childNodes.length; i++) {" +
-                    "       var node = document.body.childNodes[i];" +
-                    "       if(node.childNodes.length > 0 && node.style.position == 'fixed'){" +
-                    "           node.style.display = 'none'; " +
-                    "           isChanged = true; " +
-                    "           return;}" +
-                    "   } " +
-                    "   if(!isChanged){" +
-                    "       setTimeout(setPos, 1000);}" +
-                    "} " +
-                    "setTimeout(setPos, 1000);" +
-                    "" + // remove tracker
-                    "document.body.style.height = 'unset';" +
-                    "var trackerWrapper = document.getElementsByClassName('b-post__status_wrapper')[0];" +
-                    "if(trackerWrapper) {trackerWrapper.style.width = '100%';}" +
-                    "var trackerDownload = document.getElementsByClassName('b-post__status__tracker__download')[0];" +
-                    "if(trackerDownload) {trackerDownload.style.display = 'none';}" +
-                    "" +
-                    "})()", null
+                    "mo3.observe(loadIcon, { attributes: true, attributeFilter: ['style'] });" +*/
+                "" + // remove advertisements
+                "var bannerCont = document.getElementsByClassName('banner-container')[0];" +
+                "if(bannerCont) {bannerCont.style.display = 'none'; bannerCont.parentElement.parentElement.style.height = '0px';}" +
+                "document.body.classList.remove('active-brand');" +
+                "function setPos(){" +
+                "   var isChanged = false;" +
+                "   for (var i = 0; i < document.body.childNodes.length; i++) {" +
+                "       var node = document.body.childNodes[i];" +
+                "       if(node.childNodes.length > 0 && node.style.position == 'fixed'){" +
+                "           node.style.display = 'none'; " +
+                "           isChanged = true; " +
+                "           return;}" +
+                "   } " +
+                "   if(!isChanged){" +
+                "       setTimeout(setPos, 1000);}" +
+                "} " +
+                "setTimeout(setPos, 1000);" +
+                "})()"
+
+        view?.evaluateJavascript(
+            script2, null
         )
+
+        val script3 = "var translationsHint = document.getElementsByClassName('b-rgstats__help')[0];" +
+                "translationsHint.addEventListener('click', function (event) {" +
+                "    var block = document.getElementsByClassName('tooltipster-base')[0];" +
+                "    block.style.minWidth = 'unset';" +
+                "    block.style.maxWidth = 'unset';" +
+                "    block.style.left = 'unset';" +
+                "    block.style.width = '100%';" +
+                "    document.getElementsByClassName('tooltipster-arrow-bottom-right')[0].style.display = 'none';" +
+                "});"
 
         // fix translators block width
         view?.evaluateJavascript(
-            "var translationsHint = document.getElementsByClassName('b-rgstats__help')[0];" +
-                    "translationsHint.addEventListener('click', function (event) {" +
-                    "    var block = document.getElementsByClassName('tooltipster-base')[0];" +
-                    "    block.style.minWidth = 'unset';" +
-                    "    block.style.maxWidth = 'unset';" +
-                    "    block.style.left = 'unset';" +
-                    "    block.style.width = '100%';" +
-                    "    document.getElementsByClassName('tooltipster-arrow-bottom-right')[0].style.display = 'none';" +
-                    "});", null
+            script3, null
         )
+        Log.d("PLAYER_DE", script1)
+        Log.d("PLAYER_DE", script2)
+        Log.d("PLAYER_DE", script3)
 
         // hide telegram hint
         view?.evaluateJavascript("\$('#tg-info-block-exclusive-close').click()", null)
@@ -136,20 +220,18 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
                     "});", null
         )
 
-        // block player advert
-        view?.evaluateJavascript(
-            "" +
-                    "XMLHttpRequest.prototype.open = (function (open) {" +
-                    "    return function (method, url, async) {" +
-                    "        if (url.match(/franecki.net/g)) {" +
-                    "            console.log(url);" +
-                    "            console.log('blocked');" +
-                    "        } else {" +
-                    "            open.apply(this, arguments);" +
-                    "        }" +
-                    "    };" +
-                    "})(XMLHttpRequest.prototype.open);", null
-        )
+        view?.evaluateJavascript("\n" +
+                "setTimeout(function () {\n" +
+                "    var iframeEls = document.getElementsByTagName('iframe');\n" +
+                "    for (var j = 0; j < iframeEls.length; ++j) {\n" +
+                "        var iframeEl = iframeEls[j]\n" +
+                "\n" +
+                "        if (iframeEl.id != 'pjsfrrscdnplayer') {\n" +
+                "            iframeEl.parentNode.style.setProperty('display', 'none', 'important');\n" +
+                "        }\n" +
+                "    }\n" +
+                "document.body.childNodes[0].style.setProperty('display', 'none', 'important');" +
+                "}, 1000)", null)
 
         callback()
 

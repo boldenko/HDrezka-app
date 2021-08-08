@@ -113,4 +113,8 @@
     <string name="deathplace">Место смерти: %1$s</string>
     <string name="death_in">в возрасте</string>
     <string name="search_page_hint">Введите название фильма или сериала в строку поиска</string>
+    <string name="no_player">Отсуствует плеер!</string>
+    <string name="open_film_in">Открыть в</string>
+    <string name="choose_quality">Выберите качество</string>
+    <string name="translation">Озвучка</string>
 </resources>

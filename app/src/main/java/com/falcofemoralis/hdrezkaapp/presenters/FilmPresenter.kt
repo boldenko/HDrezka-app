@@ -44,6 +44,9 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
                     film.collection?.let { filmView.setCollection(it) }
                     film.related?.let { filmView.setRelated(it) }
                     film.title?.let { film.filmLink?.let { it1 -> filmView.setShareBtn(it, it1) } }
+                    film.translations?.let {
+                        filmView.showTranslations(it)
+                    }
                     film.ratingHR.let {
                         film.isHRratingActive.let { it1 ->
                             if (it != null) {
@@ -76,7 +79,7 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
                         if (index == actors.size - 1) {
                             val list: ArrayList<Actor> = ArrayList()
                             for (item in actors) {
-                                if(item != null){
+                                if (item != null) {
                                     list.add(item)
                                 }
                             }
@@ -216,12 +219,31 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
             try {
                 FilmModel.postRating(film, rating)
 
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     film.ratingHR?.let { filmView.setHRrating(it.toFloat(), film.isHRratingActive) }
                     filmView.setFilmRatings(film)
                 }
             } catch (e: Exception) {
                 catchException(e, filmView)
+            }
+        }
+    }
+
+    fun openStream(translation: Pair<String, String>) {
+        GlobalScope.launch {
+            val streams: ArrayList<Stream> = FilmModel.parseStreams(translation.second, translation.first.isNotEmpty(), film.filmId!!)
+
+            // true = max quality
+            if (false) {
+                streams
+                // val str4 = (streams.get(streams.size - 1)).str1
+                //  Log.d("MY_DEBUG", str4)
+                //  Log.d("MY_DEBUG", streams.get(0).toString())
+
+            } else {
+                withContext(Dispatchers.Main) {
+                    film.title?.let { filmView.showStreams(streams, it) }
+                }
             }
         }
     }
