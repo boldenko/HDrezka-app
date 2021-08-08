@@ -112,13 +112,26 @@
                 android:orientation="horizontal"
                 android:weightSum="1">
 
-                <ImageView
-                    android:id="@+id/fragment_film_iv_poster"
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.4"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="film poster" />
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/fragment_film_iv_poster"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="film poster" />
+
+                    <Button
+                        android:id="@+id/fragment_film_bt_download"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/download" />
+                </LinearLayout>
+
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -212,17 +225,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Open in player -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <Button
-                    android:id="@+id/fragment_film_bt_open_player"
-                    android:text="Открыть"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
-
             <!-- Plot -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -246,6 +248,19 @@
                     android:justificationMode="inter_word"
                     android:textColor="@color/white"
                     android:textSize="@dimen/normal_text" />
+            </LinearLayout>
+
+            <!-- Open in player -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/fragment_film_bt_open_player"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/start_watching" />
             </LinearLayout>
 
             <!-- Player -->

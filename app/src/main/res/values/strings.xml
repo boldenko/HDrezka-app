@@ -114,7 +114,12 @@
     <string name="death_in">в возрасте</string>
     <string name="search_page_hint">Введите название фильма или сериала в строку поиска</string>
     <string name="no_player">Отсуствует плеер!</string>
+    <string name="no_manager">Отсуствует менеджер загрузок!</string>
     <string name="open_film_in">Открыть в</string>
     <string name="choose_quality">Выберите качество</string>
     <string name="translation">Озвучка</string>
+    <string name="start_watching">Начать просмотр</string>
+    <string name="download">Скачать</string>
+    <string name="perm_write_hint">Без доступа к хранилищу файл не будет сохранен!</string>
+    <string name="download_started">Скачивание начато</string>
 </resources>

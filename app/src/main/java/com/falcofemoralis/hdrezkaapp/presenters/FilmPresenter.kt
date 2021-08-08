@@ -44,9 +44,6 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
                     film.collection?.let { filmView.setCollection(it) }
                     film.related?.let { filmView.setRelated(it) }
                     film.title?.let { film.filmLink?.let { it1 -> filmView.setShareBtn(it, it1) } }
-                    film.translations?.let {
-                        filmView.showTranslations(it)
-                    }
                     film.ratingHR.let {
                         film.isHRratingActive.let { it1 ->
                             if (it != null) {
@@ -229,7 +226,7 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
         }
     }
 
-    fun openStream(translation: Pair<String, String>) {
+    fun openStream(translation: Pair<String, String>, isDownload: Boolean) {
         GlobalScope.launch {
             val streams: ArrayList<Stream> = FilmModel.parseStreams(translation.second, translation.first.isNotEmpty(), film.filmId!!)
 
@@ -242,9 +239,13 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
 
             } else {
                 withContext(Dispatchers.Main) {
-                    film.title?.let { filmView.showStreams(streams, it) }
+                    film.title?.let { filmView.showStreams(streams, it, translation.first, isDownload) }
                 }
             }
         }
+    }
+
+    fun showTranslations(isDownload: Boolean) {
+        film.translations?.let { filmView.showTranslations(it, isDownload) }
     }
 }

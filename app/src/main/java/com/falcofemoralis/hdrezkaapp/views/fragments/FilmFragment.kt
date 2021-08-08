@@ -1,13 +1,17 @@
 package com.falcofemoralis.hdrezkaapp.views.fragments
 
+import android.Manifest
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -22,6 +26,7 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.widget.*
 import android.widget.LinearLayout
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.text.bold
@@ -113,6 +118,31 @@ class FilmFragment : Fragment(), FilmView {
 
         currentView.findViewById<ImageView>(R.id.fragment_film_iv_poster).setOnClickListener { openFullSizeImage() }
 
+        val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                // Permission is granted. Continue the action or workflow in your
+                filmPresenter.showTranslations(true)
+            } else {
+                Toast.makeText(requireContext(), getString(R.string.perm_write_hint), Toast.LENGTH_LONG).show()
+            }
+        }
+        currentView.findViewById<Button>(R.id.fragment_film_bt_download).setOnClickListener {
+            when (PackageManager.PERMISSION_GRANTED) {
+                ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) -> {
+                    filmPresenter.showTranslations(true)
+                }
+                else -> {
+                    // You can directly ask for the permission.
+                    // The registered ActivityResultCallback gets the result of this request.
+                    requestPermissionLauncher.launch(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                }
+            }
+        }
+        currentView.findViewById<Button>(R.id.fragment_film_bt_open_player).setOnClickListener {
+            filmPresenter.showTranslations(false)
+        }
         return currentView
     }
 
@@ -640,7 +670,7 @@ class FilmFragment : Fragment(), FilmView {
         }
     }
 
-    override fun showTranslations(translations: ArrayList<Pair<String, String>>) {
+    override fun showTranslations(translations: ArrayList<Pair<String, String>>, isDownload: Boolean) {
         if (translations.size > 0) {
             val builder = MaterialAlertDialogBuilder(requireContext())
             builder.setTitle(getString(R.string.translation))
@@ -649,31 +679,52 @@ class FilmFragment : Fragment(), FilmView {
                 transNames.add(translation.first)
             }
             builder.setAdapter(ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, transNames)) { dialog, which ->
-                filmPresenter.openStream(translations[which])
+                filmPresenter.openStream(translations[which], isDownload)
             }
             builder.show()
         }
     }
 
-    override fun showStreams(streams: ArrayList<Stream>, title: String) {
+    override fun showStreams(streams: ArrayList<Stream>, title: String, translationName: String, isDownload: Boolean) {
         val builder = MaterialAlertDialogBuilder(requireContext())
         builder.setTitle(getString(R.string.choose_quality))
         val qualities: ArrayList<String> = ArrayList()
         for (stream in streams) {
             qualities.add(stream.quality)
         }
-        builder.setAdapter(ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, qualities)) { dialog, which ->
-            var intent = Intent("android.intent.action.VIEW")
-            val url = streams[which].url.replace("#EXT-X-STREAM-INF:", "")
-            intent.setDataAndType(Uri.parse(url), "video/*")
-            intent.putExtra("title", title)
-            intent = Intent.createChooser(intent, getString(R.string.open_film_in))
 
-            if (intent.resolveActivity(requireContext().packageManager) != null) {
-                startActivity(intent)
+        builder.setAdapter(ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, qualities)) { dialog, which ->
+            val stream = streams[which]
+            val url = stream.url.replace("#EXT-X-STREAM-INF:", "")
+
+            if (isDownload) {
+                val manager: DownloadManager? = requireActivity().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager?
+                if (manager != null) {
+                    val parseUri = Uri.parse(url)
+                    val fileName = "${title} ${translationName} ${stream.quality} ${parseUri.lastPathSegment}"
+                    val request = DownloadManager.Request(parseUri)
+                    request.setTitle(fileName)
+                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+                    request.allowScanningByMediaScanner()
+                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+                    manager.enqueue(request)
+                    Toast.makeText(requireContext(), getString(R.string.download_started), Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), getString(R.string.no_manager), Toast.LENGTH_LONG).show()
+                }
             } else {
-                Toast.makeText(requireContext(), getString(R.string.no_player), Toast.LENGTH_LONG).show()
+                var intent = Intent("android.intent.action.VIEW")
+                intent.setDataAndType(Uri.parse(url), "video/*")
+                intent.putExtra("title", title)
+                intent = Intent.createChooser(intent, getString(R.string.open_film_in))
+
+                if (intent.resolveActivity(requireContext().packageManager) != null) {
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(requireContext(), getString(R.string.no_player), Toast.LENGTH_LONG).show()
+                }
             }
+
         }
         builder.show()
     }

@@ -46,4 +46,5 @@ open class Film : Serializable {
     var relatedMisc: String? = null
     var bookmarks: ArrayList<Bookmark>? = null
     var translations: ArrayList<Pair<String, String>>? = null
+    var streams: ArrayList<Stream>? = null
 }

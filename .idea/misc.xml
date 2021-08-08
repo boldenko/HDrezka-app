@@ -3,7 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/fragment_film.xml" value="0.4845434938892883" />
+        <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/fragment_film.xml" value="0.46439169139465875" />
+        <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/inflate_actor.xml" value="0.3665105386416862" />
+        <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/xml/file_provider.xml" value="0.6984126984126984" />
       </map>
     </option>
   </component>
