@@ -226,26 +226,40 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
         }
     }
 
-    fun openStream(translation: Pair<String, String>, isDownload: Boolean) {
+    fun showTranslations(isDownload: Boolean) {
+        film.translations?.let { film.isMovieTranslation?.let { it1 -> filmView.showTranslations(it, isDownload, it1) } }
+    }
+
+    fun initStreams(translation: Voice, isDownload: Boolean) {
         GlobalScope.launch {
-            val streams: ArrayList<Stream> = FilmModel.parseStreams(translation.second, translation.first.isNotEmpty(), film.filmId!!)
+            try {
+                val streams: ArrayList<Stream> = FilmModel.parseStreams(translation, film.filmId!!)
 
-            // true = max quality
-            if (false) {
-                streams
-                // val str4 = (streams.get(streams.size - 1)).str1
-                //  Log.d("MY_DEBUG", str4)
-                //  Log.d("MY_DEBUG", streams.get(0).toString())
+                // true = max quality
+                if (false) {
+                    streams
+                    // val str4 = (streams.get(streams.size - 1)).str1
+                    //  Log.d("MY_DEBUG", str4)
+                    //  Log.d("MY_DEBUG", streams.get(0).toString())
 
-            } else {
-                withContext(Dispatchers.Main) {
-                    film.title?.let { filmView.showStreams(streams, it, translation.first, isDownload) }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        var title = ""
+                        translation.name?.let {
+                            title = it
+                        }
+
+                        film.title?.let { it -> filmView.showStreams(streams, it, title, isDownload) }
+                    }
                 }
+            } catch (e: Exception) {
+                catchException(e, filmView)
             }
         }
     }
 
-    fun showTranslations(isDownload: Boolean) {
-        film.translations?.let { filmView.showTranslations(it, isDownload) }
+    fun initTranslationsSeries(translations: ArrayList<Pair<String, String>>, isDownload: Boolean) {
+        // TODO parse season and episodes by id
+
     }
 }

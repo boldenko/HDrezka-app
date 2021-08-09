@@ -330,10 +330,10 @@ class FilmFragment : Fragment(), FilmView {
         dialog.setContentView(layout)
 
         val lp: WindowManager.LayoutParams = WindowManager.LayoutParams()
-        lp.copyFrom(dialog.window?.attributes);
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.copyFrom(dialog.window?.attributes)
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT
-        dialog.window?.attributes = lp;
+        dialog.window?.attributes = lp
 
         modalDialog = dialog
         layout.findViewById<Button>(R.id.modal_bt_close).setOnClickListener {
@@ -670,22 +670,43 @@ class FilmFragment : Fragment(), FilmView {
         }
     }
 
-    override fun showTranslations(translations: ArrayList<Pair<String, String>>, isDownload: Boolean) {
-        if (translations.size > 0) {
-            val builder = MaterialAlertDialogBuilder(requireContext())
-            builder.setTitle(getString(R.string.translation))
-            val transNames: ArrayList<String> = ArrayList()
-            for (translation in translations) {
-                transNames.add(translation.first)
+    // pair(название озвучки,
+    override fun showTranslations(translations: ArrayList<Voice>, isDownload: Boolean, isMovie: Boolean) {
+        if (isMovie) {
+            if (translations.size > 1) {
+                val builder = MaterialAlertDialogBuilder(requireContext())
+                builder.setTitle(getString(R.string.translation))
+                val transNames: ArrayList<String> = ArrayList()
+                for (translation in translations) {
+                    translation.name?.let { transNames.add(it) }
+
+                }
+                builder.setAdapter(ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, transNames)) { dialog, which ->
+                    filmPresenter.initStreams(translations[which], isDownload)
+                }
+                builder.show()
+            } else if (translations.size == 1) {
+                filmPresenter.initStreams(translations[0], isDownload)
+            } else {
+                Toast.makeText(requireContext(), getString(R.string.error_empty), Toast.LENGTH_SHORT).show()
             }
-            builder.setAdapter(ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, transNames)) { dialog, which ->
-                filmPresenter.openStream(translations[which], isDownload)
-            }
-            builder.show()
+        } else {
+            //  filmPresenter.initTranslationsSeries(translations, isDownload)
         }
     }
 
-    override fun showStreams(streams: ArrayList<Stream>, title: String, translationName: String, isDownload: Boolean) {
+/*    override fun showTranslationsSeries(translations, seasons_list..., isDownload)
+    {
+        // show custom dialog
+        // set translations
+        // if translation == 1 -> skip
+        // set seasons
+
+        // on click -> get stream from ajax -> filmPresenter.openStream(season_list[which], isDownload)
+        // season_list[which] = Pair(1 сезон, 1 серия, stream)
+    }*/
+
+    override fun showStreams(streams: ArrayList<Stream>, filmTitle: String, title: String, isDownload: Boolean) {
         val builder = MaterialAlertDialogBuilder(requireContext())
         builder.setTitle(getString(R.string.choose_quality))
         val qualities: ArrayList<String> = ArrayList()
@@ -701,12 +722,22 @@ class FilmFragment : Fragment(), FilmView {
                 val manager: DownloadManager? = requireActivity().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager?
                 if (manager != null) {
                     val parseUri = Uri.parse(url)
-                    val fileName = "${title} ${translationName} ${stream.quality} ${parseUri.lastPathSegment}"
+                    val fileName = StringBuilder()
+                    fileName.append(filmTitle)
+                    if (title.isNotEmpty()) {
+                        fileName.append(" $title")
+                    }
+
+                    if (stream.quality.isNotEmpty()) {
+                        fileName.append(" ${stream.quality}")
+                    }
+
                     val request = DownloadManager.Request(parseUri)
                     request.setTitle(fileName)
                     request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
                     request.allowScanningByMediaScanner()
-                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+                    fileName.append(" ${parseUri.lastPathSegment}")
+                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName.toString())
                     manager.enqueue(request)
                     Toast.makeText(requireContext(), getString(R.string.download_started), Toast.LENGTH_SHORT).show()
                 } else {
@@ -715,7 +746,7 @@ class FilmFragment : Fragment(), FilmView {
             } else {
                 var intent = Intent("android.intent.action.VIEW")
                 intent.setDataAndType(Uri.parse(url), "video/*")
-                intent.putExtra("title", title)
+                intent.putExtra("title", filmTitle)
                 intent = Intent.createChooser(intent, getString(R.string.open_film_in))
 
                 if (intent.resolveActivity(requireContext().packageManager) != null) {

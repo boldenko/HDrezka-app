@@ -48,7 +48,7 @@ interface FilmView : IConnection, CommentEditor.ICommentEditor {
 
     fun setHRrating(rating: Float, isActive: Boolean)
 
-    fun showTranslations(translations: ArrayList<Pair<String, String>>, isDownload: Boolean)
+    fun showTranslations(translations: ArrayList<Voice>, isDownload: Boolean, isMovie: Boolean)
 
-    fun showStreams(streams: ArrayList<Stream>, title: String, translationName: String, isDownload: Boolean)
+    fun showStreams(streams: ArrayList<Stream>, filmTitle: String, title: String, isDownload: Boolean)
 }

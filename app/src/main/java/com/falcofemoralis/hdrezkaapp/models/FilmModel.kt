@@ -1,7 +1,6 @@
 package com.falcofemoralis.hdrezkaapp.models
 
 import android.util.ArrayMap
-import android.util.Log
 import android.webkit.CookieManager
 import com.falcofemoralis.hdrezkaapp.objects.*
 import kotlinx.coroutines.Dispatchers
@@ -295,7 +294,23 @@ object FilmModel {
         }
         film.bookmarks = bookmarks
 
-        getStreams(document, film)
+        // get streams
+        film.isMovieTranslation = document.select("meta[property=og:type]").first().attr("content").equals("video.movie")
+        val filmTranslations: ArrayList<Voice> = ArrayList()
+        val els = document.select(".b-translator__item")
+        for (el in els) {
+            filmTranslations.add(Voice(el.attr("title"), el.attr("data-translator_id")))
+        }
+
+        // no film translations
+        if (filmTranslations.size == 0) {
+            val stringedDoc = document.toString()
+            val index = stringedDoc.indexOf("initCDNMoviesEvents")
+            val subString = stringedDoc.substring(stringedDoc.indexOf("{\"id\"", index), stringedDoc.indexOf("});", index) + 1)
+            filmTranslations.add(Voice(JSONObject(subString).getString("streams")))
+        }
+
+        film.translations = filmTranslations
 
         film.hasAdditionalData = true
 
@@ -387,39 +402,7 @@ object FilmModel {
         }
     }
 
-    private fun getStreams(document: Document, film: Film) {
-        if (film.type == "Фильм") {
-            val filmTranslations: ArrayList<Pair<String, String>> = ArrayList()
-            val els = document.select(".b-translator__item")
-            for (el in els) {
-                filmTranslations.add(Pair(el.attr("title"), el.attr("data-translator_id")))
-            }
-
-            // no film translations
-            if (filmTranslations.size == 0) {
-                val stringedDoc = document.toString()
-                val index = stringedDoc.indexOf("initCDNMoviesEvents")
-                val subString = stringedDoc.substring(stringedDoc.indexOf("{\"id\"", index), stringedDoc.indexOf("});", index) + 1)
-                filmTranslations.add(Pair("", JSONObject(subString).getString("streams")))
-            }
-
-            film.translations = filmTranslations
-
-            Log.d("MY_DEBUG", film.translations.toString())
-        }
-    }
-
-    fun getStreamsById(filmId: Number, transId: String): String {
-//Request URL: http://hdrezka.tv/ajax/get_cdn_series/?t=1628357630491
-        //Request Method: POST
-        //id: 39914
-        //translator_id: 111
-        //is_camrip: 0
-        //is_ads: 0
-        //is_director: 0
-        //favs: 77c27ef8-7d12-4722-8af0-d161bba7a760
-        //action: get_movie
-
+    private fun getStreamsByTranslationId(filmId: Number, transId: String): String {
         val data: ArrayMap<String, String> = ArrayMap()
         data["id"] = filmId.toString()
         data["translator_id"] = transId
@@ -446,15 +429,14 @@ object FilmModel {
         }
     }
 
-    fun parseStreams(_streams: String, isId: Boolean, filmId: Number): ArrayList<Stream> {
-        var streams = _streams
+    fun parseStreams(translation: Voice, filmId: Number): ArrayList<Stream> {
         val parsedStreams: ArrayList<Stream> = ArrayList()
 
-        if (isId) {
-            streams = getStreamsById(filmId, _streams)
+        if (translation.id != null) {
+            translation.streams = getStreamsByTranslationId(filmId, translation.id!!)
         }
 
-        val split: Array<String> = streams.split(",").toTypedArray()
+        val split: Array<String> = translation.streams!!.split(",").toTypedArray()
         for (str in split) {
             if (str.contains(" or ")) {
                 parsedStreams.add(Stream(str.split(" or ").toTypedArray()[1], str.substring(1, str.indexOf("]"))))
