@@ -4,4 +4,6 @@ interface FilmListCallView {
     fun triggerEnd()
 
     fun onFilmsListCreated()
+
+    fun dataInited()
 }

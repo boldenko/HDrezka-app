@@ -62,6 +62,10 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
         super.onStart()
     }
 
+    override fun dataInited() {
+
+    }
+
     private fun setSpinnerData(spinnerId: Int) {
         val spinner: SmartMaterialSpinner<String> = currentView.findViewById(spinnerId)
 

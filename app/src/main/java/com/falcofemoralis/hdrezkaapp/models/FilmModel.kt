@@ -311,8 +311,12 @@ object FilmModel {
                 val subString = stringedDoc.substring(stringedDoc.indexOf("{\"id\"", index), stringedDoc.indexOf("});", index) + 1)
                 filmTranslations.add(Voice(JSONObject(subString).getString("streams")))
             } else {
-                val index = stringedDoc.indexOf("initCDNSeriesEvents")
-                val subString = stringedDoc.substring(index, stringedDoc.indexOf("{\"id\"", index))
+                val startIndex = stringedDoc.indexOf("initCDNSeriesEvents")
+                var endIndex = stringedDoc.indexOf("{\"id\"", startIndex)
+                if (endIndex == -1) {
+                    endIndex = stringedDoc.indexOf("{\"url\"", startIndex)
+                }
+                val subString = stringedDoc.substring(startIndex, endIndex)
                 val transId = subString.split(",")[1]
                 filmTranslations.add(Voice(transId, parseSeasons(document)))
             }
@@ -420,6 +424,7 @@ object FilmModel {
         val result: Document? = Jsoup.connect(SettingsData.provider + GET_STREAM_POST + "/?t=$unixTime")
             .data(data)
             .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
             .ignoreContentType(true)
             .post()
 
@@ -513,6 +518,7 @@ object FilmModel {
         val result: Document? = Jsoup.connect(SettingsData.provider + GET_STREAM_POST + "/?t=$unixTime")
             .data(data)
             .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
             .ignoreContentType(true)
             .post()
 

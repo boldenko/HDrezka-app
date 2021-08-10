@@ -60,6 +60,10 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
         super.onStart()
     }
 
+    override fun dataInited() {
+
+    }
+
     private fun initSearchViews() {
         // pressed enter
         autoCompleteTextView.setOnEditorActionListener { v, actionId, event ->

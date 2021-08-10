@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/drawable/ic_app.xml" value="0.8493975903614458" />
+        <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/drawable/launch_screen.xml" value="0.8493975903614458" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/drawable/triangle.xml" value="0.8493975903614458" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/dialog_filters.xml" value="0.67" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/dialog_translation_series.xml" value="0.775" />

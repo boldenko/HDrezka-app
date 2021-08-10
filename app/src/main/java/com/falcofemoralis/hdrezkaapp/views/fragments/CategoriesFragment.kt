@@ -71,6 +71,10 @@ class CategoriesFragment : Fragment(), CategoriesView, AdapterView.OnItemSelecte
         categoriesPresenter.initCategories()
     }
 
+    override fun dataInited() {
+
+    }
+
     override fun setCategories() {
         typesSpinner.item = categoriesPresenter.typesNames
         typesSpinner.onItemSelectedListener = this

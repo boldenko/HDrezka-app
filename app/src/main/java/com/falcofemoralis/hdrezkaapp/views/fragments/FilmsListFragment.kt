@@ -70,6 +70,7 @@ open class FilmsListFragment : Fragment(), FilmsListView {
 
     override fun redrawFilms() {
         viewList.adapter?.notifyDataSetChanged()
+        callView.dataInited()
     }
 
     override fun setProgressBarState(type: IProgressState.StateType) {

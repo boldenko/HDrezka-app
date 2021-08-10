@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         } else {
             showConnectionError(IConnection.ErrorType.NO_INTERNET)
         }
+        setTheme(R.style.AppTheme)
     }
 
     private fun createUserMenu() {
