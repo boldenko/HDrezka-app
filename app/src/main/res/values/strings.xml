@@ -122,4 +122,5 @@
     <string name="download">Скачать</string>
     <string name="perm_write_hint">Без доступа к хранилищу файл не будет сохранен!</string>
     <string name="download_started">Скачивание начато</string>
+    <string name="select_season_and_episode">Выбрать сезон и серию</string>
 </resources>

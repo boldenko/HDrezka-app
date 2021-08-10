@@ -1,5 +1,6 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
+import android.util.ArrayMap
 import android.widget.ImageView
 import com.falcofemoralis.hdrezkaapp.models.ActorModel
 import com.falcofemoralis.hdrezkaapp.models.BookmarksModel
@@ -230,7 +231,7 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
         film.translations?.let { film.isMovieTranslation?.let { it1 -> filmView.showTranslations(it, isDownload, it1) } }
     }
 
-    fun initStreams(translation: Voice, isDownload: Boolean) {
+    fun initStreams(translation: Voice, isDownload: Boolean, vararg additionalInfo: String) {
         GlobalScope.launch {
             try {
                 val streams: ArrayList<Stream> = FilmModel.parseStreams(translation, film.filmId!!)
@@ -238,18 +239,23 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
                 // true = max quality
                 if (false) {
                     streams
+                    // TODO
                     // val str4 = (streams.get(streams.size - 1)).str1
                     //  Log.d("MY_DEBUG", str4)
                     //  Log.d("MY_DEBUG", streams.get(0).toString())
 
                 } else {
                     withContext(Dispatchers.Main) {
-                        var title = ""
+                        var additionalTitle = StringBuilder()
                         translation.name?.let {
-                            title = it
+                            additionalTitle.append(it)
                         }
 
-                        film.title?.let { it -> filmView.showStreams(streams, it, title, isDownload) }
+                        for (info in additionalInfo) {
+                            if (additionalTitle.isNotEmpty()) additionalTitle.append(" ")
+                            additionalTitle.append("$info")
+                        }
+                        film.title?.let { it -> filmView.showStreams(streams, it, additionalTitle.toString(), isDownload) }
                     }
                 }
             } catch (e: Exception) {
@@ -258,8 +264,35 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
         }
     }
 
-    fun initTranslationsSeries(translations: ArrayList<Pair<String, String>>, isDownload: Boolean) {
-        // TODO parse season and episodes by id
+    fun initTranslationsSeries(translation: Voice, callback: (seasons: HashMap<String, ArrayList<String>>) -> Unit) {
+        GlobalScope.launch {
+            try {
+                film.filmId?.let {
+                    if (translation.seasons == null) {
+                        FilmModel.getSeason(it, translation)
+                    }
 
+                    withContext(Dispatchers.Main) {
+                        translation.seasons?.let { it1 -> callback(it1) }
+                    }
+                }
+            } catch (e: Exception) {
+                catchException(e, filmView)
+            }
+        }
+    }
+
+    fun genAndOpenEpisodeStream(translation: Voice, season: String, episode: String, isDownload: Boolean) {
+        GlobalScope.launch {
+            try {
+                film.filmId?.let {
+                    translation.streams = FilmModel.getStreamsByEpisodeId(it, translation, season, episode)
+
+                    initStreams(translation, isDownload, "Сезон $season -", "Эпизод $episode")
+                }
+            } catch (e: Exception) {
+                catchException(e, filmView)
+            }
+        }
     }
 }

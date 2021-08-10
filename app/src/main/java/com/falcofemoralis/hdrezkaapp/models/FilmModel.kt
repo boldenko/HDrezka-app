@@ -305,9 +305,17 @@ object FilmModel {
         // no film translations
         if (filmTranslations.size == 0) {
             val stringedDoc = document.toString()
-            val index = stringedDoc.indexOf("initCDNMoviesEvents")
-            val subString = stringedDoc.substring(stringedDoc.indexOf("{\"id\"", index), stringedDoc.indexOf("});", index) + 1)
-            filmTranslations.add(Voice(JSONObject(subString).getString("streams")))
+
+            if (film.isMovieTranslation!!) {
+                val index = stringedDoc.indexOf("initCDNMoviesEvents")
+                val subString = stringedDoc.substring(stringedDoc.indexOf("{\"id\"", index), stringedDoc.indexOf("});", index) + 1)
+                filmTranslations.add(Voice(JSONObject(subString).getString("streams")))
+            } else {
+                val index = stringedDoc.indexOf("initCDNSeriesEvents")
+                val subString = stringedDoc.substring(index, stringedDoc.indexOf("{\"id\"", index))
+                val transId = subString.split(",")[1]
+                filmTranslations.add(Voice(transId, parseSeasons(document)))
+            }
         }
 
         film.translations = filmTranslations
@@ -432,7 +440,7 @@ object FilmModel {
     fun parseStreams(translation: Voice, filmId: Number): ArrayList<Stream> {
         val parsedStreams: ArrayList<Stream> = ArrayList()
 
-        if (translation.id != null) {
+        if (translation.id != null && translation.streams == null) {
             translation.streams = getStreamsByTranslationId(filmId, translation.id!!)
         }
 
@@ -446,5 +454,79 @@ object FilmModel {
         }
 
         return parsedStreams
+    }
+
+    fun getSeason(filmId: Number, translation: Voice): Voice {
+        val data: ArrayMap<String, String> = ArrayMap()
+        data["id"] = filmId.toString()
+        data["translator_id"] = translation.id
+        data["action"] = "get_episodes"
+
+        val unixTime = System.currentTimeMillis()
+        val result: Document? = Jsoup.connect(SettingsData.provider + GET_STREAM_POST + "/?t=$unixTime")
+            .data(data)
+            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            .ignoreContentType(true)
+            .post()
+
+        if (result != null) {
+            val bodyString: String = result.select("body").text()
+            val jsonObject = JSONObject(bodyString)
+
+            if (jsonObject.getBoolean("success")) {
+                translation.seasons = parseSeasons(Jsoup.parse(jsonObject.getString("episodes")))
+                return translation
+            } else {
+                throw HttpStatusException("failed to get seasons", 400, SettingsData.provider)
+            }
+        } else {
+            throw HttpStatusException("failed to get seasons", 400, SettingsData.provider)
+        }
+    }
+
+    private fun parseSeasons(document: Document): HashMap<String, ArrayList<String>> {
+        val seasonList: HashMap<String, ArrayList<String>> = HashMap()
+        val seasons = document.select("ul.b-simple_episodes__list")
+
+        for ((i, season) in seasons.withIndex()) {
+            val episodesList: ArrayList<String> = ArrayList()
+            val episodes = season.select("li.b-simple_episode__item")
+            for (episode in episodes) {
+                episodesList.add(episode.attr("data-episode_id"))
+            }
+
+            seasonList[(i + 1).toString()] = episodesList
+        }
+
+        return seasonList
+    }
+
+    fun getStreamsByEpisodeId(filmId: Number, translation: Voice, season: String, episode: String): String {
+        val data: ArrayMap<String, String> = ArrayMap()
+        data["id"] = filmId.toString()
+        data["translator_id"] = translation.id
+        data["season"] = season
+        data["episode"] = episode
+        data["action"] = "get_stream"
+
+        val unixTime = System.currentTimeMillis()
+        val result: Document? = Jsoup.connect(SettingsData.provider + GET_STREAM_POST + "/?t=$unixTime")
+            .data(data)
+            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            .ignoreContentType(true)
+            .post()
+
+        if (result != null) {
+            val bodyString: String = result.select("body").text()
+            val jsonObject = JSONObject(bodyString)
+
+            if (jsonObject.getBoolean("success")) {
+                return jsonObject.getString("url")
+            } else {
+                throw HttpStatusException("failed to get stream", 400, SettingsData.provider)
+            }
+        } else {
+            throw HttpStatusException("failed to get stream", 400, SettingsData.provider)
+        }
     }
 }

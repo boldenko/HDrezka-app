@@ -10,6 +10,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.text.SpannableString
@@ -18,6 +19,8 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.ArrayMap
+import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.*
 import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
@@ -36,6 +39,7 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.clients.PlayerChromeClient
 import com.falcofemoralis.hdrezkaapp.clients.PlayerWebViewClient
@@ -73,6 +77,7 @@ class FilmFragment : Fragment(), FilmView {
     private var modalDialog: Dialog? = null
     private var commentEditor: CommentEditor? = null
     private var bookmarksDialog: AlertDialog? = null
+    private var translationsDialog: AlertDialog? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -679,7 +684,6 @@ class FilmFragment : Fragment(), FilmView {
                 val transNames: ArrayList<String> = ArrayList()
                 for (translation in translations) {
                     translation.name?.let { transNames.add(it) }
-
                 }
                 builder.setAdapter(ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, transNames)) { dialog, which ->
                     filmPresenter.initStreams(translations[which], isDownload)
@@ -691,20 +695,85 @@ class FilmFragment : Fragment(), FilmView {
                 Toast.makeText(requireContext(), getString(R.string.error_empty), Toast.LENGTH_SHORT).show()
             }
         } else {
-            //  filmPresenter.initTranslationsSeries(translations, isDownload)
+            val transView: LinearLayout = layoutInflater.inflate(R.layout.dialog_translation_series, null) as LinearLayout
+            val translationsSpinner: SmartMaterialSpinner<String> = transView.findViewById(R.id.translations_spinner)
+            var selectedTranslation = 0
+
+            fun showTranslationsSeries(seasons: HashMap<String, ArrayList<String>>) {
+                val container = transView.findViewById<LinearLayout>(R.id.translations_container)
+                container.removeAllViews()
+
+                for ((key, value) in seasons) {
+                    val layout: LinearLayout = layoutInflater.inflate(R.layout.inflate_season_layout, null) as LinearLayout
+                    val expandedList: ExpandableLinearLayout = layout.findViewById(R.id.inflate_season_layout_list)
+                    layout.findViewById<TextView>(R.id.inflate_season_layout_header).text = "Сезон ${key}"
+                    layout.findViewById<LinearLayout>(R.id.inflate_season_layout_button).setOnClickListener {
+                        expandedList.toggle()
+                    }
+
+                    for (episode in value) {
+                        val nameTextView = layoutInflater.inflate(R.layout.inflate_season_item, null) as TextView
+                        nameTextView.text = "Эпизод ${episode}"
+                        nameTextView.setOnClickListener {
+                            filmPresenter.genAndOpenEpisodeStream(translations[selectedTranslation], key, episode, isDownload)
+                        }
+                        expandedList.addView(nameTextView)
+                    }
+                    container.addView(layout)
+                }
+            }
+
+            if (translations.size > 1) {
+                val voicesNames: ArrayList<String> = ArrayList()
+                for (translation in translations) {
+                    translation.name?.let {
+                        voicesNames.add(it)
+                    }
+                }
+                translationsSpinner.item = voicesNames
+                translationsSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                    }
+
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        selectedTranslation = position
+                        filmPresenter.initTranslationsSeries(translations[position], ::showTranslationsSeries)
+                    }
+                }
+                translationsSpinner.setSelection(selectedTranslation)
+            } else if (translations.size == 1) {
+                translationsSpinner.visibility = View.GONE
+                filmPresenter.initTranslationsSeries(translations[0], ::showTranslationsSeries)
+            } else {
+                Toast.makeText(requireContext(), getString(R.string.error_empty), Toast.LENGTH_SHORT).show()
+            }
+
+            val builder = MaterialAlertDialogBuilder(requireContext())
+            builder.setView(transView)
+            val d = builder.create()
+            d.show()
+
+            val displayMetrics = DisplayMetrics()
+            if (Build.VERSION.SDK_INT >= 30) {
+                requireActivity().display?.apply {
+                    getRealMetrics(displayMetrics)
+                }
+            } else {
+                // getMetrics() method was deprecated in api level 30
+                requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
+            }
+
+            //   val displayWidth = displayMetrics.widthPixels
+            val displayHeight = displayMetrics.heightPixels
+            val layoutParams = WindowManager.LayoutParams()
+            layoutParams.copyFrom(d.window?.attributes)
+            //   val dialogWindowWidth = (displayWidth * 0.5f).toInt()
+            val dialogWindowHeight = (displayHeight * 0.8f).toInt()
+            //  layoutParams.width = dialogWindowWidth
+            layoutParams.height = dialogWindowHeight
+            d.window?.attributes = layoutParams
         }
     }
-
-/*    override fun showTranslationsSeries(translations, seasons_list..., isDownload)
-    {
-        // show custom dialog
-        // set translations
-        // if translation == 1 -> skip
-        // set seasons
-
-        // on click -> get stream from ajax -> filmPresenter.openStream(season_list[which], isDownload)
-        // season_list[which] = Pair(1 сезон, 1 серия, stream)
-    }*/
 
     override fun showStreams(streams: ArrayList<Stream>, filmTitle: String, title: String, isDownload: Boolean) {
         val builder = MaterialAlertDialogBuilder(requireContext())
