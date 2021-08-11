@@ -1,6 +1,7 @@
 package com.falcofemoralis.hdrezkaapp.models
 
 import android.util.ArrayMap
+import android.util.Log
 import android.webkit.CookieManager
 import com.falcofemoralis.hdrezkaapp.objects.*
 import kotlinx.coroutines.Dispatchers
@@ -29,10 +30,14 @@ object FilmModel {
     private const val GET_STREAM_POST = "/ajax/get_cdn_series"
 
     fun getMainData(film: Film): Film {
-        if (film.filmId == null) {
-            getMainDataByLink(film)
-        } else {
-            getMainDataById(film)
+        try {
+            if (film.filmId == null) {
+                getMainDataByLink(film)
+            } else {
+                getMainDataById(film)
+            }
+        } catch (e: Exception) {
+            throw e
         }
 
         film.hasMainData = true
@@ -362,7 +367,7 @@ object FilmModel {
                         }
                     }
                 } catch (e: Exception) {
-                    throw e
+                    Log.d("TIMEOUT_PROBLEM", "timeout $e")
                 }
             }
         }
