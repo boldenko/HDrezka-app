@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
+import android.webkit.WebView
 import android.widget.FrameLayout
 
 class PlayerChromeClient(private val activity: Activity) : WebChromeClient() {

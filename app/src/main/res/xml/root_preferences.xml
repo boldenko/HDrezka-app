@@ -40,6 +40,12 @@
             app:summary="@string/ismaxq_hint"
             app:title="@string/ismaxq_title" />
 
+        <CheckBoxPreference
+            android:layout="@layout/custom_checkbox_preference"
+            app:key="isPlayerChooser"
+            app:summary="@string/player_chooser_hint"
+            app:title="@string/player_chooser_title" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

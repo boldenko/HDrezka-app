@@ -124,7 +124,9 @@
     <string name="download_started">Скачивание начато</string>
     <string name="select_season_and_episode">Выбрать сезон и серию</string>
     <string name="isplayer_hint">Позволяет выбрать свой плеер, а не использовать встроенный</string>
-    <string name="isplayer_title">Использовать стороний плеер</string>
+    <string name="isplayer_title">Использовать сторонний плеер</string>
     <string name="ismaxq_hint">Будет выбрано возможное максимальное качество видео</string>
     <string name="ismaxq_title">Автовыбор лучшего качества</string>
+    <string name="player_chooser_hint">Всегда будет предложен выбор стороннего плеера</string>
+    <string name="player_chooser_title">Выбор плеера</string>
 </resources>

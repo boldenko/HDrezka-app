@@ -76,7 +76,6 @@ class FilmFragment : Fragment(), FilmView {
     private var modalDialog: Dialog? = null
     private var commentEditor: CommentEditor? = null
     private var bookmarksDialog: AlertDialog? = null
-    private var translationsDialog: AlertDialog? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -841,7 +840,10 @@ class FilmFragment : Fragment(), FilmView {
             var intent = Intent("android.intent.action.VIEW")
             intent.setDataAndType(Uri.parse(url), "video/*")
             intent.putExtra("title", filmTitle)
-            intent = Intent.createChooser(intent, getString(R.string.open_film_in))
+
+            if (SettingsData.isPlayerChooser == true) {
+                intent = Intent.createChooser(intent, getString(R.string.open_film_in))
+            }
 
             if (intent.resolveActivity(requireContext().packageManager) != null) {
                 startActivity(intent)

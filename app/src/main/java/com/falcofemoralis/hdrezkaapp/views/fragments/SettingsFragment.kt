@@ -17,11 +17,13 @@ import com.falcofemoralis.hdrezkaapp.views.MainActivity
 
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
     private lateinit var preferences: SharedPreferences
+    private lateinit var mActivity: FragmentActivity
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
         preferences = PreferenceManager.getDefaultSharedPreferences(context)
         preferences.registerOnSharedPreferenceChangeListener(this)
+        mActivity = requireActivity()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -31,39 +33,34 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        activity.let {
-            when (key) {
-                "providers" -> {
-                    if (it != null) {
-                        SettingsData.provider = PreferenceManager.getDefaultSharedPreferences(it).getString("providers", it.resources.getStringArray(R.array.providersIds)[0])
-                        applyProvider(it)
-                    }
-
+        when (key) {
+            "providers" -> {
+                SettingsData.provider = preferences.getString("providers", mActivity.resources.getStringArray(R.array.providersIds)[0])
+                applyProvider()
+            }
+            "ownProvider" -> {
+                SettingsData.provider = preferences.getString("ownProvider", "")
+                if (SettingsData.provider.isNullOrEmpty()) {
+                    SettingsData.provider = preferences.getString("providers", mActivity.resources.getStringArray(R.array.providersIds)[0])
                 }
-                "ownProvider" -> {
-                    if (it != null) {
-                        SettingsData.provider = PreferenceManager.getDefaultSharedPreferences(it).getString("ownProvider", "")
-                        if (SettingsData.provider.isNullOrEmpty()) {
-                            SettingsData.provider = PreferenceManager.getDefaultSharedPreferences(it).getString("providers", it.resources.getStringArray(R.array.providersIds)[0])
-                        }
-                        applyProvider(it)
-                    }
-
-                }
-                "isPlayer" -> {
-                    SettingsData.isPlayer = PreferenceManager.getDefaultSharedPreferences(it).getBoolean("isPlayer", false)
-                }
-                "isMaxQuality" -> {
-                    SettingsData.isMaxQuality = PreferenceManager.getDefaultSharedPreferences(it).getBoolean("isMaxQuality", false)
-                }
+                applyProvider()
+            }
+            "isPlayer" -> {
+                SettingsData.isPlayer = preferences.getBoolean("isPlayer", false)
+            }
+            "isMaxQuality" -> {
+                SettingsData.isMaxQuality = preferences.getBoolean("isMaxQuality", false)
+            }
+            "isPlayerChooser" -> {
+                SettingsData.isPlayerChooser = preferences.getBoolean("isPlayerChooser", false)
             }
         }
     }
 
-    private fun applyProvider(it: FragmentActivity) {
-        UserData.reset(it)
+    private fun applyProvider() {
+        UserData.reset(mActivity)
         CookieManager.getInstance().removeAllCookies(null)
         CookieManager.getInstance().flush()
-        (it as MainActivity).updatePager()
+        (mActivity as MainActivity).updatePager()
     }
 }
