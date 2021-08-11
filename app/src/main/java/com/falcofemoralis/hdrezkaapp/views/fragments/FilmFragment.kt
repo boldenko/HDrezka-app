@@ -41,6 +41,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.clients.PlayerChromeClient
+import com.falcofemoralis.hdrezkaapp.clients.PlayerJsInterface
 import com.falcofemoralis.hdrezkaapp.clients.PlayerWebViewClient
 import com.falcofemoralis.hdrezkaapp.constants.UpdateItem
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
@@ -87,6 +88,28 @@ class FilmFragment : Fragment(), FilmView {
         activity?.window?.clearFlags(FLAG_KEEP_SCREEN_ON)
 
         super.onDestroy()
+    }
+
+    override fun onResume() {
+        wv = playerView
+        presenter = filmPresenter
+        if (isFullscreen) {
+            requireActivity().window.decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN)
+        }
+        super.onResume()
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (hidden) {
+            //do when hidden
+            PlayerJsInterface.stop()
+        } else {
+            //do when show
+            wv = playerView
+            presenter = filmPresenter
+            isFullscreen = false
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -157,6 +180,12 @@ class FilmFragment : Fragment(), FilmView {
         return currentView
     }
 
+    companion object {
+        lateinit var wv: WebView
+        lateinit var presenter: FilmPresenter
+        var isFullscreen: Boolean = false
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun setPlayer(link: String) {
         val container: LinearLayout = currentView.findViewById(R.id.fragment_film_ll_player_container)
@@ -164,6 +193,7 @@ class FilmFragment : Fragment(), FilmView {
         playerView.settings.javaScriptEnabled = true
         playerView.settings.domStorageEnabled = true
         playerView.addJavascriptInterface(WebAppInterface(requireActivity()), "Android")
+        playerView.addJavascriptInterface(PlayerJsInterface(requireContext()), "JSOUT")
         playerView.webViewClient = PlayerWebViewClient(requireContext(), this) {
             container.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
             currentView.findViewById<ProgressBar>(R.id.fragment_film_pb_player_loading).visibility = View.GONE

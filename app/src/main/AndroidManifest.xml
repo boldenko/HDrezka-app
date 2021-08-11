@@ -28,6 +28,10 @@
                 android:resource="@xml/file_provider" />
         </provider>
 
+        <receiver
+            android:name=".broadcasts.NotificationListener"
+            android:enabled="true" />
+
         <activity
             android:name="com.falcofemoralis.hdrezkaapp.views.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

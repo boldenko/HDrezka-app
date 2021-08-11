@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -117,9 +116,7 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
                 "        }" +
                 "    }" +
                 "}"
-        view?.evaluateJavascript(
-            script1, null
-        )
+        view?.evaluateJavascript(script1, null)
 
         val script2 = "javascript: (function() {" +
                 "document.body.style.minWidth = 'unset';" +
@@ -145,31 +142,6 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
                 "    bContCol[0].style.setProperty('padding', '0', 'important');" +
                 "    bCont[0].style.setProperty('padding', '0', 'important');" +
                 "}" +
-                "" + //  fix play button position
-/*                    "var playIcon = document.getElementById('oframecdnplayer').childNodes[18];" +
-                    "playIcon.style.left = '50%';" +
-                    "var mo = new MutationObserver(function(){" +
-                    "   playIcon.style.left = '50%';" +
-                    "});" +
-                    "mo.observe(playIcon, { attributes: true, attributeFilter: ['style'] });" +*/
-                "" + // fix voices
-/*                    "var mo2 = new MutationObserver(function(mutationsList, observer) {" +
-                    "   for(var i = 0; i<mutationsList.length; i++) {" +
-                    "       if (mutationsList[i].type == 'childList') {" +
-                    "           var voices = document.getElementsByClassName('tooltipster-base')[0];" +
-                    "           if(voices){" +
-                    "               voices.style.left = 'unset';" +
-                    "               voices.style.minWidth = 'unset';" +
-                    "       }}" +
-                    "}});" +
-                    "mo2.observe(document.body, {childList: true, subtree: true});" +*/
-                "" + // fix load spinner position
-/*                    "var loadIcon = document.getElementById('oframecdnplayer').childNodes[13];" +
-                    "loadIcon.style.left = '50%';" +
-                    "var mo3 = new MutationObserver(function() {" +
-                    "   loadIcon.style.left = '50%';" +
-                    "});" +
-                    "mo3.observe(loadIcon, { attributes: true, attributeFilter: ['style'] });" +*/
                 "" + // remove advertisements
                 "var bannerCont = document.getElementsByClassName('banner-container')[0];" +
                 "if(bannerCont) {bannerCont.style.display = 'none'; bannerCont.parentElement.parentElement.style.height = '0px';}" +
@@ -188,12 +160,11 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
                 "} " +
                 "setTimeout(setPos, 1000);" +
                 "})()"
+        view?.evaluateJavascript(script2, null)
 
-        view?.evaluateJavascript(
-            script2, null
-        )
-
+        // fix translators block width
         val script3 = "var translationsHint = document.getElementsByClassName('b-rgstats__help')[0];" +
+                "if(translationsHint){" +
                 "translationsHint.addEventListener('click', function (event) {" +
                 "    var block = document.getElementsByClassName('tooltipster-base')[0];" +
                 "    block.style.minWidth = 'unset';" +
@@ -201,12 +172,9 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
                 "    block.style.left = 'unset';" +
                 "    block.style.width = '100%';" +
                 "    document.getElementsByClassName('tooltipster-arrow-bottom-right')[0].style.display = 'none';" +
-                "});"
-
-        // fix translators block width
-        view?.evaluateJavascript(
-            script3, null
-        )
+                "});" +
+                "}"
+        view?.evaluateJavascript(script3, null)
 
         // hide telegram hint
         view?.evaluateJavascript("\$('#tg-info-block-exclusive-close').click()", null)
@@ -218,8 +186,7 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
                     "});", null
         )
 
-        // TODO mutation list
-        val script551 = "setTimeout(function () {\n" +
+        val script4 = "setTimeout(function () {\n" +
                 "    document.body.childNodes[0].style.setProperty('display', 'none', 'important');\n" +
                 "    var iframeEls = document.getElementsByTagName('iframe');\n" +
                 "    for (var j = 0; j < iframeEls.length; ++j) {\n" +
@@ -241,10 +208,54 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
                 "        }\n" +
                 "    }\n" +
                 "}, 1500)"
-        view?.evaluateJavascript(script551, null)
+        view?.evaluateJavascript(script4, null)
 
-        Log.d("PLAYER_DE", script551)
+        val script5 = "var mediaElement;" +
+                "mediaCheck();" +
+                "document.onclick = function(){" +
+                "    mediaCheck();" +
+                "};" +
+                "function mediaCheck(){" +
+                "    for(var i = 0; i < document.getElementsByTagName('video').length; i++){" +
+                "        var media = document.getElementsByTagName('video')[i];" +
+                "        media.onplay = function(){" +
+                "            mediaElement = media;" +
+                "            JSOUT.mediaAction('true');" +
+                "        };" +
+                "        media.onpause = function(){" +
+                "            mediaElement = media;" +
+                "            JSOUT.mediaAction('false');" +
+                "        };" +
+                "    }" +
+                "    for(var i = 0; i < document.getElementsByTagName('audio').length; i++){" +
+                "        var media = document.getElementsByTagName('audio')[i];" +
+                "        media.onplay = function(){" +
+                "            mediaElement = media;" +
+                "            JSOUT.mediaAction('true');" +
+                "        };" +
+                "        media.onpause = function(){" +
+                "            mediaElement = media;" +
+                "            JSOUT.mediaAction('false');" +
+                "        };" +
+                "    }" +
+                "}"
+        view?.evaluateJavascript(script5, null)
 
+        // fix adguard empty blocks
+        val script6 = "var mainElements = document.getElementsByClassName(\"b-content__main\")[0].childNodes\n" +
+                "for (var i = 0; i < mainElements.length; ++i) {\n" +
+                "    var el = mainElements[i];\n" +
+                "    if (el.classList && el.classList.length > 0) {\n" +
+                "        if (el.classList[0] == \"b-post__lastepisodeout\") {\n" +
+                "            mainElements[i - 6].style.setProperty('height', '0px', 'important');\n" +
+                "        }\n" +
+                "\n" +
+                "        if (el.classList[0] == \"b-post__rating_table\") {\n" +
+                "            mainElements[i + 2].style.setProperty('height', '0px', 'important');\n" +
+                "        }\n" +
+                "    }\n" +
+                "}"
+        view?.evaluateJavascript(script6, null)
         callback()
 
         super.onPageFinished(view, url)

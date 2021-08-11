@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/drawable/ic_app.xml" value="0.8493975903614458" />
+        <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/drawable/ic_baseline_pause_24.xml" value="0.8493975903614458" />
+        <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/drawable/ic_baseline_play_arrow_24.xml" value="0.8493975903614458" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/drawable/launch_screen.xml" value="0.8493975903614458" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/drawable/triangle.xml" value="0.8493975903614458" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/custom_checkbox_preference.xml" value="0.75" />
@@ -21,6 +23,8 @@
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/inflate_season_item.xml" value="0.8425" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/inflate_season_layout.xml" value="0.8425" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/inflate_tag.xml" value="0.41217798594847777" />
+        <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/notification_ui.xml" value="0.5" />
+        <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/notification_ui_expanded.xml" value="0.8392857142857143" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/xml/file_provider.xml" value="0.6984126984126984" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/xml/root_preferences.xml" value="0.75" />
       </map>

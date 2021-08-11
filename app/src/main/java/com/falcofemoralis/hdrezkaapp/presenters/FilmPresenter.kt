@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jsoup.HttpStatusException
 
-class FilmPresenter(private val filmView: FilmView, private val film: Film) {
+class FilmPresenter(private val filmView: FilmView, val film: Film) {
     private val COMMENTS_PER_AGE = 18
 
     private val activeComments: ArrayList<Comment> = ArrayList()

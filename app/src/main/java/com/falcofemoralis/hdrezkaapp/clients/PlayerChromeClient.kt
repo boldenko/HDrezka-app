@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.widget.FrameLayout
+import com.falcofemoralis.hdrezkaapp.views.fragments.FilmFragment
 
 class PlayerChromeClient(private val activity: Activity) : WebChromeClient() {
     private var mCustomView: View? = null
@@ -31,6 +32,7 @@ class PlayerChromeClient(private val activity: Activity) : WebChromeClient() {
         mCustomViewCallback!!.onCustomViewHidden()
         mCustomViewCallback = null
         activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        FilmFragment.isFullscreen = false
     }
 
     override fun onShowCustomView(paramView: View?, paramCustomViewCallback: CustomViewCallback?) {
@@ -44,5 +46,6 @@ class PlayerChromeClient(private val activity: Activity) : WebChromeClient() {
         mCustomViewCallback = paramCustomViewCallback
         (activity.window.decorView as FrameLayout).addView(mCustomView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
         activity.window.decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN)
+        FilmFragment.isFullscreen = true
     }
 }
