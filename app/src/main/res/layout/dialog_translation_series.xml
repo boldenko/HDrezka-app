@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="15dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="15dp">
 
     <com.chivorn.smartmaterialspinner.SmartMaterialSpinner
         android:id="@+id/translations_spinner"
@@ -20,6 +20,11 @@
         app:smsp_itemListHintColor="@color/black"
         app:smsp_selectedItemListColor="@color/main_color_3" />
 
+    <ProgressBar
+        android:id="@+id/translations_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -28,8 +33,6 @@
             android:id="@+id/translations_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-        </LinearLayout>
+            android:orientation="vertical" />
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>

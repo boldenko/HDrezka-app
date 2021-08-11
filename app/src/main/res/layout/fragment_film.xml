@@ -125,11 +125,21 @@
                         android:adjustViewBounds="true"
                         android:contentDescription="film poster" />
 
-                    <Button
-                        android:id="@+id/fragment_film_bt_download"
+                    <TextView
+                        android:id="@+id/fragment_film_tv_download"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/download" />
+                        android:layout_gravity="center"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/roundedbutton"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:paddingTop="7dp"
+                        android:paddingBottom="7dp"
+                        android:text="@string/download"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/normal_text"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
 
@@ -254,13 +264,23 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:gravity="center">
 
-                <Button
-                    android:id="@+id/fragment_film_bt_open_player"
+                <TextView
+                    android:id="@+id/fragment_film_tv_open_player"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/start_watching" />
+                    android:layout_gravity="center"
+                    android:background="@drawable/roundedbutton"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="@string/start_watching"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/normal_text"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <!-- Player -->

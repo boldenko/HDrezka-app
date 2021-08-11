@@ -1,6 +1,5 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
-import android.util.ArrayMap
 import android.widget.ImageView
 import com.falcofemoralis.hdrezkaapp.models.ActorModel
 import com.falcofemoralis.hdrezkaapp.models.BookmarksModel
@@ -235,27 +234,22 @@ class FilmPresenter(private val filmView: FilmView, private val film: Film) {
         GlobalScope.launch {
             try {
                 val streams: ArrayList<Stream> = FilmModel.parseStreams(translation, film.filmId!!)
+                val additionalTitle = StringBuilder()
+                translation.name?.let {
+                    additionalTitle.append(it)
+                }
+                for (info in additionalInfo) {
+                    if (additionalTitle.isNotEmpty()) additionalTitle.append(" ")
+                    additionalTitle.append("$info")
+                }
 
-                // true = max quality
-                if (false) {
-                    streams
-                    // TODO
-                    // val str4 = (streams.get(streams.size - 1)).str1
-                    //  Log.d("MY_DEBUG", str4)
-                    //  Log.d("MY_DEBUG", streams.get(0).toString())
-
-                } else {
-                    withContext(Dispatchers.Main) {
-                        var additionalTitle = StringBuilder()
-                        translation.name?.let {
-                            additionalTitle.append(it)
+                withContext(Dispatchers.Main) {
+                    film.title?.let {
+                        if (SettingsData.isMaxQuality == true) {
+                            filmView.openStream(streams[streams.size - 1], it, additionalTitle.toString(), isDownload)
+                        } else {
+                            filmView.showStreams(streams, it, additionalTitle.toString(), isDownload)
                         }
-
-                        for (info in additionalInfo) {
-                            if (additionalTitle.isNotEmpty()) additionalTitle.append(" ")
-                            additionalTitle.append("$info")
-                        }
-                        film.title?.let { it -> filmView.showStreams(streams, it, additionalTitle.toString(), isDownload) }
                     }
                 }
             } catch (e: Exception) {

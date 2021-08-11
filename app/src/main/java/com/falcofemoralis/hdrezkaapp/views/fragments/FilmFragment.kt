@@ -19,7 +19,6 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.util.ArrayMap
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.*
@@ -101,7 +100,6 @@ class FilmFragment : Fragment(), FilmView {
 
         filmPresenter = FilmPresenter(this, (arguments?.getSerializable(FILM_ARG) as Film?)!!)
         filmPresenter.initFilmData()
-        filmPresenter.initPlayer()
 
         scrollView = currentView.findViewById(R.id.fragment_film_sv_content)
         scrollView.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
@@ -131,7 +129,7 @@ class FilmFragment : Fragment(), FilmView {
                 Toast.makeText(requireContext(), getString(R.string.perm_write_hint), Toast.LENGTH_LONG).show()
             }
         }
-        currentView.findViewById<Button>(R.id.fragment_film_bt_download).setOnClickListener {
+        currentView.findViewById<TextView>(R.id.fragment_film_tv_download).setOnClickListener {
             when (PackageManager.PERMISSION_GRANTED) {
                 ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) -> {
                     filmPresenter.showTranslations(true)
@@ -145,9 +143,18 @@ class FilmFragment : Fragment(), FilmView {
                 }
             }
         }
-        currentView.findViewById<Button>(R.id.fragment_film_bt_open_player).setOnClickListener {
-            filmPresenter.showTranslations(false)
+
+        val openPlayBtn = currentView.findViewById<TextView>(R.id.fragment_film_tv_open_player)
+        if (SettingsData.isPlayer == true) {
+            openPlayBtn.setOnClickListener {
+                filmPresenter.showTranslations(false)
+            }
+            currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_player_container).visibility = View.GONE
+        } else {
+            filmPresenter.initPlayer()
+            openPlayBtn.visibility = View.GONE
         }
+
         return currentView
     }
 
@@ -669,7 +676,12 @@ class FilmFragment : Fragment(), FilmView {
         selectableRatingBar.setOnTouchListener { view, motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_UP) {
                 selectableRatingBar.visibility = View.GONE
-                filmPresenter.updateRating(selectableRatingBar.rating)
+
+                if (UserData.isLoggedIn == true) {
+                    filmPresenter.updateRating(selectableRatingBar.rating)
+                } else {
+                    Toast.makeText(requireContext(), getString(R.string.need_register), Toast.LENGTH_SHORT).show()
+                }
             }
             false
         }
@@ -698,11 +710,11 @@ class FilmFragment : Fragment(), FilmView {
             val transView: LinearLayout = layoutInflater.inflate(R.layout.dialog_translation_series, null) as LinearLayout
             val translationsSpinner: SmartMaterialSpinner<String> = transView.findViewById(R.id.translations_spinner)
             var selectedTranslation = 0
+            var d: AlertDialog? = null
+            val translationProgressBar = transView.findViewById<ProgressBar>(R.id.translations_progress)
+            val container = transView.findViewById<LinearLayout>(R.id.translations_container)
 
             fun showTranslationsSeries(seasons: HashMap<String, ArrayList<String>>) {
-                val container = transView.findViewById<LinearLayout>(R.id.translations_container)
-                container.removeAllViews()
-
                 for ((key, value) in seasons) {
                     val layout: LinearLayout = layoutInflater.inflate(R.layout.inflate_season_layout, null) as LinearLayout
                     val expandedList: ExpandableLinearLayout = layout.findViewById(R.id.inflate_season_layout_list)
@@ -721,6 +733,31 @@ class FilmFragment : Fragment(), FilmView {
                     }
                     container.addView(layout)
                 }
+
+                translationProgressBar.visibility = View.GONE
+
+                val displayMetrics = DisplayMetrics()
+                if (Build.VERSION.SDK_INT >= 30) {
+                    requireActivity().display?.apply {
+                        getRealMetrics(displayMetrics)
+                    }
+                } else {
+                    // getMetrics() method was deprecated in api level 30
+                    requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
+                }
+
+                val dialogSize: Float =
+                    if (seasons.size >= 10) 1f
+                    else if (seasons.size >= 5) 0.8f
+                    else if (seasons.size >= 1) 0.7f
+                    else 1f
+
+                val displayHeight = displayMetrics.heightPixels
+                val layoutParams = WindowManager.LayoutParams()
+                layoutParams.copyFrom(d?.window?.attributes)
+                val dialogWindowHeight = (displayHeight * dialogSize).toInt()
+                layoutParams.height = dialogWindowHeight
+                d?.window?.attributes = layoutParams
             }
 
             if (translations.size > 1) {
@@ -737,12 +774,15 @@ class FilmFragment : Fragment(), FilmView {
 
                     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                         selectedTranslation = position
+                        container.removeAllViews()
+                        translationProgressBar.visibility = View.VISIBLE
                         filmPresenter.initTranslationsSeries(translations[position], ::showTranslationsSeries)
                     }
                 }
                 translationsSpinner.setSelection(selectedTranslation)
             } else if (translations.size == 1) {
                 translationsSpinner.visibility = View.GONE
+                translationProgressBar.visibility = View.GONE
                 filmPresenter.initTranslationsSeries(translations[0], ::showTranslationsSeries)
             } else {
                 Toast.makeText(requireContext(), getString(R.string.error_empty), Toast.LENGTH_SHORT).show()
@@ -750,28 +790,8 @@ class FilmFragment : Fragment(), FilmView {
 
             val builder = MaterialAlertDialogBuilder(requireContext())
             builder.setView(transView)
-            val d = builder.create()
+            d = builder.create()
             d.show()
-
-            val displayMetrics = DisplayMetrics()
-            if (Build.VERSION.SDK_INT >= 30) {
-                requireActivity().display?.apply {
-                    getRealMetrics(displayMetrics)
-                }
-            } else {
-                // getMetrics() method was deprecated in api level 30
-                requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
-            }
-
-            //   val displayWidth = displayMetrics.widthPixels
-            val displayHeight = displayMetrics.heightPixels
-            val layoutParams = WindowManager.LayoutParams()
-            layoutParams.copyFrom(d.window?.attributes)
-            //   val dialogWindowWidth = (displayWidth * 0.5f).toInt()
-            val dialogWindowHeight = (displayHeight * 0.8f).toInt()
-            //  layoutParams.width = dialogWindowWidth
-            layoutParams.height = dialogWindowHeight
-            d.window?.attributes = layoutParams
         }
     }
 
@@ -784,48 +804,50 @@ class FilmFragment : Fragment(), FilmView {
         }
 
         builder.setAdapter(ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, qualities)) { dialog, which ->
-            val stream = streams[which]
-            val url = stream.url.replace("#EXT-X-STREAM-INF:", "")
-
-            if (isDownload) {
-                val manager: DownloadManager? = requireActivity().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager?
-                if (manager != null) {
-                    val parseUri = Uri.parse(url)
-                    val fileName = StringBuilder()
-                    fileName.append(filmTitle)
-                    if (title.isNotEmpty()) {
-                        fileName.append(" $title")
-                    }
-
-                    if (stream.quality.isNotEmpty()) {
-                        fileName.append(" ${stream.quality}")
-                    }
-
-                    val request = DownloadManager.Request(parseUri)
-                    request.setTitle(fileName)
-                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-                    request.allowScanningByMediaScanner()
-                    fileName.append(" ${parseUri.lastPathSegment}")
-                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName.toString())
-                    manager.enqueue(request)
-                    Toast.makeText(requireContext(), getString(R.string.download_started), Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(requireContext(), getString(R.string.no_manager), Toast.LENGTH_LONG).show()
-                }
-            } else {
-                var intent = Intent("android.intent.action.VIEW")
-                intent.setDataAndType(Uri.parse(url), "video/*")
-                intent.putExtra("title", filmTitle)
-                intent = Intent.createChooser(intent, getString(R.string.open_film_in))
-
-                if (intent.resolveActivity(requireContext().packageManager) != null) {
-                    startActivity(intent)
-                } else {
-                    Toast.makeText(requireContext(), getString(R.string.no_player), Toast.LENGTH_LONG).show()
-                }
-            }
-
+            openStream(streams[which], filmTitle, title, isDownload)
         }
         builder.show()
+    }
+
+    override fun openStream(stream: Stream, filmTitle: String, title: String, isDownload: Boolean) {
+        val url = stream.url.replace("#EXT-X-STREAM-INF:", "")
+
+        if (isDownload) {
+            val manager: DownloadManager? = requireActivity().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager?
+            if (manager != null) {
+                val parseUri = Uri.parse(url)
+                val fileName = StringBuilder()
+                fileName.append(filmTitle)
+                if (title.isNotEmpty()) {
+                    fileName.append(" $title")
+                }
+
+                if (stream.quality.isNotEmpty()) {
+                    fileName.append(" ${stream.quality}")
+                }
+
+                val request = DownloadManager.Request(parseUri)
+                request.setTitle(fileName)
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+                request.allowScanningByMediaScanner()
+                fileName.append(" ${parseUri.lastPathSegment}")
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName.toString())
+                manager.enqueue(request)
+                Toast.makeText(requireContext(), getString(R.string.download_started), Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), getString(R.string.no_manager), Toast.LENGTH_LONG).show()
+            }
+        } else {
+            var intent = Intent("android.intent.action.VIEW")
+            intent.setDataAndType(Uri.parse(url), "video/*")
+            intent.putExtra("title", filmTitle)
+            intent = Intent.createChooser(intent, getString(R.string.open_film_in))
+
+            if (intent.resolveActivity(requireContext().packageManager) != null) {
+                startActivity(intent)
+            } else {
+                Toast.makeText(requireContext(), getString(R.string.no_player), Toast.LENGTH_LONG).show()
+            }
+        }
     }
 }

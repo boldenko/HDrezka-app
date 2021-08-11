@@ -6,11 +6,14 @@
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/drawable/ic_app.xml" value="0.8493975903614458" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/drawable/launch_screen.xml" value="0.8493975903614458" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/drawable/triangle.xml" value="0.8493975903614458" />
+        <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/custom_checkbox_preference.xml" value="0.75" />
+        <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/custom_edit_preference.xml" value="0.75" />
+        <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/custom_list_preference.xml" value="0.3946135831381733" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/dialog_filters.xml" value="0.67" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/dialog_translation_series.xml" value="0.775" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/fragment_actor.xml" value="0.37797619047619047" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/fragment_categories.xml" value="0.37797619047619047" />
-        <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/fragment_film.xml" value="0.46439169139465875" />
+        <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/fragment_film.xml" value="0.67" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/inflate_actor.xml" value="0.3665105386416862" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/inflate_schedule_item.xml" value="0.41217798594847777" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/inflate_schedule_layout.xml" value="0.41217798594847777" />
@@ -18,6 +21,7 @@
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/inflate_season_layout.xml" value="0.8425" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/layout/inflate_tag.xml" value="0.41217798594847777" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/xml/file_provider.xml" value="0.6984126984126984" />
+        <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/xml/root_preferences.xml" value="0.75" />
       </map>
     </option>
   </component>

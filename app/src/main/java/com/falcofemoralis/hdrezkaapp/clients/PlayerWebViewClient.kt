@@ -7,11 +7,11 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.util.Log
-import android.webkit.*
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
-import java.io.BufferedInputStream
-import java.io.IOException
-import java.io.InputStream
 
 
 class PlayerWebViewClient(val context: Context, val mainView: IConnection, val callback: () -> Unit) : WebViewClient() {
@@ -107,7 +107,8 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
                 "    'b-post__support_holder'," +
                 "    'b-post__title'," +
                 "    'b-sidetitle'," +
-                "    'b-post__partcontent'];" +
+                "    'b-post__partcontent'," +
+                "    'b-post__infolast'];" +
                 "for (var i = 0; i < classesToHide.length; ++i) {" +
                 "    var els = document.getElementsByClassName(classesToHide[i]);" +
                 "    for (var j = 0; j < els.length; ++j) {" +
@@ -206,9 +207,6 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
         view?.evaluateJavascript(
             script3, null
         )
-        Log.d("PLAYER_DE", script1)
-        Log.d("PLAYER_DE", script2)
-        Log.d("PLAYER_DE", script3)
 
         // hide telegram hint
         view?.evaluateJavascript("\$('#tg-info-block-exclusive-close').click()", null)
@@ -220,18 +218,32 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
                     "});", null
         )
 
-        view?.evaluateJavascript("\n" +
-                "setTimeout(function () {\n" +
+        // TODO mutation list
+        val script551 = "setTimeout(function () {\n" +
+                "    document.body.childNodes[0].style.setProperty('display', 'none', 'important');\n" +
                 "    var iframeEls = document.getElementsByTagName('iframe');\n" +
                 "    for (var j = 0; j < iframeEls.length; ++j) {\n" +
-                "        var iframeEl = iframeEls[j]\n" +
+                "        var iframeEl = iframeEls[j];\n" +
                 "\n" +
                 "        if (iframeEl.id != 'pjsfrrscdnplayer') {\n" +
                 "            iframeEl.parentNode.style.setProperty('display', 'none', 'important');\n" +
                 "        }\n" +
                 "    }\n" +
-                "document.body.childNodes[0].style.setProperty('display', 'none', 'important');" +
-                "}, 1000)", null)
+                "\n" +
+                "    var aEls = document.getElementsByTagName('a');\n" +
+                "    for (var j = 0; j < aEls.length; ++j) {\n" +
+                "        var aEl = aEls[j];\n" +
+                "\n" +
+                "        if (aEl.href.match('://')) {\n" +
+                "            aEl.parentNode.style.setProperty('display', 'none', 'important');\n" +
+                "            aEl.parentNode.style.setProperty('height', '0px', 'important');\n" +
+                "            aEl.parentNode.style.setProperty('width', '0px', 'important');\n" +
+                "        }\n" +
+                "    }\n" +
+                "}, 1500)"
+        view?.evaluateJavascript(script551, null)
+
+        Log.d("PLAYER_DE", script551)
 
         callback()
 

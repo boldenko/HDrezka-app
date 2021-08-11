@@ -31,17 +31,16 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        when (key) {
-            "providers" -> {
-                activity.let {
+        activity.let {
+            when (key) {
+                "providers" -> {
                     if (it != null) {
                         SettingsData.provider = PreferenceManager.getDefaultSharedPreferences(it).getString("providers", it.resources.getStringArray(R.array.providersIds)[0])
                         applyProvider(it)
                     }
+
                 }
-            }
-            "ownProvider" -> {
-                activity.let {
+                "ownProvider" -> {
                     if (it != null) {
                         SettingsData.provider = PreferenceManager.getDefaultSharedPreferences(it).getString("ownProvider", "")
                         if (SettingsData.provider.isNullOrEmpty()) {
@@ -49,6 +48,13 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                         }
                         applyProvider(it)
                     }
+
+                }
+                "isPlayer" -> {
+                    SettingsData.isPlayer = PreferenceManager.getDefaultSharedPreferences(it).getBoolean("isPlayer", false)
+                }
+                "isMaxQuality" -> {
+                    SettingsData.isMaxQuality = PreferenceManager.getDefaultSharedPreferences(it).getBoolean("isMaxQuality", false)
                 }
             }
         }

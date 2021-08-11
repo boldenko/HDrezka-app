@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory app:title="@string/cat_interface">
         <ListPreference
@@ -26,6 +27,19 @@
             app:layout="@layout/custom_edit_preference"
             app:summary="@string/own_provider_hint"
             app:title="@string/own_provider" />
+
+        <CheckBoxPreference
+            android:layout="@layout/custom_checkbox_preference"
+            app:key="isPlayer"
+            app:summary="@string/isplayer_hint"
+            app:title="Использовать стороний плеер" />
+
+        <CheckBoxPreference
+            android:layout="@layout/custom_checkbox_preference"
+            app:key="isMaxQuality"
+            app:summary="@string/ismaxq_hint"
+            app:title="@string/ismaxq_title" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
