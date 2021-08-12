@@ -20,6 +20,7 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.DisplayMetrics
+import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
@@ -86,6 +87,8 @@ class FilmFragment : Fragment(), FilmView {
     override fun onDestroy() {
         playerView.destroy()
         activity?.window?.clearFlags(FLAG_KEEP_SCREEN_ON)
+        PlayerJsInterface.notifyanager?.cancel(0)
+        Log.d("notificationManager_TEST", "canceled on destroy")
 
         super.onDestroy()
     }
@@ -104,6 +107,8 @@ class FilmFragment : Fragment(), FilmView {
         if (hidden) {
             //do when hidden
             PlayerJsInterface.stop()
+            PlayerJsInterface.notifyanager?.cancel(0)
+            Log.d("notificationManager_TEST", "canceled on hidden")
         } else {
             //do when show
             wv = playerView

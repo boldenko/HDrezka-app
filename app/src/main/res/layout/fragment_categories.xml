@@ -25,8 +25,9 @@
             app:smsp_hint="@string/categories"
             app:smsp_hintColor="@color/white"
             app:smsp_hintSize="@dimen/small_text"
-            app:smsp_itemColor="@color/white"
+            app:smsp_itemListColor="@color/day_night_text"
             app:smsp_itemListHintColor="@color/white"
+            app:smsp_itemColor="@color/white"
             app:smsp_selectedItemListColor="@color/main_color_3" />
 
         <com.chivorn.smartmaterialspinner.SmartMaterialSpinner
@@ -39,6 +40,7 @@
             app:smsp_floatingLabelColor="@color/white"
             app:smsp_hint="@string/choose_genre_hint"
             app:smsp_hintColor="@color/white"
+            app:smsp_itemListColor="@color/day_night_text"
             app:smsp_hintSize="@dimen/small_text"
             app:smsp_itemColor="@color/white"
             app:smsp_itemListHintColor="@color/white"
@@ -55,6 +57,7 @@
             app:smsp_hint="@string/choose_year_hint"
             app:smsp_hintColor="@color/white"
             app:smsp_hintSize="@dimen/small_text"
+            app:smsp_itemListColor="@color/day_night_text"
             app:smsp_itemColor="@color/white"
             app:smsp_itemListHintColor="@color/white"
             app:smsp_selectedItemListColor="@color/main_color_3" />

@@ -33,7 +33,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
 
     override fun onFilmsListCreated() {
         newestFilmsPresenter = NewestFilmsPresenter(this, filmsListFragment)
-        filtersMenu = FiltersMenu(newestFilmsPresenter, requireActivity(), currentView.findViewById(R.id.fragment_newest_films_bt_filters))
+        filtersMenu = FiltersMenu(newestFilmsPresenter, requireActivity(), currentView.findViewById(R.id.fragment_newest_films_tv_filters))
         filtersMenu
             .createDialogFilter(FiltersMenu.AppliedFilter.COUNTRIES, resources.getStringArray(R.array.countries))
             .createDialogFilter(FiltersMenu.AppliedFilter.GENRES, resources.getStringArray(R.array.genres))

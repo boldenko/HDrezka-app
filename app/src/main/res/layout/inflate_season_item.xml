@@ -7,7 +7,7 @@
     android:paddingTop="15dp"
     android:paddingBottom="15dp"
     android:foreground="?attr/selectableItemBackground"
-    android:textColor="@color/black"
+    android:textColor="@color/day_night_text"
     android:textSize="@dimen/normal_text">
 
 </TextView>

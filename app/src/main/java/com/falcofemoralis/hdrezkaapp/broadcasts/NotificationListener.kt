@@ -46,6 +46,8 @@ class NotificationListener : BroadcastReceiver() {
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        PlayerJsInterface.notifyanager = notificationManager
+
         val built = builder.build()
         Picasso.get().load(presenter.film.posterPath).into(expandedView, R.id.notif_poster, id, built)
 

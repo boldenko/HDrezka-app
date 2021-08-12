@@ -429,7 +429,7 @@ object FilmModel {
         val result: Document? = Jsoup.connect(SettingsData.provider + GET_STREAM_POST + "/?t=$unixTime")
             .data(data)
             .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-            .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
+            //    .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
             .ignoreContentType(true)
             .post()
 
@@ -499,13 +499,14 @@ object FilmModel {
         val seasons = document.select("ul.b-simple_episodes__list")
 
         for ((i, season) in seasons.withIndex()) {
+            val n = season.attr("id").replace("simple-episodes-list-", "")
             val episodesList: ArrayList<String> = ArrayList()
             val episodes = season.select("li.b-simple_episode__item")
             for (episode in episodes) {
                 episodesList.add(episode.attr("data-episode_id"))
             }
 
-            seasonList[(i + 1).toString()] = episodesList
+            seasonList[n] = episodesList
         }
 
         return seasonList
@@ -523,7 +524,7 @@ object FilmModel {
         val result: Document? = Jsoup.connect(SettingsData.provider + GET_STREAM_POST + "/?t=$unixTime")
             .data(data)
             .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-            .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
+            //  .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
             .ignoreContentType(true)
             .post()
 

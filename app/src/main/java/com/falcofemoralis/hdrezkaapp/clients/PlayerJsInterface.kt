@@ -44,6 +44,7 @@ class PlayerJsInterface(val mContext: Context) {
             .setCustomContentView(expandedView)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         val notificationManager = mContext.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notifyanager = notificationManager
 
         val built = builder.build()
         Picasso.get().load(presenter.film.posterPath).into(expandedView, R.id.notif_poster, id, built)
@@ -57,6 +58,7 @@ class PlayerJsInterface(val mContext: Context) {
         }
 
         var playing = false
+        var notifyanager: NotificationManager? = null
     }
 
     private fun createNotificationChannel(id: Number) {

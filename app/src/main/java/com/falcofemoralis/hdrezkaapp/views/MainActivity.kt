@@ -43,8 +43,8 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     private fun initApp() {
         if (isInternetAvailable(applicationContext)) {
             if (savedInstanceState == null) {
-                UserData.init(applicationContext)
                 SettingsData.init(applicationContext)
+                UserData.init(applicationContext)
 
                 mainFragment = ViewPagerFragment()
                 onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null)
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         } else {
             showConnectionError(IConnection.ErrorType.NO_INTERNET)
         }
-        setTheme(R.style.AppTheme)
+        //setTheme(R.style.AppTheme)
     }
 
     private fun createUserMenu() {

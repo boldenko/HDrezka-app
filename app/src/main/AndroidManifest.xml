@@ -15,7 +15,8 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/ic_app"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
 
         <provider
             android:name="androidx.core.content.FileProvider"

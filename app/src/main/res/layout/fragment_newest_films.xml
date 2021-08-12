@@ -6,17 +6,26 @@
     android:orientation="vertical"
     tools:context="com.falcofemoralis.hdrezkaapp.views.fragments.NewestFilmsFragment">
 
-    <Button
-        android:id="@+id/fragment_newest_films_bt_filters"
+
+    <TextView
+        android:id="@+id/fragment_newest_films_tv_filters"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="7dp"
-        android:text="@string/filters" />
+        android:background="@drawable/roundedbutton"
+        android:foreground="?attr/selectableItemBackground"
+        android:padding="7dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="@string/filters"
+        android:textColor="@color/white"
+        android:textSize="@dimen/normal_text"
+        android:textStyle="bold" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_newest_films_fcv_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 </LinearLayout>
 
 
