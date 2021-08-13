@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.falcofemoralis.hdrezkaapp.R
@@ -22,7 +23,6 @@ import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
 import com.falcofemoralis.hdrezkaapp.views.fragments.UserFragment
 import com.falcofemoralis.hdrezkaapp.views.fragments.ViewPagerFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import kotlin.system.exitProcess
 
@@ -160,11 +160,12 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         mainFragment.setAdapter()
     }
 
-    private fun setUserAvatar() {
-        UserData.avatarLink?.let {
-            if (UserData.avatarLink!!.isNotEmpty()) {
-                Picasso.get().load(it).networkPolicy(NetworkPolicy.OFFLINE).into(findViewById<ImageView>(R.id.activity_main_iv_user))
-            }
+    fun setUserAvatar() {
+        val imageView: ImageView = findViewById(R.id.activity_main_iv_user)
+        if (UserData.avatarLink != null && UserData.avatarLink!!.isNotEmpty()) {
+            Picasso.get().load(UserData.avatarLink).into(imageView)
+        } else {
+            imageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.no_avatar))
         }
     }
 

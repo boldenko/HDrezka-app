@@ -2,7 +2,10 @@ package com.falcofemoralis.hdrezkaapp.objects
 
 import android.content.Context
 import android.util.Log
+import android.webkit.CookieManager
+import android.webkit.WebStorage
 import android.widget.Toast
+import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.utils.CookieStorage
 import com.falcofemoralis.hdrezkaapp.utils.FileManager
 
@@ -30,12 +33,12 @@ object UserData {
                 val dle_user_id = CookieStorage.getCookie(SettingsData.provider, "dle_user_id")
                 if (dle_user_id.isNullOrEmpty()) {
                     Log.d("COOOOKIES", "dle_user_id IS EMPTY")
-                    // load from internal storage
                 } else {
                     Log.d("COOOOKIES", "dle_user_id IS OK")
                 }
             } catch (e: Exception) {
-                Toast.makeText(context, "dle_user_id failed!!! + $e", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, context.getString(R.string.session_invalid), Toast.LENGTH_LONG).show()
+                reset(context)
             }
         }
     }
@@ -47,17 +50,20 @@ object UserData {
 
     fun setAvatar(avatarLink: String?, context: Context) {
         if (avatarLink != null) {
+            this.avatarLink = avatarLink
             FileManager.writeFile(USER_AVATAR, avatarLink, false, context)
         }
     }
 
-    fun setUserData(context: Context) {
-
-    }
-
     fun reset(context: Context) {
         isLoggedIn = false
+        val cm = CookieManager.getInstance()
+        cm.setCookie(SettingsData.provider, null)
+        cm.removeAllCookies(null)
+        cm.flush()
+        WebStorage.getInstance().deleteAllData();
         FileManager.writeFile(USER_FILE, "0", false, context)
         FileManager.writeFile(USER_AVATAR, "", false, context)
+        avatarLink = null
     }
 }

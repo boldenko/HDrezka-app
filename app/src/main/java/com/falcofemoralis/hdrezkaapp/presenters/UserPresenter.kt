@@ -25,11 +25,10 @@ class UserPresenter(private val userView: UserView, private val context: Context
     fun getUserAvatar() {
         GlobalScope.launch {
             try {
-                val link: String? = UserModel.getUserAvatarLink()
-                UserData.setAvatar(link, context)
+                UserData.setAvatar(UserModel.getUserAvatarLink(), context)
 
                 withContext(Dispatchers.Main) {
-                    userView.setUserAvatar(link)
+                    userView.setUserAvatar()
                 }
             } catch (e: Exception) {
                 catchException(e, userView)
@@ -38,13 +37,12 @@ class UserPresenter(private val userView: UserView, private val context: Context
         }
     }
 
-    fun enter(){
+    fun enter() {
         UserData.setLoggedIn(context)
     }
 
-    fun exit(){
+    fun exit() {
         UserData.reset(context)
-        CookieManager.getInstance().removeAllCookies(null)
-        CookieManager.getInstance().flush()
+        userView.setUserAvatar()
     }
 }

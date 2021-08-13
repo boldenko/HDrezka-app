@@ -129,4 +129,5 @@
     <string name="ismaxq_title">Автовыбор лучшего качества</string>
     <string name="player_chooser_hint">Всегда будет предложен выбор стороннего плеера</string>
     <string name="player_chooser_title">Выбор плеера</string>
+    <string name="session_invalid">Произошла ошибка. Перезайдите в аккаунт и останьтесь в приложении чуточьку дольше!)</string>
 </resources>
