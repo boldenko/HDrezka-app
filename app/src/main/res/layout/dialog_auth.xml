@@ -13,11 +13,12 @@
 
     <Button
         android:id="@+id/dialog_auth_bt_close"
-        android:layout_marginEnd="10dp"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp"
         android:text="X"
+        android:textColor="@color/white"
         android:visibility="gone" />
 
     <WebView

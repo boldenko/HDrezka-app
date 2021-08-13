@@ -4,4 +4,5 @@
     <dimen name="normal_text">@dimen/_12ssp</dimen>
     <dimen name="small_text">@dimen/_10ssp</dimen>
     <dimen name="pref_padding">56dp</dimen>
+    <dimen name="root_pref_space">10dp</dimen>
 </resources>

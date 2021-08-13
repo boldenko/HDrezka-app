@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -124,7 +125,17 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
                 "" + // fix width translations
                 "const translatorArray = document.getElementsByClassName('b-translator__item');" +
                 "for (var i = 0; i < translatorArray.length; i++) {" +
-                "    translatorArray[i].style.minWidth = '40%';" +
+                "    translatorArray[i].style.setProperty('min-width', '100%', 'important');" +
+                "    translatorArray[i].style.setProperty('width', 'unset', 'important');" +
+                "}" +
+                "const translatorBlock = document.getElementsByClassName(\"b-translators__block\")\n" +
+                "if (translatorBlock.length > 0) {\n" +
+                "    translatorBlock[0].style.setProperty('padding-right', '10px', 'important');\n" +
+                "}\n" +
+                "\n" +
+                "const translatorList = document.getElementsByClassName(\"b-translators__list\")\n" +
+                "if (translatorList.length > 0) {\n" +
+                "    translatorList[0].style.setProperty('padding-right', 'unset', 'important');\n" +
                 "}" +
                 "" + // fix elements sizes
                 "document.getElementById('cdnplayer-container').style.setProperty('width', '100%', 'important');" +
@@ -257,6 +268,10 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
                 "}"
         view?.evaluateJavascript(script6, null)
         callback()
+
+        Log.d("SSCRIPT", script1)
+        Log.d("SSCRIPT", script2)
+
 
         super.onPageFinished(view, url)
     }

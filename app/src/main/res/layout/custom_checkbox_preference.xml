@@ -2,10 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="20dp"
     android:orientation="horizontal"
     android:paddingStart="@dimen/pref_padding"
+    android:paddingTop="@dimen/root_pref_space"
     android:paddingEnd="@dimen/pref_padding"
+    android:paddingBottom="@dimen/root_pref_space"
     android:weightSum="1">
 
     <LinearLayout

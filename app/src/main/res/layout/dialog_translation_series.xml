@@ -17,6 +17,7 @@
         app:smsp_hintColor="@color/day_night_text"
         app:smsp_hintSize="@dimen/small_text"
         app:smsp_itemColor="@color/day_night_text"
+        app:smsp_itemListColor="@color/day_night_text"
         app:smsp_itemListHintColor="@color/day_night_text"
         app:smsp_selectedItemListColor="@color/main_color_3" />
 

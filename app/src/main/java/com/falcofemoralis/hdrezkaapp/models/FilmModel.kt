@@ -188,14 +188,17 @@ object FilmModel {
             } else {
                 for (directorElement in els) {
                     var name = directorElement.select("span a span").text()
-                    val id = directorElement.select("span").attr("data-id").toInt()
-                    val pid = directorElement.select("span").attr("data-pid").toInt()
+                    val idText = directorElement.select("span").attr("data-id")
+                    val pidText = directorElement.select("span").attr("data-pid")
+
                     if (name.isEmpty()) {
                         name = directorElement.text()
                     }
-                    val actor = Actor(id, pid)
-                    actor.name = name
-                    directors.add(actor)
+                    if (idText.isNotEmpty() && pidText.isNotEmpty()) {
+                        val actor = Actor(idText.toInt(), pidText.toInt())
+                        actor.name = name
+                        directors.add(actor)
+                    }
                 }
             }
         }

@@ -12,10 +12,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.text.bold
 import androidx.core.text.italic
@@ -206,6 +203,10 @@ class CommentsRecyclerViewAdapter(
 
                     }
                 }
+            }
+        } else {
+            holder.likeBtn.setOnClickListener {
+                Toast.makeText(context, context.getString(R.string.need_register), Toast.LENGTH_SHORT).show()
             }
         }
 

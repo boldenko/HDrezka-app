@@ -629,7 +629,7 @@ class FilmFragment : Fragment(), FilmView {
 
     override fun setCommentEditor(filmId: String) {
         val commentEditorCont: LinearLayout = currentView.findViewById(R.id.fragment_film_ll_comment_editor_container) as LinearLayout
-        val commentEditorOpener: TextView = currentView.findViewById<TextView>(R.id.fragment_film_view_comment_editor_opener)
+        val commentEditorOpener: TextView = currentView.findViewById(R.id.fragment_film_view_comment_editor_opener)
 
         if (UserData.isLoggedIn == true) {
             commentEditor = CommentEditor(commentEditorCont, requireContext(), filmId, this, this)
@@ -872,17 +872,17 @@ class FilmFragment : Fragment(), FilmView {
                 Toast.makeText(requireContext(), getString(R.string.no_manager), Toast.LENGTH_LONG).show()
             }
         } else {
-            var intent = Intent("android.intent.action.VIEW")
+            var intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             intent.setDataAndType(Uri.parse(url), "video/*")
             intent.putExtra("title", filmTitle)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
             if (SettingsData.isPlayerChooser == true) {
                 intent = Intent.createChooser(intent, getString(R.string.open_film_in))
             }
-
-            if (intent.resolveActivity(requireContext().packageManager) != null) {
+            try{
                 startActivity(intent)
-            } else {
+            } catch (e: Exception){
                 Toast.makeText(requireContext(), getString(R.string.no_player), Toast.LENGTH_LONG).show()
             }
         }
