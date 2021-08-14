@@ -1,6 +1,10 @@
 package com.falcofemoralis.hdrezkaapp.views
 
+import android.annotation.SuppressLint
+import android.app.UiModeManager
 import android.content.Context
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
@@ -20,6 +24,7 @@ import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.objects.UserData
 import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
+import com.falcofemoralis.hdrezkaapp.views.atv.MainFragment
 import com.falcofemoralis.hdrezkaapp.views.fragments.UserFragment
 import com.falcofemoralis.hdrezkaapp.views.fragments.ViewPagerFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -28,16 +33,32 @@ import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnection {
     private var isSettingsOpened: Boolean = false
-    private lateinit var mainFragment: ViewPagerFragment
+    private lateinit var mainFragment: Fragment
     private lateinit var currentFragment: Fragment
     private var savedInstanceState: Bundle? = null
+    private lateinit var interfaceMode: Number
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
         this.savedInstanceState = savedInstanceState
+        initInterface()
         initApp()
+    }
+
+    @SuppressLint("SourceLockedOrientationActivity")
+    private fun initInterface() {
+        interfaceMode = (getSystemService(UI_MODE_SERVICE) as UiModeManager).currentModeType
+
+        if (interfaceMode == Configuration.UI_MODE_TYPE_TELEVISION) {
+            setContentView(R.layout.activity_main2)
+            setTheme(R.style.Theme_Leanback)
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        } else {
+            setContentView(R.layout.activity_main)
+            setTheme(R.style.AppTheme)
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
     }
 
     private fun initApp() {
@@ -46,20 +67,24 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                 SettingsData.init(applicationContext)
                 UserData.init(applicationContext)
 
-                mainFragment = ViewPagerFragment()
-                onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null)
-                createUserMenu()
-                setUserAvatar()
+                if (interfaceMode == Configuration.UI_MODE_TYPE_TELEVISION) {
+                    mainFragment = MainFragment()
+                    supportFragmentManager.beginTransaction().replace(R.id.main_browse_fragment, mainFragment).commitNow()
+                } else {
+                    mainFragment = ViewPagerFragment()
+                    onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null)
+                    createUserMenu()
+                    setUserAvatar()
 
-                if (intent.data != null) {
-                    val link = SettingsData.provider + intent.data.toString().replace("${intent.data!!.scheme}://", "").replace(intent.data!!.host ?: "", "")
-                    FragmentOpener.openWithData(mainFragment, this, Film(link), "film")
+                    if (intent.data != null) {
+                        val link = SettingsData.provider + intent.data.toString().replace("${intent.data!!.scheme}://", "").replace(intent.data!!.host ?: "", "")
+                        FragmentOpener.openWithData(mainFragment, this, Film(link), "film")
+                    }
                 }
             }
         } else {
             showConnectionError(IConnection.ErrorType.NO_INTERNET)
         }
-        //setTheme(R.style.AppTheme)
     }
 
     private fun createUserMenu() {
@@ -157,7 +182,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     }
 
     fun updatePager() {
-        mainFragment.setAdapter()
+        (mainFragment as ViewPagerFragment).setAdapter()
     }
 
     fun setUserAvatar() {
@@ -189,6 +214,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     }
 
     fun redrawPage(item: UpdateItem) {
-        mainFragment.updatePage(item)
+        (mainFragment as ViewPagerFragment).updatePage(item)
     }
 }
