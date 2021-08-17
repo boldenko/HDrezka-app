@@ -41,7 +41,7 @@ class NotificationListener : BroadcastReceiver() {
         expandedView.setOnClickPendingIntent(R.id.pausePlay, pendingSwitchIntent)
 
         val builder = NotificationCompat.Builder(context, "$id")
-            .setSmallIcon(R.drawable.ic_app)
+            .setSmallIcon(R.drawable.ic_baseline_play_arrow_24)
             .setCustomContentView(expandedView)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 

@@ -607,8 +607,8 @@ class FilmFragment : Fragment(), FilmView {
         }
     }
 
-    override fun showConnectionError(type: IConnection.ErrorType) {
-        ExceptionHelper.showToastError(requireContext(), type)
+    override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
+        ExceptionHelper.showToastError(requireContext(), type, errorText)
     }
 
     override fun setCommentsList(list: ArrayList<Comment>, filmId: String) {

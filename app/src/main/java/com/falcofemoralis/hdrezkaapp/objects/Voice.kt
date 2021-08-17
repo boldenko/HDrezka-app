@@ -22,5 +22,8 @@ open class Voice : Serializable {
     var id: String? = null
     var streams: String? = null
     var seasons: HashMap<String, ArrayList<String>>? = null
+    var isCamrip: String = "0"
+    var isDirector: String = "0"
+    var isAds: String = "0"
 }
 

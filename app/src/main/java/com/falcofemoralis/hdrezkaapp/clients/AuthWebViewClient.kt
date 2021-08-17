@@ -31,7 +31,7 @@ class AuthWebViewClient(val type: UserPresenter.WindowType, val mainView: IConne
 
     override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
         if (error?.errorCode == ERROR_TIMEOUT) {
-            mainView.showConnectionError(IConnection.ErrorType.TIMEOUT)
+            mainView.showConnectionError(IConnection.ErrorType.TIMEOUT, error.toString())
         }
         super.onReceivedError(view, request, error)
     }

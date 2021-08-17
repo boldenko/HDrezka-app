@@ -40,7 +40,7 @@ class PlayerJsInterface(val mContext: Context) {
         expandedView.setOnClickPendingIntent(R.id.pausePlay, pendingSwitchIntent)
 
         val builder = NotificationCompat.Builder(mContext, "$id")
-            .setSmallIcon(R.drawable.ic_app)
+            .setSmallIcon(R.drawable.ic_baseline_play_arrow_24)
             .setCustomContentView(expandedView)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         val notificationManager = mContext.getSystemService(NOTIFICATION_SERVICE) as NotificationManager

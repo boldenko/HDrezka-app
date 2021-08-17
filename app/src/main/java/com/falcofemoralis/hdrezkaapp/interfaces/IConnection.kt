@@ -12,5 +12,5 @@ interface IConnection {
         MODERATE_BY_ADMIN
     }
 
-    fun showConnectionError(type: ErrorType)
+    fun showConnectionError(type: ErrorType, errorText: String)
 }

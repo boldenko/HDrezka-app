@@ -124,7 +124,7 @@ class CategoriesFragment : Fragment(), CategoriesView, AdapterView.OnItemSelecte
         currentView.findViewById<FragmentContainerView>(R.id.fragment_categories_fcv_container).visibility = View.VISIBLE
     }
 
-    override fun showConnectionError(type: IConnection.ErrorType) {
-        ExceptionHelper.showToastError(requireContext(), type)
+    override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
+        ExceptionHelper.showToastError(requireContext(), type, errorText)
     }
 }

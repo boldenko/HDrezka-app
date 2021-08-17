@@ -101,8 +101,8 @@ class ActorFragment : Fragment(), ActorView {
         }
     }
 
-    override fun showConnectionError(type: IConnection.ErrorType) {
-        ExceptionHelper.showToastError(requireContext(), type)
+    override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
+        ExceptionHelper.showToastError(requireContext(), type, errorText)
     }
 
     private fun listCallback(film: Film) {

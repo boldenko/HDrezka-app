@@ -54,7 +54,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
         newestFilmsPresenter.filmsListPresenter.getNextFilms()
     }
 
-    override fun showConnectionError(type: IConnection.ErrorType) {
-        ExceptionHelper.showToastError(requireContext(), type)
+    override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
+        ExceptionHelper.showToastError(requireContext(), type, errorText)
     }
 }

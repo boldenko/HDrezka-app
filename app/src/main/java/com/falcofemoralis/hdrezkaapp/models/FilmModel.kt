@@ -307,7 +307,11 @@ object FilmModel {
         val filmTranslations: ArrayList<Voice> = ArrayList()
         val els = document.select(".b-translator__item")
         for (el in els) {
-            filmTranslations.add(Voice(el.attr("title"), el.attr("data-translator_id")))
+            val voice = Voice(el.attr("title"), el.attr("data-translator_id"))
+            voice.isAds = el.attr("data-ads")
+            voice.isCamrip = el.attr("data-camrip")
+            voice.isDirector = el.attr("data-director")
+            filmTranslations.add(voice)
         }
 
         // no film translations
@@ -422,10 +426,13 @@ object FilmModel {
         }
     }
 
-    private fun getStreamsByTranslationId(filmId: Number, transId: String): String {
+    private fun getStreamsByTranslationId(filmId: Number, translation: Voice): String {
         val data: ArrayMap<String, String> = ArrayMap()
         data["id"] = filmId.toString()
-        data["translator_id"] = transId
+        data["translator_id"] = translation.id
+        data["is_camrip"] = translation.isCamrip
+        data["is_ads"] = translation.isAds
+        data["is_director"] = translation.isDirector
         data["action"] = "get_movie"
 
         val unixTime = System.currentTimeMillis()
@@ -454,7 +461,7 @@ object FilmModel {
         val parsedStreams: ArrayList<Stream> = ArrayList()
 
         if (translation.id != null && translation.streams == null) {
-            translation.streams = getStreamsByTranslationId(filmId, translation.id!!)
+            translation.streams = getStreamsByTranslationId(filmId, translation)
         }
 
         val split: Array<String> = translation.streams!!.split(",").toTypedArray()

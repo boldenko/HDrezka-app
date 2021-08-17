@@ -50,15 +50,15 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     private fun initInterface() {
         interfaceMode = (getSystemService(UI_MODE_SERVICE) as UiModeManager).currentModeType
 
-        if (interfaceMode == Configuration.UI_MODE_TYPE_TELEVISION) {
+       /* if (interfaceMode == Configuration.UI_MODE_TYPE_TELEVISION) {
             setContentView(R.layout.activity_main2)
             setTheme(R.style.Theme_Leanback)
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        } else {
+        } else {*/
             setContentView(R.layout.activity_main)
             setTheme(R.style.AppTheme)
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+       /* }*/
     }
 
     private fun initApp() {
@@ -67,10 +67,10 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                 SettingsData.init(applicationContext)
                 UserData.init(applicationContext)
 
-                if (interfaceMode == Configuration.UI_MODE_TYPE_TELEVISION) {
+              /*  if (interfaceMode == Configuration.UI_MODE_TYPE_TELEVISION) {
                     mainFragment = MainFragment()
                     supportFragmentManager.beginTransaction().replace(R.id.main_browse_fragment, mainFragment).commitNow()
-                } else {
+                } else {*/
                     mainFragment = ViewPagerFragment()
                     onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null)
                     createUserMenu()
@@ -80,10 +80,10 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                         val link = SettingsData.provider + intent.data.toString().replace("${intent.data!!.scheme}://", "").replace(intent.data!!.host ?: "", "")
                         FragmentOpener.openWithData(mainFragment, this, Film(link), "film")
                     }
-                }
+                /*}*/
             }
         } else {
-            showConnectionError(IConnection.ErrorType.NO_INTERNET)
+            showConnectionError(IConnection.ErrorType.NO_INTERNET, "")
         }
     }
 
@@ -194,7 +194,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         }
     }
 
-    override fun showConnectionError(type: IConnection.ErrorType) {
+    override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
         if (type == IConnection.ErrorType.NO_INTERNET) {
             val dialog = MaterialAlertDialogBuilder(this)
             dialog.setTitle(getString(R.string.no_connection))

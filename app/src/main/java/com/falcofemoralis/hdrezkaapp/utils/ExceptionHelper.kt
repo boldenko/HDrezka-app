@@ -16,7 +16,7 @@ import org.jsoup.parser.ParseError
 import java.net.SocketTimeoutException
 
 object ExceptionHelper {
-    fun showToastError(context: Context, type: ErrorType) {
+    fun showToastError(context: Context, type: ErrorType, errorText: String) {
         GlobalScope.launch {
             withContext(Dispatchers.Main) {
                 val textId: Int = when (type) {
@@ -33,7 +33,7 @@ object ExceptionHelper {
                 if (type == ErrorType.BLOCKED_SITE) {
                     createDialog(textId, context)
                 } else {
-                    Toast.makeText(context, context.getString(textId), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(textId) + ": " + errorText, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -68,6 +68,6 @@ object ExceptionHelper {
             else -> ErrorType.ERROR
         }
 
-        view.showConnectionError(type)
+        view.showConnectionError(type, e.toString())
     }
 }
