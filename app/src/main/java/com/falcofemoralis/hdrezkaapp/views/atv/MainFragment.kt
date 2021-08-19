@@ -1,39 +1,26 @@
 package com.falcofemoralis.hdrezkaapp.views.atv
 
-import java.util.Collections
-import java.util.Timer
-import java.util.TimerTask
-
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
-import androidx.leanback.app.BackgroundManager
-import androidx.leanback.app.BrowseSupportFragment
-import androidx.leanback.widget.ArrayObjectAdapter
-import androidx.leanback.widget.HeaderItem
-import androidx.leanback.widget.ImageCardView
-import androidx.leanback.widget.ListRow
-import androidx.leanback.widget.ListRowPresenter
-import androidx.leanback.widget.OnItemViewClickedListener
-import androidx.leanback.widget.OnItemViewSelectedListener
-import androidx.leanback.widget.Presenter
-import androidx.leanback.widget.Row
-import androidx.leanback.widget.RowPresenter
-import androidx.core.app.ActivityOptionsCompat
-import androidx.core.content.ContextCompat
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.ContextCompat
+import androidx.leanback.app.BackgroundManager
+import androidx.leanback.app.BrowseSupportFragment
+import androidx.leanback.widget.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.falcofemoralis.hdrezkaapp.R
+import java.util.*
 
 /**
  * Loads a grid of cards with movies to browse.
@@ -51,13 +38,19 @@ class MainFragment : BrowseSupportFragment() {
         Log.i(TAG, "onCreate")
         super.onActivityCreated(savedInstanceState)
 
-        prepareBackgroundManager()
+        prepareBackgroundManager() // устанавлиает бекграунд в серый
 
-        setupUIElements()
+        setupUIElements() // добавляет надпись (название приложения videos by your company) и делает панель слева синей
 
-        loadRows()
+        loadRows() // добавляет в панель категории
 
-        setupEventListeners()
+        setupEventListeners() // Добавляет нажатия на фильм
+
+     /*   setHeaderPresenterSelector(object : PresenterSelector() {
+            override fun getPresenter(o: Any): Presenter {
+                return IconHeaderItemPresenter()
+            }
+        })*/
     }
 
     override fun onDestroy() {
@@ -67,7 +60,6 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     private fun prepareBackgroundManager() {
-
         mBackgroundManager = BackgroundManager.getInstance(activity)
         mBackgroundManager.attach(requireActivity().window)
         mDefaultBackground = ContextCompat.getDrawable(requireContext(), R.drawable.default_background)

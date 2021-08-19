@@ -56,6 +56,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             "isPlayerChooser" -> {
                 SettingsData.isPlayerChooser = preferences.getBoolean("isPlayerChooser", false)
             }
+            "isExternalDownload" -> {
+                SettingsData.isExternalDownload = preferences.getBoolean("isExternalDownload", false)
+            }
         }
     }
 

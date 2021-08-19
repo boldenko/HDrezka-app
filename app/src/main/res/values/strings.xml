@@ -130,6 +130,9 @@
     <string name="player_chooser_hint">Всегда будет предложен выбор стороннего плеера</string>
     <string name="player_chooser_title">Выбор плеера</string>
     <string name="session_invalid">Произошла ошибка. Перезайдите в аккаунт и останьтесь в приложении чуточьку дольше!)</string>
+    <string name="isExternalManager_title">Внешний менеджер загрузок</string>
+    <string name="isExternalManager_hint">Будет предложен выбор внешнего менеджера</string>
+
     <string name="title_activity_main">Leanback MainActivity</string>
     <string name="browse_title">Videos by Your Company</string>
     <string name="related_movies">Related Videos</string>

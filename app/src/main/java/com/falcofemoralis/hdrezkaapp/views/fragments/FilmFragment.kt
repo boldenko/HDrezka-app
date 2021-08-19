@@ -860,14 +860,24 @@ class FilmFragment : Fragment(), FilmView {
                     fileName.append(" ${stream.quality}")
                 }
 
-                val request = DownloadManager.Request(parseUri)
-                request.setTitle(fileName)
-                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-                request.allowScanningByMediaScanner()
                 fileName.append(" ${parseUri.lastPathSegment}")
-                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName.toString())
-                manager.enqueue(request)
-                Toast.makeText(requireContext(), getString(R.string.download_started), Toast.LENGTH_SHORT).show()
+
+                if (SettingsData.isExternalDownload == true) {
+                    val sharingIntent = Intent(Intent.ACTION_SEND)
+                    sharingIntent.type = "text/plain"
+                    val body: String = getString(R.string.share_body, fileName.toString(), parseUri)
+                    sharingIntent.putExtra(Intent.EXTRA_TEXT, body)
+                    startActivity(sharingIntent)
+                } else {
+                    val request = DownloadManager.Request(parseUri)
+                    request.setTitle(fileName)
+                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+                    request.allowScanningByMediaScanner()
+                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName.toString())
+                    manager.enqueue(request)
+                    Toast.makeText(requireContext(), getString(R.string.download_started), Toast.LENGTH_SHORT).show()
+                }
+
             } else {
                 Toast.makeText(requireContext(), getString(R.string.no_manager), Toast.LENGTH_LONG).show()
             }
@@ -880,9 +890,9 @@ class FilmFragment : Fragment(), FilmView {
             if (SettingsData.isPlayerChooser == true) {
                 intent = Intent.createChooser(intent, getString(R.string.open_film_in))
             }
-            try{
+            try {
                 startActivity(intent)
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 Toast.makeText(requireContext(), getString(R.string.no_player), Toast.LENGTH_LONG).show()
             }
         }

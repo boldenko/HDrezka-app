@@ -13,6 +13,7 @@ object SettingsData {
     var isPlayer: Boolean? = null
     var isMaxQuality: Boolean? = null
     var isPlayerChooser: Boolean? = null
+    var isExternalDownload: Boolean? = null
 
     fun init(context: Context) {
         prefs = PreferenceManager.getDefaultSharedPreferences(context)
@@ -26,6 +27,7 @@ object SettingsData {
         isPlayer = prefs?.getBoolean("isPlayer", false)
         isMaxQuality = prefs?.getBoolean("isMaxQuality", false)
         isPlayerChooser = prefs?.getBoolean("isPlayerChooser", false)
+        isExternalDownload = prefs?.getBoolean("isExternalDownload", false)
     }
 
     /*  fun setProviderFromSettings(provider: String) {
