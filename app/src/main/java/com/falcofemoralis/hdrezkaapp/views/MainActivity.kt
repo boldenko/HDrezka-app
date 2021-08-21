@@ -2,84 +2,101 @@ package com.falcofemoralis.hdrezkaapp.views
 
 import android.annotation.SuppressLint
 import android.app.UiModeManager
-import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.net.wifi.WifiManager
 import android.os.Bundle
+import android.util.Log
+import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.falcofemoralis.hdrezkaapp.R
+import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.constants.UpdateItem
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
+import com.falcofemoralis.hdrezkaapp.interfaces.IPagerView
+import com.falcofemoralis.hdrezkaapp.interfaces.NavigationMenuCallback
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener.Action
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.objects.UserData
+import com.falcofemoralis.hdrezkaapp.utils.ConnectionManager.isInternetAvailable
+import com.falcofemoralis.hdrezkaapp.utils.ConnectionManager.showConnectionErrorDialog
 import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
-import com.falcofemoralis.hdrezkaapp.views.atv.MainFragment
-import com.falcofemoralis.hdrezkaapp.views.fragments.UserFragment
-import com.falcofemoralis.hdrezkaapp.views.fragments.ViewPagerFragment
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.falcofemoralis.hdrezkaapp.views.fragments.*
+import com.falcofemoralis.hdrezkaapp.views.tv.NavigationMenu
+import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.FragmentChangeListener
+import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.NavigationStateListener
+import com.falcofemoralis.hdrezkaapp.views.tv.utils.Constants
 import com.squareup.picasso.Picasso
-import kotlin.system.exitProcess
 
-class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnection {
+class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnection, IPagerView, NavigationStateListener, FragmentChangeListener,
+    NavigationMenuCallback {
     private var isSettingsOpened: Boolean = false
     private lateinit var mainFragment: Fragment
     private lateinit var currentFragment: Fragment
     private var savedInstanceState: Bundle? = null
     private lateinit var interfaceMode: Number
 
+    /* TV */
+    private lateinit var navMenuFragment: NavigationMenu
+    private lateinit var newestFilmsFragment: NewestFilmsFragment
+    private lateinit var categoriesFragment: CategoriesFragment
+    private lateinit var searchFragment: SearchFragment
+    private lateinit var bookmarksFragment: BookmarksFragment
+    private lateinit var watchLaterFragment: WatchLaterFragment
+    private lateinit var navFragmentLayout: FrameLayout
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        interfaceMode = (getSystemService(UI_MODE_SERVICE) as UiModeManager).currentModeType
+        when (interfaceMode) {
+            Configuration.UI_MODE_TYPE_TELEVISION -> setContentView(R.layout.tv_activity_main)
+            else -> setContentView(R.layout.activity_main)
+        }
+
         this.savedInstanceState = savedInstanceState
-        initInterface()
         initApp()
     }
 
     @SuppressLint("SourceLockedOrientationActivity")
-    private fun initInterface() {
-        interfaceMode = (getSystemService(UI_MODE_SERVICE) as UiModeManager).currentModeType
-
-        if (interfaceMode == Configuration.UI_MODE_TYPE_TELEVISION) {
-            setContentView(R.layout.tv_activity_main)
-            setTheme(R.style.Theme_Leanback)
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        } else {
-            setContentView(R.layout.activity_main)
-            setTheme(R.style.AppTheme)
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
-    }
-
     private fun initApp() {
         if (isInternetAvailable(applicationContext)) {
             if (savedInstanceState == null) {
-                SettingsData.init(applicationContext)
                 UserData.init(applicationContext)
 
-                if (interfaceMode == Configuration.UI_MODE_TYPE_TELEVISION) {
-                    mainFragment = MainFragment()
-                    supportFragmentManager.beginTransaction().replace(R.id.main_browse_fragment, mainFragment).commitNow()
-                } else {
-                    mainFragment = ViewPagerFragment()
-                    onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null)
-                    createUserMenu()
-                    setUserAvatar()
+                when (interfaceMode) {
+                    Configuration.UI_MODE_TYPE_TELEVISION -> {
+                        SettingsData.init(applicationContext, DeviceType.TV)
+                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
-                    if (intent.data != null) {
-                        val link = SettingsData.provider + intent.data.toString().replace("${intent.data!!.scheme}://", "").replace(intent.data!!.host ?: "", "")
-                        FragmentOpener.openWithData(mainFragment, this, Film(link), "film")
+                        navFragmentLayout = findViewById(R.id.nav_fragment)
+
+                        navMenuFragment = NavigationMenu()
+                        supportFragmentManager.beginTransaction().replace(R.id.nav_fragment, navMenuFragment).commit()
+
+                        newestFilmsFragment = NewestFilmsFragment()
+                        mainFragment = newestFilmsFragment
+                        onFragmentInteraction(null, newestFilmsFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null)
                     }
+                    else -> {
+                        SettingsData.init(applicationContext, DeviceType.MOBILE)
+                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                        mainFragment = ViewPagerFragment()
+                        onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null)
+
+                        createUserMenu()
+                        setUserAvatar()
+                    }
+                }
+
+                if (intent.data != null) {
+                    val link = SettingsData.provider + intent.data.toString().replace("${intent.data!!.scheme}://", "").replace(intent.data!!.host ?: "", "")
+                    FragmentOpener.openWithData(mainFragment, this, Film(link), "film")
                 }
             }
         } else {
@@ -102,11 +119,21 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         }
     }
 
-    override fun onBackPressed() {
-        if (isSettingsOpened) {
-            isSettingsOpened = false
+    fun setUserAvatar() {
+        val imageView: ImageView = findViewById(R.id.activity_main_iv_user)
+        if (UserData.avatarLink != null && UserData.avatarLink!!.isNotEmpty()) {
+            Picasso.get().load(UserData.avatarLink).into(imageView)
+        } else {
+            imageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.no_avatar))
         }
-        super.onBackPressed()
+    }
+
+    override fun updatePager() {
+        (mainFragment as ViewPagerFragment).setAdapter()
+    }
+
+    override fun redrawPage(item: UpdateItem) {
+        (mainFragment as ViewPagerFragment).updatePage(item)
     }
 
     override fun onFragmentInteraction(fragmentSource: Fragment?, fragmentReceiver: Fragment, action: Action, isBackStack: Boolean, backStackTag: String?, data: Bundle?, callback: (() -> Unit)?) {
@@ -161,59 +188,50 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         }
     }
 
-    private fun isInternetAvailable(context: Context): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-        val networkCapabilities = connectivityManager.activeNetwork ?: return false
-        val actNw = connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
-        var connection = when {
-            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-            actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-            actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-            else -> false
-        }
-
-        if (!connection) {
-            val wm = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager?
-            connection = wm?.isWifiEnabled ?: false
-        }
-
-        return connection
-    }
-
-    fun updatePager() {
-        (mainFragment as ViewPagerFragment).setAdapter()
-    }
-
-    fun setUserAvatar() {
-        val imageView: ImageView = findViewById(R.id.activity_main_iv_user)
-        if (UserData.avatarLink != null && UserData.avatarLink!!.isNotEmpty()) {
-            Picasso.get().load(UserData.avatarLink).into(imageView)
-        } else {
-            imageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.no_avatar))
-        }
-    }
-
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
-        if (type == IConnection.ErrorType.NO_INTERNET) {
-            val dialog = MaterialAlertDialogBuilder(this)
-            dialog.setTitle(getString(R.string.no_connection))
-            dialog.setPositiveButton(getString(R.string.exit)) { dialog, id ->
-                exitProcess(0)
+        showConnectionErrorDialog(this, type, ::initApp)
+    }
+
+    override fun onBackPressed() {
+        if (isSettingsOpened) {
+            isSettingsOpened = false
+        }
+        super.onBackPressed()
+    }
+
+    /* TV */
+    override fun switchFragment(fragmentName: String?) {
+        var fragmentTo: Fragment? = null
+
+        when (fragmentName) {
+            Constants.nav_menu_newest -> {
+                newestFilmsFragment = NewestFilmsFragment()
+                fragmentTo = NewestFilmsFragment()
             }
-            dialog.setNegativeButton(getString(R.string.retry)) { dialog, id ->
-                initApp()
+            Constants.nav_menu_categories -> {
+                categoriesFragment = CategoriesFragment()
+                fragmentTo = categoriesFragment
             }
-            val d = dialog.create()
-            d.show()
+        }
+
+        if (fragmentTo != null) {
+            mainFragment = fragmentTo
+            onFragmentInteraction(null, fragmentTo, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null)
         }
     }
 
-    fun showSimpleMsg(msg: String) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+    override fun onStateChanged(expanded: Boolean, lastSelected: String?) {
     }
 
-    fun redrawPage(item: UpdateItem) {
-        (mainFragment as ViewPagerFragment).updatePage(item)
+    override fun navMenuToggle(toShow: Boolean) {
+    }
+
+    override fun onAttachFragment(fragment: Fragment) {
+        when (fragment) {
+            is NavigationMenu -> {
+                fragment.setFragmentChangeListener(this)
+                fragment.setNavigationStateListener(this)
+            }
+        }
     }
 }

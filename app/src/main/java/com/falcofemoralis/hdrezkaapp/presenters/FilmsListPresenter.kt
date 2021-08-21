@@ -1,10 +1,12 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
 import android.util.ArrayMap
+import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
 import com.falcofemoralis.hdrezkaapp.models.FilmModel
 import com.falcofemoralis.hdrezkaapp.objects.Film
+import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.views.elements.FiltersMenu
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmsListView
@@ -23,7 +25,15 @@ class FilmsListPresenter(
         fun getMoreFilms(): ArrayList<Film>
     }
 
-    private val FILMS_PER_PAGE: Int = 9
+    private var FILMS_PER_PAGE: Int = 0
+
+    init {
+        FILMS_PER_PAGE = if (SettingsData.deviceType == DeviceType.TV) {
+            21
+        } else {
+            9
+        }
+    }
 
     private var isLoading: Boolean = false // loading condition
     val filmList: ArrayList<Film> = ArrayList()

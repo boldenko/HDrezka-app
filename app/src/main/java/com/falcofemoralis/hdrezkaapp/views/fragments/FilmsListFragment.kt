@@ -2,26 +2,29 @@ package com.falcofemoralis.hdrezkaapp.views.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
+import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.falcofemoralis.hdrezkaapp.R
+import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
+import com.falcofemoralis.hdrezkaapp.interfaces.NavigationMenuCallback
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
 import com.falcofemoralis.hdrezkaapp.objects.Film
+import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
 import com.falcofemoralis.hdrezkaapp.views.adapters.FilmsListRecyclerViewAdapter
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmListCallView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmsListView
 
 open class FilmsListFragment : Fragment(), FilmsListView {
-    private val FILMS_PER_ROW: Int = 3
-
     private lateinit var currentView: View
     private lateinit var viewList: RecyclerView
     private lateinit var progressBar: ProgressBar
@@ -39,8 +42,14 @@ open class FilmsListFragment : Fragment(), FilmsListView {
 
         progressBar = currentView.findViewById(R.id.fragment_films_list_pb_data_loading)
 
+        val filmsPerRow = if (SettingsData.deviceType == DeviceType.TV) {
+            7
+        } else {
+            3
+        }
+
         viewList = currentView.findViewById(R.id.fragment_films_list_rv_films)
-        viewList.layoutManager = GridLayoutManager(context, FILMS_PER_ROW)
+        viewList.layoutManager = GridLayoutManager(context, filmsPerRow)
 
         scrollView = currentView.findViewById(R.id.fragment_films_list_nsv_films)
         scrollView.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {

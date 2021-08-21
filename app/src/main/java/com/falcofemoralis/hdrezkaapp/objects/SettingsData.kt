@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import com.falcofemoralis.hdrezkaapp.R
+import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 
 object SettingsData {
     private var prefs: SharedPreferences? = null
@@ -14,8 +15,11 @@ object SettingsData {
     var isMaxQuality: Boolean? = null
     var isPlayerChooser: Boolean? = null
     var isExternalDownload: Boolean? = null
+    var deviceType: DeviceType? = null
 
-    fun init(context: Context) {
+    fun init(context: Context, deviceType: DeviceType) {
+        this.deviceType = deviceType
+
         prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
         provider = prefs?.getString("ownProvider", "")

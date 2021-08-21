@@ -5,4 +5,10 @@
     <dimen name="small_text">@dimen/_10ssp</dimen>
     <dimen name="pref_padding">56dp</dimen>
     <dimen name="root_pref_space">10dp</dimen>
+    <dimen name="dimens_100dp">100dp</dimen>
+    <dimen name="dimens_17dp">17dp</dimen>
+    <dimen name="dimens_20sp">20sp</dimen>
+    <dimen name="dimens_22dp">22dp</dimen>
+    <dimen name="dimens_30dp">30dp</dimen>
+    <dimen name="dimens_5dp">5dp</dimen>
 </resources>

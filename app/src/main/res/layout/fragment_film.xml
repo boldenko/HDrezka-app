@@ -70,6 +70,7 @@
                     android:contentDescription="bookmarks button"
                     android:focusable="true"
                     android:foreground="?attr/selectableItemBackground"
+                    android:nextFocusRight="@id/fragment_film_iv_share"
                     android:src="@drawable/ic_baseline_star_bookmark_24" />
 
                 <ImageView
@@ -83,6 +84,7 @@
                     android:contentDescription="share button"
                     android:focusable="true"
                     android:foreground="?attr/selectableItemBackground"
+                    android:nextFocusLeft="@id/fragment_film_iv_bookmark"
                     android:src="@drawable/ic_baseline_share_24" />
 
             </LinearLayout>
@@ -123,7 +125,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:adjustViewBounds="true"
-                        android:contentDescription="film poster" />
+                        android:contentDescription="film poster"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:nextFocusDown="@id/fragment_film_tv_download" />
 
                     <TextView
                         android:id="@+id/fragment_film_tv_download"
@@ -132,6 +137,7 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="5dp"
                         android:background="@drawable/roundedbutton"
+                        android:focusable="true"
                         android:foreground="?attr/selectableItemBackground"
                         android:gravity="center"
                         android:paddingTop="7dp"
@@ -192,6 +198,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:nextFocusDown="@id/fragment_film_tv_download"
                         android:text="Directors"
                         android:textColor="@color/white"
                         android:textSize="@dimen/normal_text" />

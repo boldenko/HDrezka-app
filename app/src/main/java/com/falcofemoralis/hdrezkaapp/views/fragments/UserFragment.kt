@@ -3,12 +3,10 @@ package com.falcofemoralis.hdrezkaapp.views.fragments
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.CookieManager
 import android.webkit.WebView
 import android.widget.*
 import androidx.fragment.app.Fragment
@@ -16,7 +14,6 @@ import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.clients.AuthWebViewClient
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
-import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.objects.UserData
 import com.falcofemoralis.hdrezkaapp.presenters.UserPresenter
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper

@@ -44,6 +44,7 @@ import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.clients.PlayerChromeClient
 import com.falcofemoralis.hdrezkaapp.clients.PlayerJsInterface
 import com.falcofemoralis.hdrezkaapp.clients.PlayerWebViewClient
+import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.constants.UpdateItem
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
@@ -604,6 +605,10 @@ class FilmFragment : Fragment(), FilmView {
             val body: String = getString(R.string.share_body, title, link)
             sharingIntent.putExtra(Intent.EXTRA_TEXT, body)
             startActivity(sharingIntent)
+        }
+
+        if (SettingsData.deviceType == DeviceType.TV) {
+            btn.requestFocus()
         }
     }
 

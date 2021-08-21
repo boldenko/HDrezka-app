@@ -1,6 +1,7 @@
 package com.falcofemoralis.hdrezkaapp.views.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +9,9 @@ import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.falcofemoralis.hdrezkaapp.R
+import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.objects.Film
+import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 
@@ -21,6 +24,10 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        if (SettingsData.deviceType == DeviceType.TV && position == 0) {
+            holder.layout.requestFocus()
+        }
+
         val film = films[position]
         Picasso.get().load(film.posterPath).into(holder.filmPoster, object : Callback {
             override fun onSuccess() {
@@ -29,8 +36,10 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
             }
 
             override fun onError(e: Exception) {
+                Log.d("ATV_test", e.toString())
             }
         })
+
         holder.titleView.text = film.title
 
         var info = ""

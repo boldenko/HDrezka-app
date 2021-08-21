@@ -6,7 +6,6 @@
     android:orientation="vertical"
     tools:context="com.falcofemoralis.hdrezkaapp.views.fragments.NewestFilmsFragment">
 
-
     <TextView
         android:id="@+id/fragment_newest_films_tv_filters"
         android:layout_width="wrap_content"

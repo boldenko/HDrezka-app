@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/open_nav_CL"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@color/transparent"
+    android:padding="15dp">
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/newest_IB"
+        android:layout_width="@dimen/dimens_22dp"
+        android:layout_height="@dimen/dimens_22dp"
+        android:layout_marginStart="@dimen/dimens_5dp"
+        android:layout_marginTop="@dimen/dimens_100dp"
+        android:background="@color/transparent"
+        android:focusable="false"
+        android:nextFocusLeft="@id/newest_IB"
+        android:nextFocusUp="@id/newest_IB"
+        android:nextFocusDown="@id/categories_IB"
+        android:tag="@string/newest"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_movie_24" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/categories_IB"
+        android:layout_width="@dimen/dimens_22dp"
+        android:layout_height="@dimen/dimens_22dp"
+        android:layout_marginStart="@dimen/dimens_5dp"
+        android:layout_marginTop="@dimen/dimens_30dp"
+        android:background="@color/transparent"
+        android:focusable="false"
+        android:nextFocusLeft="@id/categories_IB"
+        android:nextFocusUp="@id/newest_IB"
+        android:nextFocusDown="@id/categories_IB"
+        android:tag="@string/categories"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/newest_IB"
+        app:srcCompat="@drawable/ic_baseline_categories_24" />
+
+    <TextView
+        android:id="@+id/categories_TV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens_17dp"
+        android:fontFamily="monospace"
+        android:text="@string/categories"
+        android:textColor="#CECCD5"
+        android:textSize="@dimen/normal_text"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/categories_IB"
+        app:layout_constraintStart_toEndOf="@id/categories_IB"
+        app:layout_constraintTop_toTopOf="@id/categories_IB" />
+
+    <TextView
+        android:id="@+id/newest_TV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens_17dp"
+        android:fontFamily="monospace"
+        android:text="@string/newest"
+        android:textColor="#CECCD5"
+        android:textSize="@dimen/normal_text"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/newest_IB"
+        app:layout_constraintStart_toEndOf="@id/newest_IB"
+        app:layout_constraintTop_toTopOf="@id/newest_IB" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
