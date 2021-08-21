@@ -173,13 +173,20 @@ class FilmFragment : Fragment(), FilmView {
         }
 
         val openPlayBtn = currentView.findViewById<TextView>(R.id.fragment_film_tv_open_player)
+        val playerContainer = currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_player_container)
         if (SettingsData.isPlayer == true) {
             openPlayBtn.setOnClickListener {
                 filmPresenter.showTranslations(false)
             }
-            currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_player_container).visibility = View.GONE
+            playerContainer.visibility = View.GONE
         } else {
-            filmPresenter.initPlayer()
+            when (SettingsData.deviceType) {
+                DeviceType.TV -> {
+                    // TODO add player
+                    playerContainer.visibility = View.GONE
+                }
+                else -> filmPresenter.initPlayer()
+            }
             openPlayBtn.visibility = View.GONE
         }
 

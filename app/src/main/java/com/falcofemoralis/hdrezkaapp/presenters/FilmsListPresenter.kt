@@ -2,6 +2,7 @@ package com.falcofemoralis.hdrezkaapp.presenters
 
 import android.util.ArrayMap
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
+import com.falcofemoralis.hdrezkaapp.constants.GridLayoutSizes
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
 import com.falcofemoralis.hdrezkaapp.models.FilmModel
@@ -25,13 +26,14 @@ class FilmsListPresenter(
         fun getMoreFilms(): ArrayList<Film>
     }
 
-    private var FILMS_PER_PAGE: Int = 0
+    private var FILMS_PER_PAGE_MULT: Int = 3
+    private var filmsPerPage: Int = 0
 
     init {
-        FILMS_PER_PAGE = if (SettingsData.deviceType == DeviceType.TV) {
-            21
+        filmsPerPage = if (SettingsData.deviceType == DeviceType.TV) {
+            GridLayoutSizes.TV * FILMS_PER_PAGE_MULT
         } else {
-            9
+            GridLayoutSizes.MOBILE * FILMS_PER_PAGE_MULT
         }
     }
 
@@ -72,7 +74,7 @@ class FilmsListPresenter(
                     }
                 }
 
-                FilmModel.getFilmsData(filmList, FILMS_PER_PAGE, ::processFilms)
+                FilmModel.getFilmsData(filmList, filmsPerPage, ::processFilms)
             } catch (e: HttpStatusException) {
                 if (e.statusCode != 404) {
                     ExceptionHelper.catchException(e, view)
@@ -101,7 +103,7 @@ class FilmsListPresenter(
         filmsListView.redrawFilms()
 
         sortedFilmsCount += sortedFilms.size
-        if (sortedFilmsCount >= FILMS_PER_PAGE) {
+        if (sortedFilmsCount >= filmsPerPage) {
             sortedFilmsCount = 0
             filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
         } else {

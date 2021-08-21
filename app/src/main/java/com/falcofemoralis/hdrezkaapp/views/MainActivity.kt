@@ -5,7 +5,6 @@ import android.app.UiModeManager
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
+import com.falcofemoralis.hdrezkaapp.constants.NavigationMenuTabs
 import com.falcofemoralis.hdrezkaapp.constants.UpdateItem
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.IPagerView
@@ -30,7 +30,6 @@ import com.falcofemoralis.hdrezkaapp.views.fragments.*
 import com.falcofemoralis.hdrezkaapp.views.tv.NavigationMenu
 import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.FragmentChangeListener
 import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.NavigationStateListener
-import com.falcofemoralis.hdrezkaapp.views.tv.utils.Constants
 import com.squareup.picasso.Picasso
 
 class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnection, IPagerView, NavigationStateListener, FragmentChangeListener,
@@ -204,11 +203,11 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         var fragmentTo: Fragment? = null
 
         when (fragmentName) {
-            Constants.nav_menu_newest -> {
+            NavigationMenuTabs.nav_menu_newest -> {
                 newestFilmsFragment = NewestFilmsFragment()
                 fragmentTo = NewestFilmsFragment()
             }
-            Constants.nav_menu_categories -> {
+            NavigationMenuTabs.nav_menu_categories -> {
                 categoriesFragment = CategoriesFragment()
                 fragmentTo = categoriesFragment
             }

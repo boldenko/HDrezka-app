@@ -2,20 +2,18 @@ package com.falcofemoralis.hdrezkaapp.views.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
-import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
+import com.falcofemoralis.hdrezkaapp.constants.GridLayoutSizes
 import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
-import com.falcofemoralis.hdrezkaapp.interfaces.NavigationMenuCallback
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
@@ -43,9 +41,9 @@ open class FilmsListFragment : Fragment(), FilmsListView {
         progressBar = currentView.findViewById(R.id.fragment_films_list_pb_data_loading)
 
         val filmsPerRow = if (SettingsData.deviceType == DeviceType.TV) {
-            7
+            GridLayoutSizes.TV
         } else {
-            3
+            GridLayoutSizes.MOBILE
         }
 
         viewList = currentView.findViewById(R.id.fragment_films_list_rv_films)

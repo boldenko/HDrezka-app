@@ -1,6 +1,6 @@
-package com.falcofemoralis.hdrezkaapp.views.tv.utils
+package com.falcofemoralis.hdrezkaapp.constants
 
-object Constants {
+object NavigationMenuTabs {
     const val nav_menu_newest = "Newest"
     const val nav_menu_categories = "Categories"
 }

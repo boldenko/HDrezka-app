@@ -2,8 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:focusable="true"
-    android:foreground="?attr/selectableItemBackground"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
@@ -11,13 +9,16 @@
         android:id="@+id/actor_loading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
         android:visibility="gone" />
-
 
     <LinearLayout
         android:id="@+id/actor_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
         android:orientation="vertical">
 
         <ImageView

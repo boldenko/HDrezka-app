@@ -71,6 +71,7 @@
                     android:focusable="true"
                     android:foreground="?attr/selectableItemBackground"
                     android:nextFocusRight="@id/fragment_film_iv_share"
+                    android:nextFocusDown="@id/fragment_film_iv_poster"
                     android:src="@drawable/ic_baseline_star_bookmark_24" />
 
                 <ImageView
@@ -85,6 +86,7 @@
                     android:focusable="true"
                     android:foreground="?attr/selectableItemBackground"
                     android:nextFocusLeft="@id/fragment_film_iv_bookmark"
+                    android:nextFocusDown="@id/fragment_film_iv_poster"
                     android:src="@drawable/ic_baseline_share_24" />
 
             </LinearLayout>
@@ -107,17 +109,18 @@
 
             <!-- Poster and main info -->
             <LinearLayout
+                android:id="@+id/fragment_film_ll_main_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:orientation="horizontal"
-                android:weightSum="1">
+                android:weightSum="100">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.4"
+                    android:layout_weight="@integer/film_info_weight_left"
                     android:orientation="vertical">
 
                     <ImageView
@@ -148,12 +151,11 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
-                    android:layout_weight="0.6"
+                    android:layout_weight="@integer/film_info_weight_right"
                     android:orientation="vertical">
 
                     <TextView
@@ -199,7 +201,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
                         android:foreground="?attr/selectableItemBackground"
-                        android:nextFocusDown="@id/fragment_film_tv_download"
                         android:text="Directors"
                         android:textColor="@color/white"
                         android:textSize="@dimen/normal_text" />
@@ -282,6 +283,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:background="@drawable/roundedbutton"
+                    android:focusable="true"
                     android:foreground="?attr/selectableItemBackground"
                     android:gravity="center"
                     android:padding="10dp"
@@ -323,6 +325,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:elevation="10dp"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
                     app:srb_clearRatingEnabled="true"
                     app:srb_clickable="true"
                     app:srb_drawableEmpty="@drawable/ic_baseline_star_transparent_24"

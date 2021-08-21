@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/schedule_item_main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_centerInParent="true"
     android:orientation="horizontal"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:nextFocusRight="@id/inflate_item_watch"
     android:weightSum="1">
 
     <LinearLayout
@@ -62,7 +66,10 @@
         android:layout_height="match_parent"
         android:layout_weight="0.2"
         android:contentDescription="is watched"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
         android:padding="10dp"
+        android:nextFocusLeft="@id/schedule_item_main"
         android:src="@drawable/ic_baseline_remove_red_eye_24"
         android:visibility="visible" />
 

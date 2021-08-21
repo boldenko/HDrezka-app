@@ -19,12 +19,12 @@
         android:orientation="horizontal"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
-        android:weightSum="1">
+        android:weightSum="100">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.2"
+            android:layout_weight="@integer/comment_avatar"
             android:orientation="vertical">
 
             <ImageView
@@ -45,7 +45,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
-            android:layout_weight="0.8"
+            android:layout_weight="@integer/comment_main"
             android:orientation="vertical">
 
             <TextView

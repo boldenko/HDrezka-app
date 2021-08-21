@@ -1,29 +1,28 @@
 package com.falcofemoralis.hdrezkaapp.views.fragments
 
+import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.util.ArrayMap
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.view.*
+import android.widget.*
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.falcofemoralis.hdrezkaapp.R
+import com.falcofemoralis.hdrezkaapp.constants.DeviceType
+import com.falcofemoralis.hdrezkaapp.constants.GridLayoutSizes
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
 import com.falcofemoralis.hdrezkaapp.objects.Actor
 import com.falcofemoralis.hdrezkaapp.objects.Film
+import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.presenters.ActorPresenter
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
 import com.falcofemoralis.hdrezkaapp.views.adapters.FilmsListRecyclerViewAdapter
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.ActorView
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 
 class ActorFragment : Fragment(), ActorView {
@@ -34,6 +33,7 @@ class ActorFragment : Fragment(), ActorView {
     private lateinit var fragmentListener: OnFragmentInteractionListener
     private lateinit var scrollView: NestedScrollView
     private lateinit var progressBar: ProgressBar
+    private var modalDialog: Dialog? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -57,7 +57,16 @@ class ActorFragment : Fragment(), ActorView {
     override fun setBaseInfo(actor: Actor) {
         currentView.findViewById<TextView>(R.id.fragment_actor_films_tv_name).text = actor.name
         currentView.findViewById<TextView>(R.id.fragment_actor_films_tv_name_orig).text = actor.nameOrig
-        Picasso.get().load(actor.photo).into(currentView.findViewById<ImageView>(R.id.fragment_actor_films_iv_photo))
+
+        val photoView = currentView.findViewById<ImageView>(R.id.fragment_actor_films_iv_photo)
+        Picasso.get().load(actor.photo).into(photoView)
+        actor.photo?.let { setFullSizeImage(it) }
+        photoView.setOnClickListener { openFullSizeImage() }
+
+        if(SettingsData.deviceType == DeviceType.TV){
+            photoView.requestFocus()
+        }
+
         currentView.findViewById<TextView>(R.id.fragment_actor_films_tv_career).text = getString(R.string.career, actor.careers)
 
         if (actor.age != null) {
@@ -94,7 +103,11 @@ class ActorFragment : Fragment(), ActorView {
 
             layout.findViewById<TextView>(R.id.career_header).text = career.first
             val recyclerView: RecyclerView = layout.findViewById(R.id.career_films)
-            recyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
+            val filmsPerRow = when (SettingsData.deviceType) {
+                DeviceType.TV -> GridLayoutSizes.TV
+                else -> GridLayoutSizes.MOBILE
+            }
+            recyclerView.layoutManager = GridLayoutManager(requireContext(), filmsPerRow)
             recyclerView.adapter = FilmsListRecyclerViewAdapter(requireContext(), career.second, ::listCallback)
 
             container.addView(layout)
@@ -107,5 +120,36 @@ class ActorFragment : Fragment(), ActorView {
 
     private fun listCallback(film: Film) {
         FragmentOpener.openWithData(this, fragmentListener, film, "film")
+    }
+
+    fun setFullSizeImage(photoPath: String) {
+        val dialog = Dialog(requireActivity())
+        val layout: RelativeLayout = layoutInflater.inflate(R.layout.modal_image, null) as RelativeLayout
+        Picasso.get().load(photoPath).into(layout.findViewById(R.id.modal_image), object : Callback {
+            override fun onSuccess() {
+                layout.findViewById<ProgressBar>(R.id.modal_progress).visibility = View.GONE
+                layout.findViewById<ImageView>(R.id.modal_image).visibility = View.VISIBLE
+            }
+
+            override fun onError(e: Exception) {
+            }
+        })
+        dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(layout)
+
+        val lp: WindowManager.LayoutParams = WindowManager.LayoutParams()
+        lp.copyFrom(dialog.window?.attributes)
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+        dialog.window?.attributes = lp
+
+        modalDialog = dialog
+        layout.findViewById<Button>(R.id.modal_bt_close).setOnClickListener {
+            dialog.dismiss()
+        }
+    }
+
+    private fun openFullSizeImage() {
+        modalDialog?.show()
     }
 }

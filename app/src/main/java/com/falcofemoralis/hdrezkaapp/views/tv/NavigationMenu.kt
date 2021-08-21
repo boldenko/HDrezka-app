@@ -20,7 +20,7 @@ import androidx.fragment.app.Fragment
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.FragmentChangeListener
 import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.NavigationStateListener
-import com.falcofemoralis.hdrezkaapp.views.tv.utils.Constants
+import com.falcofemoralis.hdrezkaapp.constants.NavigationMenuTabs
 
 class NavigationMenu : Fragment() {
     private lateinit var fragmentChangeListener: FragmentChangeListener
@@ -31,8 +31,8 @@ class NavigationMenu : Fragment() {
     private lateinit var newest_TV: TextView
     private lateinit var categories_TV: TextView
 
-    private val newestFilms = Constants.nav_menu_newest
-    private val categories = Constants.nav_menu_categories
+    private val newestFilms = NavigationMenuTabs.nav_menu_newest
+    private val categories = NavigationMenuTabs.nav_menu_categories
     private var lastSelectedMenu: String? = newestFilms
     private var newestAllowedToGainFocus = false
     private var categoriesAllowedToGainFocus = true

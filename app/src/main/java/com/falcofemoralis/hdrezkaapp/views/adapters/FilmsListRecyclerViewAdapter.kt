@@ -24,9 +24,9 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if (SettingsData.deviceType == DeviceType.TV && position == 0) {
+      /*  if (SettingsData.deviceType == DeviceType.TV && position == 0) {
             holder.layout.requestFocus()
-        }
+        }*/
 
         val film = films[position]
         Picasso.get().load(film.posterPath).into(holder.filmPoster, object : Callback {
