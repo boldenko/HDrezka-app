@@ -27,12 +27,16 @@
                 <TextView
                     android:id="@+id/fragment_user_tv_login"
                     style="@style/UserSettingElement"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
                     android:text="@string/auth"
                     app:drawableStartCompat="@drawable/ic_baseline_login_24" />
 
                 <TextView
                     android:id="@+id/fragment_user_tv_register"
                     style="@style/UserSettingElement"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
                     android:text="@string/register"
                     app:drawableStartCompat="@drawable/ic_baseline_register_24" />
             </LinearLayout>
@@ -41,12 +45,16 @@
             <TextView
                 android:id="@+id/fragment_user_tv_exit"
                 style="@style/UserSettingElement"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 android:text="@string/exit"
                 app:drawableStartCompat="@drawable/ic_baseline_exit_to_app_24" />
 
             <TextView
                 android:id="@+id/fragment_user_tv_settings"
                 style="@style/UserSettingElement"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 android:text="@string/app_settings"
                 app:drawableStartCompat="@drawable/ic_baseline_settings_24" />
         </LinearLayout>

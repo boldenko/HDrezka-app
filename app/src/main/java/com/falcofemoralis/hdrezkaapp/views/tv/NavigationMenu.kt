@@ -18,33 +18,38 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.falcofemoralis.hdrezkaapp.R
+import com.falcofemoralis.hdrezkaapp.constants.NavigationMenuTabs
 import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.FragmentChangeListener
 import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.NavigationStateListener
-import com.falcofemoralis.hdrezkaapp.constants.NavigationMenuTabs
 
 class NavigationMenu : Fragment() {
     private lateinit var fragmentChangeListener: FragmentChangeListener
     private lateinit var navigationStateListener: NavigationStateListener
     private lateinit var currentView: ConstraintLayout
+
     private lateinit var newest_IB: ImageButton
     private lateinit var categories_IB: ImageButton
+    private lateinit var search_IB: ImageButton
+    private lateinit var bookmarks_IB: ImageButton
+    private lateinit var later_IB: ImageButton
+    private lateinit var settings_IB: ImageButton
+
     private lateinit var newest_TV: TextView
     private lateinit var categories_TV: TextView
+    private lateinit var search_TV: TextView
+    private lateinit var bookmarks_TV: TextView
+    private lateinit var later_TV: TextView
+    private lateinit var settings_TV: TextView
 
     private val newestFilms = NavigationMenuTabs.nav_menu_newest
     private val categories = NavigationMenuTabs.nav_menu_categories
+    private val search = NavigationMenuTabs.nav_menu_search
+    private val bookmarks = NavigationMenuTabs.nav_menu_bookmarks
+    private val later = NavigationMenuTabs.nav_menu_later
+    private var settings = NavigationMenuTabs.nav_menu_settings
+
     private var lastSelectedMenu: String? = newestFilms
-    private var newestAllowedToGainFocus = false
-    private var categoriesAllowedToGainFocus = true
-
-    /*    private var settingsAllowedToGainFocus = false
-        private var musicAllowedToGainFocus = false
-        private var podcastsAllowedToGainFocus = false
-        private var newsAllowedToGainFocus = false*/
-
-    private var switchUserAllowedToGainFocus = false
     private var menuTextAnimationDelay = 0 //200
-
 
     companion object {
         var isFree = true
@@ -52,11 +57,20 @@ class NavigationMenu : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         currentView = inflater.inflate(R.layout.tv_fragment_nav_menu, container, false) as ConstraintLayout
+
         newest_IB = currentView.findViewById(R.id.newest_IB)
         categories_IB = currentView.findViewById(R.id.categories_IB)
+        search_IB = currentView.findViewById(R.id.search_IB)
+        bookmarks_IB = currentView.findViewById(R.id.bookmarks_IB)
+        later_IB = currentView.findViewById(R.id.later_IB)
+        settings_IB = currentView.findViewById(R.id.settings_IB)
 
         newest_TV = currentView.findViewById(R.id.newest_TV)
         categories_TV = currentView.findViewById(R.id.categories_TV)
+        search_TV = currentView.findViewById(R.id.search_TV)
+        bookmarks_TV = currentView.findViewById(R.id.bookmarks_TV)
+        later_TV = currentView.findViewById(R.id.later_TV)
+        settings_TV = currentView.findViewById(R.id.settings_TV)
 
         return currentView
     }
@@ -65,13 +79,20 @@ class NavigationMenu : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         //by default selection
-        setMenuIconFocusView(R.drawable.ic_baseline_movie_24, newest_IB, false)
+        setMenuIconFocusView(R.drawable.ic_baseline_movie_24, newest_IB)
 
         //Navigation Menu Options Focus, Key Listeners
         setListener(newest_IB, newest_TV, newestFilms, R.drawable.ic_baseline_movie_24_sel, R.drawable.ic_baseline_movie_24)
 
         setListener(categories_IB, categories_TV, categories, R.drawable.ic_baseline_categories_24_sel, R.drawable.ic_baseline_categories_24)
 
+        setListener(search_IB, search_TV, search, R.drawable.ic_baseline_search_24_sel, R.drawable.ic_baseline_search_24)
+
+        setListener(bookmarks_IB, bookmarks_TV, bookmarks, R.drawable.ic_baseline_bookmarks_24_sel, R.drawable.ic_baseline_bookmarks_24)
+
+        setListener(later_IB, later_TV, later, R.drawable.ic_baseline_watch_later_24_sel, R.drawable.ic_baseline_watch_later_24)
+
+        setListener(settings_IB, settings_TV, settings, R.drawable.ic_baseline_settings_24_sel, R.drawable.ic_baseline_settings_24)
     }
 
     private fun setListener(ib: ImageButton, tv: TextView, lastMenu: String, selectedImage: Int, unselectedImage: Int) {
@@ -81,7 +102,7 @@ class NavigationMenu : Fragment() {
                     if (isNavigationOpen()) {
                         setFocusedView(ib, selectedImage)
                         setMenuNameFocusView(tv, true)
-                        focusIn(ib, 0)
+                        focusIn(ib)
                         Log.d("NAV_TEST", "0 $lastMenu opened and has focus")
                     } else {
                         Log.d("NAV_TEST", "1 $lastMenu close and has focus")
@@ -92,7 +113,7 @@ class NavigationMenu : Fragment() {
                     if (isNavigationOpen()) {
                         setOutOfFocusedView(ib, unselectedImage)
                         setMenuNameFocusView(tv, false)
-                        focusOut(ib, 0)
+                        focusOut(ib)
                         Log.d("NAV_TEST", "2 $lastMenu opened and hasn't focus")
                         Log.d("NAV_TEST", "2 !!!!!!!")
                     } else {
@@ -118,7 +139,6 @@ class NavigationMenu : Fragment() {
                     KeyEvent.KEYCODE_DPAD_UP -> {
                         if (!ib.isFocusable)
                             ib.isFocusable = true
-                        switchUserAllowedToGainFocus = true
                     }
                     KeyEvent.KEYCODE_DPAD_CENTER -> {
                         lastSelectedMenu = lastMenu
@@ -132,18 +152,17 @@ class NavigationMenu : Fragment() {
     }
 
     private fun setOutOfFocusedView(view: ImageButton, resource: Int) {
-        setMenuIconFocusView(resource, view, false)
+        setMenuIconFocusView(resource, view)
     }
 
     private fun setFocusedView(view: ImageButton, resource: Int) {
-        setMenuIconFocusView(resource, view, true)
+        setMenuIconFocusView(resource, view)
     }
-
 
     /**
      * Setting animation when focus is lost
      */
-    fun focusOut(v: View, position: Int) {
+    private fun focusOut(v: View) {
         val scaleX = ObjectAnimator.ofFloat(v, "scaleX", 1.2f, 1f)
         val scaleY = ObjectAnimator.ofFloat(v, "scaleY", 1.2f, 1f)
         val set = AnimatorSet()
@@ -154,7 +173,7 @@ class NavigationMenu : Fragment() {
     /**
      * Setting the animation when getting focus
      */
-    fun focusIn(v: View, position: Int) {
+    private fun focusIn(v: View) {
         val scaleX = ObjectAnimator.ofFloat(v, "scaleX", 1f, 1.2f)
         val scaleY = ObjectAnimator.ofFloat(v, "scaleY", 1f, 1.2f)
         val set = AnimatorSet()
@@ -162,7 +181,7 @@ class NavigationMenu : Fragment() {
         set.start()
     }
 
-    private fun setMenuIconFocusView(resource: Int, view: ImageButton, inFocus: Boolean) {
+    private fun setMenuIconFocusView(resource: Int, view: ImageButton) {
         view.setImageResource(resource)
     }
 
@@ -183,7 +202,7 @@ class NavigationMenu : Fragment() {
             )
     }
 
-    fun openNav() {
+    private fun openNav() {
         enableNavMenuViews(View.VISIBLE)
         val lp = FrameLayout.LayoutParams(WRAP_CONTENT, MATCH_PARENT)
         currentView.layoutParams = lp
@@ -192,39 +211,32 @@ class NavigationMenu : Fragment() {
         when (lastSelectedMenu) {
             categories -> {
                 categories_IB.requestFocus()
-                categoriesAllowedToGainFocus = true
                 setMenuNameFocusView(categories_TV, true)
             }
             newestFilms -> {
                 newest_IB.requestFocus()
-                newestAllowedToGainFocus = true
                 setMenuNameFocusView(newest_TV, true)
             }
-            /*    podcasts -> {
-                    podcasts_IB.requestFocus()
-                    podcastsAllowedToGainFocus = true
-                    setMenuNameFocusView(podcasts_TV, true)
-                }
-                music -> {
-                    music_IB.requestFocus()
-                    musicAllowedToGainFocus = true
-                    setMenuNameFocusView(music_TV, true)
-                }
-                news -> {
-                    news_IB.requestFocus()
-                    newsAllowedToGainFocus = true
-                    setMenuNameFocusView(news_TV, true)
-                }
-                settings -> {
-                    settings_IB.requestFocus()
-                    settingsAllowedToGainFocus = true
-                    setMenuNameFocusView(settings_TV, true)
-                }*/
+            search -> {
+                search_IB.requestFocus()
+                setMenuNameFocusView(search_TV, true)
+            }
+            bookmarks -> {
+                bookmarks_IB.requestFocus()
+                setMenuNameFocusView(bookmarks_TV, true)
+            }
+            later -> {
+                later_IB.requestFocus()
+                setMenuNameFocusView(later_TV, true)
+            }
+            settings -> {
+                settings_IB.requestFocus()
+                setMenuNameFocusView(settings_TV, true)
+            }
         }
-
     }
 
-    fun closeNav() {
+    private fun closeNav() {
         enableNavMenuViews(View.GONE)
         val lp = FrameLayout.LayoutParams(WRAP_CONTENT, MATCH_PARENT)
         currentView.layoutParams = lp
@@ -246,22 +258,22 @@ class NavigationMenu : Fragment() {
             setOutOfFocusedView(categories_IB, R.drawable.ic_baseline_categories_24)
             setMenuNameFocusView(categories_TV, false)
         }
-        /*  if (!lastSelectedMenu.equals(podcasts, true)) {
-              setOutOfFocusedView(podcasts_IB, R.drawable.ic_podcast_unselected)
-              setMenuNameFocusView(podcasts_TV, false)
-          }
-          if (!lastSelectedMenu.equals(music, true)) {
-              setOutOfFocusedView(music_IB, R.drawable.ic_music_unselected)
-              setMenuNameFocusView(music_TV, false)
-          }
-          if (!lastSelectedMenu.equals(news, true)) {
-              setOutOfFocusedView(news_IB, R.drawable.ic_news_unselected)
-              setMenuNameFocusView(news_TV, false)
-          }
-          if (!lastSelectedMenu.equals(settings, true)) {
-              setOutOfFocusedView(settings_IB, R.drawable.ic_settings_unselected)
-              setMenuNameFocusView(settings_TV, false)
-          }*/
+        if (!lastSelectedMenu.equals(search, true)) {
+            setOutOfFocusedView(search_IB, R.drawable.ic_baseline_search_24)
+            setMenuNameFocusView(search_TV, false)
+        }
+        if (!lastSelectedMenu.equals(bookmarks, true)) {
+            setOutOfFocusedView(bookmarks_IB, R.drawable.ic_baseline_bookmarks_24)
+            setMenuNameFocusView(bookmarks_TV, false)
+        }
+        if (!lastSelectedMenu.equals(later, true)) {
+            setOutOfFocusedView(later_IB, R.drawable.ic_baseline_watch_later_24)
+            setMenuNameFocusView(later_TV, false)
+        }
+        if (!lastSelectedMenu.equals(settings, true)) {
+            setOutOfFocusedView(settings_IB, R.drawable.ic_baseline_settings_24)
+            setMenuNameFocusView(settings_TV, false)
+        }
     }
 
     private fun highlightMenuSelection(lastSelectedMenu: String?) {
@@ -272,57 +284,60 @@ class NavigationMenu : Fragment() {
             categories -> {
                 setFocusedView(categories_IB, R.drawable.ic_baseline_categories_24_sel)
             }
-            /*  podcasts -> {
-                  setFocusedView(podcasts_IB, R.drawable.ic_podcast_selected)
-              }
-              music -> {
-                  setFocusedView(music_IB, R.drawable.ic_music_selected)
-              }
-              news -> {
-                  setFocusedView(news_IB, R.drawable.ic_news_selected)
-              }
-              settings -> {
-                  setFocusedView(settings_IB, R.drawable.ic_settings_selected)
-              }*/
+            search -> {
+                setFocusedView(search_IB, R.drawable.ic_baseline_search_24_sel)
+            }
+            bookmarks -> {
+                setFocusedView(bookmarks_IB, R.drawable.ic_baseline_bookmarks_24_sel)
+            }
+            later -> {
+                setFocusedView(later_IB, R.drawable.ic_baseline_watch_later_24_sel)
+            }
+            settings -> {
+                setFocusedView(settings_IB, R.drawable.ic_baseline_settings_24_sel)
+            }
         }
     }
 
     private fun enableNavMenuViews(visibility: Int) {
         if (visibility == View.GONE) {
+            //  animateMenuNamesEntry(newest_TV, visibility, 1, R.anim.slide_in_right_menu_name)
             menuTextAnimationDelay = 0//200 //reset
             newest_TV.visibility = visibility
             categories_TV.visibility = visibility
-            /*  news_TV.visibility = visibility
-              music_TV.visibility = visibility
-              podcasts_TV.visibility = visibility
-              settings_TV.visibility = visibility*/
+            search_TV.visibility = visibility
+            bookmarks_TV.visibility = visibility
+            later_TV.visibility = visibility
+            settings_TV.visibility = visibility
         } else {
-            animateMenuNamesEntry(newest_TV, visibility, 1)
+            animateMenuNamesEntry(newest_TV, visibility, 1, R.anim.slide_in_left_menu_name)
         }
     }
 
-    private fun animateMenuNamesEntry(view: View, visibility: Int, viewCode: Int) {
+    private fun animateMenuNamesEntry(view: View, visibility: Int, viewCode: Int, anim: Int) {
         view.postDelayed({
             view.visibility = visibility
-            val animate = AnimationUtils.loadAnimation(context, R.anim.slide_in_left_menu_name)
+            val animate = AnimationUtils.loadAnimation(context, anim)
             view.startAnimation(animate)
             menuTextAnimationDelay = 100
+
+            // step by step animation
             when (viewCode) {
                 1 -> {
-                    animateMenuNamesEntry(categories_TV, visibility, viewCode + 1)
+                    animateMenuNamesEntry(categories_TV, visibility, viewCode + 1, anim)
                 }
-                /*         2 -> {
-                             animateMenuNamesEntry(podcasts_TV, visibility, viewCode + 1)
-                         }
-                         3 -> {
-                             animateMenuNamesEntry(music_TV, visibility, viewCode + 1)
-                         }
-                         4 -> {
-                             animateMenuNamesEntry(news_TV, visibility, viewCode + 1)
-                         }
-                         5 -> {
-                             animateMenuNamesEntry(settings_TV, visibility, viewCode + 1)
-                         }*/
+                2 -> {
+                    animateMenuNamesEntry(search_TV, visibility, viewCode + 1, anim)
+                }
+                3 -> {
+                    animateMenuNamesEntry(bookmarks_TV, visibility, viewCode + 1, anim)
+                }
+                4 -> {
+                    animateMenuNamesEntry(later_TV, visibility, viewCode + 1, anim)
+                }
+                5 -> {
+                    animateMenuNamesEntry(settings_TV, visibility, viewCode + 1, anim)
+                }
             }
         }, menuTextAnimationDelay.toLong())
     }
@@ -335,20 +350,5 @@ class NavigationMenu : Fragment() {
 
     fun setNavigationStateListener(callback: NavigationStateListener) {
         this.navigationStateListener = callback
-    }
-
-    fun setSelectedMenu(navMenuName: String) {
-        when (navMenuName) {
-            categories -> {
-                lastSelectedMenu = categories
-            }
-            newestFilms -> {
-                lastSelectedMenu = newestFilms
-            }
-        }
-
-        highlightMenuSelection(lastSelectedMenu)
-        unHighlightMenuSelections(lastSelectedMenu)
-
     }
 }

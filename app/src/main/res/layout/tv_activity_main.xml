@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@color/black">
-
+    android:background="@color/background">
 
     <FrameLayout
         android:id="@+id/activity_main_fcv_container"
@@ -23,7 +22,7 @@
         android:id="@+id/nav_fragment"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:background="@color/background"
+        android:background="@color/dark_background"
         android:focusable="false"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"

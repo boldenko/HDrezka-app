@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     private lateinit var bookmarksFragment: BookmarksFragment
     private lateinit var watchLaterFragment: WatchLaterFragment
     private lateinit var navFragmentLayout: FrameLayout
+    private lateinit var settingsFragment: UserFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -205,11 +206,27 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         when (fragmentName) {
             NavigationMenuTabs.nav_menu_newest -> {
                 newestFilmsFragment = NewestFilmsFragment()
-                fragmentTo = NewestFilmsFragment()
+                fragmentTo = newestFilmsFragment
             }
             NavigationMenuTabs.nav_menu_categories -> {
                 categoriesFragment = CategoriesFragment()
                 fragmentTo = categoriesFragment
+            }
+            NavigationMenuTabs.nav_menu_search -> {
+                searchFragment = SearchFragment()
+                fragmentTo = searchFragment
+            }
+            NavigationMenuTabs.nav_menu_bookmarks -> {
+                bookmarksFragment = BookmarksFragment()
+                fragmentTo = bookmarksFragment
+            }
+            NavigationMenuTabs.nav_menu_later -> {
+                watchLaterFragment = WatchLaterFragment()
+                fragmentTo = watchLaterFragment
+            }
+            NavigationMenuTabs.nav_menu_settings -> {
+                settingsFragment = UserFragment()
+                fragmentTo = settingsFragment
             }
         }
 

@@ -5,4 +5,6 @@
     <dimen name="small_text">@dimen/_6ssp</dimen>
     <dimen name="pref_padding">56dp</dimen>
     <dimen name="root_pref_space">10dp</dimen>
+    <dimen name="search_margin_top">15dp</dimen>
+    <dimen name="search_margin_top_clear">7dp</dimen>
 </resources>

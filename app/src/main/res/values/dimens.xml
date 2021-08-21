@@ -11,4 +11,6 @@
     <dimen name="dimens_22dp">22dp</dimen>
     <dimen name="dimens_30dp">30dp</dimen>
     <dimen name="dimens_5dp">5dp</dimen>
+    <dimen name="search_margin_top">0dp</dimen>
+    <dimen name="search_margin_top_clear">0dp</dimen>
 </resources>

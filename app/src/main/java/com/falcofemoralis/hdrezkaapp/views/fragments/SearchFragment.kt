@@ -12,9 +12,11 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.Fragment
 import com.falcofemoralis.hdrezkaapp.R
+import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
+import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.presenters.SearchPresenter
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
@@ -114,6 +116,14 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
 
         clearBtn.setOnClickListener {
             autoCompleteTextView.setText("")
+        }
+
+        if (SettingsData.deviceType == DeviceType.TV) {
+            autoCompleteTextView.setOnClickListener {
+                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+            }
+
+            autoCompleteTextView.requestFocus()
         }
     }
 
