@@ -16,6 +16,7 @@ import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
 import com.falcofemoralis.hdrezkaapp.objects.UserData
 import com.falcofemoralis.hdrezkaapp.presenters.UserPresenter
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
+import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
 import com.falcofemoralis.hdrezkaapp.views.MainActivity
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.UserView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -50,7 +51,7 @@ class UserFragment : Fragment(), UserView {
         }
 
         currentView.findViewById<TextView>(R.id.fragment_user_tv_settings).setOnClickListener {
-            fragmentListener.onFragmentInteraction(this, SettingsFragment(), OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, true, null, null, null)
+            FragmentOpener.openFragment(this, SettingsFragment(), fragmentListener)
         }
 
         return currentView

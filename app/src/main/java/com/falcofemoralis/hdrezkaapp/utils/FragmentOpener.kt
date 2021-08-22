@@ -9,6 +9,7 @@ import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.views.fragments.ActorFragment
 import com.falcofemoralis.hdrezkaapp.views.fragments.FilmFragment
+import com.falcofemoralis.hdrezkaapp.views.fragments.SettingsFragment
 import com.falcofemoralis.hdrezkaapp.views.tv.NavigationMenu
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -37,6 +38,18 @@ object FragmentOpener {
             NavigationMenu.isFree = false
         }
         fragmentListener.onFragmentInteraction(source, frag, OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, true, null, dataBundle, ::callback)
+    }
+
+    fun openFragment(source: Fragment, fragment: Fragment, fragmentListener: OnFragmentInteractionListener){
+        if (isCommitInProgress) {
+            return
+        }
+
+        isCommitInProgress = true
+        if (SettingsData.deviceType == DeviceType.TV) {
+            NavigationMenu.isFree = false
+        }
+        fragmentListener.onFragmentInteraction(source, fragment, OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, true, null, null, ::callback)
     }
 
     fun callback() {

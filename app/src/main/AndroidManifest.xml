@@ -86,10 +86,6 @@
                     android:pathPrefix="/"
                     android:scheme="http" />
                 <data
-                    android:host="@string/provider_6"
-                    android:pathPrefix="/"
-                    android:scheme="http" />
-                <data
                     android:host="@string/provider_7"
                     android:pathPrefix="/"
                     android:scheme="http" />
@@ -99,5 +95,10 @@
                     android:scheme="http" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:theme="@style/ATVTheme"
+            android:name=".views.tv.PlaybackActivity"
+            android:exported="false" />
     </application>
 </manifest>

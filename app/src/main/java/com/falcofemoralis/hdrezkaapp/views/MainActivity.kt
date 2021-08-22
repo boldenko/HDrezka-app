@@ -52,14 +52,9 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        interfaceMode = (getSystemService(UI_MODE_SERVICE) as UiModeManager).currentModeType
-        when (interfaceMode) {
-            Configuration.UI_MODE_TYPE_TELEVISION -> setContentView(R.layout.tv_activity_main)
-            else -> setContentView(R.layout.activity_main)
-        }
-
+        setContentView(R.layout.activity_main)
         this.savedInstanceState = savedInstanceState
+
         initApp()
     }
 
@@ -69,6 +64,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
             if (savedInstanceState == null) {
                 UserData.init(applicationContext)
 
+                interfaceMode = (getSystemService(UI_MODE_SERVICE) as UiModeManager).currentModeType
                 when (interfaceMode) {
                     Configuration.UI_MODE_TYPE_TELEVISION -> {
                         SettingsData.init(applicationContext, DeviceType.TV)
@@ -105,8 +101,10 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     }
 
     private fun createUserMenu() {
-        findViewById<ImageView>(R.id.activity_main_iv_user).setOnClickListener {
-            openUserMenu()
+        if (SettingsData.deviceType != DeviceType.TV) {
+            findViewById<ImageView>(R.id.activity_main_iv_user).setOnClickListener {
+                openUserMenu()
+            }
         }
     }
 
@@ -131,13 +129,13 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     }
 
     override fun updatePager() {
-        if (SettingsData.deviceType == DeviceType.TV) {
+        if (SettingsData.deviceType != DeviceType.TV) {
             (mainFragment as ViewPagerFragment).setAdapter()
         }
     }
 
     override fun redrawPage(item: UpdateItem) {
-        if (SettingsData.deviceType == DeviceType.TV) {
+        if (SettingsData.deviceType != DeviceType.TV) {
             (mainFragment as ViewPagerFragment).updatePage(item)
         }
     }

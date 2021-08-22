@@ -40,7 +40,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentView = inflater.inflate(R.layout.fragment_search, container, false)
-        clearBtn = currentView.findViewById<TextView>(R.id.fragment_search_tv_clear)
+        clearBtn = currentView.findViewById(R.id.fragment_search_tv_clear)
 
         filmsListFragment = FilmsListFragment()
         filmsListFragment.setCallView(this)

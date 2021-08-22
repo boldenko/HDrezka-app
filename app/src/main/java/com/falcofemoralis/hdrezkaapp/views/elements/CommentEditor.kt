@@ -8,9 +8,11 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.falcofemoralis.hdrezkaapp.R
+import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.models.CommentsModel
 import com.falcofemoralis.hdrezkaapp.objects.Comment
+import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
@@ -93,6 +95,9 @@ class CommentEditor(
         editorView.findViewById<ImageView>(R.id.comment_editor_iv_add).setOnClickListener {
             if (textArea.text.toString().isNotEmpty()) {
                 d.show()
+                if(SettingsData.deviceType == DeviceType.TV){
+                    iCommentEditor.changeCommentEditorState(false)
+                }
                 iCommentEditor.onDialogVisible()
             } else {
                 iCommentEditor.onNothingEntered()
@@ -102,7 +107,9 @@ class CommentEditor(
         textArea.setKeyImeChangeListener(object : CommentEditorEditText.KeyImeChange {
             override fun onKeyIme(keyCode: Int, event: KeyEvent?) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    iCommentEditor.changeCommentEditorState(false)
+                    if(SettingsData.deviceType != DeviceType.TV){
+                        iCommentEditor.changeCommentEditorState(false)
+                    }
                 }
             }
         })

@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import android.widget.ImageButton
@@ -56,7 +57,7 @@ class NavigationMenu : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        currentView = inflater.inflate(R.layout.tv_fragment_nav_menu, container, false) as ConstraintLayout
+        currentView = inflater.inflate(R.layout.fragment_nav_menu, container, false) as ConstraintLayout
 
         newest_IB = currentView.findViewById(R.id.newest_IB)
         categories_IB = currentView.findViewById(R.id.categories_IB)
@@ -144,6 +145,9 @@ class NavigationMenu : Fragment() {
                         lastSelectedMenu = lastMenu
                         fragmentChangeListener.switchFragment(lastMenu)
                         closeNav()
+                    }
+                    else -> {
+                        Log.d("TTTEST", "else!")
                     }
                 }
             }
@@ -301,14 +305,14 @@ class NavigationMenu : Fragment() {
 
     private fun enableNavMenuViews(visibility: Int) {
         if (visibility == View.GONE) {
-            //  animateMenuNamesEntry(newest_TV, visibility, 1, R.anim.slide_in_right_menu_name)
-            menuTextAnimationDelay = 0//200 //reset
-            newest_TV.visibility = visibility
-            categories_TV.visibility = visibility
-            search_TV.visibility = visibility
-            bookmarks_TV.visibility = visibility
-            later_TV.visibility = visibility
-            settings_TV.visibility = visibility
+            animateMenuNamesEntry(newest_TV, visibility, 1, R.anim.slide_in_right_menu_name)
+            /* menuTextAnimationDelay = 0//200 //reset
+             newest_TV.visibility = visibility
+             categories_TV.visibility = visibility
+             search_TV.visibility = visibility
+             bookmarks_TV.visibility = visibility
+             later_TV.visibility = visibility
+             settings_TV.visibility = visibility*/
         } else {
             animateMenuNamesEntry(newest_TV, visibility, 1, R.anim.slide_in_left_menu_name)
         }
@@ -316,10 +320,29 @@ class NavigationMenu : Fragment() {
 
     private fun animateMenuNamesEntry(view: View, visibility: Int, viewCode: Int, anim: Int) {
         view.postDelayed({
-            view.visibility = visibility
             val animate = AnimationUtils.loadAnimation(context, anim)
+            if (visibility == View.GONE) {
+                val duration = context?.resources?.getInteger(R.integer.animation_duration)?.toLong()
+                duration?.let{
+                    animate.duration = it
+                }
+                animate.setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationStart(animation: Animation?) {
+                    }
+
+                    override fun onAnimationEnd(animation: Animation?) {
+                        view.visibility = visibility
+                    }
+
+                    override fun onAnimationRepeat(animation: Animation?) {
+                    }
+                })
+            } else {
+                view.visibility = visibility
+            }
             view.startAnimation(animate)
-            menuTextAnimationDelay = 100
+
+            menuTextAnimationDelay = 0 // 100
 
             // step by step animation
             when (viewCode) {

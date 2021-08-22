@@ -13,6 +13,7 @@
         android:layout_width="@dimen/dimens_22dp"
         android:layout_height="@dimen/dimens_22dp"
         android:layout_marginStart="@dimen/dimens_5dp"
+        android:layout_marginEnd="5dp"
         android:layout_marginTop="@dimen/dimens_100dp"
         android:background="@color/transparent"
         android:focusable="false"
@@ -28,6 +29,7 @@
         android:id="@+id/categories_IB"
         android:layout_width="@dimen/dimens_22dp"
         android:layout_height="@dimen/dimens_22dp"
+        android:layout_marginEnd="5dp"
         android:layout_marginStart="@dimen/dimens_5dp"
         android:layout_marginTop="@dimen/dimens_30dp"
         android:background="@color/transparent"
@@ -48,6 +50,7 @@
         android:layout_marginTop="@dimen/dimens_30dp"
         android:background="@color/transparent"
         android:focusable="false"
+        android:layout_marginEnd="5dp"
         android:nextFocusLeft="@id/search_IB"
         android:nextFocusUp="@id/categories_IB"
         android:nextFocusDown="@id/bookmarks_IB"
@@ -68,6 +71,7 @@
         android:nextFocusUp="@id/search_IB"
         android:nextFocusDown="@id/later_IB"
         android:tag="@string/bookmarks"
+        android:layout_marginEnd="5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_IB"
         app:srcCompat="@drawable/ic_baseline_bookmarks_24" />
@@ -84,6 +88,7 @@
         android:nextFocusUp="@id/bookmarks_IB"
         android:nextFocusDown="@id/settings_IB"
         android:tag="@string/watch_later"
+        android:layout_marginEnd="5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bookmarks_IB"
         app:srcCompat="@drawable/ic_baseline_watch_later_24" />
@@ -100,6 +105,7 @@
         android:nextFocusUp="@id/later_IB"
         android:nextFocusDown="@id/settings_IB"
         android:tag="@string/settings"
+        android:layout_marginEnd="5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/later_IB"
         app:srcCompat="@drawable/ic_baseline_settings_24" />

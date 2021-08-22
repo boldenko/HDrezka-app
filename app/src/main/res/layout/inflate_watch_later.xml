@@ -15,12 +15,12 @@
             android:layout_marginEnd="50dp"
             android:foreground="?attr/selectableItemBackground"
             android:orientation="horizontal"
-            android:weightSum="1">
+            android:weightSum="100">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.2"
+                android:layout_weight="@integer/watch_later_left"
                 android:orientation="vertical">
 
                 <ImageView
@@ -40,7 +40,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.8"
+                android:layout_weight="@integer/watch_later_right"
                 android:orientation="vertical">
 
                 <TextView
@@ -78,8 +78,9 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_alignParentEnd="true"
-            android:gravity="center"
+            android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
             android:text="x"
             android:textColor="@color/white"
             android:textSize="@dimen/normal_text" />

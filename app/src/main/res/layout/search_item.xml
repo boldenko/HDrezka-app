@@ -10,8 +10,6 @@
         android:layout_height="wrap_content"
         android:background="@color/main_color_2"
         android:padding="10dp"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackground"
         android:textColor="@color/white"
         android:textSize="@dimen/normal_text"
         android:textStyle="bold" />

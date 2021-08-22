@@ -57,6 +57,7 @@ import com.falcofemoralis.hdrezkaapp.utils.UnitsConverter
 import com.falcofemoralis.hdrezkaapp.views.MainActivity
 import com.falcofemoralis.hdrezkaapp.views.adapters.CommentsRecyclerViewAdapter
 import com.falcofemoralis.hdrezkaapp.views.elements.CommentEditor
+import com.falcofemoralis.hdrezkaapp.views.tv.PlaybackActivity
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmView
 import com.github.aakira.expandablelayout.ExpandableLinearLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -118,17 +119,40 @@ class FilmFragment : Fragment(), FilmView {
         }
     }
 
+    companion object {
+        lateinit var wv: WebView
+        lateinit var presenter: FilmPresenter
+        var isFullscreen: Boolean = false
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentView = inflater.inflate(R.layout.fragment_film, container, false)
 
         progressBar = currentView.findViewById(R.id.fragment_film_pb_loading)
         playerView = currentView.findViewById(R.id.fragment_film_wv_player)
         commentsList = currentView.findViewById(R.id.fragment_film_rv_comments)
-        activity?.window?.addFlags(FLAG_KEEP_SCREEN_ON)
 
         filmPresenter = FilmPresenter(this, (arguments?.getSerializable(FILM_ARG) as Film?)!!)
         filmPresenter.initFilmData()
 
+        initFlags()
+
+        initScroll()
+
+        initFullSizePoster()
+
+        initDownloadBtn()
+
+        initPlayer()
+
+        return currentView
+    }
+
+    private fun initFlags() {
+        activity?.window?.addFlags(FLAG_KEEP_SCREEN_ON)
+    }
+
+    private fun initScroll() {
         scrollView = currentView.findViewById(R.id.fragment_film_sv_content)
         scrollView.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
             override fun onScrollChange(v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
@@ -146,9 +170,13 @@ class FilmFragment : Fragment(), FilmView {
         })
         scrollView.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
+    }
 
+    private fun initFullSizePoster() {
         currentView.findViewById<ImageView>(R.id.fragment_film_iv_poster).setOnClickListener { openFullSizeImage() }
+    }
 
+    private fun initDownloadBtn() {
         val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
                 // Permission is granted. Continue the action or workflow in your
@@ -171,32 +199,21 @@ class FilmFragment : Fragment(), FilmView {
                 }
             }
         }
+    }
 
+    private fun initPlayer() {
         val openPlayBtn = currentView.findViewById<TextView>(R.id.fragment_film_tv_open_player)
         val playerContainer = currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_player_container)
-        if (SettingsData.isPlayer == true) {
+
+        if (SettingsData.isPlayer == true || SettingsData.deviceType == DeviceType.TV) {
             openPlayBtn.setOnClickListener {
                 filmPresenter.showTranslations(false)
             }
             playerContainer.visibility = View.GONE
         } else {
-            when (SettingsData.deviceType) {
-                DeviceType.TV -> {
-                    // TODO add player
-                    playerContainer.visibility = View.GONE
-                }
-                else -> filmPresenter.initPlayer()
-            }
+            filmPresenter.initPlayer()
             openPlayBtn.visibility = View.GONE
         }
-
-        return currentView
-    }
-
-    companion object {
-        lateinit var wv: WebView
-        lateinit var presenter: FilmPresenter
-        var isFullscreen: Boolean = false
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -235,12 +252,22 @@ class FilmFragment : Fragment(), FilmView {
 
         val dateView = currentView.findViewById<TextView>(R.id.fragment_film_tv_releaseDate)
         if (film.date != null) {
-            dateView.text = getString(R.string.release_date, "${film.date} ${film.year}")
+            dateView.text = when (SettingsData.deviceType) {
+                DeviceType.TV -> "${film.date} ${film.year}"
+                else -> getString(R.string.release_date, "${film.date} ${film.year}")
+            }
         } else {
             dateView.visibility = View.GONE
         }
-        currentView.findViewById<TextView>(R.id.fragment_film_tv_runtime).text = getString(R.string.runtime, film.runtime)
-        currentView.findViewById<TextView>(R.id.fragment_film_tv_type).text = getString(R.string.film_type, film.type)
+        currentView.findViewById<TextView>(R.id.fragment_film_tv_runtime).text = when (SettingsData.deviceType) {
+            DeviceType.TV -> film.runtime
+            else -> getString(R.string.runtime, film.runtime)
+        }
+        currentView.findViewById<TextView>(R.id.fragment_film_tv_type).text = when (SettingsData.deviceType) {
+            DeviceType.TV -> film.type
+            else -> getString(R.string.film_type, film.type)
+        }
+
         currentView.findViewById<TextView>(R.id.fragment_film_tv_plot).text = film.description
 
         // data loaded
@@ -361,9 +388,12 @@ class FilmFragment : Fragment(), FilmView {
     override fun setGenres(genres: ArrayList<String>) {
         val genresLayout: LinearLayout = currentView.findViewById(R.id.fragment_film_ll_genres)
 
-        for (genre in genres) {
+        for ((i, genre) in genres.withIndex()) {
             val genreView = LayoutInflater.from(context).inflate(R.layout.inflate_tag, null) as TextView
             genreView.text = genre
+            if (SettingsData.deviceType == DeviceType.TV && i == genres.size - 1) {
+                genreView.nextFocusRightId = R.id.fragment_film_tv_directors
+            }
             genresLayout.addView(genreView)
         }
     }
@@ -546,7 +576,7 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun setBookmarksList(bookmarks: ArrayList<Bookmark>) {
-        val btn: ImageView = currentView.findViewById(R.id.fragment_film_iv_bookmark)
+        val btn: View = currentView.findViewById(R.id.fragment_film_iv_bookmark)
         if (UserData.isLoggedIn == true) {
             val data: Array<String?> = arrayOfNulls(bookmarks.size)
             val checkedItems = BooleanArray(bookmarks.size)
@@ -599,13 +629,15 @@ class FilmFragment : Fragment(), FilmView {
                 }
             }
         } else {
-            currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_title_layout).layoutParams = LinearLayout.LayoutParams(0, WindowManager.LayoutParams.WRAP_CONTENT, 0.85f)
+            if (SettingsData.deviceType != DeviceType.TV) {
+                currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_title_layout).layoutParams = LinearLayout.LayoutParams(0, WindowManager.LayoutParams.WRAP_CONTENT, 0.85f)
+            }
             btn.visibility = View.GONE
         }
     }
 
     override fun setShareBtn(title: String, link: String) {
-        val btn: ImageView = currentView.findViewById(R.id.fragment_film_iv_share)
+        val btn: View = currentView.findViewById(R.id.fragment_film_iv_share)
         btn.setOnClickListener {
             val sharingIntent = Intent(Intent.ACTION_SEND)
             sharingIntent.type = "text/plain"
@@ -717,23 +749,27 @@ class FilmFragment : Fragment(), FilmView {
         val selectableRatingBar: ScaleRatingBar = currentView.findViewById(R.id.fragment_film_srb_rating_hdrezka_select)
         val ratingBar: ScaleRatingBar = currentView.findViewById(R.id.fragment_film_srb_rating_hdrezka)
 
-        selectableRatingBar.setIsIndicator(isActive)
-        ratingBar.rating = rating
-        selectableRatingBar.setOnTouchListener { view, motionEvent ->
-            if (motionEvent.action == MotionEvent.ACTION_UP) {
-                selectableRatingBar.visibility = View.GONE
+        if (SettingsData.deviceType == DeviceType.TV) {
+            currentView.findViewById<RelativeLayout>(R.id.fragment_film_rating_layout).visibility = View.GONE
+            currentView.findViewById<ScaleRatingBar>(R.id.fragment_film_srb_rating_hdrezka_tv).rating = rating
+        } else {
+            selectableRatingBar.setIsIndicator(isActive)
+            ratingBar.rating = rating
+            selectableRatingBar.setOnTouchListener { view, motionEvent ->
+                if (motionEvent.action == MotionEvent.ACTION_UP) {
+                    selectableRatingBar.visibility = View.GONE
 
-                if (UserData.isLoggedIn == true) {
-                    filmPresenter.updateRating(selectableRatingBar.rating)
-                } else {
-                    Toast.makeText(requireContext(), getString(R.string.need_register), Toast.LENGTH_SHORT).show()
+                    if (UserData.isLoggedIn == true) {
+                        filmPresenter.updateRating(selectableRatingBar.rating)
+                    } else {
+                        Toast.makeText(requireContext(), getString(R.string.need_register), Toast.LENGTH_SHORT).show()
+                    }
                 }
+                false
             }
-            false
         }
     }
 
-    // pair(название озвучки,
     override fun showTranslations(translations: ArrayList<Voice>, isDownload: Boolean, isMovie: Boolean) {
         if (isMovie) {
             if (translations.size > 1) {
@@ -894,18 +930,25 @@ class FilmFragment : Fragment(), FilmView {
                 Toast.makeText(requireContext(), getString(R.string.no_manager), Toast.LENGTH_LONG).show()
             }
         } else {
-            var intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            intent.setDataAndType(Uri.parse(url), "video/*")
-            intent.putExtra("title", filmTitle)
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
-            if (SettingsData.isPlayerChooser == true) {
-                intent = Intent.createChooser(intent, getString(R.string.open_film_in))
-            }
-            try {
+            if (SettingsData.isPlayer == false && SettingsData.deviceType == DeviceType.TV) {
+                val intent = Intent(requireContext(), PlaybackActivity::class.java)
+                intent.putExtra(PlaybackActivity.FILM, presenter.film)
+                intent.putExtra(PlaybackActivity.STREAM, stream)
                 startActivity(intent)
-            } catch (e: Exception) {
-                Toast.makeText(requireContext(), getString(R.string.no_player), Toast.LENGTH_LONG).show()
+            } else {
+                var intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                intent.setDataAndType(Uri.parse(url), "video/*")
+                intent.putExtra("title", filmTitle)
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+                if (SettingsData.isPlayerChooser == true) {
+                    intent = Intent.createChooser(intent, getString(R.string.open_film_in))
+                }
+                try {
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), getString(R.string.no_player), Toast.LENGTH_LONG).show()
+                }
             }
         }
     }
