@@ -120,20 +120,26 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     }
 
     fun setUserAvatar() {
-        val imageView: ImageView = findViewById(R.id.activity_main_iv_user)
-        if (UserData.avatarLink != null && UserData.avatarLink!!.isNotEmpty()) {
-            Picasso.get().load(UserData.avatarLink).into(imageView)
-        } else {
-            imageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.no_avatar))
+        if (SettingsData.deviceType == DeviceType.TV) {
+            val imageView: ImageView = findViewById(R.id.activity_main_iv_user)
+            if (UserData.avatarLink != null && UserData.avatarLink!!.isNotEmpty()) {
+                Picasso.get().load(UserData.avatarLink).into(imageView)
+            } else {
+                imageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.no_avatar))
+            }
         }
     }
 
     override fun updatePager() {
-        (mainFragment as ViewPagerFragment).setAdapter()
+        if (SettingsData.deviceType == DeviceType.TV) {
+            (mainFragment as ViewPagerFragment).setAdapter()
+        }
     }
 
     override fun redrawPage(item: UpdateItem) {
-        (mainFragment as ViewPagerFragment).updatePage(item)
+        if (SettingsData.deviceType == DeviceType.TV) {
+            (mainFragment as ViewPagerFragment).updatePage(item)
+        }
     }
 
     override fun onFragmentInteraction(fragmentSource: Fragment?, fragmentReceiver: Fragment, action: Action, isBackStack: Boolean, backStackTag: String?, data: Bundle?, callback: (() -> Unit)?) {
@@ -177,7 +183,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                 }
                 fTrans.commit()
             }
-            Action.RETURN_FRAGMENT_BY_TAG -> supportFragmentManager.popBackStack(backStackTag, 0)
             Action.POP_BACK_STACK -> supportFragmentManager.popBackStack()
         }
 
@@ -186,6 +191,10 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                 callback()
             }
         }
+    }
+
+    override fun findFragmentByTag(tag: String): Fragment? {
+        return supportFragmentManager.findFragmentByTag(tag)
     }
 
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {

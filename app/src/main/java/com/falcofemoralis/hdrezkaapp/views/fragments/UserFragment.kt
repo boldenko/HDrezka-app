@@ -1,17 +1,16 @@
 package com.falcofemoralis.hdrezkaapp.views.fragments
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.falcofemoralis.hdrezkaapp.R
-import com.falcofemoralis.hdrezkaapp.clients.AuthWebViewClient
+import com.falcofemoralis.hdrezkaapp.constants.AuthType
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
 import com.falcofemoralis.hdrezkaapp.objects.UserData
@@ -19,16 +18,14 @@ import com.falcofemoralis.hdrezkaapp.presenters.UserPresenter
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.views.MainActivity
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.UserView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class UserFragment : Fragment(), UserView {
     private lateinit var currentView: View
     private lateinit var userPresenter: UserPresenter
-    private lateinit var popupWindowView: RelativeLayout
-    private lateinit var popupWindow: PopupWindow
-    private lateinit var webView: WebView
-    private lateinit var popupWindowLoadingBar: ProgressBar
-    private var popupWindowCloseBtn: Button? = null
-    private var isLoaded = false
+    private lateinit var popupWindowView: LinearLayout
+    private lateinit var popupWindow: AlertDialog
+    private lateinit var imm: InputMethodManager
     private lateinit var authPanel: LinearLayout
     private lateinit var exitPanel: TextView
     private lateinit var fragmentListener: OnFragmentInteractionListener
@@ -41,6 +38,7 @@ class UserFragment : Fragment(), UserView {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         currentView = inflater.inflate(R.layout.fragment_user, container, false)
         userPresenter = UserPresenter(this, requireContext())
+        imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         authPanel = currentView.findViewById(R.id.fragment_user_ll_auth_panel)
         exitPanel = currentView.findViewById(R.id.fragment_user_tv_exit)
@@ -48,7 +46,7 @@ class UserFragment : Fragment(), UserView {
         initExitButton()
 
         UserData.isLoggedIn?.let {
-            setAuthPanel(it)
+            initAuthPanel(it)
         }
 
         currentView.findViewById<TextView>(R.id.fragment_user_tv_settings).setOnClickListener {
@@ -58,99 +56,127 @@ class UserFragment : Fragment(), UserView {
         return currentView
     }
 
-    private fun setAuthPanel(isLogged: Boolean) {
+    private fun initAuthPanel(isLogged: Boolean) {
         if (isLogged) {
-            popupWindowCloseBtn?.visibility = View.GONE
+            //  popupWindowCloseBtn?.visibility = View.GONE
             authPanel.visibility = View.GONE
             exitPanel.visibility = View.VISIBLE
         } else {
             authPanel.visibility = View.VISIBLE
             exitPanel.visibility = View.GONE
-            createAuthDialog()
-        }
-    }
-
-    @SuppressLint("SetJavaScriptEnabled", "ClickableViewAccessibility")
-    private fun createAuthDialog() {
-        activity?.let {
-            popupWindowView = requireActivity().layoutInflater.inflate(R.layout.dialog_auth, null) as RelativeLayout
-
-            popupWindow = PopupWindow(popupWindowView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true)
-            popupWindowLoadingBar = popupWindowView.findViewById(R.id.dialog_auth_pb_loading)
-            popupWindowCloseBtn = popupWindowView.findViewById(R.id.dialog_auth_bt_close)
-            webView = popupWindowView.findViewById(R.id.dialog_auth_wv_auth)
-            webView.settings.javaScriptEnabled = true
-            webView.settings.domStorageEnabled = true
-
-            popupWindowView.setOnTouchListener { _, _ -> //Close the window when clicked outside
-                popupWindow.dismiss()
-                true
-            }
-            popupWindowView.findViewById<Button>(R.id.dialog_auth_bt_close).setOnClickListener {
-                popupWindow.dismiss()
-            }
 
             currentView.findViewById<TextView>(R.id.fragment_user_tv_login).setOnClickListener {
-                // login
-                userPresenter.setAuthWindow(UserPresenter.WindowType.LOGIN)
+                showAuthDialog(AuthType.LOGIN)
             }
 
             currentView.findViewById<TextView>(R.id.fragment_user_tv_register).setOnClickListener {
-                //register
-                userPresenter.setAuthWindow(UserPresenter.WindowType.REGISTRATION)
+                showAuthDialog(AuthType.REGISTER)
             }
         }
     }
 
-    override fun showAuthWindow(type: UserPresenter.WindowType, link: String) {
-        webView.visibility = View.GONE
-        popupWindowCloseBtn?.visibility = View.GONE
-        popupWindowLoadingBar.visibility = View.VISIBLE
+    private fun showAuthDialog(type: AuthType) {
+        activity?.let {
+            val builder = MaterialAlertDialogBuilder(it)
+            popupWindowView = requireActivity().layoutInflater.inflate(R.layout.dialog_auth, null) as LinearLayout
 
-        webView.webViewClient = AuthWebViewClient(type, this, ::authCallback)
-        popupWindow.showAtLocation(popupWindowView, Gravity.CENTER, 0, 0)
-        if (!isLoaded) {
-            webView.loadUrl(link)
-            isLoaded = true
+            val emailView = popupWindowView.findViewById<EditText>(R.id.dialog_auth_email)
+            val usernameView = popupWindowView.findViewById<EditText>(R.id.dialog_auth_username)
+            val nameView = popupWindowView.findViewById<EditText>(R.id.dialog_auth_name)
+            val passwordView = popupWindowView.findViewById<EditText>(R.id.dialog_auth_password)
+
+            if (type == AuthType.LOGIN) {
+                builder.setTitle(getString(R.string.login))
+                emailView.visibility = View.GONE
+                usernameView.visibility = View.GONE
+                val submitBtn = popupWindowView.findViewById<Button>(R.id.dialog_auth_submit)
+                submitBtn.text = getString(R.string.submit_login)
+                submitBtn.setOnClickListener {
+                    val name: String = nameView.text.toString()
+                    val password: String = passwordView.text.toString()
+
+                    changeAuthLoadingState(true)
+                    userPresenter.login(name, password)
+                    imm.hideSoftInputFromWindow(popupWindowView.windowToken, 0)
+                }
+            } else {
+                builder.setTitle(getString(R.string.register))
+                nameView.visibility = View.GONE
+                val submitBtn = popupWindowView.findViewById<Button>(R.id.dialog_auth_submit)
+                submitBtn.text = getString(R.string.submit_register)
+                submitBtn.setOnClickListener {
+                    val email: String = emailView.text.toString()
+                    val username: String = usernameView.text.toString()
+                    val password: String = passwordView.text.toString()
+
+                    changeAuthLoadingState(true)
+                    userPresenter.register(email, username, password)
+                    imm.hideSoftInputFromWindow(popupWindowView.windowToken, 0)
+                }
+            }
+
+            builder.setView(popupWindowView)
+            popupWindow = builder.create()
+            popupWindow.show()
         }
     }
 
-    private fun authCallback(isLogged: Boolean) {
-        // webView.stopLoading()
-        isLoaded = false
+    override fun showError(text: String) {
+        changeAuthLoadingState(false)
 
-        if (isLogged) {
-            webView.visibility = View.GONE
+        val error = text.replace("</u>", "").replace("</b>", "")
 
-            setAuthPanel(isLogged)
-            userPresenter.enter()
-            userPresenter.getUserAvatar()
+        val errorView = popupWindowView.findViewById<TextView>(R.id.dialog_auth_error)
+        errorView.visibility = View.VISIBLE
+        errorView.text = error
+    }
 
-            activity?.let {
-                (it as MainActivity).updatePager()
-            }
-            popupWindow.dismiss()
+    private fun changeAuthLoadingState(isActive: Boolean) {
+        val loadingBar = popupWindowView.findViewById<ProgressBar>(R.id.dialog_auth_loading)
+        val submitBtn = popupWindowView.findViewById<Button>(R.id.dialog_auth_submit)
+
+        if (isActive) {
+            loadingBar.visibility = View.VISIBLE
+            submitBtn.visibility = View.GONE
         } else {
-            popupWindowLoadingBar.visibility = View.GONE
-            popupWindowCloseBtn?.visibility = View.VISIBLE
-            webView.visibility = View.VISIBLE
-        }
-    }
-
-    private fun initExitButton() {
-        exitPanel.setOnClickListener {
-            setAuthPanel(false)
-            userPresenter.exit()
-
-            activity?.let { it1 ->
-                (it1 as MainActivity).updatePager()
-            }
-
+            loadingBar.visibility = View.GONE
+            submitBtn.visibility = View.VISIBLE
         }
     }
 
     override fun setUserAvatar() {
         (requireActivity() as MainActivity).setUserAvatar()
+    }
+
+    override fun completeAuth() {
+        popupWindow.dismiss()
+
+        initAuthPanel(true)
+
+        activity?.let {
+            (it as MainActivity).updatePager()
+        }
+    }
+
+    private fun initExitButton() {
+        exitPanel.setOnClickListener {
+            val builder = MaterialAlertDialogBuilder(requireContext())
+            builder.setTitle(getString(R.string.confirm_exit))
+            builder.setPositiveButton(getString(R.string.confirm)) { dialog, id ->
+                initAuthPanel(false)
+                userPresenter.exit()
+
+                activity?.let { it1 ->
+                    (it1 as MainActivity).updatePager()
+                }
+            }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, id ->
+                dialog.dismiss()
+            }
+
+            val d = builder.create()
+            d.show()
+        }
     }
 
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {

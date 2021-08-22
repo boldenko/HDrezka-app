@@ -18,7 +18,6 @@ object BookmarksModel {
     private const val POST_URL = "/ajax/favorites/"
 
     fun getBookmarksList(): ArrayList<Bookmark> {
-        Log.d("COOOOKIES", CookieManager.getInstance().getCookie(SettingsData.provider))
         val document: Document = Jsoup.connect(SettingsData.provider + MAIN_PAGE).header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider)).get()
 
         val bookmarks: ArrayList<Bookmark> = ArrayList()

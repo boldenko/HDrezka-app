@@ -13,4 +13,7 @@
     <dimen name="dimens_5dp">5dp</dimen>
     <dimen name="search_margin_top">0dp</dimen>
     <dimen name="search_margin_top_clear">0dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="fragment_horizontal_margin">16dp</dimen>
+    <dimen name="fragment_vertical_margin">16dp</dimen>
 </resources>

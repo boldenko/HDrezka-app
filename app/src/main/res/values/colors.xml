@@ -25,4 +25,5 @@
     <color name="selected_background">#ffaa3f</color>
     <color name="default_background">#3d3d3d</color>
     <color name="transparent">#00000000</color>
+    <color name="day_night_text_hint">#616161</color>
 </resources>

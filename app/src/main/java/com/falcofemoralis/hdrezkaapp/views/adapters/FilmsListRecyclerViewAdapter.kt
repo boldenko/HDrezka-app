@@ -1,5 +1,6 @@
 package com.falcofemoralis.hdrezkaapp.views.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,21 +13,43 @@ import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
+import com.falcofemoralis.hdrezkaapp.views.tv.NavigationMenu
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 
 class FilmsListRecyclerViewAdapter(private val context: Context, private val films: ArrayList<Film>, private val openFilm: (film: Film) -> Unit) :
     RecyclerView.Adapter<FilmsListRecyclerViewAdapter.ViewHolder>() {
+    private var selectedItemPos: Int? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.inflate_film, parent, false)
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-      /*  if (SettingsData.deviceType == DeviceType.TV && position == 0) {
-            holder.layout.requestFocus()
-        }*/
+    override fun onViewAttachedToWindow(holder: ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
+        if (SettingsData.deviceType == DeviceType.TV) {
+            selectedItemPos.let {
+                if(position == selectedItemPos){
+                    Log.d("FOCUS_TEST", "$selectedItemPos was selected!")
+                   // holder.layout.requestFocus()
+                }
+            }
+
+            //holder.layout.requestFocus()
+            holder.layout.setOnFocusChangeListener { v, hasFocus ->
+                    if (hasFocus) {
+                        Log.d("FOCUS_TEST", "$position has Focus!")
+                        selectedItemPos = position
+                       // selectedItemPos = position
+                    } else {
+
+                    }
+            }
+        }
 
         val film = films[position]
         Picasso.get().load(film.posterPath).into(holder.filmPoster, object : Callback {

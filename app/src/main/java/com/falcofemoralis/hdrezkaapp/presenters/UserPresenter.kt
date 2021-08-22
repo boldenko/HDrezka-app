@@ -1,9 +1,7 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
 import android.content.Context
-import android.webkit.CookieManager
 import com.falcofemoralis.hdrezkaapp.models.UserModel
-import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.objects.UserData
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper.catchException
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.UserView
@@ -13,15 +11,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class UserPresenter(private val userView: UserView, private val context: Context) {
-    enum class WindowType {
-        LOGIN,
-        REGISTRATION
-    }
-
-    fun setAuthWindow(type: WindowType) {
-        SettingsData.provider?.let { userView.showAuthWindow(type, it) }
-    }
-
     fun getUserAvatar() {
         GlobalScope.launch {
             try {
@@ -32,13 +21,45 @@ class UserPresenter(private val userView: UserView, private val context: Context
                 }
             } catch (e: Exception) {
                 catchException(e, userView)
-                return@launch
             }
         }
     }
 
-    fun enter() {
-        UserData.setLoggedIn(context)
+    fun login(name: String, password: String) {
+        GlobalScope.launch {
+            try {
+                UserModel.login(name, password)
+
+                withContext(Dispatchers.Main) {
+                    UserData.setLoggedIn(context)
+                    getUserAvatar()
+                    userView.completeAuth()
+                }
+            } catch (e: Exception) {
+                // catchException(e, userView)
+                withContext(Dispatchers.Main) {
+                    e.message?.let { userView.showError(it) }
+                }
+            }
+        }
+    }
+
+    fun register(email: String, username: String, password: String) {
+        GlobalScope.launch {
+            try {
+                UserModel.register(email, username, password)
+
+                withContext(Dispatchers.Main) {
+                    UserData.setLoggedIn(context)
+                    getUserAvatar()
+                    userView.completeAuth()
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    e.message?.let { userView.showError(it) }
+                }
+            }
+        }
     }
 
     fun exit() {

@@ -1,13 +1,19 @@
 package com.falcofemoralis.hdrezkaapp.models
 
+import android.util.ArrayMap
 import android.webkit.CookieManager
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.utils.CookieStorage
+import org.json.JSONObject
+import org.jsoup.Connection
+import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
 object UserModel {
     private const val USER_PAGE: String = "/user/"
+    private const val LOGIN_AJAX: String = "/ajax/login/"
+    private const val REGISTER_AJAX: String = "/engine/ajax/quick_register.php"
 
     fun getUserAvatarLink(): String? {
         val userId: String? = CookieStorage.getCookie(SettingsData.provider, "dle_user_id")
@@ -17,6 +23,80 @@ object UserModel {
             SettingsData.provider + str
         } else {
             null
+        }
+    }
+
+    fun login(name: String, password: String) {
+        val data: ArrayMap<String, String> = ArrayMap()
+        data["login_name"] = name
+        data["login_password"] = password
+        data["login_not_save"] = "0"
+
+        val res: Connection.Response = Jsoup.connect(SettingsData.provider + LOGIN_AJAX)
+            .data(data)
+            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            .ignoreContentType(true)
+            .method(Connection.Method.POST)
+            .execute()
+
+        val doc = res.parse()
+
+        if (doc != null) {
+            val bodyString: String = doc.select("body").text()
+            val jsonObject = JSONObject(bodyString)
+
+            val isSuccess: Boolean = jsonObject.getBoolean("success")
+            if (isSuccess) {
+                val cm = CookieManager.getInstance()
+                cm.setCookie(SettingsData.provider, "PHPSESSID=${res.cookie("PHPSESSID")}")
+                cm.setCookie(SettingsData.provider, "dle_user_id=${res.cookie("dle_user_id")}")
+                cm.setCookie(SettingsData.provider, "dle_password=${res.cookie("dle_password")}")
+            } else {
+                val msg = jsonObject.getString("message")
+                throw Exception(msg)
+            }
+        } else {
+            throw HttpStatusException("failed to login", 400, SettingsData.provider)
+        }
+    }
+
+    fun register(email: String, username: String, password: String) {
+        val data: ArrayMap<String, String> = ArrayMap()
+        data["data"] = "email=$email&prevent_autofill_name=&name=$username&prevent_autofill_password1=&password1=$password&rules=1&submit_reg=submit_reg&do=register"
+
+        val res: Connection.Response = Jsoup.connect(SettingsData.provider + REGISTER_AJAX)
+            .data(data)
+            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            .ignoreContentType(true)
+            .method(Connection.Method.POST)
+            .execute()
+
+        val doc = res.parse()
+
+        val scriptTag = doc.select("script")
+        if (scriptTag.size > 0) {
+            val scriptValue = scriptTag[0].html()
+
+            if (scriptValue.contains("location")) {
+                val cm = CookieManager.getInstance()
+                // cm.setCookie(SettingsData.provider, "PHPSESSID=${res.cookie("PHPSESSID")}")
+                cm.setCookie(SettingsData.provider, "dle_user_id=${res.cookie("dle_user_id")}")
+                cm.setCookie(SettingsData.provider, "dle_password=${res.cookie("dle_password")}")
+                cm.acceptCookie()
+            } else {
+                val toParse = scriptValue.replace("\$('#register-popup-errors').html('", "").replace("').show();", "")
+
+                val parsedDoc = Jsoup.parse(toParse)
+                val errorsEls = parsedDoc.select("li")
+                val errorText = StringBuilder()
+                for ((i, errorEl) in errorsEls.withIndex()) {
+                    errorText.append(errorEl.text())
+                    if (i != errorsEls.size - 1) {
+                        errorText.append("\n\n")
+                    }
+                }
+                throw Exception(errorText.toString())
+            }
         }
     }
 }

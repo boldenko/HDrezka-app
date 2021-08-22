@@ -28,7 +28,7 @@ object UserData {
 
         avatarLink = FileManager.readFile(USER_AVATAR, context)
 
-        if (isLoggedIn == true) {
+      /*  if (isLoggedIn == true) {
             try {
                 val dle_user_id = CookieStorage.getCookie(SettingsData.provider, "dle_user_id")
                 if (dle_user_id.isNullOrEmpty()) {
@@ -40,7 +40,7 @@ object UserData {
                 Toast.makeText(context, context.getString(R.string.session_invalid), Toast.LENGTH_LONG).show()
                 reset(context)
             }
-        }
+        }*/
     }
 
     fun setLoggedIn(context: Context) {

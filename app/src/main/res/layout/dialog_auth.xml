@@ -1,31 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
+    android:layout_margin="10dp"
     android:orientation="vertical">
 
-    <ProgressBar
-        android:id="@+id/dialog_auth_pb_loading"
+    <EditText
+        android:id="@+id/dialog_auth_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible" />
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:hint="@string/prompt_name"
+        android:imeOptions="actionNext"
+        android:inputType="text"
+        android:nextFocusDown="@id/dialog_auth_password"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:textColor="@color/day_night_text"
+        android:textColorHint="@color/day_night_text_hint"></EditText>
 
-    <Button
-        android:id="@+id/dialog_auth_bt_close"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="10dp"
-        android:text="X"
-        android:textColor="@color/white"
+    <EditText
+        android:id="@+id/dialog_auth_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:hint="@string/prompt_email"
+        android:imeOptions="actionNext"
+        android:inputType="textEmailAddress"
+        android:nextFocusDown="@id/dialog_auth_username"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:textColor="@color/day_night_text"
+        android:textColorHint="@color/day_night_text_hint" />
+
+    <EditText
+        android:id="@+id/dialog_auth_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:hint="@string/prompt_username"
+        android:imeOptions="actionNext"
+        android:inputType="text"
+        android:nextFocusDown="@id/dialog_auth_password"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:textColor="@color/day_night_text"
+        android:textColorHint="@color/day_night_text_hint" />
+
+    <EditText
+        android:id="@+id/dialog_auth_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:hint="@string/prompt_password"
+        android:imeActionLabel="@string/action_sign_in_short"
+        android:imeOptions="actionDone"
+        android:inputType="textPassword"
+        android:nextFocusDown="@id/dialog_auth_submit"
+        android:selectAllOnFocus="true"
+        android:textColor="@color/day_night_text"
+        android:textColorHint="@color/day_night_text_hint" />
+
+    <TextView
+        android:id="@+id/dialog_auth_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:gravity="start"
+        android:textColor="@color/main_color_3"
+        android:textSize="@dimen/normal_text"
         android:visibility="gone" />
 
-    <WebView
-        android:id="@+id/dialog_auth_wv_auth"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:focusable="true"
-        android:visibility="gone"
-        android:windowSoftInputMode="adjustResize" />
-</RelativeLayout>
+        android:layout_gravity="center"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginBottom="16dp"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/dialog_auth_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="true"
+            android:text="@string/action_login"
+            android:textColor="@color/white"
+            android:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/dialog_auth_loading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+    </LinearLayout>
+
+</LinearLayout>
