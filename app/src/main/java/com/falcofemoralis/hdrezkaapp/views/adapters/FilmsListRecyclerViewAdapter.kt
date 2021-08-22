@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -13,9 +15,9 @@ import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
-import com.falcofemoralis.hdrezkaapp.views.tv.NavigationMenu
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+
 
 class FilmsListRecyclerViewAdapter(private val context: Context, private val films: ArrayList<Film>, private val openFilm: (film: Film) -> Unit) :
     RecyclerView.Adapter<FilmsListRecyclerViewAdapter.ViewHolder>() {
@@ -29,25 +31,27 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
     override fun onViewAttachedToWindow(holder: ViewHolder) {
         super.onViewAttachedToWindow(holder)
     }
-
+    
     override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
         if (SettingsData.deviceType == DeviceType.TV) {
             selectedItemPos.let {
-                if(position == selectedItemPos){
+                if (position == selectedItemPos) {
                     Log.d("FOCUS_TEST", "$selectedItemPos was selected!")
-                   // holder.layout.requestFocus()
+                    // holder.layout.requestFocus()
                 }
             }
 
             //holder.layout.requestFocus()
             holder.layout.setOnFocusChangeListener { v, hasFocus ->
-                    if (hasFocus) {
-                        Log.d("FOCUS_TEST", "$position has Focus!")
-                        selectedItemPos = position
-                       // selectedItemPos = position
-                    } else {
-
-                    }
+                if (hasFocus) {
+                    val anim: Animation = AnimationUtils.loadAnimation(context, R.anim.scale_in_tv)
+                    v.startAnimation(anim)
+                    anim.fillAfter = true
+                } else {
+                    val anim: Animation = AnimationUtils.loadAnimation(context, R.anim.scale_out_tv)
+                    v.startAnimation(anim)
+                    anim.fillAfter = true
+                }
             }
         }
 
