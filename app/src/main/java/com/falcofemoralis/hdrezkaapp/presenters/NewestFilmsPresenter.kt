@@ -25,14 +25,14 @@ class NewestFilmsPresenter(
     }
 
     override fun getMoreFilms(): ArrayList<Film> {
-        try {
+        return try {
             Log.d("TTEST", sortFilter)
             val films: ArrayList<Film> = NewestFilmsModel.getNewestFilms(currentPage, sortFilter)
             currentPage++
-            return films
+            films
         } catch (e: Exception){
             ExceptionHelper.catchException(e, newestFilmsView)
-            return ArrayList()
+            ArrayList()
         }
     }
 

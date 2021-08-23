@@ -167,4 +167,5 @@
     <string name="submit_login">Войти</string>
     <string name="confirm_exit">Вы точно хотите выйти?</string>
     <string name="confirm">Выйти</string>
+    <string name="films_row_title">Фильмов в ряду</string>
 </resources>

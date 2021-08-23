@@ -90,8 +90,9 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
 
     private fun addFilms(films: ArrayList<Film>) {
         isLoading = false
+        val itemsCount = activeListFilms.size
         activeListFilms.addAll(films)
-        filmsListView.redrawFilms()
+        filmsListView.redrawFilms(itemsCount, films.size, true)
         filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
     }
 }

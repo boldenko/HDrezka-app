@@ -12,6 +12,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.falcofemoralis.hdrezkaapp.R
+import com.falcofemoralis.hdrezkaapp.constants.DeviceType
+import com.falcofemoralis.hdrezkaapp.constants.GridLayoutSizes
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.objects.UserData
 import com.falcofemoralis.hdrezkaapp.views.MainActivity
@@ -24,6 +26,11 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
         preferences = PreferenceManager.getDefaultSharedPreferences(context)
         preferences.registerOnSharedPreferenceChangeListener(this)
+
+        if (preferences.getString("filmsInRow", "").isNullOrEmpty()) {
+            SettingsData.filmsInRow?.let { preferences.edit().putString("filmsInRow", it.toString()).commit() }
+        }
+
         mActivity = requireActivity()
     }
 
@@ -59,6 +66,14 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             "isExternalDownload" -> {
                 SettingsData.isExternalDownload = preferences.getBoolean("isExternalDownload", false)
             }
+            "filmsInRow" -> {
+                (preferences.getString("filmsInRow", (if (SettingsData.deviceType == DeviceType.TV) GridLayoutSizes.TV else GridLayoutSizes.MOBILE).toString())).let {
+                    if (it != null) {
+                        SettingsData.filmsInRow = it.toInt()
+                        applyInterfaceChange()
+                    }
+                }
+            }
         }
     }
 
@@ -66,6 +81,10 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         UserData.reset(mActivity)
         CookieManager.getInstance().removeAllCookies(null)
         CookieManager.getInstance().flush()
+        (mActivity as MainActivity).updatePager()
+    }
+
+    private fun applyInterfaceChange(){
         (mActivity as MainActivity).updatePager()
     }
 }

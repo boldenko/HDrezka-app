@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
+import com.falcofemoralis.hdrezkaapp.constants.GridLayoutSizes
 
 object SettingsData {
     private var prefs: SharedPreferences? = null
@@ -16,6 +17,7 @@ object SettingsData {
     var isPlayerChooser: Boolean? = null
     var isExternalDownload: Boolean? = null
     var deviceType: DeviceType? = null
+    var filmsInRow: Int? = null
 
     fun init(context: Context, deviceType: DeviceType) {
         this.deviceType = deviceType
@@ -32,6 +34,11 @@ object SettingsData {
         isMaxQuality = prefs?.getBoolean("isMaxQuality", false)
         isPlayerChooser = prefs?.getBoolean("isPlayerChooser", false)
         isExternalDownload = prefs?.getBoolean("isExternalDownload", false)
+        (prefs?.getString("filmsInRow", (if (deviceType == DeviceType.TV) GridLayoutSizes.TV else GridLayoutSizes.MOBILE).toString())).let {
+            if (it != null) {
+                filmsInRow = it.toInt()
+            }
+        }
     }
 
     /*  fun setProviderFromSettings(provider: String) {

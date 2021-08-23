@@ -10,6 +10,14 @@
             app:layout="@layout/custom_list_preference"
             app:title="@string/cat_main_screen"
             app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:entries="@array/filmsInRow"
+            app:entryValues="@array/filmsInRow"
+            app:key="filmsInRow"
+            app:layout="@layout/custom_list_preference"
+            app:title="@string/films_row_title"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/cat_app">

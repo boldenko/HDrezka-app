@@ -123,8 +123,9 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
 
     private fun addFilms(films: ArrayList<Film>) {
         isLoading = false
+        val itemsCount = activeFilms.size
         activeFilms.addAll(films)
-        filmsListView.redrawFilms()
+        filmsListView.redrawFilms(itemsCount, films.size, true)
         filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
     }
 

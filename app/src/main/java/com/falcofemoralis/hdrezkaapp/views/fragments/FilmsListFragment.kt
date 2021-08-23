@@ -5,19 +5,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.ProgressBar
+import androidx.core.view.marginTop
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.falcofemoralis.hdrezkaapp.R
-import com.falcofemoralis.hdrezkaapp.constants.DeviceType
-import com.falcofemoralis.hdrezkaapp.constants.GridLayoutSizes
 import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
+import com.falcofemoralis.hdrezkaapp.utils.UnitsConverter
 import com.falcofemoralis.hdrezkaapp.views.adapters.FilmsListRecyclerViewAdapter
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmListCallView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmsListView
@@ -40,14 +41,8 @@ open class FilmsListFragment : Fragment(), FilmsListView {
 
         progressBar = currentView.findViewById(R.id.fragment_films_list_pb_data_loading)
 
-        val filmsPerRow = if (SettingsData.deviceType == DeviceType.TV) {
-            GridLayoutSizes.TV
-        } else {
-            GridLayoutSizes.MOBILE
-        }
-
         viewList = currentView.findViewById(R.id.fragment_films_list_rv_films)
-        viewList.layoutManager = GridLayoutManager(context, filmsPerRow)
+        viewList.layoutManager = SettingsData.filmsInRow?.let { GridLayoutManager(context, it) }
 
         scrollView = currentView.findViewById(R.id.fragment_films_list_nsv_films)
         scrollView.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
@@ -75,8 +70,13 @@ open class FilmsListFragment : Fragment(), FilmsListView {
         viewList.adapter = context?.let { FilmsListRecyclerViewAdapter(it, films, ::listCallback) }
     }
 
-    override fun redrawFilms() {
-        viewList.adapter?.notifyDataSetChanged()
+    override fun redrawFilms(from: Int, count: Int, isAdded: Boolean) {
+        if(isAdded){
+           // viewList.adapter?.notifyDataSetChanged()
+            viewList.adapter?.notifyItemRangeChanged(from, count)
+        } else{
+            viewList.adapter?.notifyItemRangeInserted(from, count)
+        }
         callView.dataInited()
     }
 

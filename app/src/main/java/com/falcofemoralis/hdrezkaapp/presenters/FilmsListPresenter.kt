@@ -1,8 +1,6 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
 import android.util.ArrayMap
-import com.falcofemoralis.hdrezkaapp.constants.DeviceType
-import com.falcofemoralis.hdrezkaapp.constants.GridLayoutSizes
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
 import com.falcofemoralis.hdrezkaapp.models.FilmModel
@@ -30,10 +28,10 @@ class FilmsListPresenter(
     private var filmsPerPage: Int = 0
 
     init {
-        filmsPerPage = if (SettingsData.deviceType == DeviceType.TV) {
-            GridLayoutSizes.TV * FILMS_PER_PAGE_MULT
-        } else {
-            GridLayoutSizes.MOBILE * FILMS_PER_PAGE_MULT
+        SettingsData.filmsInRow.let {
+            if (it != null) {
+                filmsPerPage = it * FILMS_PER_PAGE_MULT
+            }
         }
     }
 
@@ -89,7 +87,7 @@ class FilmsListPresenter(
         }
     }
 
-    fun addFilms(films: ArrayList<Film>) {
+    private fun addFilms(films: ArrayList<Film>) {
         isLoading = false
 
         // sort films
@@ -99,8 +97,9 @@ class FilmsListPresenter(
                 sortedFilms.add(film)
             }
         }
+        val itemsCount = activeFilms.size
         activeFilms.addAll(sortedFilms)
-        filmsListView.redrawFilms()
+        filmsListView.redrawFilms(itemsCount, films.size, true)
 
         sortedFilmsCount += sortedFilms.size
         if (sortedFilmsCount >= filmsPerPage) {
@@ -114,14 +113,16 @@ class FilmsListPresenter(
     fun reset() {
         isLoading = false
         allFilms.clear()
+        val itemsCount = activeFilms.size
         activeFilms.clear()
         sortedFilmsCount = 0
-        filmsListView.redrawFilms()
+        filmsListView.redrawFilms(0, itemsCount, false)
     }
 
     fun applyFilter() {
+        val itemsCount = activeFilms.size
         activeFilms.clear()
-        filmsListView.redrawFilms()
+        filmsListView.redrawFilms(0, itemsCount, false)
         filmsListView.setProgressBarState(IProgressState.StateType.LOADING)
         addFilms(allFilms)
     }

@@ -6,5 +6,5 @@ import com.falcofemoralis.hdrezkaapp.objects.Film
 interface FilmsListView: IProgressState {
     fun setFilms(films: ArrayList<Film>)
 
-    fun redrawFilms()
+    fun redrawFilms(from: Int, count: Int, isAdded: Boolean)
 }

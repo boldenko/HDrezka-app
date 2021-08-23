@@ -21,27 +21,13 @@ import com.squareup.picasso.Picasso
 
 class FilmsListRecyclerViewAdapter(private val context: Context, private val films: ArrayList<Film>, private val openFilm: (film: Film) -> Unit) :
     RecyclerView.Adapter<FilmsListRecyclerViewAdapter.ViewHolder>() {
-    private var selectedItemPos: Int? = null
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.inflate_film, parent, false)
         return ViewHolder(view)
     }
 
-    override fun onViewAttachedToWindow(holder: ViewHolder) {
-        super.onViewAttachedToWindow(holder)
-    }
-    
     override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
         if (SettingsData.deviceType == DeviceType.TV) {
-            selectedItemPos.let {
-                if (position == selectedItemPos) {
-                    Log.d("FOCUS_TEST", "$selectedItemPos was selected!")
-                    // holder.layout.requestFocus()
-                }
-            }
-
-            //holder.layout.requestFocus()
             holder.layout.setOnFocusChangeListener { v, hasFocus ->
                 if (hasFocus) {
                     val anim: Animation = AnimationUtils.loadAnimation(context, R.anim.scale_in_tv)

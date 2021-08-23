@@ -12,6 +12,7 @@ import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.NavigationMenuCallback
 import com.falcofemoralis.hdrezkaapp.presenters.NewestFilmsPresenter
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
+import com.falcofemoralis.hdrezkaapp.utils.UnitsConverter
 import com.falcofemoralis.hdrezkaapp.views.elements.FiltersMenu
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmListCallView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.NewestFilmsView
