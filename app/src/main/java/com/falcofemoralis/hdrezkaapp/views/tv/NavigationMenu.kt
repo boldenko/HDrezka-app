@@ -54,6 +54,7 @@ class NavigationMenu : Fragment() {
 
     companion object {
         var isFree = true
+        var isFocusOut = false
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -80,7 +81,7 @@ class NavigationMenu : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         //by default selection
-        setMenuIconFocusView(R.drawable.ic_baseline_movie_24, newest_IB)
+        setMenuIconFocusView(R.drawable.ic_baseline_movie_24_sel, newest_IB)
 
         //Navigation Menu Options Focus, Key Listeners
         setListener(newest_IB, newest_TV, newestFilms, R.drawable.ic_baseline_movie_24_sel, R.drawable.ic_baseline_movie_24)
@@ -112,7 +113,13 @@ class NavigationMenu : Fragment() {
                     }
                 } else {
                     if (isNavigationOpen()) {
-                        setOutOfFocusedView(ib, unselectedImage)
+                        // false by default,
+                        Log.d("NAV_TEST", isFocusOut.toString())
+                        if (isFocusOut) {
+                            isFocusOut = false
+                        } else {
+                            setOutOfFocusedView(ib, unselectedImage)
+                        }
                         setMenuNameFocusView(tv, false)
                         focusOut(ib)
                         Log.d("NAV_TEST", "2 $lastMenu opened and hasn't focus")
@@ -129,6 +136,7 @@ class NavigationMenu : Fragment() {
                 when (keyCode) {
                     KeyEvent.KEYCODE_DPAD_RIGHT -> {
                         Log.d("NAV_TEST", "closeNav() on right")
+                        isFocusOut = true
                         closeNav()
                         navigationStateListener.onStateChanged(false, lastSelectedMenu)
                     }
@@ -144,6 +152,7 @@ class NavigationMenu : Fragment() {
                     KeyEvent.KEYCODE_DPAD_CENTER -> {
                         lastSelectedMenu = lastMenu
                         fragmentChangeListener.switchFragment(lastMenu)
+                        Log.d("NAV_TEST", "closeNav() on center")
                         closeNav()
                     }
                     else -> {
@@ -250,7 +259,6 @@ class NavigationMenu : Fragment() {
 
         //Setting out of focus views for menu icons, names
         unHighlightMenuSelections(lastSelectedMenu)
-
     }
 
     private fun unHighlightMenuSelections(lastSelectedMenu: String?) {
@@ -323,7 +331,7 @@ class NavigationMenu : Fragment() {
             val animate = AnimationUtils.loadAnimation(context, anim)
             if (visibility == View.GONE) {
                 val duration = context?.resources?.getInteger(R.integer.animation_duration)?.toLong()
-                duration?.let{
+                duration?.let {
                     animate.duration = it
                 }
                 animate.setAnimationListener(object : Animation.AnimationListener {

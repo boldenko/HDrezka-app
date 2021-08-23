@@ -27,7 +27,7 @@
             app:smsp_floatingLabelColor="@color/white"
             app:smsp_hint="@string/categories"
             app:smsp_hintColor="@color/white"
-            app:smsp_hintSize="@dimen/small_text"
+            app:smsp_hintSize="@dimen/spinner_text"
             app:smsp_itemColor="@color/white"
             app:smsp_itemListColor="@color/day_night_text"
             app:smsp_itemListHintColor="@color/white"
@@ -46,7 +46,7 @@
             app:smsp_floatingLabelColor="@color/white"
             app:smsp_hint="@string/choose_genre_hint"
             app:smsp_hintColor="@color/white"
-            app:smsp_hintSize="@dimen/small_text"
+            app:smsp_hintSize="@dimen/spinner_text"
             app:smsp_itemColor="@color/white"
             app:smsp_itemListColor="@color/day_night_text"
             app:smsp_itemListHintColor="@color/white"
@@ -65,7 +65,7 @@
             app:smsp_floatingLabelColor="@color/white"
             app:smsp_hint="@string/choose_year_hint"
             app:smsp_hintColor="@color/white"
-            app:smsp_hintSize="@dimen/small_text"
+            app:smsp_hintSize="@dimen/spinner_text"
             app:smsp_itemColor="@color/white"
             app:smsp_itemListColor="@color/day_night_text"
             app:smsp_itemListHintColor="@color/white"
@@ -80,7 +80,7 @@
             android:gravity="center"
             android:text="@string/filters"
             android:textColor="@color/white"
-            android:textSize="@dimen/small_text" />
+            android:textSize="@dimen/spinner_text" />
 
     </LinearLayout>
 

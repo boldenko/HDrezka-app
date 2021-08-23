@@ -25,6 +25,7 @@ object ExceptionHelper {
                     ErrorType.PARSING_ERROR -> R.string.error_parsing
                     ErrorType.NO_INTERNET -> R.string.no_connection
                     ErrorType.BLOCKED_SITE -> R.string.no_access
+                    ErrorType.PROVIDER_TIMEOUT -> R.string.provider_timeout
                     ErrorType.MALFORMED_URL -> R.string.malformed_url
                     ErrorType.MODERATE_BY_ADMIN -> R.string.comment_need_apply
                     ErrorType.ERROR -> R.string.error_occured
@@ -59,6 +60,7 @@ object ExceptionHelper {
                 when (e.statusCode) {
                     404 -> ErrorType.EMPTY
                     403 -> ErrorType.MODERATE_BY_ADMIN
+                    503 -> ErrorType.PROVIDER_TIMEOUT
                     else -> ErrorType.ERROR
                 }
             }

@@ -62,12 +62,11 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     private fun initApp() {
         if (isInternetAvailable(applicationContext)) {
             if (savedInstanceState == null) {
-                UserData.init(applicationContext)
-
                 interfaceMode = (getSystemService(UI_MODE_SERVICE) as UiModeManager).currentModeType
                 when (interfaceMode) {
                     Configuration.UI_MODE_TYPE_TELEVISION -> {
                         SettingsData.init(applicationContext, DeviceType.TV)
+                        UserData.init(applicationContext)
                         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
                         navFragmentLayout = findViewById(R.id.nav_fragment)
@@ -81,6 +80,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                     }
                     else -> {
                         SettingsData.init(applicationContext, DeviceType.MOBILE)
+                        UserData.init(applicationContext)
                         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                         mainFragment = ViewPagerFragment()
                         onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null)
@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     }
 
     fun setUserAvatar() {
-        if (SettingsData.deviceType == DeviceType.TV) {
+        if (SettingsData.deviceType != DeviceType.TV) {
             val imageView: ImageView = findViewById(R.id.activity_main_iv_user)
             if (UserData.avatarLink != null && UserData.avatarLink!!.isNotEmpty()) {
                 Picasso.get().load(UserData.avatarLink).into(imageView)
@@ -212,28 +212,22 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
 
         when (fragmentName) {
             NavigationMenuTabs.nav_menu_newest -> {
-                newestFilmsFragment = NewestFilmsFragment()
-                fragmentTo = newestFilmsFragment
+                fragmentTo = NewestFilmsFragment()
             }
             NavigationMenuTabs.nav_menu_categories -> {
-                categoriesFragment = CategoriesFragment()
-                fragmentTo = categoriesFragment
+                fragmentTo = CategoriesFragment()
             }
             NavigationMenuTabs.nav_menu_search -> {
-                searchFragment = SearchFragment()
-                fragmentTo = searchFragment
+                fragmentTo = SearchFragment()
             }
             NavigationMenuTabs.nav_menu_bookmarks -> {
-                bookmarksFragment = BookmarksFragment()
-                fragmentTo = bookmarksFragment
+                fragmentTo = BookmarksFragment()
             }
             NavigationMenuTabs.nav_menu_later -> {
-                watchLaterFragment = WatchLaterFragment()
-                fragmentTo = watchLaterFragment
+                fragmentTo = WatchLaterFragment()
             }
             NavigationMenuTabs.nav_menu_settings -> {
-                settingsFragment = UserFragment()
-                fragmentTo = settingsFragment
+                fragmentTo = UserFragment()
             }
         }
 

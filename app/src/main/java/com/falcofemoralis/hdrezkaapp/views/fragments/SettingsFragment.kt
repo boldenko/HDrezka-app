@@ -1,5 +1,6 @@
 package com.falcofemoralis.hdrezkaapp.views.fragments
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
@@ -20,7 +21,8 @@ import com.falcofemoralis.hdrezkaapp.views.MainActivity
 
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
     private lateinit var preferences: SharedPreferences
-    private lateinit var mActivity: FragmentActivity
+    private var mActivity: FragmentActivity? = null
+    private var mContext: Context? = null
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
@@ -32,6 +34,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         }
 
         mActivity = requireActivity()
+        mContext = requireContext()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -44,13 +47,13 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             "providers" -> {
-                SettingsData.provider = preferences.getString("providers", mActivity.resources.getStringArray(R.array.providersIds)[0])
+                SettingsData.provider = preferences.getString("providers", mActivity?.resources?.getStringArray(R.array.providersIds)?.get(0))
                 applyProvider()
             }
             "ownProvider" -> {
                 SettingsData.provider = preferences.getString("ownProvider", "")
                 if (SettingsData.provider.isNullOrEmpty()) {
-                    SettingsData.provider = preferences.getString("providers", mActivity.resources.getStringArray(R.array.providersIds)[0])
+                    SettingsData.provider = preferences.getString("providers", mActivity?.resources?.getStringArray(R.array.providersIds)?.get(0))
                 }
                 applyProvider()
             }
@@ -78,13 +81,13 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     }
 
     private fun applyProvider() {
-        UserData.reset(mActivity)
+        mContext?.let { UserData.reset(it) }
         CookieManager.getInstance().removeAllCookies(null)
         CookieManager.getInstance().flush()
-        (mActivity as MainActivity).updatePager()
+        mActivity?.let { (it as MainActivity).updatePager() }
     }
 
-    private fun applyInterfaceChange(){
-        (mActivity as MainActivity).updatePager()
+    private fun applyInterfaceChange() {
+        mActivity?.let { (it as MainActivity).updatePager() }
     }
 }

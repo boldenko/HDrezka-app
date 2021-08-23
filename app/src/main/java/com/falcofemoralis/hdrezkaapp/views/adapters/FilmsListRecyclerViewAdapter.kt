@@ -65,10 +65,17 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
                 info += film.countries!![0]
             }
         }
+        film.genres?.let {
+            if (film.genres!!.size > 0) {
+                info = addComma(info)
+                info += film.genres!![0]
+            }
+        }
         if (film.ratingIMDB?.isNotEmpty() == true) {
             info = addComma(info)
             info += film.ratingIMDB
         }
+
 
         holder.infoView.text = info
         holder.typeView.text = film.type
@@ -80,6 +87,7 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
             res.getString(R.string.multfilms).take(4) -> ContextCompat.getColor(context, R.color.multfilm)
             res.getString(R.string.serials).take(4) -> ContextCompat.getColor(context, R.color.serial)
             res.getString(R.string.anime).take(4) -> ContextCompat.getColor(context, R.color.anime)
+            res.getString(R.string.tv_show).take(4) -> ContextCompat.getColor(context, R.color.tv_show)
             else -> ContextCompat.getColor(context, R.color.background)
         }
         holder.typeView.setBackgroundColor(color)

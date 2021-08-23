@@ -1,5 +1,6 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
+import com.falcofemoralis.hdrezkaapp.constants.AdapterAction
 import com.falcofemoralis.hdrezkaapp.constants.BookmarkFilterType
 import com.falcofemoralis.hdrezkaapp.interfaces.IMsg
 import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
@@ -75,7 +76,7 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
         isLoading = true
         if (loadedFilms.size > 0) {
             try {
-                FilmModel.getFilmsData(loadedFilms, FILMS_PER_PAGE, ::addFilms)
+                FilmModel.getFilmsData(loadedFilms, FILMS_PER_PAGE, bookmarksView, ::addFilms)
             } catch (e: Exception) {
                 catchException(e, bookmarksView)
                 isLoading = false
@@ -96,7 +97,7 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
 
                 if (loadedFilms.size > 0) {
                     try {
-                        FilmModel.getFilmsData(loadedFilms, FILMS_PER_PAGE, ::addFilms)
+                        FilmModel.getFilmsData(loadedFilms, FILMS_PER_PAGE, bookmarksView, ::addFilms)
 
                         withContext(Dispatchers.Main) {
                             bookmarksView.hideMsg()
@@ -125,7 +126,7 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
         isLoading = false
         val itemsCount = activeFilms.size
         activeFilms.addAll(films)
-        filmsListView.redrawFilms(itemsCount, films.size, true)
+        filmsListView.redrawFilms(itemsCount, films.size, AdapterAction.ADD)
         filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
     }
 

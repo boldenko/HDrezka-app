@@ -1,8 +1,10 @@
 package com.falcofemoralis.hdrezkaapp.models
 
+import android.content.Context
 import android.util.ArrayMap
 import android.webkit.CookieManager
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
+import com.falcofemoralis.hdrezkaapp.objects.UserData
 import com.falcofemoralis.hdrezkaapp.utils.CookieStorage
 import org.json.JSONObject
 import org.jsoup.Connection
@@ -26,7 +28,7 @@ object UserModel {
         }
     }
 
-    fun login(name: String, password: String) {
+    fun login(name: String, password: String, context: Context) {
         val data: ArrayMap<String, String> = ArrayMap()
         data["login_name"] = name
         data["login_password"] = password
@@ -47,10 +49,7 @@ object UserModel {
 
             val isSuccess: Boolean = jsonObject.getBoolean("success")
             if (isSuccess) {
-                val cm = CookieManager.getInstance()
-                cm.setCookie(SettingsData.provider, "PHPSESSID=${res.cookie("PHPSESSID")}")
-                cm.setCookie(SettingsData.provider, "dle_user_id=${res.cookie("dle_user_id")}")
-                cm.setCookie(SettingsData.provider, "dle_password=${res.cookie("dle_password")}")
+                UserData.setCookies(res.cookie("dle_user_id"), res.cookie("dle_password"), res.cookie("PHPSESSID"), context, true)
             } else {
                 val msg = jsonObject.getString("message")
                 throw Exception(msg)
@@ -60,7 +59,7 @@ object UserModel {
         }
     }
 
-    fun register(email: String, username: String, password: String) {
+    fun register(email: String, username: String, password: String, context: Context) {
         val data: ArrayMap<String, String> = ArrayMap()
         data["data"] = "email=$email&prevent_autofill_name=&name=$username&prevent_autofill_password1=&password1=$password&rules=1&submit_reg=submit_reg&do=register"
 
@@ -78,11 +77,7 @@ object UserModel {
             val scriptValue = scriptTag[0].html()
 
             if (scriptValue.contains("location")) {
-                val cm = CookieManager.getInstance()
-                // cm.setCookie(SettingsData.provider, "PHPSESSID=${res.cookie("PHPSESSID")}")
-                cm.setCookie(SettingsData.provider, "dle_user_id=${res.cookie("dle_user_id")}")
-                cm.setCookie(SettingsData.provider, "dle_password=${res.cookie("dle_password")}")
-                cm.acceptCookie()
+                UserData.setCookies(res.cookie("dle_user_id"), res.cookie("dle_password"), null, context, true)
             } else {
                 val toParse = scriptValue.replace("\$('#register-popup-errors').html('", "").replace("').show();", "")
 

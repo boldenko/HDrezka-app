@@ -5,20 +5,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.MarginLayoutParams
 import android.widget.ProgressBar
-import androidx.core.view.marginTop
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.falcofemoralis.hdrezkaapp.R
+import com.falcofemoralis.hdrezkaapp.constants.AdapterAction
 import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
-import com.falcofemoralis.hdrezkaapp.utils.UnitsConverter
 import com.falcofemoralis.hdrezkaapp.views.adapters.FilmsListRecyclerViewAdapter
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmListCallView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmsListView
@@ -70,12 +68,11 @@ open class FilmsListFragment : Fragment(), FilmsListView {
         viewList.adapter = context?.let { FilmsListRecyclerViewAdapter(it, films, ::listCallback) }
     }
 
-    override fun redrawFilms(from: Int, count: Int, isAdded: Boolean) {
-        if(isAdded){
-           // viewList.adapter?.notifyDataSetChanged()
-            viewList.adapter?.notifyItemRangeChanged(from, count)
-        } else{
-            viewList.adapter?.notifyItemRangeInserted(from, count)
+    override fun redrawFilms(from: Int, count: Int, action: AdapterAction) {
+        when (action) {
+            AdapterAction.ADD -> viewList.adapter?.notifyItemRangeInserted(from, count)
+            AdapterAction.UPDATE -> viewList.adapter?.notifyItemRangeChanged(from, count)
+            AdapterAction.DELETE -> viewList.adapter?.notifyItemRangeRemoved(from, count)
         }
         callView.dataInited()
     }

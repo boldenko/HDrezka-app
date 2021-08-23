@@ -1,5 +1,6 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
+import com.falcofemoralis.hdrezkaapp.constants.AdapterAction
 import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
 import com.falcofemoralis.hdrezkaapp.models.FilmModel
 import com.falcofemoralis.hdrezkaapp.models.SearchModel
@@ -52,8 +53,10 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
         query = text
 
         activeSearchFilms.clear()
+        val itemsCount = activeListFilms.size
         activeListFilms.clear()
         loadedListFilms.clear()
+        filmsListView.redrawFilms(0, itemsCount, AdapterAction.DELETE)
         currentPage = 1
         isLoading = false
         getNextFilms()
@@ -73,7 +76,7 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
                     loadedListFilms = SearchModel.getFilmsFromSearchPage(query, currentPage)
                     currentPage++
                 }
-                FilmModel.getFilmsData(loadedListFilms, FILMS_PER_PAGE, ::addFilms)
+                FilmModel.getFilmsData(loadedListFilms, FILMS_PER_PAGE, searchView, ::addFilms)
             } catch (e: HttpStatusException) {
                 if (e.statusCode != 404) {
                     catchException(e, searchView)
@@ -92,7 +95,7 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
         isLoading = false
         val itemsCount = activeListFilms.size
         activeListFilms.addAll(films)
-        filmsListView.redrawFilms(itemsCount, films.size, true)
+        filmsListView.redrawFilms(itemsCount, films.size, AdapterAction.ADD)
         filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
     }
 }

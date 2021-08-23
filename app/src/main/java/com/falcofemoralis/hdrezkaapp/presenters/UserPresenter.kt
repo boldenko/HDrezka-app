@@ -28,7 +28,7 @@ class UserPresenter(private val userView: UserView, private val context: Context
     fun login(name: String, password: String) {
         GlobalScope.launch {
             try {
-                UserModel.login(name, password)
+                UserModel.login(name, password, context)
 
                 withContext(Dispatchers.Main) {
                     UserData.setLoggedIn(context)
@@ -47,7 +47,7 @@ class UserPresenter(private val userView: UserView, private val context: Context
     fun register(email: String, username: String, password: String) {
         GlobalScope.launch {
             try {
-                UserModel.register(email, username, password)
+                UserModel.register(email, username, password, context)
 
                 withContext(Dispatchers.Main) {
                     UserData.setLoggedIn(context)

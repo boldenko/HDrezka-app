@@ -4,8 +4,6 @@ import android.content.Context
 import android.util.Log
 import android.webkit.CookieManager
 import android.webkit.WebStorage
-import android.widget.Toast
-import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.utils.CookieStorage
 import com.falcofemoralis.hdrezkaapp.utils.FileManager
 
@@ -14,6 +12,7 @@ object UserData {
     private const val USER_AVATAR: String = "avatar"
     private const val USER_ID: String = "id"
     private const val USER_HASH: String = "hash"
+    private const val SESSION_ID: String = "session"
 
     var isLoggedIn: Boolean? = null
     var avatarLink: String? = null
@@ -28,19 +27,21 @@ object UserData {
 
         avatarLink = FileManager.readFile(USER_AVATAR, context)
 
-      /*  if (isLoggedIn == true) {
+        if (isLoggedIn == true) {
             try {
                 val dle_user_id = CookieStorage.getCookie(SettingsData.provider, "dle_user_id")
                 if (dle_user_id.isNullOrEmpty()) {
                     Log.d("COOOOKIES", "dle_user_id IS EMPTY")
+                    loadCookies(context)
                 } else {
                     Log.d("COOOOKIES", "dle_user_id IS OK")
                 }
             } catch (e: Exception) {
-                Toast.makeText(context, context.getString(R.string.session_invalid), Toast.LENGTH_LONG).show()
-                reset(context)
+                loadCookies(context)
+                //Toast.makeText(context, context.getString(R.string.session_invalid), Toast.LENGTH_LONG).show()
+                //reset(context)
             }
-        }*/
+        }
     }
 
     fun setLoggedIn(context: Context) {
@@ -53,6 +54,33 @@ object UserData {
             this.avatarLink = avatarLink
             FileManager.writeFile(USER_AVATAR, avatarLink, false, context)
         }
+    }
+
+    fun setCookies(user_id: String?, password: String?, session: String?, context: Context, isSave: Boolean) {
+        val cm = CookieManager.getInstance()
+
+        user_id?.let { cm.setCookie(SettingsData.provider, "dle_user_id=${it}") }
+        password?.let { cm.setCookie(SettingsData.provider, "dle_password=${it}") }
+        session?.let { cm.setCookie(SettingsData.provider, "PHPSESSID=${it}") }
+        cm.acceptCookie()
+
+        if (isSave) {
+            saveCookies(user_id, password, session, context)
+        }
+    }
+
+    private fun saveCookies(user_id: String?, password: String?, session: String?, context: Context) {
+        user_id?.let { FileManager.writeFile(USER_ID, it, false, context) }
+        password?.let { FileManager.writeFile(USER_HASH, it, false, context) }
+        session?.let { FileManager.writeFile(SESSION_ID, it, false, context) }
+    }
+
+    private fun loadCookies(context: Context) {
+        val id = FileManager.readFile(USER_ID, context)
+        val hash = FileManager.readFile(USER_HASH, context)
+        val session = FileManager.readFile(SESSION_ID, context)
+
+        setCookies(id, hash, session, context, false)
     }
 
     fun reset(context: Context) {

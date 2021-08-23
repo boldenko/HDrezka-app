@@ -746,13 +746,24 @@ class FilmFragment : Fragment(), FilmView {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun setHRrating(rating: Float, isActive: Boolean) {
-        val selectableRatingBar: ScaleRatingBar = currentView.findViewById(R.id.fragment_film_srb_rating_hdrezka_select)
-        val ratingBar: ScaleRatingBar = currentView.findViewById(R.id.fragment_film_srb_rating_hdrezka)
-
         if (SettingsData.deviceType == DeviceType.TV) {
+            val tvRatingBar: ScaleRatingBar = currentView.findViewById(R.id.fragment_film_srb_rating_hdrezka_tv)
+
+            if (rating == -1f) {
+                currentView.findViewById<RelativeLayout>(R.id.fragment_film_rating_layout).visibility = View.GONE
+                tvRatingBar.visibility = View.GONE
+                return
+            }
             currentView.findViewById<RelativeLayout>(R.id.fragment_film_rating_layout).visibility = View.GONE
-            currentView.findViewById<ScaleRatingBar>(R.id.fragment_film_srb_rating_hdrezka_tv).rating = rating
+            tvRatingBar.rating = rating
         } else {
+            val selectableRatingBar: ScaleRatingBar = currentView.findViewById(R.id.fragment_film_srb_rating_hdrezka_select)
+            val ratingBar: ScaleRatingBar = currentView.findViewById(R.id.fragment_film_srb_rating_hdrezka)
+
+            if (rating == -1f) {
+                currentView.findViewById<RelativeLayout>(R.id.fragment_film_rating_layout).visibility = View.GONE
+                return
+            }
             selectableRatingBar.setIsIndicator(isActive)
             ratingBar.rating = rating
             selectableRatingBar.setOnTouchListener { view, motionEvent ->

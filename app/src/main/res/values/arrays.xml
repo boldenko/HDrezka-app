@@ -85,6 +85,7 @@
         <item>@string/provider_3</item>
         <item>@string/provider_4</item>
         <item>@string/provider_5</item>
+        <item>@string/provider_6</item>
         <item>@string/provider_7</item>
         <item>@string/provider_8</item>
     </string-array>
@@ -94,6 +95,7 @@
         <item>http://hdrezka.me</item>
         <item>http://hdrezka.co</item>
         <item>https://hdrezka.club</item>
+        <item>http://rezkily.com</item>
         <item>http://metaivi.com</item>
         <item>http://cokinopoisk.com</item>
     </string-array>

@@ -7,4 +7,5 @@
     <dimen name="root_pref_space">10dp</dimen>
     <dimen name="search_margin_top">15dp</dimen>
     <dimen name="search_margin_top_clear">7dp</dimen>
+    <dimen name="spinner_text">@dimen/_10ssp</dimen>
 </resources>

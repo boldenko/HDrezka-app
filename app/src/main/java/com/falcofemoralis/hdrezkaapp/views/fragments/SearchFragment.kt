@@ -123,7 +123,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
                 imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
             }
 
-            autoCompleteTextView.requestFocus()
+          //  autoCompleteTextView.requestFocus()
         }
     }
 

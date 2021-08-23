@@ -58,12 +58,12 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
 
             genrePos?.let {
                 link = categories.valueAt(typePos)[genrePos].second
+            }
 
-                yearPos?.let {
-                    val year: String = yearsNames[yearPos]
-                    if (year != "за все время") {
-                        link += "$year/"
-                    }
+            yearPos?.let {
+                val year: String = yearsNames[yearPos]
+                if (year != "за все время") {
+                    link += "$year/"
                 }
             }
         }

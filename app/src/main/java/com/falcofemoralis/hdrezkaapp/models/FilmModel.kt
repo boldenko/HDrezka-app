@@ -1,9 +1,10 @@
 package com.falcofemoralis.hdrezkaapp.models
 
 import android.util.ArrayMap
-import android.util.Log
 import android.webkit.CookieManager
+import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.objects.*
+import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -315,23 +316,27 @@ object FilmModel {
         }
 
         // no film translations
-        if (filmTranslations.size == 0) {
-            val stringedDoc = document.toString()
+        try {
+            if (filmTranslations.size == 0) {
+                val stringedDoc = document.toString()
 
-            if (film.isMovieTranslation!!) {
-                val index = stringedDoc.indexOf("initCDNMoviesEvents")
-                val subString = stringedDoc.substring(stringedDoc.indexOf("{\"id\"", index), stringedDoc.indexOf("});", index) + 1)
-                filmTranslations.add(Voice(JSONObject(subString).getString("streams")))
-            } else {
-                val startIndex = stringedDoc.indexOf("initCDNSeriesEvents")
-                var endIndex = stringedDoc.indexOf("{\"id\"", startIndex)
-                if (endIndex == -1) {
-                    endIndex = stringedDoc.indexOf("{\"url\"", startIndex)
+                if (film.isMovieTranslation!!) {
+                    val index = stringedDoc.indexOf("initCDNMoviesEvents")
+                    val subString = stringedDoc.substring(stringedDoc.indexOf("{\"id\"", index), stringedDoc.indexOf("});", index) + 1)
+                    filmTranslations.add(Voice(JSONObject(subString).getString("streams")))
+                } else {
+                    val startIndex = stringedDoc.indexOf("initCDNSeriesEvents")
+                    var endIndex = stringedDoc.indexOf("{\"id\"", startIndex)
+                    if (endIndex == -1) {
+                        endIndex = stringedDoc.indexOf("{\"url\"", startIndex)
+                    }
+                    val subString = stringedDoc.substring(startIndex, endIndex)
+                    val transId = subString.split(",")[1]
+                    filmTranslations.add(Voice(transId, parseSeasons(document)))
                 }
-                val subString = stringedDoc.substring(startIndex, endIndex)
-                val transId = subString.split(",")[1]
-                filmTranslations.add(Voice(transId, parseSeasons(document)))
             }
+        } catch (e: Exception) {
+            film.isAwaiting = true
         }
 
         film.translations = filmTranslations
@@ -341,7 +346,7 @@ object FilmModel {
         return film
     }
 
-    fun getFilmsData(films: ArrayList<Film>, filmsPerPage: Int, callback: (ArrayList<Film>) -> Unit) {
+    fun getFilmsData(films: ArrayList<Film>, filmsPerPage: Int, iConnection: IConnection, callback: (ArrayList<Film>) -> Unit) {
         val filmsToLoad: ArrayList<Film> = ArrayList()
         for ((index, film) in (films.clone() as ArrayList<Film>).withIndex()) {
             filmsToLoad.add(film)
@@ -374,7 +379,9 @@ object FilmModel {
                         }
                     }
                 } catch (e: Exception) {
-                    Log.d("TIMEOUT_PROBLEM", "timeout $e")
+                    withContext(Dispatchers.Main) {
+                        ExceptionHelper.catchException(e, iConnection)
+                    }
                 }
             }
         }

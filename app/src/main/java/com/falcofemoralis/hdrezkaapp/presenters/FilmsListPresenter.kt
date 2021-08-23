@@ -1,6 +1,7 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
 import android.util.ArrayMap
+import com.falcofemoralis.hdrezkaapp.constants.AdapterAction
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
 import com.falcofemoralis.hdrezkaapp.models.FilmModel
@@ -72,9 +73,9 @@ class FilmsListPresenter(
                     }
                 }
 
-                FilmModel.getFilmsData(filmList, filmsPerPage, ::processFilms)
+                FilmModel.getFilmsData(filmList, filmsPerPage, view, ::processFilms)
             } catch (e: HttpStatusException) {
-                if (e.statusCode != 404) {
+                if (e.statusCode != 404 || e.statusCode == 503) {
                     ExceptionHelper.catchException(e, view)
                 }
 
@@ -99,7 +100,7 @@ class FilmsListPresenter(
         }
         val itemsCount = activeFilms.size
         activeFilms.addAll(sortedFilms)
-        filmsListView.redrawFilms(itemsCount, films.size, true)
+        filmsListView.redrawFilms(itemsCount, films.size, AdapterAction.ADD)
 
         sortedFilmsCount += sortedFilms.size
         if (sortedFilmsCount >= filmsPerPage) {
@@ -116,13 +117,13 @@ class FilmsListPresenter(
         val itemsCount = activeFilms.size
         activeFilms.clear()
         sortedFilmsCount = 0
-        filmsListView.redrawFilms(0, itemsCount, false)
+        filmsListView.redrawFilms(0, itemsCount, AdapterAction.DELETE)
     }
 
     fun applyFilter() {
         val itemsCount = activeFilms.size
         activeFilms.clear()
-        filmsListView.redrawFilms(0, itemsCount, false)
+        filmsListView.redrawFilms(0, itemsCount, AdapterAction.DELETE)
         filmsListView.setProgressBarState(IProgressState.StateType.LOADING)
         addFilms(allFilms)
     }

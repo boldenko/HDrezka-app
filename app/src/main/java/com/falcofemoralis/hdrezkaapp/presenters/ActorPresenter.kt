@@ -30,7 +30,7 @@ class ActorPresenter(
                     var all = 0
 
                     for ((index, career) in it.withIndex()) {
-                        FilmModel.getFilmsData(career.second, career.second.size) { films ->
+                        FilmModel.getFilmsData(career.second, career.second.size, actorView) { films ->
                             list[index] = Pair(career.first, films)
 
                             all++
