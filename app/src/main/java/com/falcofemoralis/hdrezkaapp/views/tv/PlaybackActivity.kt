@@ -17,5 +17,6 @@ class PlaybackActivity : FragmentActivity() {
     companion object {
         const val FILM = "film"
         const val STREAM = "stream"
+        const val TRANSLATION = "translation"
     }
 }

@@ -1,6 +1,5 @@
 package com.falcofemoralis.hdrezkaapp.objects
 
-import android.util.ArrayMap
 import java.io.Serializable
 
 open class Voice : Serializable {
@@ -25,5 +24,6 @@ open class Voice : Serializable {
     var isCamrip: String = "0"
     var isDirector: String = "0"
     var isAds: String = "0"
+    var selectedEpisode: Pair<String, String>? = null
 }
 

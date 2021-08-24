@@ -232,7 +232,7 @@
                     android:id="@+id/fragment_film_view_comment_editor_opener"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/light_bg"
+                    android:background="@color/light_background"
                     android:foreground="?attr/selectableItemBackground"
                     android:orientation="vertical"
                     android:padding="10dp"

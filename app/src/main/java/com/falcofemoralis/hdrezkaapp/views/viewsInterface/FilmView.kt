@@ -50,7 +50,7 @@ interface FilmView : IConnection, CommentEditor.ICommentEditor {
 
     fun showTranslations(translations: ArrayList<Voice>, isDownload: Boolean, isMovie: Boolean)
 
-    fun showStreams(streams: ArrayList<Stream>, filmTitle: String, title: String, isDownload: Boolean)
+    fun showStreams(streams: ArrayList<Stream>, filmTitle: String, title: String, isDownload: Boolean, translation: Voice)
 
-    fun openStream(stream: Stream, filmTitle: String, title: String, isDownload: Boolean)
+    fun openStream(stream: Stream, filmTitle: String, title: String, isDownload: Boolean, translation: Voice)
 }

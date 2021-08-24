@@ -48,7 +48,7 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
                         film.isHRratingActive.let { it1 ->
                             if (it != null && !film.isAwaiting) {
                                 filmView.setHRrating(it.toFloat(), it1)
-                            } else{
+                            } else {
                                 filmView.setHRrating(-1f, false)
                             }
                         }
@@ -248,9 +248,9 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
                 withContext(Dispatchers.Main) {
                     film.title?.let {
                         if (SettingsData.isMaxQuality == true) {
-                            filmView.openStream(streams[streams.size - 1], it, additionalTitle.toString(), isDownload)
+                            filmView.openStream(streams[streams.size - 1], it, additionalTitle.toString(), isDownload, translation)
                         } else {
-                            filmView.showStreams(streams, it, additionalTitle.toString(), isDownload)
+                            filmView.showStreams(streams, it, additionalTitle.toString(), isDownload, translation)
                         }
                     }
                 }
@@ -282,8 +282,8 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
         GlobalScope.launch {
             try {
                 film.filmId?.let {
-                    translation.streams = FilmModel.getStreamsByEpisodeId(it, translation, season, episode)
-
+                    translation.selectedEpisode = Pair(season, episode)
+                    translation.streams = FilmModel.getStreamsByEpisodeId(translation, it, season, episode)
                     initStreams(translation, isDownload, "Сезон $season -", "Эпизод $episode")
                 }
             } catch (e: Exception) {

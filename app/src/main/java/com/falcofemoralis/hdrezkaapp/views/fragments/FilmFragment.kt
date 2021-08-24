@@ -475,7 +475,7 @@ class FilmFragment : Fragment(), FilmView {
 
 
                 val color = if (i % 2 == 0) {
-                    R.color.light_bg
+                    R.color.light_background
                 } else {
                     R.color.dark_background
                 }
@@ -808,19 +808,19 @@ class FilmFragment : Fragment(), FilmView {
             val container = transView.findViewById<LinearLayout>(R.id.translations_container)
 
             fun showTranslationsSeries(seasons: HashMap<String, ArrayList<String>>) {
-                for ((key, value) in seasons) {
+                for ((season, episodes) in seasons) {
                     val layout: LinearLayout = layoutInflater.inflate(R.layout.inflate_season_layout, null) as LinearLayout
                     val expandedList: ExpandableLinearLayout = layout.findViewById(R.id.inflate_season_layout_list)
-                    layout.findViewById<TextView>(R.id.inflate_season_layout_header).text = "Сезон ${key}"
+                    layout.findViewById<TextView>(R.id.inflate_season_layout_header).text = "Сезон ${season}"
                     layout.findViewById<LinearLayout>(R.id.inflate_season_layout_button).setOnClickListener {
                         expandedList.toggle()
                     }
 
-                    for (episode in value) {
+                    for (episode in episodes) {
                         val nameTextView = layoutInflater.inflate(R.layout.inflate_season_item, null) as TextView
                         nameTextView.text = "Эпизод ${episode}"
                         nameTextView.setOnClickListener {
-                            filmPresenter.genAndOpenEpisodeStream(translations[selectedTranslation], key, episode, isDownload)
+                            filmPresenter.genAndOpenEpisodeStream(translations[selectedTranslation], season, episode, isDownload)
                         }
                         expandedList.addView(nameTextView)
                     }
@@ -888,7 +888,7 @@ class FilmFragment : Fragment(), FilmView {
         }
     }
 
-    override fun showStreams(streams: ArrayList<Stream>, filmTitle: String, title: String, isDownload: Boolean) {
+    override fun showStreams(streams: ArrayList<Stream>, filmTitle: String, title: String, isDownload: Boolean, translation: Voice) {
         val builder = MaterialAlertDialogBuilder(requireContext())
         builder.setTitle(getString(R.string.choose_quality))
         val qualities: ArrayList<String> = ArrayList()
@@ -897,12 +897,12 @@ class FilmFragment : Fragment(), FilmView {
         }
 
         builder.setAdapter(ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, qualities)) { dialog, which ->
-            openStream(streams[which], filmTitle, title, isDownload)
+            openStream(streams[which], filmTitle, title, isDownload, translation)
         }
         builder.show()
     }
 
-    override fun openStream(stream: Stream, filmTitle: String, title: String, isDownload: Boolean) {
+    override fun openStream(stream: Stream, filmTitle: String, title: String, isDownload: Boolean, translation: Voice) {
         val url = stream.url.replace("#EXT-X-STREAM-INF:", "")
 
         if (isDownload) {
@@ -945,16 +945,14 @@ class FilmFragment : Fragment(), FilmView {
                 val intent = Intent(requireContext(), PlaybackActivity::class.java)
                 intent.putExtra(PlaybackActivity.FILM, presenter.film)
                 intent.putExtra(PlaybackActivity.STREAM, stream)
+                intent.putExtra(PlaybackActivity.TRANSLATION, translation)
                 startActivity(intent)
             } else {
-                var intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 intent.setDataAndType(Uri.parse(url), "video/*")
                 intent.putExtra("title", filmTitle)
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
-                if (SettingsData.isPlayerChooser == true) {
-                    intent = Intent.createChooser(intent, getString(R.string.open_film_in))
-                }
                 try {
                     startActivity(intent)
                 } catch (e: Exception) {

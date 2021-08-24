@@ -529,7 +529,7 @@ object FilmModel {
         return seasonList
     }
 
-    fun getStreamsByEpisodeId(filmId: Number, translation: Voice, season: String, episode: String): String {
+    fun getStreamsByEpisodeId(translation: Voice, filmId: Int, season: String, episode: String): String {
         val data: ArrayMap<String, String> = ArrayMap()
         data["id"] = filmId.toString()
         data["translator_id"] = translation.id

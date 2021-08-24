@@ -76,7 +76,6 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
             info += film.ratingIMDB
         }
 
-
         holder.infoView.text = info
         holder.typeView.text = film.type
 
@@ -91,6 +90,12 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
             else -> ContextCompat.getColor(context, R.color.background)
         }
         holder.typeView.setBackgroundColor(color)
+
+        if (film.subInfo?.isNotEmpty() == true) {
+            holder.subInfoView.visibility = View.VISIBLE
+            holder.subInfoView.text = film.subInfo
+            holder.subInfoView.setBackgroundColor(color)
+        }
 
         holder.layout.setOnClickListener {
             openFilm(film)
@@ -115,5 +120,6 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
         val typeView: TextView = view.findViewById(R.id.film_type)
         val progressView: ProgressBar = view.findViewById(R.id.film_loading)
         val posterLayoutView: RelativeLayout = view.findViewById(R.id.film_posterLayout)
+        val subInfoView: TextView = view.findViewById(R.id.film_sub_info)
     }
 }

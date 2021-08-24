@@ -48,4 +48,5 @@ open class Film : Serializable {
     var isMovieTranslation: Boolean? = null
     var translations: ArrayList<Voice>? = null
     var isAwaiting: Boolean = false
+    var subInfo: String? = null
 }

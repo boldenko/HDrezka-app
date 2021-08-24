@@ -12,7 +12,7 @@
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
-            android:defaultValue="3"
+            android:defaultValue="7"
             app:entries="@array/filmsInRow"
             app:entryValues="@array/filmsInRow"
             app:key="filmsInRow"

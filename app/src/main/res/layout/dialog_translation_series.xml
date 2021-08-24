@@ -11,6 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:spinnerMode="dialog"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
         app:smsp_arrowColor="@color/day_night_text"
         app:smsp_floatingLabelColor="@color/day_night_text"
         app:smsp_hint="@string/translation"

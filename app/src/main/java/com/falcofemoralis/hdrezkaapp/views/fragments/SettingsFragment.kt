@@ -28,11 +28,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
         preferences = PreferenceManager.getDefaultSharedPreferences(context)
         preferences.registerOnSharedPreferenceChangeListener(this)
-
-        if (preferences.getString("filmsInRow", "").isNullOrEmpty()) {
-            SettingsData.filmsInRow?.let { preferences.edit().putString("filmsInRow", it.toString()).commit() }
-        }
-
         mActivity = requireActivity()
         mContext = requireContext()
     }

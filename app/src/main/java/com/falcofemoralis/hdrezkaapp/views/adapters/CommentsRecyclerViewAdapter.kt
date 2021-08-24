@@ -139,7 +139,7 @@ class CommentsRecyclerViewAdapter(
             ContextCompat.getColor(
                 context, when (lastColor) {
                     CommentColor.DARK -> R.color.dark_background
-                    CommentColor.LIGHT -> R.color.light_bg
+                    CommentColor.LIGHT -> R.color.light_background
                 }
             )
         )

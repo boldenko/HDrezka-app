@@ -9,6 +9,7 @@
     android:orientation="vertical">
 
     <ProgressBar
+        android:visibility="visible"
         android:id="@+id/film_loading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -16,6 +17,7 @@
     <RelativeLayout
         android:id="@+id/film_posterLayout"
         android:visibility="gone"
+        android:adjustViewBounds="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
@@ -25,7 +27,9 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:contentDescription="film poster"
-            android:foregroundGravity="center_horizontal" />
+            android:foregroundGravity="center_horizontal" >
+
+        </ImageView>
 
         <TextView
             android:id="@+id/film_type"
@@ -37,6 +41,20 @@
             android:text="Type"
             android:textColor="@color/white"
             android:textSize="@dimen/normal_text" />
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/film_sub_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/film_poster"
+            android:background="@color/transparent"
+            android:text="SubInfo"
+            android:paddingStart="3dp"
+            android:paddingEnd="3dp"
+            android:breakStrategy="balanced"
+            android:textColor="@color/white"
+            android:textSize="@dimen/small_text" />
     </RelativeLayout>
 
     <TextView
