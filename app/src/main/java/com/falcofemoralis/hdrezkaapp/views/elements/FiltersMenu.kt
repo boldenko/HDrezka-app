@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
+import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
 import com.falcofemoralis.hdrezkaapp.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.RangeSlider
@@ -29,7 +30,9 @@ class FiltersMenu(
         GENRES_INVERTED,
         RATING,
         TYPE,
-        SORT
+        SORT,
+        SPINNER_GENRES,
+        SPINNER_YEARS
     }
 
     private var filtersDialogBuilder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(activity)
@@ -42,6 +45,8 @@ class FiltersMenu(
     private var ratingSliderView: RangeSlider? = null
     private var typeGroupView: RadioGroup? = null
     private var sortGroupView: RadioGroup? = null
+    var genresSpinnerView: SmartMaterialSpinner<String>? = null
+    var yearsSpinnerView: SmartMaterialSpinner<String>? = null
 
     init {
         filtersDialogView.findViewById<TextView>(R.id.bt_countries).visibility = View.GONE
@@ -51,6 +56,8 @@ class FiltersMenu(
         filtersDialogView.findViewById<LinearLayout>(R.id.rating_slider_layout).visibility = View.GONE
         filtersDialogView.findViewById<LinearLayout>(R.id.film_types_layout).visibility = View.GONE
         filtersDialogView.findViewById<LinearLayout>(R.id.film_sort_layout).visibility = View.GONE
+        filtersDialogView.findViewById<SmartMaterialSpinner<String>>(R.id.sp_genres).visibility = View.GONE
+        filtersDialogView.findViewById<SmartMaterialSpinner<String>>(R.id.sp_years).visibility = View.GONE
     }
 
     fun apply() {
@@ -230,6 +237,27 @@ class FiltersMenu(
                 }
             }
         }
+
+        return this
+    }
+
+    fun createSpinnerFilter(filterType: AppliedFilter): FiltersMenu {
+        when (filterType) {
+            AppliedFilter.SPINNER_GENRES -> {
+                genresSpinnerView = filtersDialogView.findViewById(R.id.sp_genres)
+                genresSpinnerView?.visibility = View.VISIBLE
+            }
+            AppliedFilter.SPINNER_YEARS -> {
+                yearsSpinnerView = filtersDialogView.findViewById(R.id.sp_years)
+                yearsSpinnerView?.visibility = View.VISIBLE
+            }
+        }
+        return this
+    }
+
+    fun removeActionButtons(): FiltersMenu{
+        filtersDialogView.findViewById<Button>(R.id.filter_clear)?.visibility = View.GONE
+        filtersDialogView.findViewById<Button>(R.id.filter_cancel)?.visibility = View.GONE
 
         return this
     }

@@ -26,14 +26,14 @@
             android:orientation="vertical">
 
             <!-- Main info -->
-            <include layout="@layout/inflate_fragment_film_main"/>
+            <include layout="@layout/inflate_fragment_film_main" />
 
             <!-- Player -->
             <LinearLayout
-                android:layout_margin="10dp"
                 android:id="@+id/fragment_film_ll_player_container"
                 android:layout_width="match_parent"
                 android:layout_height="350dp"
+                android:layout_margin="10dp"
                 android:layout_marginBottom="5dp"
                 android:gravity="center"
                 android:orientation="vertical">
@@ -53,9 +53,9 @@
             <!--Rating-->
             <RelativeLayout
                 android:id="@+id/fragment_film_rating_layout"
-                android:layout_margin="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp">
 
                 <com.willy.ratingbar.ScaleRatingBar
                     android:id="@+id/fragment_film_srb_rating_hdrezka_select"
@@ -96,14 +96,13 @@
                     app:srb_starWidth="30dp"
                     app:srb_stepSize="0.1" />
 
-
             </RelativeLayout>
 
             <!-- Actors -->
             <LinearLayout
-                android:layout_margin="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
@@ -132,9 +131,9 @@
 
             <!-- Schedule -->
             <LinearLayout
-                android:layout_margin="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
@@ -159,9 +158,9 @@
 
             <!-- Collection -->
             <LinearLayout
-                android:layout_margin="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
@@ -184,9 +183,9 @@
 
             <!-- Relative -->
             <LinearLayout
-                android:layout_margin="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
@@ -214,9 +213,9 @@
 
             <!-- Comments -->
             <LinearLayout
-                android:layout_margin="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:orientation="vertical">
 
                 <TextView

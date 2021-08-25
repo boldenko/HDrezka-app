@@ -9,7 +9,7 @@
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowBackground">#00000000</item>
         <item name="android:navigationBarColor">@color/dark_background</item>
-        <item name="colorControlHighlight">@color/main_color_1</item>
+        <item name="colorControlHighlight">@color/focusableColor</item>
     </style>
 
     <style name="UserSettingElement">

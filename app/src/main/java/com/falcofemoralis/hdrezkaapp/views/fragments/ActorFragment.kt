@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
-import com.falcofemoralis.hdrezkaapp.constants.GridLayoutSizes
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
 import com.falcofemoralis.hdrezkaapp.objects.Actor
@@ -40,7 +39,6 @@ class ActorFragment : Fragment(), ActorView {
         fragmentListener = context as OnFragmentInteractionListener
     }
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentView = inflater.inflate(R.layout.fragment_actor, container, false)
 
@@ -63,7 +61,7 @@ class ActorFragment : Fragment(), ActorView {
         actor.photo?.let { setFullSizeImage(it) }
         photoView.setOnClickListener { openFullSizeImage() }
 
-        if(SettingsData.deviceType == DeviceType.TV){
+        if (SettingsData.deviceType == DeviceType.TV) {
             photoView.requestFocus()
         }
 

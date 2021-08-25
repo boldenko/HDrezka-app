@@ -12,17 +12,16 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
-        android:weightSum="4">
+        android:weightSum="1">
 
         <com.chivorn.smartmaterialspinner.SmartMaterialSpinner
             android:id="@+id/fragment_categories_sp_types"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:foreground="?attr/selectableItemBackground"
             android:spinnerMode="dialog"
             android:focusable="true"
-            android:nextFocusRight="@+id/fragment_categories_sp_genres"
             app:smsp_arrowColor="@color/white"
             app:smsp_floatingLabelColor="@color/white"
             app:smsp_hint="@string/categories"
@@ -33,55 +32,21 @@
             app:smsp_itemListHintColor="@color/white"
             app:smsp_selectedItemListColor="@color/main_color_3" />
 
-        <com.chivorn.smartmaterialspinner.SmartMaterialSpinner
-            android:id="@+id/fragment_categories_sp_genres"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:foreground="?attr/selectableItemBackground"
-            android:focusable="true"
-            android:nextFocusRight="@+id/fragment_categories_sp_years"
-            android:spinnerMode="dialog"
-            app:smsp_arrowColor="@color/white"
-            app:smsp_floatingLabelColor="@color/white"
-            app:smsp_hint="@string/choose_genre_hint"
-            app:smsp_hintColor="@color/white"
-            app:smsp_hintSize="@dimen/spinner_text"
-            app:smsp_itemColor="@color/white"
-            app:smsp_itemListColor="@color/day_night_text"
-            app:smsp_itemListHintColor="@color/white"
-            app:smsp_selectedItemListColor="@color/main_color_3" />
-
-        <com.chivorn.smartmaterialspinner.SmartMaterialSpinner
-            android:id="@+id/fragment_categories_sp_years"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:foreground="?attr/selectableItemBackground"
-            android:focusable="true"
-            android:nextFocusRight="@+id/fragment_categories_films_bt_filters"
-            android:spinnerMode="dialog"
-            app:smsp_arrowColor="@color/white"
-            app:smsp_floatingLabelColor="@color/white"
-            app:smsp_hint="@string/choose_year_hint"
-            app:smsp_hintColor="@color/white"
-            app:smsp_hintSize="@dimen/spinner_text"
-            app:smsp_itemColor="@color/white"
-            app:smsp_itemListColor="@color/day_night_text"
-            app:smsp_itemListHintColor="@color/white"
-            app:smsp_selectedItemListColor="@color/main_color_3" />
-
         <TextView
             android:id="@+id/fragment_categories_films_bt_filters"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="0.3"
+            android:layout_height="wrap_content"
+            android:layout_margin="7dp"
+            android:background="@drawable/roundedbutton"
             android:foreground="?attr/selectableItemBackground"
-            android:gravity="center"
+            android:padding="7dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
             android:text="@string/filters"
             android:textColor="@color/white"
-            android:textSize="@dimen/spinner_text" />
-
+            android:textSize="@dimen/normal_text"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <TextView

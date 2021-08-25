@@ -108,6 +108,47 @@
             </TableLayout>
 
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.chivorn.smartmaterialspinner.SmartMaterialSpinner
+                    android:id="@+id/sp_genres"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:spinnerMode="dialog"
+                    app:smsp_arrowColor="@color/day_night_text"
+                    app:smsp_floatingLabelColor="@color/day_night_text_hint"
+                    app:smsp_hint="@string/choose_genre_hint"
+                    app:smsp_hintColor="@color/day_night_text"
+                    app:smsp_hintSize="@dimen/spinner_text"
+                    app:smsp_itemColor="@color/day_night_text"
+                    app:smsp_itemListColor="@color/day_night_text"
+                    app:smsp_itemListHintColor="@color/day_night_text"
+                    app:smsp_selectedItemListColor="@color/main_color_3" />
+
+
+                <com.chivorn.smartmaterialspinner.SmartMaterialSpinner
+                    android:id="@+id/sp_years"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:spinnerMode="dialog"
+                    app:smsp_arrowColor="@color/day_night_text"
+                    app:smsp_floatingLabelColor="@color/day_night_text_hint"
+                    app:smsp_hint="@string/choose_year_hint"
+                    app:smsp_hintColor="@color/day_night_text"
+                    app:smsp_hintSize="@dimen/spinner_text"
+                    app:smsp_itemColor="@color/day_night_text"
+                    app:smsp_itemListColor="@color/day_night_text"
+                    app:smsp_itemListHintColor="@color/day_night_text"
+                    app:smsp_selectedItemListColor="@color/main_color_3" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/rating_slider_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -235,8 +276,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:gravity="center"
         android:background="@color/smsp_transparent_color"
+        android:gravity="center"
         android:weightSum="3">
 
         <Button

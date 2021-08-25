@@ -80,6 +80,7 @@ class FilmFragment : Fragment(), FilmView {
     private var modalDialog: Dialog? = null
     private var commentEditor: CommentEditor? = null
     private var bookmarksDialog: AlertDialog? = null
+    private var isBannerVisible: Boolean = false
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
