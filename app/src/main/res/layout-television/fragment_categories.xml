@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.falcofemoralis.hdrezkaapp.views.fragments.CategoriesFragment">
+
+    <LinearLayout
+        android:layout_margin="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <com.chivorn.smartmaterialspinner.SmartMaterialSpinner
+            android:id="@+id/fragment_categories_sp_types"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:foreground="?attr/selectableItemBackground"
+            android:spinnerMode="dialog"
+            android:focusable="true"
+            app:smsp_arrowColor="@color/white"
+            app:smsp_floatingLabelColor="@color/white"
+            app:smsp_hint="@string/categories"
+            app:smsp_hintColor="@color/white"
+            app:smsp_hintSize="@dimen/spinner_text"
+            app:smsp_itemColor="@color/white"
+            app:smsp_itemListColor="@color/day_night_text"
+            app:smsp_itemListHintColor="@color/white"
+            app:smsp_selectedItemListColor="@color/main_color_3" />
+
+        <TextView
+            android:gravity="center"
+            android:id="@+id/fragment_categories_films_bt_filters"
+            android:layout_width="0dp"
+            android:layout_weight="0.3"
+            android:layout_height="match_parent"
+            android:layout_margin="7dp"
+            android:background="@drawable/roundedbutton"
+            android:foreground="?attr/selectableItemBackground"
+            android:padding="7dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:text="@string/filters"
+            android:textColor="@color/white"
+            android:textSize="@dimen/normal_text"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/fragment_categories_tv_msg"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:gravity="center"
+        android:text="@string/choose_cat_hint"
+        android:textColor="@color/white"
+        android:textSize="@dimen/normal_text" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_categories_fcv_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.9"
+        android:visibility="gone" />
+
+</LinearLayout>
