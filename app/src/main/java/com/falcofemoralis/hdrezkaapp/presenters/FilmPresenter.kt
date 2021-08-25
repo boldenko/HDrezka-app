@@ -1,5 +1,6 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
+import android.util.Log
 import android.widget.ImageView
 import com.falcofemoralis.hdrezkaapp.models.ActorModel
 import com.falcofemoralis.hdrezkaapp.models.BookmarksModel
@@ -286,6 +287,20 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
                     translation.streams = FilmModel.getStreamsByEpisodeId(translation, it, season, episode)
                     initStreams(translation, isDownload, "Сезон $season -", "Эпизод $episode")
                 }
+            } catch (e: Exception) {
+                catchException(e, filmView)
+            }
+        }
+    }
+
+    fun updateWatchLater(translation: Voice) {
+        GlobalScope.launch {
+            Log.d("TEST_UPDATE_WATCH", "updateWatchLater")
+            try {
+                film.filmId?.let {
+                    FilmModel.saveWatch(it, translation)
+                }
+                filmView.updateWatchPager()
             } catch (e: Exception) {
                 catchException(e, filmView)
             }

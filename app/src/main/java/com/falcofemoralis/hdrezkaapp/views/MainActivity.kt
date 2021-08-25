@@ -81,7 +81,12 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                     else -> {
                         SettingsData.init(applicationContext, DeviceType.MOBILE)
                         UserData.init(applicationContext)
-                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
+                        requestedOrientation = if(SettingsData.isAutorotate == true){
+                            ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+                        } else{
+                            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                        }
                         mainFragment = ViewPagerFragment()
                         onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null)
 

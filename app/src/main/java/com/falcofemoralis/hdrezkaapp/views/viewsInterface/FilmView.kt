@@ -44,6 +44,8 @@ interface FilmView : IConnection, CommentEditor.ICommentEditor {
 
     fun updateBookmarksPager()
 
+    fun updateWatchPager()
+
     fun updateBookmarksFilmsPager()
 
     fun setHRrating(rating: Float, isActive: Boolean)

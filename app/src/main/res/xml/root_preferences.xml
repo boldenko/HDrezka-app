@@ -19,6 +19,12 @@
             app:layout="@layout/custom_list_preference"
             app:title="@string/films_row_title"
             app:useSimpleSummaryProvider="true" />
+
+        <CheckBoxPreference
+            android:layout="@layout/custom_checkbox_preference"
+            app:key="isAutorotate"
+            app:summary="@string/rotate_hint"
+            app:title="@string/rotate_title" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/cat_app">
@@ -41,7 +47,7 @@
             android:layout="@layout/custom_checkbox_preference"
             app:key="isPlayer"
             app:summary="@string/isplayer_hint"
-            app:title="Использовать стороний плеер" />
+            app:title="@string/isplayer_title" />
 
         <CheckBoxPreference
             android:layout="@layout/custom_checkbox_preference"

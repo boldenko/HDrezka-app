@@ -18,6 +18,7 @@ object SettingsData {
     var isExternalDownload: Boolean? = null
     var deviceType: DeviceType? = null
     var filmsInRow: Int? = null
+    var isAutorotate: Boolean? = null
 
     fun init(context: Context, deviceType: DeviceType) {
         this.deviceType = deviceType
@@ -34,6 +35,7 @@ object SettingsData {
         isMaxQuality = prefs?.getBoolean("isMaxQuality", false)
         isPlayerChooser = prefs?.getBoolean("isPlayerChooser", false)
         isExternalDownload = prefs?.getBoolean("isExternalDownload", false)
+        isAutorotate = prefs?.getBoolean("isAutorotate", false)
         (prefs?.getString("filmsInRow", (if (deviceType == DeviceType.TV) GridLayoutSizes.TV else GridLayoutSizes.MOBILE).toString())).let {
             if (it != null) {
                 filmsInRow = it.toInt()

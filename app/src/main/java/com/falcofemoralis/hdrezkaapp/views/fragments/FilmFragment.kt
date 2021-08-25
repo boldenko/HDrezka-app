@@ -575,6 +575,12 @@ class FilmFragment : Fragment(), FilmView {
         }
     }
 
+    override fun updateWatchPager() {
+        requireActivity().let {
+            (it as MainActivity).redrawPage(UpdateItem.WATCH_LATER_CHANGED)
+        }
+    }
+
     override fun setBookmarksList(bookmarks: ArrayList<Bookmark>) {
         val btn: View = currentView.findViewById(R.id.fragment_film_iv_bookmark)
         if (UserData.isLoggedIn == true) {
@@ -941,6 +947,10 @@ class FilmFragment : Fragment(), FilmView {
                 Toast.makeText(requireContext(), getString(R.string.no_manager), Toast.LENGTH_LONG).show()
             }
         } else {
+            if (UserData.isLoggedIn == true) {
+                presenter.updateWatchLater(translation)
+            }
+
             if (SettingsData.isPlayer == false && SettingsData.deviceType == DeviceType.TV) {
                 val intent = Intent(requireContext(), PlaybackActivity::class.java)
                 intent.putExtra(PlaybackActivity.FILM, presenter.film)

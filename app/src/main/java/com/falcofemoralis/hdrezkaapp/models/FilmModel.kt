@@ -26,9 +26,9 @@ object FilmModel {
 
     private const val WATCH_ADD = "/engine/ajax/schedule_watched.php"
     private const val RATING_ADD = "/engine/ajax/rating.php"
-
     private const val GET_FILM_POST = "/engine/ajax/quick_content.php"
     private const val GET_STREAM_POST = "/ajax/get_cdn_series"
+    private const val SEND_WATCH = "/ajax/send_save"
 
     fun getMainData(film: Film): Film {
         try {
@@ -556,6 +556,35 @@ object FilmModel {
             }
         } else {
             throw HttpStatusException("failed to get stream", 400, SettingsData.provider)
+        }
+    }
+
+    fun saveWatch(filmId: Int, translation: Voice) {
+        val data: ArrayMap<String, String> = ArrayMap()
+        data["post_id"] = filmId.toString()
+        data["translator_id"] = translation.id.toString()
+        data["season"] = translation.selectedEpisode?.first ?: "0"
+        data["episode"] = translation.selectedEpisode?.second ?: "0"
+        data["current_time"] = "1"
+        //data["duration"] = "1"
+
+        val unixTime = System.currentTimeMillis()
+        val result: Document? = Jsoup.connect(SettingsData.provider + SEND_WATCH + "/?t=$unixTime")
+            .data(data)
+            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
+            .ignoreContentType(true)
+            .post()
+
+        if (result != null) {
+            val bodyString: String = result.select("body").text()
+            val jsonObject = JSONObject(bodyString)
+
+            if (!jsonObject.getBoolean("success")) {
+                throw HttpStatusException("failed to save watch", 400, SettingsData.provider)
+            }
+        } else {
+            throw HttpStatusException("failed to save watch", 400, SettingsData.provider)
         }
     }
 }

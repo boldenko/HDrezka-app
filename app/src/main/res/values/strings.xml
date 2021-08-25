@@ -171,4 +171,6 @@
     <string name="films_row_title">Фильмов в ряду</string>
     <string name="tv_show">ТВ шоу</string>
     <string name="provider_timeout">Зеркало недоступно. Смените на другое!</string>
+    <string name="rotate_hint">Включить возможность поворта интерфейса в горизонтальный режим</string>
+    <string name="rotate_title">Автоповорот экрана</string>
 </resources>

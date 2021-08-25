@@ -2,6 +2,7 @@ package com.falcofemoralis.hdrezkaapp.views.fragments
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -70,6 +71,14 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                         SettingsData.filmsInRow = it.toInt()
                         applyInterfaceChange()
                     }
+                }
+            }
+            "isAutorotate" -> {
+                SettingsData.isAutorotate = preferences.getBoolean("isAutorotate", false)
+                mActivity?.requestedOrientation = if (SettingsData.isAutorotate == true) {
+                    ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+                } else {
+                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                 }
             }
         }
