@@ -25,14 +25,11 @@ class FilmsListPresenter(
         fun getMoreFilms(): ArrayList<Film>
     }
 
-    private var FILMS_PER_PAGE_MULT: Int = 3
     private var filmsPerPage: Int = 0
 
     init {
-        SettingsData.filmsInRow.let {
-            if (it != null) {
-                filmsPerPage = it * FILMS_PER_PAGE_MULT
-            }
+        SettingsData.filmsInRow?.let {
+            filmsPerPage = it * SettingsData.rowMultiplier!!
         }
     }
 

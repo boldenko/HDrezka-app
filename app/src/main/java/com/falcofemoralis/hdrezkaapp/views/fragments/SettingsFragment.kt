@@ -81,6 +81,10 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                     ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                 }
             }
+            "rowMultiplier" ->{
+                SettingsData.rowMultiplier = preferences.getString("rowMultiplier", "3")?.toInt()
+                applyInterfaceChange()
+            }
         }
     }
 

@@ -173,4 +173,5 @@
     <string name="provider_timeout">Зеркало недоступно. Смените на другое!</string>
     <string name="rotate_hint">Включить возможность поворта интерфейса в горизонтальный режим</string>
     <string name="rotate_title">Автоповорот экрана</string>
+    <string name="films_row_multiplier_title">Множитель подгружаемых фильмов</string>
 </resources>

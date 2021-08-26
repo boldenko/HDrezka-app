@@ -17,7 +17,6 @@ import com.falcofemoralis.hdrezkaapp.objects.Actor
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.presenters.ActorPresenter
-import com.falcofemoralis.hdrezkaapp.utils.AdmobManager
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
 import com.falcofemoralis.hdrezkaapp.views.adapters.FilmsListRecyclerViewAdapter
@@ -49,8 +48,6 @@ class ActorFragment : Fragment(), ActorView {
 
         actorPresenter = ActorPresenter(this, (arguments?.getSerializable(ACTOR_ARG) as Actor?)!!)
         actorPresenter.initActorData()
-
-        AdmobManager.setAd(currentView.findViewById(R.id.fragment_actor_ad_container), requireContext(), AdmobManager.BANNER_ACTOR)
 
         return currentView
     }

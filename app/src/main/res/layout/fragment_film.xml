@@ -50,13 +50,6 @@
                     android:visibility="gone" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/fragment_film_ad_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical" />
-
             <!--Rating-->
             <RelativeLayout
                 android:id="@+id/fragment_film_rating_layout"

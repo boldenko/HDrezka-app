@@ -51,7 +51,6 @@ import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
 import com.falcofemoralis.hdrezkaapp.models.ActorModel
 import com.falcofemoralis.hdrezkaapp.objects.*
 import com.falcofemoralis.hdrezkaapp.presenters.FilmPresenter
-import com.falcofemoralis.hdrezkaapp.utils.AdmobManager
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
 import com.falcofemoralis.hdrezkaapp.utils.UnitsConverter
@@ -136,8 +135,6 @@ class FilmFragment : Fragment(), FilmView {
 
         filmPresenter = FilmPresenter(this, (arguments?.getSerializable(FILM_ARG) as Film?)!!)
         filmPresenter.initFilmData()
-
-        AdmobManager.setAd(currentView.findViewById(R.id.fragment_film_ad_container), requireContext(), AdmobManager.BANNER_FILM)
 
         initFlags()
 

@@ -20,6 +20,15 @@
             app:title="@string/films_row_title"
             app:useSimpleSummaryProvider="true" />
 
+        <ListPreference
+            android:defaultValue="3"
+            app:entries="@array/filmMultipliers"
+            app:entryValues="@array/filmMultipliers"
+            app:key="rowMultiplier"
+            app:layout="@layout/custom_list_preference"
+            app:title="@string/films_row_multiplier_title"
+            app:useSimpleSummaryProvider="true" />
+
         <CheckBoxPreference
             android:layout="@layout/custom_checkbox_preference"
             app:key="isAutorotate"

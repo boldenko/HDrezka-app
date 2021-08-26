@@ -255,9 +255,8 @@ class FiltersMenu(
         return this
     }
 
-    fun removeActionButtons(): FiltersMenu{
+    fun removeClearButton(): FiltersMenu{
         filtersDialogView.findViewById<Button>(R.id.filter_clear)?.visibility = View.GONE
-        filtersDialogView.findViewById<Button>(R.id.filter_cancel)?.visibility = View.GONE
 
         return this
     }

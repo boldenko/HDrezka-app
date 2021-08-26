@@ -28,10 +28,6 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
 
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-1493075645303607~1212663953"/>
-
         <receiver
             android:name=".broadcasts.NotificationListener"
             android:enabled="true" />

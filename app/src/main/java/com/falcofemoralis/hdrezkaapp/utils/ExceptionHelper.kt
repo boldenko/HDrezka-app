@@ -14,6 +14,7 @@ import kotlinx.coroutines.withContext
 import org.jsoup.HttpStatusException
 import org.jsoup.parser.ParseError
 import java.net.SocketTimeoutException
+import javax.net.ssl.SSLHandshakeException
 
 object ExceptionHelper {
     fun showToastError(context: Context, type: ErrorType, errorText: String) {
@@ -67,6 +68,7 @@ object ExceptionHelper {
             is ParseError -> ErrorType.PARSING_ERROR
             is IndexOutOfBoundsException -> ErrorType.BLOCKED_SITE
             is IllegalArgumentException -> ErrorType.MALFORMED_URL
+            is SSLHandshakeException -> ErrorType.BLOCKED_SITE
             else -> ErrorType.ERROR
         }
 

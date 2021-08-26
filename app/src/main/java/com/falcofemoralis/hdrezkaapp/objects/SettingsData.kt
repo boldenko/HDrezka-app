@@ -19,6 +19,7 @@ object SettingsData {
     var deviceType: DeviceType? = null
     var filmsInRow: Int? = null
     var isAutorotate: Boolean? = null
+    var rowMultiplier: Int? = null
 
     fun init(context: Context, deviceType: DeviceType) {
         this.deviceType = deviceType
@@ -41,6 +42,7 @@ object SettingsData {
                 filmsInRow = it.toInt()
             }
         }
+        rowMultiplier = prefs?.getString("rowMultiplier", "3")?.toInt()
     }
 
     /*  fun setProviderFromSettings(provider: String) {

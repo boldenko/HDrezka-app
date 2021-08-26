@@ -61,7 +61,7 @@ class CategoriesFragment : Fragment(), CategoriesView, AdapterView.OnItemSelecte
             .createDialogFilter(FiltersMenu.AppliedFilter.COUNTRIES_INVERTED, resources.getStringArray(R.array.countries))
             .createSpinnerFilter(FiltersMenu.AppliedFilter.SPINNER_GENRES)
             .createSpinnerFilter(FiltersMenu.AppliedFilter.SPINNER_YEARS)
-            .removeActionButtons()
+            .removeClearButton()
             .apply()
 
         filtersMenu.genresSpinnerView?.onItemSelectedListener = this
