@@ -42,14 +42,12 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
-            "providers" -> {
-                SettingsData.provider = preferences.getString("providers", mActivity?.resources?.getStringArray(R.array.providersIds)?.get(0))
-                applyProvider()
-            }
             "ownProvider" -> {
-                SettingsData.provider = preferences.getString("ownProvider", "")
-                if (SettingsData.provider.isNullOrEmpty()) {
-                    SettingsData.provider = preferences.getString("providers", mActivity?.resources?.getStringArray(R.array.providersIds)?.get(0))
+                val newProvider: String? = preferences.getString("ownProvider", "")
+                mContext?.let {
+                    if (newProvider != null) {
+                        SettingsData.setProvider(newProvider, it, false)
+                    }
                 }
                 applyProvider()
             }

@@ -38,8 +38,9 @@ object ConnectionManager {
                 exitProcess(0)
             }
             dialog.setNegativeButton(context.getString(R.string.retry)) { dialog, id ->
-                retryCallback
+                retryCallback()
             }
+            dialog.setCancelable(false)
             val d = dialog.create()
             d.show()
         }

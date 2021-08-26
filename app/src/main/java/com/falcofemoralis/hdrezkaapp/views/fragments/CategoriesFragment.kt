@@ -11,7 +11,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
 import com.falcofemoralis.hdrezkaapp.R
+import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
+import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.presenters.CategoriesPresenter
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.views.elements.FiltersMenu
@@ -90,7 +92,9 @@ class CategoriesFragment : Fragment(), CategoriesView, AdapterView.OnItemSelecte
                 categoriesPresenter.setCategory(typePos, genrePos, yearPos)
 
                 if (filterMenuBtn.visibility == View.GONE) {
-                    typesSpinner.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.7f)
+                    if(SettingsData.deviceType != DeviceType.TV){
+                        typesSpinner.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.7f)
+                    }
                     filterMenuBtn.visibility = View.VISIBLE
                 }
             }

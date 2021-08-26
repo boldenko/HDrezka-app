@@ -58,46 +58,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/provider_1"
-                    android:pathPrefix="/"
-                    android:scheme="http" />
-                <data
-                    android:host="@string/provider_2"
-                    android:pathPrefix="/"
-                    android:scheme="https" />
-                <data
-                    android:host="@string/provider_3"
-                    android:pathPrefix="/"
-                    android:scheme="http" />
-                <data
-                    android:host="@string/provider_4"
-                    android:pathPrefix="/"
-                    android:scheme="http" />
-                <data
-                    android:host="@string/provider_5"
-                    android:pathPrefix="/"
-                    android:scheme="http" />
-                <data
-                    android:host="@string/provider_6"
-                    android:pathPrefix="/"
-                    android:scheme="http" />
-                <data
-                    android:host="@string/provider_7"
-                    android:pathPrefix="/"
-                    android:scheme="http" />
-                <data
-                    android:host="@string/provider_8"
-                    android:pathPrefix="/"
-                    android:scheme="http" />
-            </intent-filter>
         </activity>
 
         <activity

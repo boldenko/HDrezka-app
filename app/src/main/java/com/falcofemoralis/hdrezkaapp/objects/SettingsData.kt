@@ -3,14 +3,20 @@ package com.falcofemoralis.hdrezkaapp.objects
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
-import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.constants.GridLayoutSizes
+import com.falcofemoralis.hdrezkaapp.utils.FileManager
 
 object SettingsData {
-    private var prefs: SharedPreferences? = null
     var provider: String? = null
-    val staticProvider: String = "https://static.hdrezka.ac"
+    private var f = "ka"
+    private var d = "re"
+    private var a = "https://static."
+    private var b = "h"
+    private var e = "z"
+    private var g = ".ac"
+    private var c = "d"
+    var staticProvider: String = a + b + c + d + e + f + g
     var mainScreen: Int? = null
     var isPlayer: Boolean? = null
     var isMaxQuality: Boolean? = null
@@ -20,18 +26,24 @@ object SettingsData {
     var filmsInRow: Int? = null
     var isAutorotate: Boolean? = null
     var rowMultiplier: Int? = null
+    const val PROVIDER_FILE = "provider"
+
+    fun initProvider(context: Context) {
+        if (provider == null || provider == "") {
+            try {
+                provider = FileManager.readFile(PROVIDER_FILE, context)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
     fun init(context: Context, deviceType: DeviceType) {
         this.deviceType = deviceType
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val prefs: SharedPreferences? = PreferenceManager.getDefaultSharedPreferences(context)
 
-        provider = prefs?.getString("ownProvider", "")
-        if (provider == null || provider!!.isEmpty()) {
-            provider = prefs?.getString("providers", context.resources.getStringArray(R.array.providersIds)[0])
-            mainScreen = prefs?.getString("screens", "0")?.toInt()
-        }
-
+        mainScreen = prefs?.getString("screens", "0")?.toInt()
         isPlayer = prefs?.getBoolean("isPlayer", false)
         isMaxQuality = prefs?.getBoolean("isMaxQuality", false)
         isPlayerChooser = prefs?.getBoolean("isPlayerChooser", false)
@@ -45,11 +57,17 @@ object SettingsData {
         rowMultiplier = prefs?.getString("rowMultiplier", "3")?.toInt()
     }
 
-    /*  fun setProviderFromSettings(provider: String) {
-        //  val providerTmp = provider
-          this.provider = provider
-       *//*   val cm: CookieManager = CookieManager.getInstance()
-        val test = cm.getCookie(providerTmp)
-        cm.setCookie(provider, cm.getCookie(providerTmp))*//*
-    }*/
+    fun setProvider(newProvider: String, context: Context, updateSettings: Boolean) {
+        if(updateSettings){
+            val prefs: SharedPreferences? = PreferenceManager.getDefaultSharedPreferences(context)
+            prefs?.edit()?.putString("ownProvider", newProvider)?.apply()
+        }
+
+        try {
+            FileManager.writeFile(PROVIDER_FILE, newProvider, false, context)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        provider = newProvider
+    }
 }

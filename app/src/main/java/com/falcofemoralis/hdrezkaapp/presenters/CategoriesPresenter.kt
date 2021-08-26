@@ -15,6 +15,7 @@ import kotlinx.coroutines.withContext
 class CategoriesPresenter(private val categoriesView: CategoriesView, private val filmsListView: FilmsListView) : FiltersMenu.IFilters, FilmsListPresenter.IFilmsList {
     private var currentPage = 1
     private var selectedCategoryLink: String? = null
+    private var link = ""
 
     var filmsListPresenter: FilmsListPresenter = FilmsListPresenter(filmsListView, categoriesView, this)
     var categories: ArrayMap<Pair<String, String>, ArrayList<Pair<String, String>>> = ArrayMap()
@@ -52,7 +53,6 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
     }
 
     fun setCategory(typePos: Int?, genrePos: Int?, yearPos: Int?) {
-        var link = ""
         typePos?.let {
             link += categories.keyAt(typePos).second + "best/"
 
@@ -67,8 +67,10 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
                 }
             }
         }
+    }
 
-        link.let {
+    private fun updateCategories(){
+        if(link.isNotEmpty()){
             selectedCategoryLink = link
             currentPage = 1
             filmsListPresenter.reset()
@@ -94,6 +96,7 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
 
     override fun onApplyFilters(appliedFilters: ArrayMap<FiltersMenu.AppliedFilter, Array<String?>>) {
         filmsListPresenter.appliedFilters = appliedFilters
-        filmsListPresenter.applyFilter()
+        updateCategories()
+       // filmsListPresenter.applyFilter()
     }
 }

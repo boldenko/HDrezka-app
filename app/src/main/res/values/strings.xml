@@ -43,7 +43,6 @@
     <string name="cat_interface">Интерфейс</string>
     <string name="cat_app">Приложение</string>
     <string name="cat_main_screen">Выбрать главный экран</string>
-    <string name="cat_provider">Выбрать зеркало</string>
     <string name="sort_hint">Сортировать</string>
     <string name="show_hint">Отобразить</string>
     <string name="catalogue">Каталог</string>
@@ -65,7 +64,7 @@
     <string name="error_empty">Ничего не найдено</string>
     <string name="error_timeout">Превышен лимит ожидания</string>
     <string name="error_parsing">Ошибка при получении данных</string>
-    <string name="no_access">Отсутствует доступ к сайту. Смените зеркало на другое</string>
+    <string name="no_access">Сайт недоступен. Смените URL на другой</string>
     <string name="choose_year_hint">Год</string>
     <string name="sort_header">Сортировать</string>
     <string name="type_header">Выбрать тип</string>
@@ -75,11 +74,10 @@
     <string name="add">Добавить</string>
     <string name="choose_country_hint">Страна</string>
     <string name="country">Страна</string>
-    <string name="no_provider_entered">Свое зеркало не было веденно!</string>
-    <string name="own_provider_hint">Нужно указать полную ссылку с http/https. Например: https://rezka.ag</string>
-    <string name="own_provider">Личное зеркало</string>
+    <string name="own_provider_hint">Нужно указывать полную ссылку с http/https</string>
+    <string name="own_provider">Ссылка на сайт</string>
     <string name="malformed_url">Некорректный URL</string>
-    <string name="to_settings">В настройки</string>
+    <string name="provider_change">Сменить сайт</string>
     <string name="new_comment_header">Вы действительно хотите добавить новый комментарий?</string>
     <string name="new_comment_alert">Комментарий, содержащий мат или оскорбления других участников, будет удален!</string>
     <string name="reply">Ответить</string>
@@ -94,14 +92,6 @@
     <string name="series_timetable">График выхода серий</string>
     <string name="comment_need_apply">Комментарий отобразится на сайте после проверки администрацией</string>
     <string name="share_body">Смотреть %1$s:\n\n %2$s</string>
-    <string name="provider_1">hdrezka.tv</string>
-    <string name="provider_2">rezka.ag</string>
-    <string name="provider_3">hdrezka.me</string>
-    <string name="provider_4">hdrezka.co</string>
-    <string name="provider_5">hdrezka.club</string>
-    <string name="provider_6">rezkily.com</string>
-    <string name="provider_7">metaivi.com</string>
-    <string name="provider_8">cokinopoisk.com</string>
     <string name="need_register">Данное действие доступно только зарегистрированным пользователям</string>
     <string name="new_cat">Новый раздел</string>
     <string name="created_cat">Раздел создан</string>
@@ -170,8 +160,12 @@
     <string name="confirm">Выйти</string>
     <string name="films_row_title">Фильмов в ряду</string>
     <string name="tv_show">ТВ шоу</string>
-    <string name="provider_timeout">Зеркало недоступно. Смените на другое!</string>
+    <string name="provider_timeout">Превышенно количество запросов на сайт!</string>
     <string name="rotate_hint">Включить возможность поворта интерфейса в горизонтальный режим</string>
     <string name="rotate_title">Автоповорот экрана</string>
     <string name="films_row_multiplier_title">Множитель подгружаемых фильмов</string>
+    <string name="provider_enter_title">Введите URL сайта</string>
+    <string name="provider_protocol_enter">Протокол</string>
+    <string name="empty_provider">Пустая ссылка на сайт не доступна!</string>
+    <string name="new_provider">Сайт: %1$s</string>
 </resources>

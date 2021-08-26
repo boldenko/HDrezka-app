@@ -172,6 +172,11 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
                 "})()"
         view?.evaluateJavascript(script2, null)
 
+        view?.evaluateJavascript("var vkGroups = document.getElementById('vk_groups');\n" +
+                "if(vkGroups){\n" +
+                "    vkGroups.style.setProperty('display', 'none', 'important');\n" +
+                "}", null)
+
         // fix translators block width
         val script3 = "var translationsHint = document.getElementsByClassName('b-rgstats__help')[0];" +
                 "if(translationsHint){" +
@@ -268,8 +273,9 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
         view?.evaluateJavascript(script6, null)
         callback()
 
-        Log.d("SSCRIPT", script1)
-        Log.d("SSCRIPT", script2)
+        Log.d("SSCRIPT1", script1)
+        Log.d("SSCRIPT2", script2)
+        Log.d("SSCRIPT3", script3)
 
 
         super.onPageFinished(view, url)

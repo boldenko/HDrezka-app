@@ -18,7 +18,7 @@
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:textColor="@color/day_night_text"
-        android:textColorHint="@color/day_night_text_hint"></EditText>
+        android:textColorHint="@color/day_night_text_hint" />
 
     <EditText
         android:id="@+id/dialog_auth_email"

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:weightSum="1">
+
+    <com.chivorn.smartmaterialspinner.SmartMaterialSpinner
+        android:id="@+id/dialog_provider_protocol"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.3"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:spinnerMode="dialog"
+        android:entries="@array/providerProtocols"
+        app:smsp_arrowColor="@color/day_night_text"
+        app:smsp_floatingLabelColor="@color/day_night_text_hint"
+        app:smsp_hintColor="@color/day_night_text"
+        app:smsp_hintSize="0dp"
+        app:smsp_underlineSize="0dp"
+        app:smsp_enableFloatingLabel="false"
+        app:smsp_itemColor="@color/day_night_text"
+        app:smsp_itemListColor="@color/day_night_text"
+        app:smsp_itemListHintColor="@color/day_night_text"
+        app:smsp_selectedItemListColor="@color/main_color_3" />
+
+    <EditText
+        android:textColor="@color/day_night_text"
+        android:id="@+id/dialog_provider_enter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.7" />
+
+</LinearLayout>

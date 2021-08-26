@@ -8,18 +8,16 @@
     tools:context="com.falcofemoralis.hdrezkaapp.views.fragments.CategoriesFragment">
 
     <LinearLayout
-        android:layout_margin="15dp"
+        android:layout_margin="7dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:weightSum="1">
+        android:gravity="start"
+        android:orientation="horizontal">
 
         <com.chivorn.smartmaterialspinner.SmartMaterialSpinner
             android:id="@+id/fragment_categories_sp_types"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
+            android:layout_width="170dp"
+            android:layout_height="55dp"
             android:foreground="?attr/selectableItemBackground"
             android:spinnerMode="dialog"
             android:focusable="true"
@@ -36,10 +34,9 @@
         <TextView
             android:gravity="center"
             android:id="@+id/fragment_categories_films_bt_filters"
-            android:layout_width="0dp"
-            android:layout_weight="0.3"
-            android:layout_height="match_parent"
-            android:layout_margin="7dp"
+            android:layout_width="100dp"
+            android:layout_height="32dp"
+            android:layout_margin="4dp"
             android:background="@drawable/roundedbutton"
             android:foreground="?attr/selectableItemBackground"
             android:padding="7dp"

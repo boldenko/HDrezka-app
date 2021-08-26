@@ -2,6 +2,7 @@ package com.falcofemoralis.hdrezkaapp.utils
 
 import android.content.Context
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection.ErrorType
@@ -14,9 +15,12 @@ import kotlinx.coroutines.withContext
 import org.jsoup.HttpStatusException
 import org.jsoup.parser.ParseError
 import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.net.ssl.SSLHandshakeException
 
 object ExceptionHelper {
+    var activeDialog: AlertDialog? = null
+
     fun showToastError(context: Context, type: ErrorType, errorText: String) {
         GlobalScope.launch {
             withContext(Dispatchers.Main) {
@@ -42,14 +46,20 @@ object ExceptionHelper {
     }
 
     private fun createDialog(textId: Int, context: Context) {
-        val dialog = MaterialAlertDialogBuilder(context)
-        dialog.setTitle(context.getString(textId))
-        dialog.setPositiveButton(context.getString(R.string.to_settings)) { dialog, id ->
-            (context as MainActivity).openUserMenu()
+        val builder = MaterialAlertDialogBuilder(context)
+        builder.setTitle(context.getString(textId))
+        builder.setPositiveButton(context.getString(R.string.provider_change)) { dialog, id ->
+            dialog.cancel()
         }
-        dialog.setCancelable(false)
-        val d = dialog.create()
-        d.show()
+        builder.setOnCancelListener {
+            activeDialog = null
+            (context as MainActivity).showProviderEnter()
+        }
+        builder.setCancelable(false)
+        if(activeDialog == null){
+            activeDialog = builder.create()
+        }
+        activeDialog!!.show()
     }
 
     fun catchException(e: Exception, view: IConnection) {
@@ -66,9 +76,10 @@ object ExceptionHelper {
                 }
             }
             is ParseError -> ErrorType.PARSING_ERROR
-            is IndexOutOfBoundsException -> ErrorType.BLOCKED_SITE
             is IllegalArgumentException -> ErrorType.MALFORMED_URL
+            is IndexOutOfBoundsException -> ErrorType.BLOCKED_SITE
             is SSLHandshakeException -> ErrorType.BLOCKED_SITE
+            is UnknownHostException -> ErrorType.BLOCKED_SITE
             else -> ErrorType.ERROR
         }
 

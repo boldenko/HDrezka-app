@@ -37,15 +37,6 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/cat_app">
-        <ListPreference
-            app:defaultValue="http://hdrezka.tv"
-            app:entries="@array/providers"
-            app:entryValues="@array/providersIds"
-            app:key="providers"
-            app:layout="@layout/custom_list_preference"
-            app:title="@string/cat_provider"
-            app:useSimpleSummaryProvider="true" />
-
         <EditTextPreference
             app:key="ownProvider"
             app:layout="@layout/custom_edit_preference"
