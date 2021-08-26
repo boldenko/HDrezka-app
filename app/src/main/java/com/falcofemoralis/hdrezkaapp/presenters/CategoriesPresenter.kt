@@ -52,7 +52,7 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
         }
     }
 
-    fun setCategory(typePos: Int?, genrePos: Int?, yearPos: Int?) {
+    fun setCategory(typePos: Int?, genrePos: Int?, yearPos: Int?, isUpdate: Boolean) {
         typePos?.let {
             link += categories.keyAt(typePos).second + "best/"
 
@@ -66,6 +66,10 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
                     link += "$year/"
                 }
             }
+        }
+
+        if(isUpdate){
+            updateCategories()
         }
     }
 

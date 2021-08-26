@@ -56,16 +56,18 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
     }
 
     fun setBookmark(bookmark: Bookmark) {
-        reset()
         selectedBookmark = bookmark
         filmsListView.setProgressBarState(IProgressState.StateType.LOADING)
+        reset()
         getNextFilms()
     }
 
     private fun reset() {
         curPage = 1
+        val itemsCount = activeFilms.size
         activeFilms.clear()
         loadedFilms.clear()
+        filmsListView.redrawFilms(0, itemsCount, AdapterAction.DELETE)
     }
 
     fun getNextFilms() {

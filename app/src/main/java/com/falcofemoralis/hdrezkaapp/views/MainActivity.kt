@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
 import com.falcofemoralis.hdrezkaapp.R
+import com.falcofemoralis.hdrezkaapp.clients.PlayerJsInterface
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.constants.NavigationMenuTabs
 import com.falcofemoralis.hdrezkaapp.constants.UpdateItem
@@ -294,5 +295,10 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                 fragment.setNavigationStateListener(this)
             }
         }
+    }
+
+    override fun onDestroy() {
+        PlayerJsInterface.notifyanager?.cancel(0)
+        super.onDestroy()
     }
 }

@@ -89,11 +89,11 @@ class CategoriesFragment : Fragment(), CategoriesView, AdapterView.OnItemSelecte
                 filtersMenu.yearsSpinnerView?.setSelection(0)
                 filtersMenu.genresSpinnerView?.item = categoriesPresenter.genresNames[categoriesPresenter.typesNames[position]]
                 filtersMenu.yearsSpinnerView?.item = categoriesPresenter.yearsNames
-                categoriesPresenter.setCategory(typePos, genrePos, yearPos)
+                categoriesPresenter.setCategory(typePos, genrePos, yearPos, true)
 
                 if (filterMenuBtn.visibility == View.GONE) {
                     if(SettingsData.deviceType != DeviceType.TV){
-                        typesSpinner.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.7f)
+                        typesSpinner.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.65f)
                     }
                     filterMenuBtn.visibility = View.VISIBLE
                 }
@@ -101,7 +101,7 @@ class CategoriesFragment : Fragment(), CategoriesView, AdapterView.OnItemSelecte
             R.id.sp_genres -> {
                 if (genresSpinnerState == SpinnerState.FREE) {
                     genrePos = position
-                    categoriesPresenter.setCategory(typePos, genrePos, yearPos)
+                    categoriesPresenter.setCategory(typePos, genrePos, yearPos, false)
                 } else if (genresSpinnerState == SpinnerState.AWAIT) {
                     genresSpinnerState = SpinnerState.FREE
                 }
@@ -109,7 +109,7 @@ class CategoriesFragment : Fragment(), CategoriesView, AdapterView.OnItemSelecte
             R.id.sp_years -> {
                 if (yearsSpinnerState == SpinnerState.FREE) {
                     yearPos = position
-                    categoriesPresenter.setCategory(typePos, genrePos, yearPos)
+                    categoriesPresenter.setCategory(typePos, genrePos, yearPos, false)
                 } else if (yearsSpinnerState == SpinnerState.AWAIT) {
                     yearsSpinnerState = SpinnerState.FREE
                 }

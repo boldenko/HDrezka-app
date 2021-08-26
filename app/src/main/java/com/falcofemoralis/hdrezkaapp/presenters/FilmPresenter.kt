@@ -295,14 +295,13 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
 
     fun updateWatchLater(translation: Voice) {
         GlobalScope.launch {
-            Log.d("TEST_UPDATE_WATCH", "updateWatchLater")
             try {
                 film.filmId?.let {
                     FilmModel.saveWatch(it, translation)
                 }
                 filmView.updateWatchPager()
             } catch (e: Exception) {
-                catchException(e, filmView)
+               // catchException(e, filmView)
             }
         }
     }

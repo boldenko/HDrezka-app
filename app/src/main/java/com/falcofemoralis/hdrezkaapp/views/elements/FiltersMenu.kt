@@ -65,13 +65,10 @@ class FiltersMenu(
 
         filtersDialogView.findViewById<Button>(R.id.filter_set).setOnClickListener {
             appliedFilters = ArrayMap(onSelectionAppliedFilters)
-            Log.d("TTEST", "On apply: $appliedFilters")
             iFilters.onApplyFilters(appliedFilters)
             dialog?.dismiss()
         }
         filtersDialogView.findViewById<Button>(R.id.filter_cancel).setOnClickListener {
-            Log.d("TTEST", "On cancel: $appliedFilters")
-
             val rating: Array<String?>? = appliedFilters[AppliedFilter.RATING]
             if (rating != null) {
                 ratingSliderView?.setValues(rating[0]!!.toFloat(), rating[1]!!.toFloat())
@@ -113,13 +110,11 @@ class FiltersMenu(
         }
         filtersDialogView.findViewById<Button>(R.id.filter_clear).setOnClickListener {
             clearFilters()
-            Log.d("TTEST", "On clear: $appliedFilters")
             Toast.makeText(activity.applicationContext, activity.getString(R.string.filters_cleared), Toast.LENGTH_LONG).show()
         }
 
         dialog = filtersDialogBuilder.create()
         openBtn.setOnClickListener {
-            Log.d("TTEST", "On open: $appliedFilters")
             onSelectionAppliedFilters = ArrayMap(appliedFilters)
             dialog?.show()
         }

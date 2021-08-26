@@ -118,7 +118,6 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
     }
 
     fun updateAdapter() {
-        Log.d("WATCH_LATER_LIST", "List has been updated")
         if (UserData.isLoggedIn == true) {
             watchLaterPresenter.updateList()
         }

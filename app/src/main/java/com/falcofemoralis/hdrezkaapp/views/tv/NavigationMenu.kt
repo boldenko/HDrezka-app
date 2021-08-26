@@ -105,16 +105,12 @@ class NavigationMenu : Fragment() {
                         setFocusedView(ib, selectedImage)
                         setMenuNameFocusView(tv, true)
                         focusIn(ib)
-                        Log.d("NAV_TEST", "0 $lastMenu opened and has focus")
                     } else {
-                        Log.d("NAV_TEST", "1 $lastMenu close and has focus")
-                        Log.d("NAV_TEST", "1 openNav()")
                         openNav()
                     }
                 } else {
                     if (isNavigationOpen()) {
                         // false by default,
-                        Log.d("NAV_TEST", isFocusOut.toString())
                         if (isFocusOut) {
                             isFocusOut = false
                         } else {
@@ -122,10 +118,6 @@ class NavigationMenu : Fragment() {
                         }
                         setMenuNameFocusView(tv, false)
                         focusOut(ib)
-                        Log.d("NAV_TEST", "2 $lastMenu opened and hasn't focus")
-                        Log.d("NAV_TEST", "2 !!!!!!!")
-                    } else {
-                        Log.d("NAV_TEST", "3 $lastMenu close and hasn't focus")
                     }
                 }
             }
@@ -135,7 +127,6 @@ class NavigationMenu : Fragment() {
             if (event.action == KeyEvent.ACTION_DOWN) {//only when key is pressed down
                 when (keyCode) {
                     KeyEvent.KEYCODE_DPAD_RIGHT -> {
-                        Log.d("NAV_TEST", "closeNav() on right")
                         isFocusOut = true
                         closeNav()
                         navigationStateListener.onStateChanged(false, lastSelectedMenu)
@@ -152,11 +143,7 @@ class NavigationMenu : Fragment() {
                     KeyEvent.KEYCODE_DPAD_CENTER -> {
                         lastSelectedMenu = lastMenu
                         fragmentChangeListener.switchFragment(lastMenu)
-                        Log.d("NAV_TEST", "closeNav() on center")
                         closeNav()
-                    }
-                    else -> {
-                        Log.d("TTTEST", "else!")
                     }
                 }
             }

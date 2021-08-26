@@ -88,9 +88,8 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     private fun applyProvider() {
         mContext?.let { UserData.reset(it) }
-        CookieManager.getInstance().removeAllCookies(null)
-        CookieManager.getInstance().flush()
         mActivity?.let { (it as MainActivity).updatePager() }
+        mActivity?.let { (it as MainActivity).setUserAvatar() }
     }
 
     private fun applyInterfaceChange() {

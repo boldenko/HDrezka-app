@@ -3,10 +3,8 @@
     <color name="background">#000E27</color>
     <color name="dark_background">#000919</color>
     <color name="light_background">#162135</color>
-    <color name="editor_background">#020C1E</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
-    <color name="main_color_1">#304ffe</color>
     <color name="main_color_2">#21c5df</color>
     <color name="main_color_3">#eb233c</color>
     <color name="focusableColor">#FF474F</color>
@@ -19,12 +17,6 @@
     <color name="dark_main_color_2">#157988</color>
     <color name="day_night_text">#000</color>
     <color name="search_dialog_background">#fff</color>
-    <color name="background_gradient_start">#000000</color>
-    <color name="background_gradient_end">#DDDDDD</color>
-    <color name="fastlane_background">#0096a6</color>
-    <color name="search_opaque">#ffaa3f</color>
-    <color name="selected_background">#ffaa3f</color>
-    <color name="default_background">#3d3d3d</color>
     <color name="transparent">#00000000</color>
     <color name="day_night_text_hint">#616161</color>
     <color name="tv_show">#909215</color>

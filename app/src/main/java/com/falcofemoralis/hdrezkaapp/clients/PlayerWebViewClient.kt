@@ -32,28 +32,6 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
         return true
     }
 
-/*    override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
-        request?.let {
-            val url = request.url.host
-            Log.d("PLAYER_DEBUG", "CHECK... $url")
-
-            if (url != null && (!url.contains("hdrezka.tv") && !url.contains("voidboost.cc")) ) {
-                Log.d("PLAYER_DEBUG", "Will not load $url")
-                var inputStream: InputStream? = null
-                try {
-                    inputStream = context.assets.open("ad.js")
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-                val caInput: InputStream = BufferedInputStream(inputStream)
-
-                return WebResourceResponse("", "", caInput)
-            }
-        }
-
-        return super.shouldInterceptRequest(view, request)
-    }*/
-
     override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
         if (error?.errorCode == ERROR_TIMEOUT) {
             mainView.showConnectionError(IConnection.ErrorType.TIMEOUT, error.toString())
@@ -272,11 +250,6 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
                 "}"
         view?.evaluateJavascript(script6, null)
         callback()
-
-        Log.d("SSCRIPT1", script1)
-        Log.d("SSCRIPT2", script2)
-        Log.d("SSCRIPT3", script3)
-
 
         super.onPageFinished(view, url)
     }

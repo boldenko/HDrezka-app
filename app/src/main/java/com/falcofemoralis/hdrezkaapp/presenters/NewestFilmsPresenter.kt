@@ -26,7 +26,6 @@ class NewestFilmsPresenter(
 
     override fun getMoreFilms(): ArrayList<Film> {
         return try {
-            Log.d("TTEST", sortFilter)
             val films: ArrayList<Film> = NewestFilmsModel.getNewestFilms(currentPage, sortFilter)
             currentPage++
             films

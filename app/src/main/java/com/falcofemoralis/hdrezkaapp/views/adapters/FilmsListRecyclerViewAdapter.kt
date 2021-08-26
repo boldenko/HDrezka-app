@@ -49,7 +49,6 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
             }
 
             override fun onError(e: Exception) {
-                Log.d("ATV_test", e.toString())
             }
         })
 

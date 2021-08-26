@@ -2,6 +2,7 @@ package com.falcofemoralis.hdrezkaapp.views.tv
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.leanback.app.VideoSupportFragment
 import androidx.leanback.app.VideoSupportFragmentGlueHost
 import androidx.leanback.media.MediaPlayerAdapter

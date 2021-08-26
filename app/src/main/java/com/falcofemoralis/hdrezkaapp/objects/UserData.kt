@@ -31,15 +31,10 @@ object UserData {
             try {
                 val dle_user_id = CookieStorage.getCookie(SettingsData.provider, "dle_user_id")
                 if (dle_user_id.isNullOrEmpty()) {
-                    Log.d("COOOOKIES", "dle_user_id IS EMPTY")
                     loadCookies(context)
-                } else {
-                    Log.d("COOOOKIES", "dle_user_id IS OK")
                 }
             } catch (e: Exception) {
                 loadCookies(context)
-                //Toast.makeText(context, context.getString(R.string.session_invalid), Toast.LENGTH_LONG).show()
-                //reset(context)
             }
         }
     }
@@ -89,9 +84,13 @@ object UserData {
         cm.setCookie(SettingsData.provider, null)
         cm.removeAllCookies(null)
         cm.flush()
-        WebStorage.getInstance().deleteAllData();
+        WebStorage.getInstance().deleteAllData()
         FileManager.writeFile(USER_FILE, "0", false, context)
         FileManager.writeFile(USER_AVATAR, "", false, context)
+        FileManager.writeFile(USER_ID, "", false, context)
+        FileManager.writeFile(USER_HASH, "", false, context)
+        FileManager.writeFile(SESSION_ID, "", false, context)
+
         avatarLink = null
     }
 }

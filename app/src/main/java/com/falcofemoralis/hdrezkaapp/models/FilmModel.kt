@@ -1,14 +1,11 @@
 package com.falcofemoralis.hdrezkaapp.models
 
 import android.util.ArrayMap
+import android.util.Log
 import android.webkit.CookieManager
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.objects.*
-import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import org.json.JSONObject
 import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
@@ -346,6 +343,7 @@ object FilmModel {
         return film
     }
 
+    var count = 0
     fun getFilmsData(films: ArrayList<Film>, filmsPerPage: Int, iConnection: IConnection, callback: (ArrayList<Film>) -> Unit) {
         val filmsToLoad: ArrayList<Film> = ArrayList()
         for ((index, film) in (films.clone() as ArrayList<Film>).withIndex()) {
@@ -358,31 +356,34 @@ object FilmModel {
         }
 
         val loadedFilms = arrayOfNulls<Film?>(filmsPerPage)
-        var count = 0
+        count = 0
         for ((index, film) in filmsToLoad.withIndex()) {
-            GlobalScope.launch {
-                try {
-                    loadedFilms[index] = getMainData(film)
+            startFilmLoad(loadedFilms, filmsToLoad, index, film, callback)
+        }
+    }
 
-                    count++
+    private fun startFilmLoad(loadedFilms: Array<Film?>, filmsToLoad: ArrayList<Film>, index: Int, film: Film, callback: (ArrayList<Film>) -> Unit) {
+        GlobalScope.launch {
+            try {
+                loadedFilms[index] = getMainData(film)
 
-                    if (count >= filmsToLoad.size) {
-                        val list: ArrayList<Film> = ArrayList()
-                        for (item in loadedFilms) {
-                            if (item != null) {
-                                list.add(item)
-                            }
-                        }
+                count++
 
-                        withContext(Dispatchers.Main) {
-                            callback(list)
+                if (count >= filmsToLoad.size) {
+                    val list: ArrayList<Film> = ArrayList()
+                    for (item in loadedFilms) {
+                        if (item != null) {
+                            list.add(item)
                         }
                     }
-                } catch (e: Exception) {
+
                     withContext(Dispatchers.Main) {
-                        ExceptionHelper.catchException(e, iConnection)
+                        callback(list)
                     }
                 }
+            } catch (e: Exception) {
+                delay(100)
+                startFilmLoad(loadedFilms, filmsToLoad, index, film, callback)
             }
         }
     }

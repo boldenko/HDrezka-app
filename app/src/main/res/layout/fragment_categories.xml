@@ -35,7 +35,7 @@
         <TextView
             android:id="@+id/fragment_categories_films_bt_filters"
             android:layout_width="0dp"
-            android:layout_weight="0.3"
+            android:layout_weight="0.35"
             android:layout_height="wrap_content"
             android:layout_margin="7dp"
             android:background="@drawable/roundedbutton"

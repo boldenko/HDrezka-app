@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jsoup.HttpStatusException
 import org.jsoup.parser.ParseError
+import java.io.IOException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.net.ssl.SSLHandshakeException
@@ -80,6 +81,7 @@ object ExceptionHelper {
             is IndexOutOfBoundsException -> ErrorType.BLOCKED_SITE
             is SSLHandshakeException -> ErrorType.BLOCKED_SITE
             is UnknownHostException -> ErrorType.BLOCKED_SITE
+            is IOException -> ErrorType.BLOCKED_SITE
             else -> ErrorType.ERROR
         }
 

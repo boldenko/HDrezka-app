@@ -91,7 +91,6 @@ class FilmFragment : Fragment(), FilmView {
         playerView.destroy()
         activity?.window?.clearFlags(FLAG_KEEP_SCREEN_ON)
         PlayerJsInterface.notifyanager?.cancel(0)
-        Log.d("notificationManager_TEST", "canceled on destroy")
 
         super.onDestroy()
     }
@@ -111,7 +110,6 @@ class FilmFragment : Fragment(), FilmView {
             //do when hidden
             PlayerJsInterface.stop()
             PlayerJsInterface.notifyanager?.cancel(0)
-            Log.d("notificationManager_TEST", "canceled on hidden")
         } else {
             //do when show
             wv = playerView

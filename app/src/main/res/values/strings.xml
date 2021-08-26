@@ -17,7 +17,6 @@
     <string name="choose_genre">Выбрать жанр</string>
     <string name="exclude_genre">Исключить жанр</string>
     <string name="choose_rating">Выбрать рейтинг</string>
-    <string name="choose_release_date">Выбрать дату выхода</string>
     <string name="all">Все</string>
     <string name="films">Фильмы</string>
     <string name="serials">Сериалы</string>
@@ -52,7 +51,6 @@
     <string name="choose_genres">Выберите жанры</string>
     <string name="exclude_countries">Исключить страны</string>
     <string name="exclude_genres">Исключить жанры</string>
-    <string name="set">Установить</string>
     <string name="cancel">Отменить</string>
     <string name="clear">Очистить</string>
     <string name="filters_cleared">Фильтры убраны</string>
@@ -72,17 +70,13 @@
     <string name="popular">Популярные</string>
     <string name="now">Сейчас смотрят</string>
     <string name="add">Добавить</string>
-    <string name="choose_country_hint">Страна</string>
-    <string name="country">Страна</string>
     <string name="own_provider_hint">Нужно указывать полную ссылку с http/https</string>
     <string name="own_provider">Ссылка на сайт</string>
     <string name="malformed_url">Некорректный URL</string>
     <string name="provider_change">Сменить сайт</string>
     <string name="new_comment_header">Вы действительно хотите добавить новый комментарий?</string>
-    <string name="new_comment_alert">Комментарий, содержащий мат или оскорбления других участников, будет удален!</string>
     <string name="reply">Ответить</string>
     <string name="enter_comment_text">Введите текст комментария!</string>
-    <string name="edit">Изменить</string>
     <string name="delete">Удалить</string>
     <string name="post_comment_hint">Написать отзыв</string>
     <string name="new_comment_hint">Добавить новый комментарий</string>
@@ -105,53 +99,25 @@
     <string name="search_page_hint">Введите название фильма или сериала в строку поиска</string>
     <string name="no_player">Отсуствует плеер!</string>
     <string name="no_manager">Отсуствует менеджер загрузок!</string>
-    <string name="open_film_in">Открыть в</string>
     <string name="choose_quality">Выберите качество</string>
     <string name="translation">Озвучка</string>
     <string name="start_watching">Начать просмотр</string>
     <string name="download">Скачать</string>
     <string name="perm_write_hint">Без доступа к хранилищу файл не будет сохранен!</string>
     <string name="download_started">Скачивание начато</string>
-    <string name="select_season_and_episode">Выбрать сезон и серию</string>
     <string name="isplayer_hint">Позволяет выбрать свой плеер, а не использовать встроенный</string>
     <string name="isplayer_title">Использовать сторонний плеер</string>
     <string name="ismaxq_hint">Будет выбрано возможное максимальное качество видео</string>
     <string name="ismaxq_title">Автовыбор лучшего качества</string>
     <string name="player_chooser_hint">Всегда будет предложен выбор стороннего плеера</string>
     <string name="player_chooser_title">Выбор плеера</string>
-    <string name="session_invalid">Произошла ошибка. Перезайдите в аккаунт и останьтесь в приложении чуточьку дольше!)</string>
     <string name="isExternalManager_title">Внешний менеджер загрузок</string>
     <string name="isExternalManager_hint">Будет предложен выбор внешнего менеджера</string>
-
-    <string name="title_activity_main">Leanback MainActivity</string>
-    <string name="browse_title">Videos by Your Company</string>
-    <string name="related_movies">Related Videos</string>
-    <string name="grid_view">Grid View</string>
-    <string name="error_fragment">Error Fragment</string>
-    <string name="personal_settings">Personal Settings</string>
-    <string name="watch_trailer_1">Watch trailer</string>
-    <string name="watch_trailer_2">FREE</string>
-    <string name="rent_1">Rent By Day</string>
-    <string name="rent_2">From $1.99</string>
-    <string name="buy_1">Buy and Own</string>
-    <string name="buy_2">AT $9.99</string>
-    <string name="movie">Movie</string>
-
-    <!-- Error messages -->
-    <string name="error_fragment_message">An error occurred</string>
-    <string name="dismiss_error">Dismiss</string>
     <string name="settings">Настройки</string>
-    <!-- Strings related to login -->
     <string name="prompt_name">Логин или email</string>
     <string name="prompt_password">Пароль</string>
     <string name="action_login">Войти</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome!"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_username">Логин</string>
     <string name="submit_register">Зарегистрироваться</string>
@@ -165,7 +131,6 @@
     <string name="rotate_title">Автоповорот экрана</string>
     <string name="films_row_multiplier_title">Множитель подгружаемых фильмов</string>
     <string name="provider_enter_title">Введите URL сайта</string>
-    <string name="provider_protocol_enter">Протокол</string>
     <string name="empty_provider">Пустая ссылка на сайт не доступна!</string>
     <string name="new_provider">Сайт: %1$s</string>
 </resources>
