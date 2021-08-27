@@ -1,5 +1,6 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
+import android.util.Log
 import com.falcofemoralis.hdrezkaapp.constants.AdapterAction
 import com.falcofemoralis.hdrezkaapp.constants.BookmarkFilterType
 import com.falcofemoralis.hdrezkaapp.interfaces.IMsg
@@ -89,8 +90,12 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
                 // if page is not empty
                 selectedBookmark?.let {
                     try {
+                        Log.d("BOOK_TEST", "start load " + loadedFilms.toString())
                         loadedFilms.addAll(BookmarksModel.getFilmsFromBookmarkPage(it.link, curPage++, selectedSortFilter, selectedShowFilter))
+                        Log.d("BOOK_TEST", "end load " + loadedFilms.toString())
                     } catch (e: Exception) {
+                        Log.d("BOOK_TEST", "fail load " + e)
+
                         catchException(e, bookmarksView)
                         isLoading = false
                         return@launch
@@ -99,12 +104,16 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
 
                 if (loadedFilms.size > 0) {
                     try {
+                        Log.d("BOOK_TEST", "start getting films data " + loadedFilms.toString())
+
                         FilmModel.getFilmsData(loadedFilms, FILMS_PER_PAGE, bookmarksView, ::addFilms)
 
                         withContext(Dispatchers.Main) {
                             bookmarksView.hideMsg()
                         }
                     } catch (e: Exception) {
+                        Log.d("BOOK_TEST", "fail getting films data " + e)
+
                         catchException(e, bookmarksView)
                         isLoading = false
                         return@launch
@@ -125,6 +134,8 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
     }
 
     private fun addFilms(films: ArrayList<Film>) {
+        Log.d("BOOK_TEST", "addFilms" + films.toString())
+
         isLoading = false
         val itemsCount = activeFilms.size
         activeFilms.addAll(films)

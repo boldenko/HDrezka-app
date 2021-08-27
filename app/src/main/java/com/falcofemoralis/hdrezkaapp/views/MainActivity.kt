@@ -79,7 +79,16 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                             navMenuFragment = NavigationMenu()
                             supportFragmentManager.beginTransaction().replace(R.id.nav_fragment, navMenuFragment).commit()
 
-                            mainFragment = NewestFilmsFragment()
+                            SettingsData.mainScreen?.let {
+                                mainFragment = when (it) {
+                                    0 -> NewestFilmsFragment()
+                                    1 -> CategoriesFragment()
+                                    2 -> SearchFragment()
+                                    3 -> BookmarksFragment()
+                                    4 -> WatchLaterFragment()
+                                    else -> NewestFilmsFragment()
+                                }
+                            }
                             onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null)
                         }
                         else -> {

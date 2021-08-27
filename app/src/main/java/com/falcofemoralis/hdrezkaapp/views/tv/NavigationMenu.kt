@@ -3,7 +3,6 @@ package com.falcofemoralis.hdrezkaapp.views.tv
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.constants.NavigationMenuTabs
+import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.FragmentChangeListener
 import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.NavigationStateListener
 
@@ -81,7 +81,16 @@ class NavigationMenu : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         //by default selection
-        setMenuIconFocusView(R.drawable.ic_baseline_movie_24_sel, newest_IB)
+        SettingsData.mainScreen?.let {
+            when (it) {
+                0 -> setMenuIconFocusView(R.drawable.ic_baseline_movie_24_sel, newest_IB)
+                1 -> setMenuIconFocusView(R.drawable.ic_baseline_categories_24_sel, categories_IB)
+                2 -> setMenuIconFocusView(R.drawable.ic_baseline_search_24_sel, search_IB)
+                3 -> setMenuIconFocusView(R.drawable.ic_baseline_bookmarks_24_sel, bookmarks_IB)
+                4 -> setMenuIconFocusView(R.drawable.ic_baseline_watch_later_24_sel, later_IB)
+                else -> setMenuIconFocusView(R.drawable.ic_baseline_movie_24_sel, newest_IB)
+            }
+        }
 
         //Navigation Menu Options Focus, Key Listeners
         setListener(newest_IB, newest_TV, newestFilms, R.drawable.ic_baseline_movie_24_sel, R.drawable.ic_baseline_movie_24)

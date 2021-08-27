@@ -343,7 +343,10 @@ object FilmModel {
         return film
     }
 
-    var count = 0
+    data class Counter(private var c: Int){
+        var count = c
+    }
+
     fun getFilmsData(films: ArrayList<Film>, filmsPerPage: Int, iConnection: IConnection, callback: (ArrayList<Film>) -> Unit) {
         val filmsToLoad: ArrayList<Film> = ArrayList()
         for ((index, film) in (films.clone() as ArrayList<Film>).withIndex()) {
@@ -355,21 +358,27 @@ object FilmModel {
             }
         }
 
+        val counter = Counter(0)
         val loadedFilms = arrayOfNulls<Film?>(filmsPerPage)
-        count = 0
         for ((index, film) in filmsToLoad.withIndex()) {
-            startFilmLoad(loadedFilms, filmsToLoad, index, film, callback)
+            Log.d("LIST_TEST", "launch film load " + index)
+
+            startFilmLoad(counter, loadedFilms, filmsToLoad, index, film, callback)
         }
     }
 
-    private fun startFilmLoad(loadedFilms: Array<Film?>, filmsToLoad: ArrayList<Film>, index: Int, film: Film, callback: (ArrayList<Film>) -> Unit) {
+    private fun startFilmLoad(counter: Counter, loadedFilms: Array<Film?>, filmsToLoad: ArrayList<Film>, index: Int, film: Film, callback: (ArrayList<Film>) -> Unit) {
         GlobalScope.launch {
             try {
                 loadedFilms[index] = getMainData(film)
+                Log.d("LIST_TEST", "loaded film" +  loadedFilms[index]?.title)
 
-                count++
+                counter.count++
+                Log.d("LIST_TEST", "inc count" +  counter.count)
 
-                if (count >= filmsToLoad.size) {
+                if (counter.count >= filmsToLoad.size) {
+                    Log.d("LIST_TEST", "${counter.count} >= ${filmsToLoad.size}")
+
                     val list: ArrayList<Film> = ArrayList()
                     for (item in loadedFilms) {
                         if (item != null) {
@@ -378,12 +387,14 @@ object FilmModel {
                     }
 
                     withContext(Dispatchers.Main) {
+                        Log.d("LIST_TEST", "callback " + list.toString())
+
                         callback(list)
                     }
                 }
             } catch (e: Exception) {
                 delay(150)
-                startFilmLoad(loadedFilms, filmsToLoad, index, film, callback)
+                startFilmLoad(counter, loadedFilms, filmsToLoad, index, film, callback)
             }
         }
     }

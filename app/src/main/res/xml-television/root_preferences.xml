@@ -32,6 +32,7 @@
             app:useSimpleSummaryProvider="true" />
 
         <CheckBoxPreference
+            android:defaultValue="true"
             android:layout="@layout/custom_checkbox_preference"
             app:key="autoPlayNextEpisode"
             app:summary="@string/next_episode_hint"
