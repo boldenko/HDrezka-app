@@ -3,10 +3,7 @@ package com.falcofemoralis.hdrezkaapp.views.tv
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.os.Bundle
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.animation.Animation
@@ -157,6 +154,52 @@ class NavigationMenu : Fragment() {
                 }
             }
             false
+        }
+
+        ib.setOnClickListener{
+            if (isNavigationOpen()) {
+                lastSelectedMenu = lastMenu
+                fragmentChangeListener.switchFragment(lastMenu)
+                closeNav()
+            } else{
+                openNav()
+            }
+        }
+
+        tv.setOnClickListener{
+            if(isNavigationOpen()){
+                highlightMenuSelection(lastMenu)
+                lastSelectedMenu = lastMenu
+                fragmentChangeListener.switchFragment(lastMenu)
+                closeNav()
+            }
+        }
+
+        tv.setOnTouchListener { v, event ->
+            when (event?.action) {
+                MotionEvent.ACTION_DOWN -> {
+                 //   highlightMenuSelection(lastMenu)
+
+                    tv.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.main_color_3
+                        )
+                    )
+                }
+                MotionEvent.ACTION_UP -> {
+                  //  unHighlightMenuSelections(lastMenu)
+
+                    tv.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.nav_text_color
+                        )
+                    )
+                }
+            }
+
+            v?.onTouchEvent(event) ?: true
         }
     }
 

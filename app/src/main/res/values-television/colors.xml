@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="background">#000E27</color>
+    <color name="dark_background">#000919</color>
+    <color name="light_background">#162135</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="main_color_2">#21c5df</color>
+    <color name="main_color_3">#eb233c</color>
     <color name="focusableColor">#304ffe</color>
+    <color name="film">#00a0b0</color>
+    <color name="multfilm">#216d2b</color>
+    <color name="serial">#df565a</color>
+    <color name="anime">#696969</color>
+    <color name="gray">#AFAFAF</color>
+    <color name="active_like">#1CAE09</color>
+    <color name="dark_main_color_2">#157988</color>
+    <color name="day_night_text">#000</color>
+    <color name="search_dialog_background">#fff</color>
+    <color name="transparent">#00000000</color>
+    <color name="day_night_text_hint">#616161</color>
+    <color name="tv_show">#909215</color>
+    <color name="nav_text_color">#CECCD5</color>
 </resources>

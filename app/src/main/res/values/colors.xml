@@ -20,4 +20,5 @@
     <color name="transparent">#00000000</color>
     <color name="day_night_text_hint">#616161</color>
     <color name="tv_show">#909215</color>
+    <color name="nav_text_color">#CECCD5</color>
 </resources>
