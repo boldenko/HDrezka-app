@@ -53,6 +53,8 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
     }
 
     fun setCategory(typePos: Int?, genrePos: Int?, yearPos: Int?, isUpdate: Boolean) {
+        link = ""
+
         typePos?.let {
             link += categories.keyAt(typePos).second + "best/"
 
