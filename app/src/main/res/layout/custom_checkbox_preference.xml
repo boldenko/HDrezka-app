@@ -6,13 +6,12 @@
     android:paddingStart="@dimen/pref_padding"
     android:paddingTop="@dimen/root_pref_space"
     android:paddingEnd="@dimen/pref_padding"
-    android:paddingBottom="@dimen/root_pref_space"
-    android:weightSum="1">
+    android:paddingBottom="@dimen/root_pref_space">
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.9"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
@@ -37,9 +36,8 @@
 
     <CheckBox
         android:id="@android:id/checkbox"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_weight="0.1"
         android:gravity="center" />
 
 </LinearLayout>

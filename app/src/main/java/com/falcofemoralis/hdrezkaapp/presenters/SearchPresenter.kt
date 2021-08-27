@@ -1,5 +1,6 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
+import android.content.Context
 import com.falcofemoralis.hdrezkaapp.constants.AdapterAction
 import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
 import com.falcofemoralis.hdrezkaapp.models.FilmModel
@@ -14,7 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jsoup.HttpStatusException
 
-class SearchPresenter(private val searchView: SearchView, private val filmsListView: FilmsListView) {
+class SearchPresenter(private val searchView: SearchView, private val filmsListView: FilmsListView, private val context: Context) {
     private val FILMS_PER_PAGE = 9
 
     var activeSearchFilms: ArrayList<Film> = ArrayList()
@@ -73,7 +74,7 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
         GlobalScope.launch {
             try {
                 if (loadedListFilms.size == 0) {
-                    loadedListFilms = SearchModel.getFilmsFromSearchPage(query, currentPage)
+                    loadedListFilms = SearchModel.getFilmsFromSearchPage(query, currentPage, context)
                     currentPage++
                 }
                 FilmModel.getFilmsData(loadedListFilms, FILMS_PER_PAGE, searchView, ::addFilms)

@@ -16,6 +16,13 @@ object FilmsListModel {
         for (el in doc.select(FILMS)) {
             val film = Film(el.attr("data-id").toInt())
             film.filmLink = el.attr("data-url")
+            if(film.filmLink.isNullOrEmpty()){
+                film.filmLink = el.select("div.b-content__inline_item-cover a").attr("href")
+
+                if(film.filmLink.isNullOrEmpty()){
+                    film.filmLink = el.select("div.b-content__inline_item-link a").attr("href")
+                }
+            }
             film.posterPath = el.select(FILM_IMG).attr("src")
             film.subInfo = el.select(SUB_INFO).text()
 

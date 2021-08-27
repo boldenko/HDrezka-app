@@ -39,7 +39,7 @@ object ExceptionHelper {
 
                 if (type == ErrorType.BLOCKED_SITE) {
                     createDialog(textId, context)
-                } else {
+                } else if (type != ErrorType.PROVIDER_TIMEOUT) {
                     Toast.makeText(context, context.getString(textId) + ": " + errorText, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -52,12 +52,15 @@ object ExceptionHelper {
         builder.setPositiveButton(context.getString(R.string.provider_change)) { dialog, id ->
             dialog.cancel()
         }
+        builder.setNegativeButton(context.getString(R.string.cancel)) { dialog, id ->
+            dialog.dismiss()
+        }
         builder.setOnCancelListener {
             activeDialog = null
             (context as MainActivity).showProviderEnter()
         }
         builder.setCancelable(false)
-        if(activeDialog == null){
+        if (activeDialog == null) {
             activeDialog = builder.create()
         }
         activeDialog!!.show()
@@ -81,7 +84,7 @@ object ExceptionHelper {
             is IndexOutOfBoundsException -> ErrorType.BLOCKED_SITE
             is SSLHandshakeException -> ErrorType.BLOCKED_SITE
             is UnknownHostException -> ErrorType.BLOCKED_SITE
-            is IOException -> ErrorType.BLOCKED_SITE
+            //is IOException -> ErrorType.BLOCKED_SITE
             else -> ErrorType.ERROR
         }
 

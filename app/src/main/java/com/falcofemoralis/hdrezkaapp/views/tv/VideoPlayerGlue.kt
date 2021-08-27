@@ -6,6 +6,7 @@ import androidx.leanback.media.PlaybackTransportControlGlue
 import androidx.leanback.widget.Action
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.PlaybackControlsRow.*
+import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import java.util.concurrent.TimeUnit
 
 class VideoPlayerGlue(context: Context, playerAdapter: MediaPlayerAdapter, private val mActionListener: OnActionClickedListener, private val isSerial: Boolean) :
@@ -43,7 +44,9 @@ class VideoPlayerGlue(context: Context, playerAdapter: MediaPlayerAdapter, priva
     }
 
     override fun onPlayCompleted() {
-        mActionListener.onNext()
+        if(SettingsData.autoPlayNextEpisode == true){
+            mActionListener.onNext()
+        }
         super.onPlayCompleted()
     }
 

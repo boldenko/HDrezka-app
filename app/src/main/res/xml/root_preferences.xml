@@ -1,7 +1,9 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/cat_interface">
+    <PreferenceCategory
+        android:layout="@layout/custom_title_preference"
+        app:title="@string/cat_interface">
         <ListPreference
             app:defaultValue="0"
             app:entries="@array/screens"
@@ -30,13 +32,16 @@
             app:useSimpleSummaryProvider="true" />
 
         <CheckBoxPreference
+            android:defaultValue="true"
             android:layout="@layout/custom_checkbox_preference"
             app:key="isAutorotate"
             app:summary="@string/rotate_hint"
             app:title="@string/rotate_title" />
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/cat_app">
+    <PreferenceCategory
+        android:layout="@layout/custom_title_preference"
+        app:title="@string/cat_app">
         <EditTextPreference
             app:key="ownProvider"
             app:layout="@layout/custom_edit_preference"

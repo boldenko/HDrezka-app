@@ -5,6 +5,8 @@ import android.app.UiModeManager
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -47,6 +49,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     /* TV */
     private lateinit var navMenuFragment: NavigationMenu
     private lateinit var navFragmentLayout: FrameLayout
+    private var doubleBackToExitPressedOnce = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -248,7 +251,33 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         if (isSettingsOpened) {
             isSettingsOpened = false
         }
-        super.onBackPressed()
+
+        if (SettingsData.deviceType == DeviceType.TV) {
+            val acceptableFragment = when (mainFragment) {
+                is NewestFilmsFragment -> true
+                is CategoriesFragment -> true
+                is SearchFragment -> true
+                is BookmarksFragment -> true
+                is WatchLaterFragment -> true
+                is UserFragment -> true
+                else -> false
+            }
+
+            if (acceptableFragment && mainFragment.isVisible) {
+                if (doubleBackToExitPressedOnce) {
+                    super.onBackPressed()
+                    return
+                }
+
+                this.doubleBackToExitPressedOnce = true
+                Toast.makeText(this, getString(R.string.double_click_hint), Toast.LENGTH_SHORT).show()
+                Handler(Looper.getMainLooper()).postDelayed({ doubleBackToExitPressedOnce = false }, 2000)
+            } else{
+                super.onBackPressed()
+            }
+        } else{
+            super.onBackPressed()
+        }
     }
 
     /* TV */

@@ -67,8 +67,7 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
     }
 
     fun initActors() {
-        if (film.actors != null) {
-
+        if (film.actors != null && film.actors!!.size > 0) {
             val actors = arrayOfNulls<Actor>(film.actors!!.size)
 
             for ((index, actor) in film.actors!!.withIndex()) {
@@ -94,6 +93,8 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
                     }
                 }
             }
+        } else{
+            filmView.hideActors()
         }
     }
 

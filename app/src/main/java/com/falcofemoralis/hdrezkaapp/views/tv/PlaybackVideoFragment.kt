@@ -40,6 +40,10 @@ open class PlaybackVideoFragment : VideoSupportFragment() {
             for ((season, episodes) in seasons) {
                 for (episode in episodes) {
                     mPlaylist.add(Playlist.PlaylistItem(season, episode))
+
+                    if(season == translation.selectedEpisode?.first && episode == translation.selectedEpisode?.second){
+                        mPlaylist.setCurrentPosition(mPlaylist.size() - 1)
+                    }
                 }
             }
             title = "${film.title} Сезон ${translation.selectedEpisode?.first} - Эпизод ${translation.selectedEpisode?.second}"
@@ -98,7 +102,9 @@ open class PlaybackVideoFragment : VideoSupportFragment() {
         }
 
         override fun onNext() {
-            mPlaylist.next()?.let { play(it) }
+            mPlaylist.next()?.let {
+                play(it)
+            }
         }
 
     }

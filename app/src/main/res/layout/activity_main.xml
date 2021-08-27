@@ -3,13 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    android:orientation="vertical"
-    android:weightSum="1">
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.07">
+        android:layout_height="50dp">
 
         <TextView
             android:textStyle="bold"
@@ -35,7 +33,6 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/activity_main_fcv_container"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.93" />
+        android:layout_height="match_parent" />
 
 </LinearLayout>

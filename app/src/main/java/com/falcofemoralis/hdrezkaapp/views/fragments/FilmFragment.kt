@@ -20,7 +20,6 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.DisplayMetrics
-import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
@@ -80,7 +79,6 @@ class FilmFragment : Fragment(), FilmView {
     private var modalDialog: Dialog? = null
     private var commentEditor: CommentEditor? = null
     private var bookmarksDialog: AlertDialog? = null
-    private var isBannerVisible: Boolean = false
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -132,6 +130,7 @@ class FilmFragment : Fragment(), FilmView {
         commentsList = currentView.findViewById(R.id.fragment_film_rv_comments)
 
         filmPresenter = FilmPresenter(this, (arguments?.getSerializable(FILM_ARG) as Film?)!!)
+
         filmPresenter.initFilmData()
 
         initFlags()
@@ -203,6 +202,10 @@ class FilmFragment : Fragment(), FilmView {
     private fun initPlayer() {
         val openPlayBtn = currentView.findViewById<TextView>(R.id.fragment_film_tv_open_player)
         val playerContainer = currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_player_container)
+
+        if(SettingsData.deviceType == DeviceType.TV){
+            openPlayBtn.requestFocus()
+        }
 
         if (SettingsData.isPlayer == true || SettingsData.deviceType == DeviceType.TV) {
             openPlayBtn.setOnClickListener {
@@ -650,10 +653,6 @@ class FilmFragment : Fragment(), FilmView {
             sharingIntent.putExtra(Intent.EXTRA_TEXT, body)
             startActivity(sharingIntent)
         }
-
-        if (SettingsData.deviceType == DeviceType.TV) {
-            btn.requestFocus()
-        }
     }
 
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
@@ -969,5 +968,9 @@ class FilmFragment : Fragment(), FilmView {
                 }
             }
         }
+    }
+
+    override fun hideActors() {
+        currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_actorsContainer).visibility = View.GONE
     }
 }

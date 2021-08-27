@@ -101,7 +101,7 @@
     <string name="no_manager">Отсуствует менеджер загрузок!</string>
     <string name="choose_quality">Выберите качество</string>
     <string name="translation">Озвучка</string>
-    <string name="start_watching">Начать просмотр</string>
+    <string name="start_watching">Смотреть</string>
     <string name="download">Скачать</string>
     <string name="perm_write_hint">Без доступа к хранилищу файл не будет сохранен!</string>
     <string name="download_started">Скачивание начато</string>
@@ -133,4 +133,7 @@
     <string name="provider_enter_title">Введите URL сайта</string>
     <string name="empty_provider">Пустая ссылка на сайт не доступна!</string>
     <string name="new_provider">Сайт: %1$s</string>
+    <string name="next_episode_title">Автопереход на следующую серию</string>
+    <string name="next_episode_hint">Позволяет включить автопереход на следующую серию"</string>
+    <string name="double_click_hint">Пожалуйста, нажмите назад еще раз для того чтобы выйти</string>
 </resources>

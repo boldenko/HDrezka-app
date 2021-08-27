@@ -382,7 +382,7 @@ object FilmModel {
                     }
                 }
             } catch (e: Exception) {
-                delay(100)
+                delay(150)
                 startFilmLoad(loadedFilms, filmsToLoad, index, film, callback)
             }
         }

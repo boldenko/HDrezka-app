@@ -1,20 +1,27 @@
 package com.falcofemoralis.hdrezkaapp.models
 
+import android.content.Context
+import android.os.Environment
+import android.webkit.CookieManager
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
 
 object SearchModel {
     private const val SEARCH_URL = "/engine/ajax/search.php"
-    private const val SEARCH_QUERY = "/search/?do=search&subaction=search&q="
 
     fun getFilmsListByQuery(text: String): ArrayList<Film> {
         val doc: Document = Jsoup.connect(SettingsData.provider + SEARCH_URL).data("q", text).userAgent("Mozilla").post()
 
         val films: ArrayList<Film> = ArrayList()
         val els: Elements = doc.select("li")
+
+
         for (el in els) {
             val link: String = el.select("a").attr("href")
             val title: String = el.select("span.enty").text()
@@ -39,8 +46,19 @@ object SearchModel {
         return films
     }
 
-    fun getFilmsFromSearchPage(query: String, page: Int): ArrayList<Film> {
-        val doc: Document = Jsoup.connect(SettingsData.provider + SEARCH_QUERY + query + "&page=$page").get()
+    fun getFilmsFromSearchPage(query: String, page: Int, context: Context): ArrayList<Film> {
+        val doc: Document = Jsoup
+            .connect(SettingsData.provider + "/search/?do=search&subaction=search&q=$query&page=$page")
+            .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
+            .userAgent(System.getProperty("http.agent"))
+            .get()
+
+        /* test */
+  /*      val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "testfile")
+        val bw = BufferedWriter(FileWriter(file, false))
+        bw.write(doc.html())
+        bw.close()
+*/
         return FilmsListModel.getFilmsFromPage(doc)
     }
 }

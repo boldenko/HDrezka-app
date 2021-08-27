@@ -56,7 +56,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
     }
 
     override fun onFilmsListCreated() {
-        searchPresenter = SearchPresenter(this, filmsListFragment)
+        searchPresenter = SearchPresenter(this, filmsListFragment, requireContext())
         searchPresenter.initFilms()
         filmsListFragment.setProgressBarState(IProgressState.StateType.LOADED)
         super.onStart()

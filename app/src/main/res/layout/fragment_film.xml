@@ -100,6 +100,7 @@
 
             <!-- Actors -->
             <LinearLayout
+                android:id="@+id/fragment_film_ll_actorsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"

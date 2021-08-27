@@ -12,6 +12,26 @@
         android:gravity="center">
 
         <TextView
+            android:drawablePadding="10dp"
+            app:drawableStartCompat="@drawable/ic_baseline_play_arrow2_24"
+            android:id="@+id/fragment_film_tv_open_player"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/roundedbutton"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:padding="5dp"
+            android:layout_margin="5dp"
+            android:text="@string/start_watching"
+            android:textColor="@color/white"
+            android:textSize="@dimen/normal_text"
+            android:textStyle="bold" />
+
+        <TextView
+            android:drawablePadding="10dp"
+            app:drawableStartCompat="@drawable/ic_baseline_bookmarks_24"
             android:id="@+id/fragment_film_iv_bookmark"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -25,6 +45,8 @@
             android:textSize="@dimen/normal_text" />
 
         <TextView
+            android:drawablePadding="10dp"
+            app:drawableStartCompat="@drawable/ic_baseline_share_24"
             android:id="@+id/fragment_film_iv_share"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -38,6 +60,8 @@
             android:textSize="@dimen/normal_text" />
 
         <TextView
+            android:drawablePadding="10dp"
+            app:drawableStartCompat="@drawable/ic_baseline_arrow_circle_down_24"
             android:id="@+id/fragment_film_tv_download"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -75,8 +99,7 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="film poster"
                 android:focusable="true"
-                android:foreground="?attr/selectableItemBackground"
-                android:nextFocusDown="@id/fragment_film_tv_open_player" />
+                android:foreground="?attr/selectableItemBackground" />
         </LinearLayout>
 
         <LinearLayout
@@ -268,29 +291,6 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/normal_text" />
             </LinearLayout>
-
-            <!-- Open in player -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp">
-
-                <TextView
-                    android:id="@+id/fragment_film_tv_open_player"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@drawable/roundedbutton"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:gravity="center"
-                    android:padding="10dp"
-                    android:text="@string/start_watching"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/normal_text"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
         </LinearLayout>
     </LinearLayout>
 

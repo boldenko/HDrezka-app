@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.CookieManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceFragmentCompat
@@ -72,16 +71,19 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 }
             }
             "isAutorotate" -> {
-                SettingsData.isAutorotate = preferences.getBoolean("isAutorotate", false)
+                SettingsData.isAutorotate = preferences.getBoolean("isAutorotate", true)
                 mActivity?.requestedOrientation = if (SettingsData.isAutorotate == true) {
                     ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
                 } else {
                     ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                 }
             }
-            "rowMultiplier" ->{
+            "rowMultiplier" -> {
                 SettingsData.rowMultiplier = preferences.getString("rowMultiplier", "3")?.toInt()
                 applyInterfaceChange()
+            }
+            "autoPlayNextEpisode" -> {
+                SettingsData.autoPlayNextEpisode = preferences.getBoolean("autoPlayNextEpisode", true)
             }
         }
     }

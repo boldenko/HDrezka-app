@@ -26,6 +26,7 @@ object SettingsData {
     var filmsInRow: Int? = null
     var isAutorotate: Boolean? = null
     var rowMultiplier: Int? = null
+    var autoPlayNextEpisode: Boolean? = null
     const val PROVIDER_FILE = "provider"
 
     fun initProvider(context: Context) {
@@ -48,7 +49,8 @@ object SettingsData {
         isMaxQuality = prefs?.getBoolean("isMaxQuality", false)
         isPlayerChooser = prefs?.getBoolean("isPlayerChooser", false)
         isExternalDownload = prefs?.getBoolean("isExternalDownload", false)
-        isAutorotate = prefs?.getBoolean("isAutorotate", false)
+        isAutorotate = prefs?.getBoolean("isAutorotate", true)
+        autoPlayNextEpisode = prefs?.getBoolean("autoPlayNextEpisode", true)
         (prefs?.getString("filmsInRow", (if (deviceType == DeviceType.TV) GridLayoutSizes.TV else GridLayoutSizes.MOBILE).toString())).let {
             if (it != null) {
                 filmsInRow = it.toInt()
