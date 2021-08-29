@@ -43,6 +43,7 @@
             android:padding="7dp"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
+            android:gravity="center"
             android:text="@string/filters"
             android:textColor="@color/white"
             android:textSize="@dimen/normal_text"
