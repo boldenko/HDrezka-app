@@ -94,6 +94,8 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
             holder.subInfoView.visibility = View.VISIBLE
             holder.subInfoView.text = film.subInfo
             holder.subInfoView.setBackgroundColor(color)
+        } else{
+            holder.subInfoView.visibility = View.GONE
         }
 
         holder.layout.setOnClickListener {

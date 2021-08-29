@@ -957,8 +957,17 @@ class FilmFragment : Fragment(), FilmView {
                 startActivity(intent)
             } else {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                val newFilmTitle: String
+
+                if (translation.seasons != null && translation.seasons!!.size > 0) {
+                    newFilmTitle = "$filmTitle Сезон ${translation.selectedEpisode?.first} - Эпизод ${translation.selectedEpisode?.second}"
+                } else{
+                    newFilmTitle = filmTitle
+
+                }
+
                 intent.setDataAndType(Uri.parse(url), "video/*")
-                intent.putExtra("title", filmTitle)
+                intent.putExtra("title", newFilmTitle)
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
                 try {
