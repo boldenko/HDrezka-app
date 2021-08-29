@@ -960,7 +960,7 @@ class FilmFragment : Fragment(), FilmView {
                 val newFilmTitle: String
 
                 if (translation.seasons != null && translation.seasons!!.size > 0) {
-                    newFilmTitle = "$filmTitle Сезон ${translation.selectedEpisode?.first} - Эпизод ${translation.selectedEpisode?.second}"
+                    newFilmTitle = "Сезон ${translation.selectedEpisode?.first} - Эпизод ${translation.selectedEpisode?.second} $filmTitle"
                 } else{
                     newFilmTitle = filmTitle
 

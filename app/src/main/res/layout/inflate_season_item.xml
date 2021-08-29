@@ -6,6 +6,7 @@
     android:paddingEnd="5dp"
     android:paddingTop="15dp"
     android:paddingBottom="15dp"
+    android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
     android:textColor="@color/day_night_text"
     android:textSize="@dimen/normal_text">
