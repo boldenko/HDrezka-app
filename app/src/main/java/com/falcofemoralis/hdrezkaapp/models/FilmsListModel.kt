@@ -34,9 +34,6 @@ object FilmsListModel {
             films.add(film)
         }
 
-        if (films.size == 0) {
-            throw HttpStatusException("Empty list", 404, SettingsData.provider)
-        }
         return films
     }
 }

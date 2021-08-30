@@ -136,4 +136,5 @@
     <string name="next_episode_title">Автопереход на следующую серию</string>
     <string name="next_episode_hint">Позволяет включить автопереход на следующую серию"</string>
     <string name="double_click_hint">Пожалуйста, нажмите назад еще раз для того чтобы выйти</string>
+    <string name="search_empty">Нам не удалось ничего найти</string>
 </resources>

@@ -10,7 +10,8 @@ interface IConnection {
         BLOCKED_SITE,
         MALFORMED_URL,
         MODERATE_BY_ADMIN,
-        PROVIDER_TIMEOUT
+        PROVIDER_TIMEOUT,
+        EMPTY_SEARCH
     }
 
     fun showConnectionError(type: ErrorType, errorText: String)

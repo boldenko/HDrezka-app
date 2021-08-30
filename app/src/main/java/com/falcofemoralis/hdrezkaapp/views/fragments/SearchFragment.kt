@@ -96,6 +96,10 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (!autoCompleteTextView.isPerformingCompletion) {
+                    if(SettingsData.deviceType == DeviceType.TV){
+                        hintLayout.visibility = View.GONE
+                    }
+
                     searchPresenter.getFilms(s.toString())
 
                     if (s.toString().isNotEmpty()) {
@@ -123,7 +127,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
                 imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
             }
 
-          //  autoCompleteTextView.requestFocus()
+            //  autoCompleteTextView.requestFocus()
         }
     }
 
@@ -131,7 +135,6 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
         context?.let {
             autoCompleteTextView.setAdapter(ArrayAdapter(it, R.layout.search_item, R.id.text_view_list_item, films))
             autoCompleteTextView.showDropDown()
-
         }
     }
 

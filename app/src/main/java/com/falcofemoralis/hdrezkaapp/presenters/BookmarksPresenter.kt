@@ -79,7 +79,7 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
         isLoading = true
         if (loadedFilms.size > 0) {
             try {
-                FilmModel.getFilmsData(loadedFilms, FILMS_PER_PAGE, bookmarksView, ::addFilms)
+                FilmModel.getFilmsData(loadedFilms, FILMS_PER_PAGE, ::addFilms)
             } catch (e: Exception) {
                 catchException(e, bookmarksView)
                 isLoading = false
@@ -106,7 +106,7 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
                     try {
                         Log.d("BOOK_TEST", "start getting films data " + loadedFilms.toString())
 
-                        FilmModel.getFilmsData(loadedFilms, FILMS_PER_PAGE, bookmarksView, ::addFilms)
+                        FilmModel.getFilmsData(loadedFilms, FILMS_PER_PAGE, ::addFilms)
 
                         withContext(Dispatchers.Main) {
                             bookmarksView.hideMsg()

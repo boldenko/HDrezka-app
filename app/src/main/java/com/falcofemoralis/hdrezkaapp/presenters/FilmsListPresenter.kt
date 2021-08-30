@@ -70,7 +70,7 @@ class FilmsListPresenter(
                     }
                 }
 
-                FilmModel.getFilmsData(filmList, filmsPerPage, view, ::processFilms)
+                FilmModel.getFilmsData(filmList, filmsPerPage, ::processFilms)
             } catch (e: HttpStatusException) {
                 if (e.statusCode != 404 || e.statusCode == 503) {
                     ExceptionHelper.catchException(e, view)

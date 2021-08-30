@@ -1,9 +1,7 @@
 package com.falcofemoralis.hdrezkaapp.models
 
 import android.util.ArrayMap
-import android.util.Log
 import android.webkit.CookieManager
-import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.objects.*
 import kotlinx.coroutines.*
 import org.json.JSONObject
@@ -85,6 +83,9 @@ object FilmModel {
 
         film.type = film.filmLink?.split("/")?.get(3)?.let { getTypeByName(it) }
         film.title = filmPage.select(FILM_TITLE).text()
+        film.posterPath = filmPage.select("div.b-sidecover a img").attr("src")
+
+        parseTable(filmPage, film)
 
         // Parse info table
         val table: Elements = filmPage.select(FILM_TABLE_INFO)
@@ -119,18 +120,7 @@ object FilmModel {
         }
     }
 
-    fun getAdditionalData(film: Film): Film {
-        val document: Document = Jsoup.connect(film.filmLink)
-            .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider) + "; allowed_comments=1;")
-            .get()
-        film.origTitle = document.select("div.b-post__origtitle").text()
-        film.description = document.select("div.b-post__description_text").text()
-        film.votesIMDB = document.select("span.imdb i").text()
-        film.votesKP = document.select("span.kp i").text()
-        film.votesWA = document.select("span.wa i").text()
-        film.runtime = document.select("td[itemprop=duration]").text()
-        film.filmId = document.select("div.b-userset__fav_holder").attr("data-post_id").toInt()
-
+    private fun parseTable(document: Document, film: Film) {
         val table: Elements = document.select(FILM_TABLE_INFO)
         // Parse info table
         for (tr in table) {
@@ -159,6 +149,21 @@ object FilmModel {
                 }
             }
         }
+    }
+
+    fun getAdditionalData(film: Film): Film {
+        val document: Document = Jsoup.connect(film.filmLink)
+            .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider) + "; allowed_comments=1;")
+            .get()
+        film.origTitle = document.select("div.b-post__origtitle").text()
+        film.description = document.select("div.b-post__description_text").text()
+        film.votesIMDB = document.select("span.imdb i").text()
+        film.votesKP = document.select("span.kp i").text()
+        film.votesWA = document.select("span.wa i").text()
+        film.runtime = document.select("td[itemprop=duration]").text()
+        film.filmId = document.select("div.b-userset__fav_holder").attr("data-post_id").toInt()
+
+        parseTable(document, film)
 
         val hrRatingEl = document.select("div.b-post__rating")
         film.ratingHR = hrRatingEl.select("span.num").text()
@@ -343,11 +348,11 @@ object FilmModel {
         return film
     }
 
-    data class Counter(private var c: Int){
+    data class Counter(private var c: Int) {
         var count = c
     }
 
-    fun getFilmsData(films: ArrayList<Film>, filmsPerPage: Int, iConnection: IConnection, callback: (ArrayList<Film>) -> Unit) {
+    fun getFilmsData(films: ArrayList<Film>, filmsPerPage: Int, callback: (ArrayList<Film>) -> Unit) {
         val filmsToLoad: ArrayList<Film> = ArrayList()
         for ((index, film) in (films.clone() as ArrayList<Film>).withIndex()) {
             filmsToLoad.add(film)
@@ -361,8 +366,6 @@ object FilmModel {
         val counter = Counter(0)
         val loadedFilms = arrayOfNulls<Film?>(filmsPerPage)
         for ((index, film) in filmsToLoad.withIndex()) {
-            Log.d("LIST_TEST", "launch film load " + index)
-
             startFilmLoad(counter, loadedFilms, filmsToLoad, index, film, callback)
         }
     }
@@ -371,14 +374,10 @@ object FilmModel {
         GlobalScope.launch {
             try {
                 loadedFilms[index] = getMainData(film)
-                Log.d("LIST_TEST", "loaded film" +  loadedFilms[index]?.title)
 
                 counter.count++
-                Log.d("LIST_TEST", "inc count" +  counter.count)
 
                 if (counter.count >= filmsToLoad.size) {
-                    Log.d("LIST_TEST", "${counter.count} >= ${filmsToLoad.size}")
-
                     val list: ArrayList<Film> = ArrayList()
                     for (item in loadedFilms) {
                         if (item != null) {
@@ -387,8 +386,6 @@ object FilmModel {
                     }
 
                     withContext(Dispatchers.Main) {
-                        Log.d("LIST_TEST", "callback " + list.toString())
-
                         callback(list)
                     }
                 }

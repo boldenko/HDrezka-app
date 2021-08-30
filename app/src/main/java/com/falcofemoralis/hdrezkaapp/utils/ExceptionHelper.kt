@@ -15,6 +15,7 @@ import kotlinx.coroutines.withContext
 import org.jsoup.HttpStatusException
 import org.jsoup.parser.ParseError
 import java.io.IOException
+import java.lang.Error
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.net.ssl.SSLHandshakeException
@@ -35,6 +36,7 @@ object ExceptionHelper {
                     ErrorType.MALFORMED_URL -> R.string.malformed_url
                     ErrorType.MODERATE_BY_ADMIN -> R.string.comment_need_apply
                     ErrorType.ERROR -> R.string.error_occured
+                    ErrorType.EMPTY_SEARCH -> R.string.search_empty
                 }
 
                 if (type == ErrorType.BLOCKED_SITE) {
@@ -73,6 +75,7 @@ object ExceptionHelper {
             is SocketTimeoutException -> ErrorType.TIMEOUT
             is HttpStatusException -> {
                 when (e.statusCode) {
+                    401 -> ErrorType.EMPTY_SEARCH
                     404 -> ErrorType.EMPTY
                     403 -> ErrorType.MODERATE_BY_ADMIN
                     503 -> ErrorType.PROVIDER_TIMEOUT
