@@ -1,6 +1,7 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
 import android.content.Context
+import android.util.Log
 import com.falcofemoralis.hdrezkaapp.constants.AdapterAction
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
@@ -23,6 +24,7 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
     private var isLoading: Boolean = false
     private var query: String = ""
     private var filmsPerPage: Int = 0
+    private var token = ""
 
     init {
         SettingsData.filmsInRow?.let {
@@ -70,6 +72,7 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
         filmsListView.redrawFilms(0, itemsCount, AdapterAction.DELETE)
         currentPage = 1
         isLoading = false
+        token = text
         getNextFilms()
     }
 
@@ -83,6 +86,8 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
 
         GlobalScope.launch {
             try {
+                val tokenTmp = token
+
                 if (loadedListFilms.size == 0) {
                     loadedListFilms = SearchModel.getFilmsFromSearchPage(query, currentPage)
 
@@ -91,13 +96,22 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
                         loadedListFilms = SearchModel.getFilmsListByQuery(query)
                     }
 
-                    if(loadedListFilms.size == 0){
+                    if (loadedListFilms.size == 0) {
                         throw HttpStatusException("List end", 404, SettingsData.provider)
                     }
 
                     currentPage++
                 }
-                FilmModel.getFilmsData(loadedListFilms, filmsPerPage, ::addFilms)
+
+                fun processFilms(films: ArrayList<Film>) {
+                    if (tokenTmp == token) {
+                        addFilms(films)
+                    }
+                }
+
+                if (tokenTmp == token) {
+                    FilmModel.getFilmsData(loadedListFilms, filmsPerPage, ::processFilms)
+                }
             } catch (e: HttpStatusException) {
                 if (e.statusCode != 404) {
                     catchException(e, searchView)

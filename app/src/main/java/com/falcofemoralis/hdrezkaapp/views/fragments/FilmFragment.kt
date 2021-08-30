@@ -203,7 +203,7 @@ class FilmFragment : Fragment(), FilmView {
         val openPlayBtn = currentView.findViewById<TextView>(R.id.fragment_film_tv_open_player)
         val playerContainer = currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_player_container)
 
-        if(SettingsData.deviceType == DeviceType.TV){
+        if (SettingsData.deviceType == DeviceType.TV) {
             openPlayBtn.requestFocus()
         }
 
@@ -656,7 +656,11 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
-        ExceptionHelper.showToastError(requireContext(), type, errorText)
+        try {
+            ExceptionHelper.showToastError(requireContext(), type, errorText)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun setCommentsList(list: ArrayList<Comment>, filmId: String) {
@@ -961,7 +965,7 @@ class FilmFragment : Fragment(), FilmView {
 
                 if (translation.seasons != null && translation.seasons!!.size > 0) {
                     newFilmTitle = "Сезон ${translation.selectedEpisode?.first} - Эпизод ${translation.selectedEpisode?.second} $filmTitle"
-                } else{
+                } else {
                     newFilmTitle = filmTitle
 
                 }

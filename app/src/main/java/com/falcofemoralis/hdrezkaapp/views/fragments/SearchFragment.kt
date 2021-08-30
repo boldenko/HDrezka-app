@@ -96,7 +96,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (!autoCompleteTextView.isPerformingCompletion) {
-                    if(SettingsData.deviceType == DeviceType.TV){
+                    if (SettingsData.deviceType == DeviceType.TV) {
                         hintLayout.visibility = View.GONE
                     }
 
@@ -124,6 +124,8 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
 
         if (SettingsData.deviceType == DeviceType.TV) {
             autoCompleteTextView.setOnClickListener {
+                imm.hideSoftInputFromWindow(autoCompleteTextView.windowToken, 0)
+
                 imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
             }
 
@@ -145,4 +147,4 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
     override fun triggerEnd() {
         searchPresenter.getNextFilms()
     }
-}
+}   
