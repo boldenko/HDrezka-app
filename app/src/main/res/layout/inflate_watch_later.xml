@@ -13,6 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="50dp"
+            android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
             android:orientation="horizontal"
             android:weightSum="100">

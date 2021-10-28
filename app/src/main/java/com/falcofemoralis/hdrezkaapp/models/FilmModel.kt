@@ -11,7 +11,7 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 
-object FilmModel {
+object FilmModel : BaseModel() {
     private const val FILM_TITLE = "div.b-post__title h1"
     private const val FILM_POSTER = "div.b-sidecover a"
     private const val FILM_TABLE_INFO = "table.b-post__info tbody tr"
@@ -48,11 +48,7 @@ object FilmModel {
 
         val doc: Document?
         try {
-            doc = Jsoup.connect(SettingsData.provider + GET_FILM_POST)
-                .data(data)
-                .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-                .ignoreContentType(true)
-                .post()
+            doc = getJsoup(SettingsData.provider + GET_FILM_POST).data(data).post()
         } catch (e: Exception) {
             throw e
         }
@@ -79,7 +75,7 @@ object FilmModel {
     }
 
     private fun getMainDataByLink(film: Film): Film {
-        val filmPage: Document = Jsoup.connect(film.filmLink).get()
+        val filmPage: Document = getJsoup(film.filmLink).get()
 
         film.type = film.filmLink?.split("/")?.get(3)?.let { getTypeByName(it) }
         film.title = filmPage.select(FILM_TITLE).text()
@@ -152,7 +148,7 @@ object FilmModel {
     }
 
     fun getAdditionalData(film: Film): Film {
-        val document: Document = Jsoup.connect(film.filmLink)
+        val document: Document = getJsoup(film.filmLink)
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider) + "; allowed_comments=1;")
             .get()
         film.origTitle = document.select("div.b-post__origtitle").text()
@@ -354,13 +350,17 @@ object FilmModel {
 
     fun getFilmsData(films: ArrayList<Film>, filmsPerPage: Int, callback: (ArrayList<Film>) -> Unit) {
         val filmsToLoad: ArrayList<Film> = ArrayList()
-        for ((index, film) in (films.clone() as ArrayList<Film>).withIndex()) {
-            filmsToLoad.add(film)
-            films.removeAt(0)
+        try {
+            for ((index, film) in (films.clone() as ArrayList<Film>).withIndex()) {
+                filmsToLoad.add(film)
+                films.removeAt(0)
 
-            if (index == filmsPerPage - 1) {
-                break
+                if (index == filmsPerPage - 1) {
+                    break
+                }
             }
+        } catch (e: Error) {
+            e.printStackTrace()
         }
 
         val counter = Counter(0)
@@ -397,17 +397,15 @@ object FilmModel {
     }
 
     fun getFilmPosterByLink(filmLink: String): String {
-        val filmPage: Document = Jsoup.connect(filmLink).get()
+        val filmPage: Document = getJsoup(filmLink).get()
         val posterElement: Element = filmPage.select(FILM_POSTER)[0]
         return posterElement.select("img").attr("src")
     }
 
     fun postWatch(watchId: Int) {
-        val result: Element? = Jsoup.connect(SettingsData.provider + WATCH_ADD)
+        val result: Element? = getJsoup(SettingsData.provider + WATCH_ADD)
             .data("id", watchId.toString())
-            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider) + "; allowed_comments=1;")
-            .ignoreContentType(true)
             .post()
 
         if (result != null) {
@@ -422,11 +420,8 @@ object FilmModel {
     }
 
     fun postRating(film: Film, rating: Float) {
-        val result: String = Jsoup
-            .connect(SettingsData.provider + RATING_ADD + "?news_id=${film.filmId}&go_rate=${rating}&skin=hdrezka")
-            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+        val result: String = getJsoup(SettingsData.provider + RATING_ADD + "?news_id=${film.filmId}&go_rate=${rating}&skin=hdrezka")
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
-            .ignoreContentType(true)
             .execute()
             .body()
 
@@ -452,12 +447,7 @@ object FilmModel {
         data["action"] = "get_movie"
 
         val unixTime = System.currentTimeMillis()
-        val result: Document? = Jsoup.connect(SettingsData.provider + GET_STREAM_POST + "/?t=$unixTime")
-            .data(data)
-            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-            //    .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
-            .ignoreContentType(true)
-            .post()
+        val result: Document? = getJsoup(SettingsData.provider + GET_STREAM_POST + "/?t=$unixTime").data(data).post()
 
         if (result != null) {
             val bodyString: String = result.select("body").text()
@@ -499,11 +489,7 @@ object FilmModel {
         data["action"] = "get_episodes"
 
         val unixTime = System.currentTimeMillis()
-        val result: Document? = Jsoup.connect(SettingsData.provider + GET_STREAM_POST + "/?t=$unixTime")
-            .data(data)
-            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-            .ignoreContentType(true)
-            .post()
+        val result: Document? = getJsoup(SettingsData.provider + GET_STREAM_POST + "/?t=$unixTime").data(data).post()
 
         if (result != null) {
             val bodyString: String = result.select("body").text()
@@ -547,12 +533,7 @@ object FilmModel {
         data["action"] = "get_stream"
 
         val unixTime = System.currentTimeMillis()
-        val result: Document? = Jsoup.connect(SettingsData.provider + GET_STREAM_POST + "/?t=$unixTime")
-            .data(data)
-            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-            //  .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
-            .ignoreContentType(true)
-            .post()
+        val result: Document? = getJsoup(SettingsData.provider + GET_STREAM_POST + "/?t=$unixTime").data(data).post()
 
         if (result != null) {
             val bodyString: String = result.select("body").text()
@@ -578,11 +559,9 @@ object FilmModel {
         //data["duration"] = "1"
 
         val unixTime = System.currentTimeMillis()
-        val result: Document? = Jsoup.connect(SettingsData.provider + SEND_WATCH + "/?t=$unixTime")
+        val result: Document? = getJsoup(SettingsData.provider + SEND_WATCH + "/?t=$unixTime")
             .data(data)
-            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
-            .ignoreContentType(true)
             .post()
 
         if (result != null) {

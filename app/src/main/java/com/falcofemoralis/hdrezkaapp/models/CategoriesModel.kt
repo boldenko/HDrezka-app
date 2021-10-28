@@ -7,9 +7,9 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 
-object CategoriesModel {
+object CategoriesModel : BaseModel() {
     fun getCategories(): ArrayMap<Pair<String, String>, ArrayList<Pair<String, String>>> {
-        val doc: Document = Jsoup.connect(SettingsData.provider).get()
+        val doc: Document = getJsoup(SettingsData.provider).get()
 
         val categories: ArrayMap<Pair<String, String>, ArrayList<Pair<String, String>>> = ArrayMap()
         val els: Elements = doc.select("li.b-topnav__item")
@@ -37,7 +37,7 @@ object CategoriesModel {
     }
 
     fun getYears(): ArrayList<String> {
-        val doc: Document = Jsoup.connect(SettingsData.provider).get()
+        val doc: Document = getJsoup(SettingsData.provider).get()
 
         val years: ArrayList<String> = ArrayList()
         val els: Elements = doc.select("select.select-year")[0].select("option")
@@ -49,7 +49,7 @@ object CategoriesModel {
     }
 
     fun getFilmsFromCategory(catLink: String, page: Int): ArrayList<Film> {
-        val doc: Document = Jsoup.connect(SettingsData.provider + catLink + "page/" + page).get()
+        val doc: Document = getJsoup(SettingsData.provider + catLink + "page/" + page).get()
         return FilmsListModel.getFilmsFromPage(doc)
     }
 }

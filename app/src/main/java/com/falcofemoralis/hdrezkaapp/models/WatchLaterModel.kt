@@ -7,11 +7,13 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 
-object WatchLaterModel {
+object WatchLaterModel : BaseModel() {
     private const val MAIN_PAGE = "/continue/"
 
     fun getWatchLaterList(): ArrayList<WatchLater> {
-        val document: Document = Jsoup.connect(SettingsData.provider + MAIN_PAGE).header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider)).get()
+        val document: Document = getJsoup(SettingsData.provider + MAIN_PAGE)
+            .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
+            .get()
 
         val watchLaterList: ArrayList<WatchLater> = ArrayList()
 
@@ -36,11 +38,10 @@ object WatchLaterModel {
     }
 
     fun removeItem(id: String) {
-        Jsoup.connect(SettingsData.provider + "/engine/ajax/cdn_saves_remove.php")
+        getJsoup(SettingsData.provider + "/engine/ajax/cdn_saves_remove.php")
             .data("id", id)
             .userAgent("Mozilla")
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
-            .ignoreContentType(true)
             .post()
     }
 }

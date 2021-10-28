@@ -1,24 +1,22 @@
 package com.falcofemoralis.hdrezkaapp.models
 
 import android.util.ArrayMap
-import android.util.Log
 import android.webkit.CookieManager
 import com.falcofemoralis.hdrezkaapp.objects.Bookmark
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import org.json.JSONObject
 import org.jsoup.HttpStatusException
-import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 
-object BookmarksModel {
+object BookmarksModel : BaseModel() {
     private const val MAIN_PAGE = "/favorites/"
     private const val POST_URL = "/ajax/favorites/"
 
     fun getBookmarksList(): ArrayList<Bookmark> {
-        val document: Document = Jsoup.connect(SettingsData.provider + MAIN_PAGE).header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider)).get()
+        val document: Document = getJsoup(SettingsData.provider + MAIN_PAGE).header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider)).get()
 
         val bookmarks: ArrayList<Bookmark> = ArrayList()
 
@@ -47,7 +45,7 @@ object BookmarksModel {
             url += "&genre=${show}"
         }
 
-        val doc: Document = Jsoup.connect(url).header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider)).get()
+        val doc: Document = getJsoup(url).header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider)).get()
         return FilmsListModel.getFilmsFromPage(doc)
     }
 
@@ -56,12 +54,9 @@ object BookmarksModel {
         data["name"] = name
         data["action"] = "add_cat"
 
-        val result: Element? = Jsoup.connect(SettingsData.provider + POST_URL)
+        val result: Element? = getJsoup(SettingsData.provider + POST_URL)
             .data(data)
-            .userAgent("Mozilla")
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
-            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-            .ignoreContentType(true)
             .post()
 
         if (result != null) {
@@ -87,12 +82,9 @@ object BookmarksModel {
         data["cat_id"] = catId
         data["action"] = "add_post"
 
-        Jsoup.connect(SettingsData.provider + POST_URL)
+        getJsoup(SettingsData.provider + POST_URL)
             .data(data)
-            .userAgent("Mozilla")
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
-            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-            .ignoreContentType(true)
             .post()
     }
 }

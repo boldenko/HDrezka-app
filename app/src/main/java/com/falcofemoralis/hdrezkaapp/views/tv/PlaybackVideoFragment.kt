@@ -1,5 +1,6 @@
 package com.falcofemoralis.hdrezkaapp.views.tv
 
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +15,7 @@ import com.falcofemoralis.hdrezkaapp.objects.Playlist
 import com.falcofemoralis.hdrezkaapp.objects.Stream
 import com.falcofemoralis.hdrezkaapp.objects.Voice
 import kotlinx.coroutines.*
+
 
 open class PlaybackVideoFragment : VideoSupportFragment() {
     private lateinit var mTransportControlGlue: PlaybackTransportControlGlue<MediaPlayerAdapter>
@@ -41,7 +43,7 @@ open class PlaybackVideoFragment : VideoSupportFragment() {
                 for (episode in episodes) {
                     mPlaylist.add(Playlist.PlaylistItem(season, episode))
 
-                    if(season == translation.selectedEpisode?.first && episode == translation.selectedEpisode?.second){
+                    if (season == translation.selectedEpisode?.first && episode == translation.selectedEpisode?.second) {
                         mPlaylist.setCurrentPosition(mPlaylist.size() - 1)
                     }
                 }
@@ -59,8 +61,10 @@ open class PlaybackVideoFragment : VideoSupportFragment() {
         mTransportControlGlue.host = VideoSupportFragmentGlueHost(this@PlaybackVideoFragment)
         mTransportControlGlue.title = title
         mTransportControlGlue.subtitle = film.description
-        playerAdapter.setDataSource(Uri.parse(mStream.url))
-        mTransportControlGlue.playWhenPrepared()
+
+        prepare(mStream.url)
+
+        // mTransportControlGlue.playWhenPrepared()
     }
 
     override fun onPause() {
@@ -69,6 +73,7 @@ open class PlaybackVideoFragment : VideoSupportFragment() {
     }
 
     fun play(playlistItem: Playlist.PlaylistItem) {
+        Log.d("MTT", playlistItem.toString())
         mTransportControlGlue.title = "${film.title} Сезон ${playlistItem.season} - Эпизод ${playlistItem.episode}"
         mTransportControlGlue.subtitle = film.description
         GlobalScope.launch {
@@ -78,14 +83,15 @@ open class PlaybackVideoFragment : VideoSupportFragment() {
             withContext(Dispatchers.Main) {
                 for (stream in streams) {
                     if (stream.quality == mStream.quality) {
-                        playerAdapter.setDataSource(Uri.parse(stream.url))
+                        //playerAdapter.setDataSource(Uri.parse(stream.url))
+                        prepare(stream.url)
 
-                        GlobalScope.launch {
-                            delay(1000)
-                            withContext(Dispatchers.Main){
-                                mTransportControlGlue.play()
-                            }
-                        }
+                        /*   GlobalScope.launch {
+                               delay(1500)
+                               withContext(Dispatchers.Main) {
+                                   mTransportControlGlue.play()
+                               }
+                           }*/
                         break
                     }
                 }
@@ -93,6 +99,30 @@ open class PlaybackVideoFragment : VideoSupportFragment() {
         }
     }
 
+    private fun prepare(url: String) {
+        playerAdapter.mediaPlayer.setOnErrorListener { mp, what, extra ->
+            when (extra) {
+                MediaPlayer.MEDIA_ERROR_SERVER_DIED -> {
+                    Log.d("ERROR_MEDIA_PLAYER", "died here 2")
+                }
+                MediaPlayer.MEDIA_ERROR_IO -> {
+                    Log.d("ERROR_MEDIA_PLAYER", "died here 1")
+                    //playerAdapter.play()
+                    //mTransportControlGlue.play()
+                }
+                MediaPlayer.MEDIA_ERROR_TIMED_OUT -> {
+                    Log.d("ERROR_MEDIA_PLAYER", "died here 3")
+                }
+            }
+            //You must always return true if you want the error listener to work
+            true
+        }
+        //playerAdapter.mediaPlayer.setDataSource(url)
+        playerAdapter.setDataSource(Uri.parse(url))
+        //playerAdapter.mediaPlayer.prepareAsync()
+
+        mTransportControlGlue.playWhenPrepared()
+    }
 
     internal inner class PlaylistActionListener(playlist: Playlist) : VideoPlayerGlue.OnActionClickedListener {
         private val mPlaylist: Playlist = playlist

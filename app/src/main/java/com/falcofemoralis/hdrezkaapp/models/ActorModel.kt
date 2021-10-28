@@ -9,7 +9,7 @@ import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
-object ActorModel {
+object ActorModel : BaseModel() {
     private const val POST_ACTOR = "/ajax/person_info/"
     const val NO_PHOTO = "/i/nopersonphoto.png"
 
@@ -18,11 +18,7 @@ object ActorModel {
         data["id"] = actor.id.toString()
         data["pid"] = actor.pid.toString()
 
-        val result: Document? = Jsoup.connect(SettingsData.provider + POST_ACTOR)
-            .data(data)
-            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-            .ignoreContentType(true)
-            .post()
+        val result: Document? = getJsoup(SettingsData.provider + POST_ACTOR).data(data).post()
 
         if (result != null) {
             val bodyString: String = result.select("body").text()
@@ -69,25 +65,27 @@ object ActorModel {
     }
 
     fun getActorFilms(actor: Actor) {
-        val document: Document = Jsoup.connect(actor.link).get()
+        val document: Document = getJsoup(SettingsData.provider + actor.link).get()
 
         val careerEls = document.select("div.b-person__career")
         val careers: ArrayList<Pair<String, ArrayList<Film>>> = ArrayList()
-        for (el in careerEls) {
-            val header = el.select("h2").text()
-            // val info = el.select("span.b-person__career_stats").text()
-            val films: ArrayList<Film> = FilmsListModel.getFilmsFromPage(Jsoup.parse(el.toString()))
+        if (careerEls != null) {
+            for (el in careerEls) {
+                val header = el.select("h2").text()
+                // val info = el.select("span.b-person__career_stats").text()
+                val films: ArrayList<Film> = FilmsListModel.getFilmsFromPage(Jsoup.parse(el.toString()))
 
-            /*     val type: CareerType = when (name) {
-                     "Актер" -> CareerType.ACTOR
-                     "Режиссер" -> CareerType.DIRECTOR
-                     "Сценарист" -> CareerType.SCRIPTWRITER
-                     "Продюсер" -> CareerType.PRODUCER
-                     "Оператор" -> CareerType.OPERATOR
-                     "Монтажер" -> CareerType.EDITOR
-                     else -> CareerType.ACTOR
-                 }*/
-            careers.add(Pair(header, films))
+                /*     val type: CareerType = when (name) {
+                         "Актер" -> CareerType.ACTOR
+                         "Режиссер" -> CareerType.DIRECTOR
+                         "Сценарист" -> CareerType.SCRIPTWRITER
+                         "Продюсер" -> CareerType.PRODUCER
+                         "Оператор" -> CareerType.OPERATOR
+                         "Монтажер" -> CareerType.EDITOR
+                         else -> CareerType.ACTOR
+                     }*/
+                careers.add(Pair(header, films))
+            }
         }
 
         actor.personCareerFilms = careers

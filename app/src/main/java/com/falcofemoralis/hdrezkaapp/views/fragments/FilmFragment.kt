@@ -13,6 +13,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.PowerManager
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -20,6 +21,7 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.DisplayMetrics
+import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
@@ -79,6 +81,7 @@ class FilmFragment : Fragment(), FilmView {
     private var modalDialog: Dialog? = null
     private var commentEditor: CommentEditor? = null
     private var bookmarksDialog: AlertDialog? = null
+    private lateinit var wl: PowerManager.WakeLock
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -86,8 +89,12 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun onDestroy() {
+        Log.d("TESTTEST", "destroyed film page")
         playerView.destroy()
         activity?.window?.clearFlags(FLAG_KEEP_SCREEN_ON)
+        if (SettingsData.deviceType == DeviceType.TV) {
+            wl.release()
+        }
         PlayerJsInterface.notifyanager?.cancel(0)
 
         super.onDestroy()
@@ -146,8 +153,15 @@ class FilmFragment : Fragment(), FilmView {
         return currentView
     }
 
+    @SuppressLint("InvalidWakeLockTag")
     private fun initFlags() {
         activity?.window?.addFlags(FLAG_KEEP_SCREEN_ON)
+
+        if (SettingsData.deviceType == DeviceType.TV) {
+            val pm: PowerManager = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
+            wl= pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "tag")
+            wl.acquire(300*60*1000L)
+        }
     }
 
     private fun initScroll() {

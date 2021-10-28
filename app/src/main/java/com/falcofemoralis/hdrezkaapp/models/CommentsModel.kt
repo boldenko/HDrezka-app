@@ -12,7 +12,7 @@ import org.jsoup.nodes.Element
 import org.jsoup.nodes.TextNode
 import org.jsoup.select.Elements
 
-object CommentsModel {
+object CommentsModel : BaseModel() {
     private const val COMMENT_LINK = "/ajax/get_comments/"
     private const val COMMENT_ADD = "/ajax/add_comment/"
     private const val COMMENT_LIKE = "/engine/ajax/comments_like.php"
@@ -23,10 +23,8 @@ object CommentsModel {
     // cstart = page
     fun getCommentsFromPage(page: Int, filmId: String): ArrayList<Comment> {
         val unixTime = System.currentTimeMillis()
-        val result: String = Jsoup.connect(SettingsData.provider + COMMENT_LINK + "?t=$unixTime&news_id=$filmId&cstart=$page&type=0&comment_id=0&skin=hdrezka")
-            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+        val result: String = getJsoup(SettingsData.provider + COMMENT_LINK + "?t=$unixTime&news_id=$filmId&cstart=$page&type=0&comment_id=0&skin=hdrezka")
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
-            .ignoreContentType(true)
             .execute()
             .body()
 
@@ -117,11 +115,9 @@ object CommentsModel {
         data["g_recaptcha_response"] = ""
         data["has_adb"] = "1"
 
-        val result: Document? = Jsoup.connect(SettingsData.provider + COMMENT_ADD)
+        val result: Document? = getJsoup(SettingsData.provider + COMMENT_ADD)
             .data(data)
-            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider) + "; allowed_comments=1")
-            .ignoreContentType(true)
             .post()
 
         if (result != null) {
@@ -149,10 +145,8 @@ object CommentsModel {
     }
 
     fun postLike(comment: Comment, type: Comment.LikeType) {
-        Jsoup.connect(SettingsData.provider + COMMENT_LIKE + "?id=${comment.id}")
-            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+        getJsoup(SettingsData.provider + COMMENT_LIKE + "?id=${comment.id}")
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
-            .ignoreContentType(true)
             .execute()
             .body()
 
@@ -166,15 +160,13 @@ object CommentsModel {
     }
 
     fun deleteComment(comment: Comment) {
-        Jsoup.connect(
+        getJsoup(
             SettingsData.provider + DELETE_COMMENT +
                     "?id=${comment.id}" +
                     "&dle_allow_hash=${comment.deleteHash}"
                     + "&type=0&area=ajax"
         )
-            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
-            .ignoreContentType(true)
             .execute()
             .body()
     }

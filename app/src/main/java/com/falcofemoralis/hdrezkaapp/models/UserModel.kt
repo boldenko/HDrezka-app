@@ -12,14 +12,16 @@ import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
-object UserModel {
+object UserModel : BaseModel() {
     private const val USER_PAGE: String = "/user/"
     private const val LOGIN_AJAX: String = "/ajax/login/"
     private const val REGISTER_AJAX: String = "/engine/ajax/quick_register.php"
 
     fun getUserAvatarLink(): String? {
         val userId: String? = CookieStorage.getCookie(SettingsData.provider, "dle_user_id")
-        val doc: Document = Jsoup.connect(SettingsData.provider + USER_PAGE + userId).header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider)).get()
+        val doc: Document = getJsoup(SettingsData.provider + USER_PAGE + userId)
+            .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
+            .get()
         val str = doc.select("div.b-userprofile__avatar_holder img").attr("src")
         return if (str != "https://static.hdrezka.ac/templates/hdrezka/images/noavatar.png") {
             SettingsData.provider + str
@@ -34,10 +36,8 @@ object UserModel {
         data["login_password"] = password
         data["login_not_save"] = "0"
 
-        val res: Connection.Response = Jsoup.connect(SettingsData.provider + LOGIN_AJAX)
+        val res: Connection.Response = getJsoup(SettingsData.provider + LOGIN_AJAX)
             .data(data)
-            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-            .ignoreContentType(true)
             .method(Connection.Method.POST)
             .execute()
 
@@ -63,10 +63,8 @@ object UserModel {
         val data: ArrayMap<String, String> = ArrayMap()
         data["data"] = "email=$email&prevent_autofill_name=&name=$username&prevent_autofill_password1=&password1=$password&rules=1&submit_reg=submit_reg&do=register"
 
-        val res: Connection.Response = Jsoup.connect(SettingsData.provider + REGISTER_AJAX)
+        val res: Connection.Response = getJsoup(SettingsData.provider + REGISTER_AJAX)
             .data(data)
-            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-            .ignoreContentType(true)
             .method(Connection.Method.POST)
             .execute()
 
