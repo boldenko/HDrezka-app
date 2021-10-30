@@ -306,11 +306,20 @@ object FilmModel : BaseModel() {
         val filmTranslations: ArrayList<Voice> = ArrayList()
         val els = document.select(".b-translator__item")
         for (el in els) {
-            val voice = Voice(el.attr("title"), el.attr("data-translator_id"))
+            val country = el.select("img").attr("alt")
+            var name = el.attr("title")
+            if (country != null && country.isNotEmpty()) {
+                name += "($country)"
+            }
+            val voice = Voice(name, el.attr("data-translator_id"))
             voice.isAds = el.attr("data-ads")
             voice.isCamrip = el.attr("data-camrip")
             voice.isDirector = el.attr("data-director")
             filmTranslations.add(voice)
+
+            if (el.hasClass("active")) {
+                film.lastVoiceId = voice.id
+            }
         }
 
         // no film translations
@@ -335,6 +344,15 @@ object FilmModel : BaseModel() {
             }
         } catch (e: Exception) {
             film.isAwaiting = true
+        }
+
+        val episodes = document.select("li.b-simple_episode__item")
+        for(episode in episodes){
+            if(episode.hasClass("active")){
+                film.lastSeason = episode.attr("data-season_id")
+                film.lastEpisode = episode.attr("data-episode_id")
+                break
+            }
         }
 
         film.translations = filmTranslations

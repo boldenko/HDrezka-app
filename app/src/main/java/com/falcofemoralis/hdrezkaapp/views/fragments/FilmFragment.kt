@@ -159,8 +159,8 @@ class FilmFragment : Fragment(), FilmView {
 
         if (SettingsData.deviceType == DeviceType.TV) {
             val pm: PowerManager = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
-            wl= pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "tag")
-            wl.acquire(300*60*1000L)
+            wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "tag")
+            wl.acquire(300 * 60 * 1000L)
         }
     }
 
@@ -807,15 +807,40 @@ class FilmFragment : Fragment(), FilmView {
         if (isMovie) {
             if (translations.size > 1) {
                 val builder = MaterialAlertDialogBuilder(requireContext())
-                builder.setTitle(getString(R.string.translation))
-                val transNames: ArrayList<String> = ArrayList()
+                val sv: ScrollView = layoutInflater.inflate(R.layout.inflate_translations, null) as ScrollView
+                val layout: LinearLayout = sv.getChildAt(0) as LinearLayout
+                var activeNameTextView: TextView? = null
+
                 for (translation in translations) {
-                    translation.name?.let { transNames.add(it) }
+                    val textView: TextView = layoutInflater.inflate(R.layout.inflate_translation_item, null) as TextView
+                    translation.name?.let { textView.text = it }
+                    textView.setOnClickListener{
+                        filmPresenter.initStreams(translation, isDownload)
+
+                        if (activeNameTextView != null) {
+                            activeNameTextView?.setTextColor(requireContext().getColor(R.color.day_night_text))
+                            activeNameTextView = textView
+                            activeNameTextView?.setTextColor(requireContext().getColor(R.color.main_color_3))
+
+                            filmPresenter.film.lastVoiceId = translation.id
+                        }
+                    }
+
+                    if(filmPresenter.film.lastVoiceId == translation.id){
+                        activeNameTextView = textView
+                    }
+
+                    layout.addView(textView)
                 }
-                builder.setAdapter(ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, transNames)) { dialog, which ->
-                    filmPresenter.initStreams(translations[which], isDownload)
+
+                if(activeNameTextView != null){
+                    activeNameTextView?.setTextColor(requireContext().getColor(R.color.main_color_3))
+                    activeNameTextView?.requestFocus()
                 }
-                builder.show()
+
+                builder.setTitle(getString(R.string.translation))
+                builder.setView(sv)
+                builder.create().show()
             } else if (translations.size == 1) {
                 filmPresenter.initStreams(translations[0], isDownload)
             } else {
@@ -830,9 +855,18 @@ class FilmFragment : Fragment(), FilmView {
             val container = transView.findViewById<LinearLayout>(R.id.translations_container)
 
             fun showTranslationsSeries(seasons: HashMap<String, ArrayList<String>>) {
+                var activeNameTextView: TextView? = null
+
                 for ((season, episodes) in seasons) {
-                    val layout: LinearLayout = layoutInflater.inflate(R.layout.inflate_season_layout, null) as LinearLayout
+                    // костыль т.к .collapsed() не срабатывает
+                    val layout: LinearLayout = if (filmPresenter.film.lastSeason == season) {
+                        layoutInflater.inflate(R.layout.inflate_season_layout_expanded, null) as LinearLayout
+                    } else {
+                        layoutInflater.inflate(R.layout.inflate_season_layout, null) as LinearLayout
+                    }
+
                     val expandedList: ExpandableLinearLayout = layout.findViewById(R.id.inflate_season_layout_list)
+
                     layout.findViewById<TextView>(R.id.inflate_season_layout_header).text = "Сезон ${season}"
                     layout.findViewById<LinearLayout>(R.id.inflate_season_layout_button).setOnClickListener {
                         expandedList.toggle()
@@ -843,7 +877,21 @@ class FilmFragment : Fragment(), FilmView {
                         nameTextView.text = "Эпизод ${episode}"
                         nameTextView.setOnClickListener {
                             filmPresenter.genAndOpenEpisodeStream(translations[selectedTranslation], season, episode, isDownload)
+                            if (activeNameTextView != null) {
+                                activeNameTextView?.setTextColor(requireContext().getColor(R.color.day_night_text))
+                                activeNameTextView = nameTextView
+                                activeNameTextView?.setTextColor(requireContext().getColor(R.color.main_color_3))
+
+                                filmPresenter.film.lastVoiceId = translations[selectedTranslation].id
+                                filmPresenter.film.lastSeason = season
+                                filmPresenter.film.lastEpisode = episode
+                            }
                         }
+
+                        if (filmPresenter.film.lastSeason == season && filmPresenter.film.lastEpisode == episode && filmPresenter.film.lastVoiceId == translations[selectedTranslation].id) {
+                            activeNameTextView = nameTextView
+                        }
+
                         expandedList.addView(nameTextView)
                     }
                     container.addView(layout)
@@ -873,13 +921,24 @@ class FilmFragment : Fragment(), FilmView {
                 val dialogWindowHeight = (displayHeight * dialogSize).toInt()
                 layoutParams.height = dialogWindowHeight
                 d?.window?.attributes = layoutParams
+
+                if (activeNameTextView != null) {
+                    activeNameTextView?.setTextColor(requireContext().getColor(R.color.main_color_3))
+                    activeNameTextView?.isFocusableInTouchMode = true
+                    activeNameTextView?.requestFocus()
+                }
+
+                // end func
             }
 
             if (translations.size > 1) {
                 val voicesNames: ArrayList<String> = ArrayList()
-                for (translation in translations) {
+                for ((i, translation) in translations.withIndex()) {
                     translation.name?.let {
                         voicesNames.add(it)
+                        if (translation.id == filmPresenter.film.lastVoiceId) {
+                            selectedTranslation = i
+                        }
                     }
                 }
                 translationsSpinner.item = voicesNames
