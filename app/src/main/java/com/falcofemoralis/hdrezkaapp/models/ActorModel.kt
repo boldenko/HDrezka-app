@@ -65,7 +65,8 @@ object ActorModel : BaseModel() {
     }
 
     fun getActorFilms(actor: Actor) {
-        val document: Document = getJsoup(SettingsData.provider + actor.link).get()
+        // actor.link already with provider host!
+        val document: Document = getJsoup(actor.link).get()
 
         val careerEls = document.select("div.b-person__career")
         val careers: ArrayList<Pair<String, ArrayList<Film>>> = ArrayList()
