@@ -194,7 +194,11 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
                 "    for (var j = 0; j < aEls.length; ++j) {\n" +
                 "        var aEl = aEls[j];\n" +
                 "\n" +
-                "        if (aEl.href.match('://')) {\n" +
+                "         if (aEl.href.match('help')) {\n" +
+                "            aEl.style.setProperty('display', 'none', 'important');\n" +
+                "            aEl.style.setProperty('height', '0px', 'important');\n" +
+                "            aEl.style.setProperty('width', '0px', 'important');\n" +
+                "        } else if (aEl.href.match('://')) {\n" +
                 "            aEl.parentNode.style.setProperty('display', 'none', 'important');\n" +
                 "            aEl.parentNode.style.setProperty('height', '0px', 'important');\n" +
                 "            aEl.parentNode.style.setProperty('width', '0px', 'important');\n" +
