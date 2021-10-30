@@ -251,6 +251,19 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
                     film.title?.let {
                         if (SettingsData.isMaxQuality == true) {
                             filmView.openStream(streams[streams.size - 1], it, additionalTitle.toString(), isDownload, translation)
+                        } else if(SettingsData.defaultQuality != null){
+                            var isDefaultQualityFound = false
+
+                            for(stream in streams){
+                                if(stream.quality == SettingsData.defaultQuality){
+                                    filmView.openStream(stream, it, additionalTitle.toString(), isDownload, translation)
+                                    isDefaultQualityFound = true
+                                }
+                            }
+
+                            if(!isDefaultQualityFound){
+                                filmView.openStream(streams[streams.size - 1], it, additionalTitle.toString(), isDownload, translation)
+                            }
                         } else {
                             filmView.showStreams(streams, it, additionalTitle.toString(), isDownload, translation)
                         }

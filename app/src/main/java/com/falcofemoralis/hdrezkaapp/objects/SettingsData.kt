@@ -28,6 +28,7 @@ object SettingsData {
     var rowMultiplier: Int? = null
     var autoPlayNextEpisode: Boolean? = null
     const val PROVIDER_FILE = "provider"
+    var defaultQuality: String? = null
 
     fun initProvider(context: Context) {
         if (provider == null || provider == "") {
@@ -57,6 +58,11 @@ object SettingsData {
             }
         }
         rowMultiplier = prefs?.getString("rowMultiplier", "3")?.toInt()
+        var defq = prefs?.getString("defaultQuality", null)
+        if (defq == "Авто") {
+            defq = null
+        }
+        defaultQuality = defq
     }
 
     fun setProvider(newProvider: String, context: Context, updateSettings: Boolean) {

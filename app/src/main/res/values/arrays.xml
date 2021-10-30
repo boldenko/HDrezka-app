@@ -124,4 +124,12 @@
         <item>9</item>
         <item>10</item>
     </string-array>
+    <string-array name="stream_qualities">
+        <item>Авто</item>
+        <item>360p</item>
+        <item>480p</item>
+        <item>720p</item>
+        <item>1080p</item>
+        <item>1080p Ultra</item>
+    </string-array>
 </resources>

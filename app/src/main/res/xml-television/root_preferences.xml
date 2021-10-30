@@ -60,6 +60,15 @@
             app:summary="@string/ismaxq_hint"
             app:title="@string/ismaxq_title" />
 
+        <ListPreference
+            android:defaultValue="Авто"
+            app:entries="@array/stream_qualities"
+            app:entryValues="@array/stream_qualities"
+            app:key="defaultQuality"
+            app:layout="@layout/custom_list_preference"
+            app:title="@string/defaultq_title"
+            app:useSimpleSummaryProvider="true" />
+
         <CheckBoxPreference
             android:layout="@layout/custom_checkbox_preference"
             app:key="isPlayerChooser"

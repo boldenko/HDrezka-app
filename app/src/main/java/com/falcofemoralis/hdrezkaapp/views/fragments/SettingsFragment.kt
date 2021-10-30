@@ -85,6 +85,13 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             "autoPlayNextEpisode" -> {
                 SettingsData.autoPlayNextEpisode = preferences.getBoolean("autoPlayNextEpisode", true)
             }
+            "defaultQuality" -> {
+                var defaultQuality: String? = preferences.getString("defaultQuality", null)
+                if (defaultQuality == "Авто") {
+                    defaultQuality = null
+                }
+                SettingsData.defaultQuality = defaultQuality
+            }
         }
     }
 
