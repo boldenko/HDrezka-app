@@ -817,7 +817,7 @@ class FilmFragment : Fragment(), FilmView {
                     textView.setOnClickListener{
                         filmPresenter.initStreams(translation, isDownload)
 
-                        if (activeNameTextView != null) {
+                        if (activeNameTextView != null && !isDownload) {
                             activeNameTextView?.setTextColor(requireContext().getColor(R.color.day_night_text))
                             activeNameTextView = textView
                             activeNameTextView?.setTextColor(requireContext().getColor(R.color.main_color_3))
@@ -833,7 +833,7 @@ class FilmFragment : Fragment(), FilmView {
                     layout.addView(textView)
                 }
 
-                if(activeNameTextView != null){
+                if(activeNameTextView != null && !isDownload){
                     activeNameTextView?.setTextColor(requireContext().getColor(R.color.main_color_3))
                     activeNameTextView?.requestFocus()
                 }
@@ -859,7 +859,7 @@ class FilmFragment : Fragment(), FilmView {
 
                 for ((season, episodes) in seasons) {
                     // костыль т.к .collapsed() не срабатывает
-                    val layout: LinearLayout = if (filmPresenter.film.lastSeason == season) {
+                    val layout: LinearLayout = if (filmPresenter.film.lastSeason == season && !isDownload) {
                         layoutInflater.inflate(R.layout.inflate_season_layout_expanded, null) as LinearLayout
                     } else {
                         layoutInflater.inflate(R.layout.inflate_season_layout, null) as LinearLayout
@@ -877,7 +877,7 @@ class FilmFragment : Fragment(), FilmView {
                         nameTextView.text = "Эпизод ${episode}"
                         nameTextView.setOnClickListener {
                             filmPresenter.genAndOpenEpisodeStream(translations[selectedTranslation], season, episode, isDownload)
-                            if (activeNameTextView != null) {
+                            if (activeNameTextView != null && !isDownload) {
                                 activeNameTextView?.setTextColor(requireContext().getColor(R.color.day_night_text))
                                 activeNameTextView = nameTextView
                                 activeNameTextView?.setTextColor(requireContext().getColor(R.color.main_color_3))
@@ -922,7 +922,7 @@ class FilmFragment : Fragment(), FilmView {
                 layoutParams.height = dialogWindowHeight
                 d?.window?.attributes = layoutParams
 
-                if (activeNameTextView != null) {
+                if (activeNameTextView != null && !isDownload) {
                     activeNameTextView?.setTextColor(requireContext().getColor(R.color.main_color_3))
                     activeNameTextView?.isFocusableInTouchMode = true
                     activeNameTextView?.requestFocus()
@@ -936,6 +936,7 @@ class FilmFragment : Fragment(), FilmView {
                 for ((i, translation) in translations.withIndex()) {
                     translation.name?.let {
                         voicesNames.add(it)
+
                         if (translation.id == filmPresenter.film.lastVoiceId) {
                             selectedTranslation = i
                         }
