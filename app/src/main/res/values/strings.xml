@@ -142,4 +142,9 @@
     <string name="playback_tag">PLAYBACK_TAG</string>
     <string name="button_speedup">Change Playback Speed</string>
     <string name="title_select_speed">Set Playback Speed</string>
+    <string name="button_cc">Subtitles</string>
+    <string name="msg_subtitle_off">Subtitle Disabled.</string>
+    <string name="title_select_caption">Select Subtitles</string>
+    <string name="msg_subtitle_on">Subtitle %1$s enabled.</string>
+    <string name="msg_subtitle_cc">Closed Caption</string>
 </resources>

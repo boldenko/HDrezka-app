@@ -2,7 +2,7 @@ package com.falcofemoralis.hdrezkaapp.objects
 
 import java.io.Serializable
 
-data class Stream(
+data class Subtitle (
     val url: String,
-    val quality: String
+    val lang: String
 ): Serializable

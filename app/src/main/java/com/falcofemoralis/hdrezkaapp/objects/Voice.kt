@@ -25,7 +25,7 @@ open class Voice : Serializable {
     var isDirector: String = "0"
     var isAds: String = "0"
     var selectedEpisode: Pair<String, String>? = null
-    var subtitle: String? = null
+    var subtitles: ArrayList<Subtitle>? = null
     var thumbnails: String? = null
 }
 

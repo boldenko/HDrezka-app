@@ -30,6 +30,7 @@ class VideoPlayerGlue(
     private var mOffsetMillis: Long = 0
     private var mSavedDuration: Long = -1
     private var mSpeedAction: MyAction? = null
+    private var mClosedCaptioningAction: ClosedCaptioningAction? = null
 
     init {
         mSkipPreviousAction = SkipPreviousAction(context)
@@ -44,6 +45,11 @@ class VideoPlayerGlue(
         mRepeatAction = RepeatAction(context)
 
         mSpeedAction = MyAction(context!!, ActionConstants.ACTION_SPEEDUP, R.drawable.ic_speed_increase, R.string.button_speedup)
+        mClosedCaptioningAction = ClosedCaptioningAction(context)
+        val res = context.resources
+        val labels = arrayOfNulls<String>(1)
+        labels[0] = res.getString(R.string.button_cc)
+        mClosedCaptioningAction?.setLabels(labels)
     }
 
     override fun onCreatePrimaryActions(adapter: ArrayObjectAdapter) {
@@ -65,9 +71,10 @@ class VideoPlayerGlue(
 
     override fun onCreateSecondaryActions(adapter: ArrayObjectAdapter) {
         super.onCreateSecondaryActions(adapter)
-        adapter.add(mThumbsDownAction)
-        adapter.add(mThumbsUpAction)
-        adapter.add(mRepeatAction)
+        adapter.add(mClosedCaptioningAction)
+        // adapter.add(mThumbsDownAction)
+       // adapter.add(mThumbsUpAction)
+       // adapter.add(mRepeatAction)
     }
 
     // отправлять
@@ -90,7 +97,9 @@ class VideoPlayerGlue(
                 action === mThumbsDownAction ||
                 action === mThumbsUpAction ||
                 action === mRepeatAction ||
-                action === mSpeedAction
+                action === mSpeedAction ||
+                action === mClosedCaptioningAction
+
     }
 
     private fun dispatchAction(action: Action) {
@@ -101,6 +110,8 @@ class VideoPlayerGlue(
             fastForward()
         } else if (action === mSpeedAction) {
             mActionListener.onSpeed()
+        } else if (action === mClosedCaptioningAction) {
+            mActionListener.onCaption()
         } else if (action is MultiAction) {
             val multiAction = action
             multiAction.nextIndex()

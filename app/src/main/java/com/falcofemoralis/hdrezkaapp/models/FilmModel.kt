@@ -347,8 +347,8 @@ object FilmModel : BaseModel() {
         }
 
         val episodes = document.select("li.b-simple_episode__item")
-        for(episode in episodes){
-            if(episode.hasClass("active")){
+        for (episode in episodes) {
+            if (episode.hasClass("active")) {
                 film.lastSeason = episode.attr("data-season_id")
                 film.lastEpisode = episode.attr("data-episode_id")
                 break
@@ -542,7 +542,7 @@ object FilmModel : BaseModel() {
         return seasonList
     }
 
-    fun getStreamsByEpisodeId(translation: Voice, filmId: Int, season: String, episode: String): String {
+    fun getStreamsByEpisodeId(translation: Voice, filmId: Int, season: String, episode: String) {
         val data: ArrayMap<String, String> = ArrayMap()
         data["id"] = filmId.toString()
         data["translator_id"] = translation.id
@@ -558,12 +558,32 @@ object FilmModel : BaseModel() {
             val jsonObject = JSONObject(bodyString)
 
             if (jsonObject.getBoolean("success")) {
-                return jsonObject.getString("url")
+                translation.subtitles = parseSubtitles(jsonObject.getString("subtitle"))
+                translation.streams = jsonObject.getString("url")
             } else {
                 throw HttpStatusException("failed to get stream", 400, SettingsData.provider)
             }
         } else {
             throw HttpStatusException("failed to get stream", 400, SettingsData.provider)
+        }
+    }
+
+    private fun parseSubtitles(subtitles: String?): ArrayList<Subtitle>? {
+        if (subtitles != null && subtitles.isNotEmpty()) {
+            val parsedSubtitles: ArrayList<Subtitle> = ArrayList()
+
+            val split: Array<String> = subtitles.split(",").toTypedArray()
+            for (str in split) {
+                if (str.contains(" or ")) {
+                    parsedSubtitles.add(Subtitle(str.split(" or ").toTypedArray()[1], str.substring(1, str.indexOf("]"))))
+                } else {
+                    parsedSubtitles.add(Subtitle(str.substring(str.indexOf("]") + 1), str.substring(1, str.indexOf("]"))))
+                }
+            }
+
+            return parsedSubtitles
+        } else {
+            return null
         }
     }
 

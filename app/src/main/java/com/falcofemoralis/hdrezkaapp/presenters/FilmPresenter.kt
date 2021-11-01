@@ -298,7 +298,7 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
             try {
                 film.filmId?.let {
                     translation.selectedEpisode = Pair(season, episode)
-                    translation.streams = FilmModel.getStreamsByEpisodeId(translation, it, season, episode)
+                    FilmModel.getStreamsByEpisodeId(translation, it, season, episode)
                     initStreams(translation, isDownload, "Сезон $season -", "Эпизод $episode")
                 }
             } catch (e: Exception) {

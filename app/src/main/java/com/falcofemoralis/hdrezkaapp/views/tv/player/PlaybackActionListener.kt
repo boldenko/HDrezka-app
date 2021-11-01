@@ -4,17 +4,22 @@ import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.KeyEvent
+import android.view.View
 import android.view.WindowManager
+import android.widget.AdapterView
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.leanback.widget.Action
+import androidx.leanback.widget.OnItemViewClickedListener
 import com.falcofemoralis.hdrezkaapp.R
-import com.falcofemoralis.hdrezkaapp.objects.Playlist
+import com.falcofemoralis.hdrezkaapp.objects.Subtitle
 import com.google.android.exoplayer2.PlaybackParameters
+import java.util.*
+import kotlin.collections.ArrayList
 
-class PlaybackActionListener(private val playerFragment: PlayerFragment, private val mPlaylist: Playlist) : VideoPlayerGlue.OnActionClickedListener {
+class PlaybackActionListener(private val playerFragment: PlayerFragment) : VideoPlayerGlue.OnActionClickedListener {
     var mDialog: AlertDialog? = null
 
     override fun onPrevious() {
@@ -34,7 +39,53 @@ class PlaybackActionListener(private val playerFragment: PlayerFragment, private
     }
 
     override fun onCaption() {
-        TODO("Not yet implemented")
+        // This code could be used for rotating among captions instead of showing a list
+        // playbackFragment.mTextSelection = playbackFragment.trackSelector(C.TRACK_TYPE_TEXT, playbackFragment.mTextSelection,
+        //         R.string.msg_subtitle_on, R.string.msg_subtitle_off, true, true);
+        showCaptionSelector()
+    }
+
+    private fun showCaptionSelector() {
+        playerFragment.hideControlsOverlay(false)
+
+        val subtitles: ArrayList<Subtitle>? = playerFragment.mTranslation?.subtitles
+        val prompts = ArrayList<String>()
+        val actions = ArrayList<Int>()
+
+        if (subtitles != null) {
+            for (ix in 0 until subtitles.size) {
+                prompts.add(subtitles[ix].lang)
+                actions.add(ix)
+            }
+        }
+
+        prompts.add(playerFragment.getString(R.string.msg_subtitle_off))
+        actions.add(-1)
+
+        // Theme_AppCompat_Light_Dialog_Alert or Theme_AppCompat_Dialog_Alert
+        val builder = playerFragment.context?.let { AlertDialog.Builder(it, R.style.Theme_AppCompat_Dialog_Alert) }
+
+        builder
+            ?.setTitle(R.string.title_select_caption)
+            ?.setItems(prompts.toTypedArray(),
+                object : DialogInterface.OnClickListener {
+                    var mActions = actions // needed because used in inner class
+
+                    override fun onClick(dialog: DialogInterface, which: Int) {
+                        // The 'which' argument contains the index position
+                        // of the selected item
+                        if (which < mActions.size) {
+                            playerFragment.subtitleSelector (mActions[which])
+                        }
+                    }
+                })
+        mDialog = builder?.create()
+        mDialog?.show()
+
+        val lp = mDialog!!.window!!.attributes
+        lp.dimAmount = 0.0f // Dim level. 0.0 - no dim, 1.0 - completely opaque
+        mDialog!!.window!!.attributes = lp
+        mDialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.argb(100, 0, 0, 0)))
     }
 
     override fun onPivot() {

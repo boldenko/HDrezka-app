@@ -7,7 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import androidx.leanback.app.PlaybackSupportFragment
+import android.widget.Toast
 import androidx.leanback.app.VideoSupportFragment
 import androidx.leanback.app.VideoSupportFragmentGlueHost
 import androidx.leanback.widget.Action
@@ -18,20 +18,25 @@ import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.Playlist
 import com.falcofemoralis.hdrezkaapp.objects.Stream
 import com.falcofemoralis.hdrezkaapp.objects.Voice
-import com.google.android.exoplayer2.DefaultRenderersFactory
-import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.ext.leanback.LeanbackPlayerAdapter
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.source.*
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector.ParametersBuilder
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector.SelectionOverride
+import com.google.android.exoplayer2.trackselection.MappingTrackSelector.MappedTrackInfo
 import com.google.android.exoplayer2.trackselection.TrackSelector
+import com.google.android.exoplayer2.ui.SubtitleView
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.exoplayer2.util.Util
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.*
+
 
 class PlayerFragment : VideoSupportFragment() {
     /* Player elements */
@@ -42,18 +47,20 @@ class PlayerFragment : VideoSupportFragment() {
     var mPlaybackActionListener: PlaybackActionListener? = null
     private var mFocusView: View? = null
     private var mCurrentAction: Action? = null
-    private val mRecordid: Long = -1
     private val mJump: Int = 60000 * 5 // 5 min
     var mIsBounded = true
     var mBookmark: Long = 0 // milliseconds
     private var mOffsetBytes: Long = 0
     var mSpeed: Float = SPEED_START_VALUE
+    private var mSubtitles: SubtitleView? = null
+    private val mSubtitleSize: Int = 100
+    private var selectedSubtitle: Int = 0
 
     /* Data elements */
     private var mFilm: Film? = null
     private var mStream: Stream? = null
-    private var mTranslation: Voice? = null
-    private var mPlaylist: Playlist = Playlist()
+    var mTranslation: Voice? = null
+    var mPlaylist: Playlist = Playlist()
 
     /* Variable elements */
     private var title: String? = null
@@ -131,13 +138,19 @@ class PlayerFragment : VideoSupportFragment() {
         val renderFactory = DefaultRenderersFactory(requireContext())
         renderFactory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
         renderFactory.setEnableDecoderFallback(true)
-
         mTrackSelector = DefaultTrackSelector(requireContext())
         mPlayer = SimpleExoPlayer.Builder(requireContext(), renderFactory).setTrackSelector(mTrackSelector as DefaultTrackSelector).build()
         mPlayerAdapter = LeanbackPlayerAdapter(requireActivity(), mPlayer!!, UPDATE_DELAY)
 
+        mSubtitles = requireActivity().findViewById(R.id.leanback_subtitles)
+        val textComponent = mPlayer?.textComponent
+        if (textComponent != null && mSubtitles != null) {
+            mSubtitles?.setFractionalTextSize(SubtitleView.DEFAULT_TEXT_SIZE_FRACTION * mSubtitleSize / 100.0f)
+            textComponent.addTextOutput(mSubtitles!!)
+        }
+
         if (mPlaybackActionListener == null) {
-            mPlaybackActionListener = PlaybackActionListener(this, mPlaylist)
+            mPlaybackActionListener = PlaybackActionListener(this)
         }
         mPlayerGlue = VideoPlayerGlue(activity, mPlayerAdapter, mPlaybackActionListener!!, isSerial)
         mPlayerGlue?.host = VideoSupportFragmentGlueHost(this)
@@ -160,7 +173,7 @@ class PlayerFragment : VideoSupportFragment() {
     private fun play(stream: Stream) {
         mPlayerGlue?.title = title
         mPlayerGlue?.subtitle = mFilm?.description
-        prepareMediaForPlaying(Uri.parse(stream.url))
+        prepareMediaForPlaying(stream.url, mTranslation?.subtitles?.get(0)?.url, true)
         mPlayerGlue?.play()
     }
 
@@ -169,14 +182,14 @@ class PlayerFragment : VideoSupportFragment() {
         mPlayerGlue?.subtitle = mFilm?.description
 
         GlobalScope.launch {
-            mTranslation?.streams = FilmModel.getStreamsByEpisodeId(mTranslation!!, mFilm?.filmId!!, playlistItem.season, playlistItem.episode)
+            FilmModel.getStreamsByEpisodeId(mTranslation!!, mFilm?.filmId!!, playlistItem.season, playlistItem.episode)
             val streams: ArrayList<Stream> = FilmModel.parseStreams(mTranslation!!, mFilm?.filmId!!)
 
             withContext(Dispatchers.Main) {
                 for (stream in streams) {
                     if (stream.quality == mStream?.quality) {
                         mStream = stream
-                        prepareMediaForPlaying(Uri.parse(stream.url))
+                        prepareMediaForPlaying(stream.url, mTranslation?.subtitles?.get(0)?.url, true)
                         mPlayerGlue?.play()
                         break
                     }
@@ -185,13 +198,34 @@ class PlayerFragment : VideoSupportFragment() {
         }
     }
 
-    private fun prepareMediaForPlaying(mediaSourceUri: Uri) {
+    private fun prepareMediaForPlaying(mediaSourceUri: String, subtitleUri: String?, resetPosition: Boolean) {
         val userAgent = Util.getUserAgent(requireActivity(), "VideoPlayerGlue")
-        val mediaSource: MediaSource = ProgressiveMediaSource.Factory(DefaultDataSourceFactory(requireActivity(), userAgent))
+        val factory = DefaultDataSourceFactory(requireActivity(), userAgent)
+        val mediaSource: MediaSource = ProgressiveMediaSource
+            .Factory(factory)
             .setExtractorsFactory(DefaultExtractorsFactory())
-            .createMediaSource(mediaSourceUri)
+            .createMediaSource(Uri.parse(mediaSourceUri))
 
-        mPlayer?.prepare(mediaSource)
+        if (subtitleUri != null && subtitleUri.isNotEmpty()) {
+            // create subtitle text format
+            val textFormat = Format.createTextSampleFormat(
+                null,
+                MimeTypes.TEXT_VTT,
+                C.SELECTION_FLAG_DEFAULT,
+                null
+            )
+
+            // create the subtitle source
+            val subtitleSource = SingleSampleMediaSource
+                .Factory(factory)
+                .createMediaSource(Uri.parse(subtitleUri), textFormat, C.TIME_UNSET)
+
+            val mergedSource = MergingMediaSource(mediaSource, subtitleSource)
+
+            mPlayer?.prepare(mergedSource, resetPosition, true)
+        } else {
+            mPlayer?.prepare(mediaSource, resetPosition, true)
+        }
     }
 
     fun skipToNext() {
@@ -326,6 +360,35 @@ class PlayerFragment : VideoSupportFragment() {
                     or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
         }
     }
+
+
+    // trackSelection = current selection. -1 = disabled, -2 = leave as is
+    // disable = true : Include disabled in the rotation
+    // doChange = true : select a new track, false = leave same track
+    // Return = new track selection.
+
+    fun subtitleSelector(selected: Int) {
+        selectedSubtitle = selected
+
+        if (selectedSubtitle >= 0) {
+            if (mTranslation?.subtitles != null) {
+                if (selectedSubtitle < mTranslation?.subtitles!!.size) {
+                    val subtitleUrl = mTranslation?.subtitles!!.get(selectedSubtitle).url
+                    mStream?.let { prepareMediaForPlaying(it.url, subtitleUrl, false) }
+                }
+            }
+
+        } else if (selectedSubtitle == -1) {
+            mStream?.let { prepareMediaForPlaying(it.url, null, false) }
+        }
+
+/*        val curPos = mPlayerGlue?.currentPosition
+        mPlayerGlue?.play()
+        if (curPos != null) {
+            mPlayerGlue?.seekTo(curPos)
+        }*/
+    }
+
 
     companion object {
         const val UPDATE_DELAY = 16
