@@ -500,7 +500,7 @@ object FilmModel : BaseModel() {
         return parsedStreams
     }
 
-    fun getSeason(filmId: Number, translation: Voice): Voice {
+    fun getSeasons(filmId: Number, translation: Voice): Voice {
         val data: ArrayMap<String, String> = ArrayMap()
         data["id"] = filmId.toString()
         data["translator_id"] = translation.id
@@ -569,7 +569,7 @@ object FilmModel : BaseModel() {
     }
 
     private fun parseSubtitles(subtitles: String?): ArrayList<Subtitle>? {
-        if (subtitles != null && subtitles.isNotEmpty()) {
+        if (subtitles != null && subtitles.isNotEmpty() && subtitles != "false") {
             val parsedSubtitles: ArrayList<Subtitle> = ArrayList()
 
             val split: Array<String> = subtitles.split(",").toTypedArray()

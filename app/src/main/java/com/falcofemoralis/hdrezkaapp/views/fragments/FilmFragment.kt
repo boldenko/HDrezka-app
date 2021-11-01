@@ -876,7 +876,8 @@ class FilmFragment : Fragment(), FilmView {
                         val nameTextView = layoutInflater.inflate(R.layout.inflate_season_item, null) as TextView
                         nameTextView.text = "Эпизод ${episode}"
                         nameTextView.setOnClickListener {
-                            filmPresenter.genAndOpenEpisodeStream(translations[selectedTranslation], season, episode, isDownload)
+                            filmPresenter.getAndOpenEpisodeStream(translations[selectedTranslation], season, episode, isDownload)
+
                             if (activeNameTextView != null && !isDownload) {
                                 activeNameTextView?.setTextColor(requireContext().getColor(R.color.day_night_text))
                                 activeNameTextView = nameTextView
@@ -1018,7 +1019,6 @@ class FilmFragment : Fragment(), FilmView {
                     manager.enqueue(request)
                     Toast.makeText(requireContext(), getString(R.string.download_started), Toast.LENGTH_SHORT).show()
                 }
-
             } else {
                 Toast.makeText(requireContext(), getString(R.string.no_manager), Toast.LENGTH_LONG).show()
             }
@@ -1041,7 +1041,6 @@ class FilmFragment : Fragment(), FilmView {
                     newFilmTitle = "Сезон ${translation.selectedEpisode?.first} - Эпизод ${translation.selectedEpisode?.second} $filmTitle"
                 } else {
                     newFilmTitle = filmTitle
-
                 }
 
                 intent.setDataAndType(Uri.parse(url), "video/*")

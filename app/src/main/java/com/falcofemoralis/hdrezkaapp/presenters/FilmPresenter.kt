@@ -1,6 +1,5 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
-import android.util.Log
 import android.widget.ImageView
 import com.falcofemoralis.hdrezkaapp.models.ActorModel
 import com.falcofemoralis.hdrezkaapp.models.BookmarksModel
@@ -280,7 +279,7 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
             try {
                 film.filmId?.let {
                     if (translation.seasons == null) {
-                        FilmModel.getSeason(it, translation)
+                        FilmModel.getSeasons(it, translation)
                     }
 
                     withContext(Dispatchers.Main) {
@@ -293,7 +292,7 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
         }
     }
 
-    fun genAndOpenEpisodeStream(translation: Voice, season: String, episode: String, isDownload: Boolean) {
+    fun getAndOpenEpisodeStream(translation: Voice, season: String, episode: String, isDownload: Boolean) {
         GlobalScope.launch {
             try {
                 film.filmId?.let {
