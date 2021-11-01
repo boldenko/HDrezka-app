@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 class VideoPlayerGlue(
     context: Context?,
     playerAdapter: LeanbackPlayerAdapter?,
-    private val mActionListener: OnActionClickedListener,
+    private val mActionListener: PlaybackActionListener,
     private val isSerial: Boolean
 ) : PlaybackTransportControlGlue<LeanbackPlayerAdapter?>(context, playerAdapter) {
     private var mRepeatAction: RepeatAction? = null
@@ -21,6 +21,7 @@ class VideoPlayerGlue(
     private var mSkipNextAction: SkipNextAction? = null
     private var mFastForwardAction: FastForwardAction? = null
     private var mRewindAction: RewindAction? = null
+    private var mActionsVisible = false
 
     init {
         mSkipPreviousAction = SkipPreviousAction(context)
@@ -137,6 +138,47 @@ class VideoPlayerGlue(
 
         /** Skip to the next item in the queue.  */
         fun onNext()
+
+        //  fun onPlayCompleted(playlistPlayAction: org.mythtv.leanfront.player.VideoPlayerGlue.MyAction?)
+        fun onZoom()
+        fun onAspect()
+        fun onCaption()
+        fun onPivot()
+        fun onRewind()
+        fun onFastForward()
+        fun onJumpForward()
+        fun onJumpBack()
+        fun onSpeed()
+        fun onAudioTrack()
+        fun onAudioSync()
+        fun onActionSelected(action: Action?)
+    }
+
+    fun setActions(showActions: Boolean) {
+        if (showActions) {
+            if (mActionsVisible) return
+            val row = controlsRow
+            var adapter = row.primaryActionsAdapter as ArrayObjectAdapter
+            adapter.clear()
+            onCreatePrimaryActions(adapter)
+            adapter.notifyArrayItemRangeChanged(0, adapter.size())
+            adapter = row.secondaryActionsAdapter as ArrayObjectAdapter
+            adapter.clear()
+            onCreateSecondaryActions(adapter)
+            adapter.notifyArrayItemRangeChanged(0, adapter.size())
+            mActionsVisible = true
+            onPlayStateChanged()
+        } else {
+            if (!mActionsVisible) return
+            val row = controlsRow
+            var adapter = row.primaryActionsAdapter as ArrayObjectAdapter
+            adapter.clear()
+            adapter.notifyArrayItemRangeChanged(0, 0)
+            adapter = row.secondaryActionsAdapter as ArrayObjectAdapter
+            adapter.clear()
+            adapter.notifyArrayItemRangeChanged(0, 0)
+            mActionsVisible = false
+        }
     }
 
     companion object {

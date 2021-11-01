@@ -4,8 +4,12 @@ import android.annotation.TargetApi
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.widget.TextView
 import androidx.leanback.app.VideoSupportFragment
 import androidx.leanback.app.VideoSupportFragmentGlueHost
+import androidx.leanback.widget.Action
+import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.models.FilmModel
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.Playlist
@@ -32,7 +36,10 @@ class PlayerFragment : VideoSupportFragment() {
     private var mPlayerAdapter: LeanbackPlayerAdapter? = null
     private var mPlayer: SimpleExoPlayer? = null
     private var mTrackSelector: TrackSelector? = null
-    private var mPlaylistActionListener: PlaylistActionListener? = null
+    var mPlaybackActionListener: PlaybackActionListener? = null
+    private var mFocusView: View? = null
+    private var mCurrentAction: Action? = null
+    private val mRecordid: Long = -1
 
     /* Data elements */
     private var mFilm: Film? = null
@@ -120,8 +127,11 @@ class PlayerFragment : VideoSupportFragment() {
         mTrackSelector = DefaultTrackSelector(requireContext())
         mPlayer = SimpleExoPlayer.Builder(requireContext(), renderFactory).setTrackSelector(mTrackSelector as DefaultTrackSelector).build()
         mPlayerAdapter = LeanbackPlayerAdapter(requireActivity(), mPlayer!!, UPDATE_DELAY)
-        mPlaylistActionListener = PlaylistActionListener(mPlaylist)
-        mPlayerGlue = VideoPlayerGlue(activity, mPlayerAdapter, mPlaylistActionListener!!, isSerial)
+
+        if (mPlaybackActionListener == null) {
+            mPlaybackActionListener = PlaybackActionListener(this, mPlaylist)
+        }
+        mPlayerGlue = VideoPlayerGlue(activity, mPlayerAdapter, mPlaybackActionListener!!, isSerial)
         mPlayerGlue?.host = VideoSupportFragmentGlueHost(this)
         mPlayerGlue?.playWhenPrepared()
 
@@ -135,7 +145,7 @@ class PlayerFragment : VideoSupportFragment() {
             mTrackSelector = null
             mPlayerGlue = null
             mPlayerAdapter = null
-            mPlaylistActionListener = null
+            mPlaybackActionListener = null
         }
     }
 
@@ -176,11 +186,11 @@ class PlayerFragment : VideoSupportFragment() {
     }
 
     fun skipToNext() {
-        mPlayerGlue?.next()
+        mPlaylist.next()?.let { play(it) }
     }
 
     fun skipToPrevious() {
-        mPlayerGlue?.previous()
+        mPlaylist.previous()?.let { play(it) }
     }
 
     fun rewind() {
@@ -191,13 +201,39 @@ class PlayerFragment : VideoSupportFragment() {
         mPlayerGlue?.fastForward()
     }
 
-    internal inner class PlaylistActionListener(private val mPlaylist: Playlist) : VideoPlayerGlue.OnActionClickedListener {
-        override fun onPrevious() {
-            mPlaylist.previous()?.let { play(it) }
+    fun tickle(autohide: Boolean, showActions: Boolean) {
+        mPlayerGlue?.setActions(showActions)
+        isControlsOverlayAutoHideEnabled = false
+        showControlsOverlay(true)
+        if (autohide) {
+            isControlsOverlayAutoHideEnabled = true
         }
+    }
 
-        override fun onNext() {
-            mPlaylist.next()?.let { play(it) }
+    // Overridden because the default tickle disables the fade timer.
+    override fun tickle() {
+        tickle(false, true)
+    }
+
+    fun actionSelected(action: Action?) {
+        val view = view
+        val text = view?.findViewById<TextView>(R.id.button_selected) ?: return
+
+        if (action != null) {
+            mCurrentAction = action
+            text.text = action.label1
+            mFocusView = view.findFocus()
+        } else {
+            // Called with null when a key is pressed. Will clear help message
+            // if we are no longer on the control.
+            val newView = view.findFocus()
+            if (newView !== mFocusView) {
+                text.text = ""
+                mFocusView = newView
+                mCurrentAction = null
+            } else if (mCurrentAction != null) {
+                text.text = mCurrentAction?.label1
+            }
         }
     }
 
