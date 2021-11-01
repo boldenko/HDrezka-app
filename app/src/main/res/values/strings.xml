@@ -139,4 +139,5 @@
     <string name="search_empty">Нам не удалось ничего найти</string>
     <string name="defaultq_hint">Будет выбрано автоматически указанное качество видео</string>
     <string name="defaultq_title">Качество по умолчанию</string>
+    <string name="playback_tag">PLAYBACK_TAG</string>
 </resources>

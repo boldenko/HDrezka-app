@@ -58,7 +58,7 @@ import com.falcofemoralis.hdrezkaapp.utils.UnitsConverter
 import com.falcofemoralis.hdrezkaapp.views.MainActivity
 import com.falcofemoralis.hdrezkaapp.views.adapters.CommentsRecyclerViewAdapter
 import com.falcofemoralis.hdrezkaapp.views.elements.CommentEditor
-import com.falcofemoralis.hdrezkaapp.views.tv.PlaybackActivity
+import com.falcofemoralis.hdrezkaapp.views.tv.player.PlayerActivity
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmView
 import com.github.aakira.expandablelayout.ExpandableLinearLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -814,7 +814,7 @@ class FilmFragment : Fragment(), FilmView {
                 for (translation in translations) {
                     val textView: TextView = layoutInflater.inflate(R.layout.inflate_translation_item, null) as TextView
                     translation.name?.let { textView.text = it }
-                    textView.setOnClickListener{
+                    textView.setOnClickListener {
                         filmPresenter.initStreams(translation, isDownload)
 
                         if (activeNameTextView != null && !isDownload) {
@@ -826,14 +826,14 @@ class FilmFragment : Fragment(), FilmView {
                         }
                     }
 
-                    if(filmPresenter.film.lastVoiceId == translation.id){
+                    if (filmPresenter.film.lastVoiceId == translation.id) {
                         activeNameTextView = textView
                     }
 
                     layout.addView(textView)
                 }
 
-                if(activeNameTextView != null && !isDownload){
+                if (activeNameTextView != null && !isDownload) {
                     activeNameTextView?.setTextColor(requireContext().getColor(R.color.main_color_3))
                     activeNameTextView?.requestFocus()
                 }
@@ -1028,10 +1028,10 @@ class FilmFragment : Fragment(), FilmView {
             }
 
             if (SettingsData.isPlayer == false && SettingsData.deviceType == DeviceType.TV) {
-                val intent = Intent(requireContext(), PlaybackActivity::class.java)
-                intent.putExtra(PlaybackActivity.FILM, presenter.film)
-                intent.putExtra(PlaybackActivity.STREAM, stream)
-                intent.putExtra(PlaybackActivity.TRANSLATION, translation)
+                val intent = Intent(requireContext(), PlayerActivity::class.java)
+                intent.putExtra(PlayerActivity.FILM, presenter.film)
+                intent.putExtra(PlayerActivity.STREAM, stream)
+                intent.putExtra(PlayerActivity.TRANSLATION, translation)
                 startActivity(intent)
             } else {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))

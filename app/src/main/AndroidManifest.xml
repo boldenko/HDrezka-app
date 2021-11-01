@@ -65,7 +65,7 @@
         </activity>
 
         <activity
-            android:name=".views.tv.PlaybackActivity"
+            android:name=".views.tv.player.PlayerActivity"
             android:exported="false"
             android:theme="@style/ATVTheme" />
     </application>
