@@ -139,6 +139,7 @@ class PlayerActivity : FragmentActivity() {
                         return true
                     }
                 } else {
+                    mPlaybackFragment?.tickle(false, true)
                     return true
                 }
             }

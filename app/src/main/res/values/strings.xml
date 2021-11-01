@@ -140,4 +140,6 @@
     <string name="defaultq_hint">Будет выбрано автоматически указанное качество видео</string>
     <string name="defaultq_title">Качество по умолчанию</string>
     <string name="playback_tag">PLAYBACK_TAG</string>
+    <string name="button_speedup">Change Playback Speed</string>
+    <string name="title_select_speed">Set Playback Speed</string>
 </resources>

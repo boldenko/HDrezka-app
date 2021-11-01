@@ -1,11 +1,13 @@
 package com.falcofemoralis.hdrezkaapp.views.tv.player
 
 import android.annotation.TargetApi
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.leanback.app.PlaybackSupportFragment
 import androidx.leanback.app.VideoSupportFragment
 import androidx.leanback.app.VideoSupportFragmentGlueHost
 import androidx.leanback.widget.Action
@@ -35,7 +37,7 @@ class PlayerFragment : VideoSupportFragment() {
     /* Player elements */
     private var mPlayerGlue: VideoPlayerGlue? = null
     private var mPlayerAdapter: LeanbackPlayerAdapter? = null
-    private var mPlayer: SimpleExoPlayer? = null
+    var mPlayer: SimpleExoPlayer? = null
     private var mTrackSelector: TrackSelector? = null
     var mPlaybackActionListener: PlaybackActionListener? = null
     private var mFocusView: View? = null
@@ -45,6 +47,7 @@ class PlayerFragment : VideoSupportFragment() {
     var mIsBounded = true
     var mBookmark: Long = 0 // milliseconds
     private var mOffsetBytes: Long = 0
+    var mSpeed: Float = SPEED_START_VALUE
 
     /* Data elements */
     private var mFilm: Film? = null
@@ -74,6 +77,8 @@ class PlayerFragment : VideoSupportFragment() {
         if (Util.SDK_INT <= 23 || mPlayer == null) {
             initializePlayer()
         }
+
+        hideNavigation()
     }
 
     @TargetApi(Build.VERSION_CODES.N)
@@ -313,7 +318,17 @@ class PlayerFragment : VideoSupportFragment() {
         }
     }
 
+    fun hideNavigation() {
+        if (requireActivity().packageManager.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)) {
+            val view = view
+            view!!.systemUiVisibility = (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+        }
+    }
+
     companion object {
         const val UPDATE_DELAY = 16
+        const val SPEED_START_VALUE = 1.0f
     }
 }

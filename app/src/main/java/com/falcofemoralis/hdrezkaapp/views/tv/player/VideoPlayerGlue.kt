@@ -1,10 +1,15 @@
 package com.falcofemoralis.hdrezkaapp.views.tv.player
 
 import android.content.Context
+import android.graphics.drawable.Drawable
+import androidx.core.content.res.ResourcesCompat
 import androidx.leanback.media.PlaybackTransportControlGlue
 import androidx.leanback.widget.Action
 import androidx.leanback.widget.ArrayObjectAdapter
+import androidx.leanback.widget.PlaybackControlsRow
 import androidx.leanback.widget.PlaybackControlsRow.*
+import com.falcofemoralis.hdrezkaapp.R
+import com.falcofemoralis.hdrezkaapp.constants.ActionConstants
 import com.google.android.exoplayer2.ext.leanback.LeanbackPlayerAdapter
 import java.util.concurrent.TimeUnit
 
@@ -24,6 +29,7 @@ class VideoPlayerGlue(
     private var mActionsVisible = false
     private var mOffsetMillis: Long = 0
     private var mSavedDuration: Long = -1
+    private var mSpeedAction: MyAction? = null
 
     init {
         mSkipPreviousAction = SkipPreviousAction(context)
@@ -36,6 +42,8 @@ class VideoPlayerGlue(
         mThumbsDownAction = ThumbsDownAction(context)
         mThumbsDownAction?.index = ThumbsDownAction.INDEX_OUTLINE
         mRepeatAction = RepeatAction(context)
+
+        mSpeedAction = MyAction(context!!, ActionConstants.ACTION_SPEEDUP, R.drawable.ic_speed_increase, R.string.button_speedup)
     }
 
     override fun onCreatePrimaryActions(adapter: ArrayObjectAdapter) {
@@ -51,6 +59,8 @@ class VideoPlayerGlue(
             adapter.add(mSkipPreviousAction)
             adapter.add(mSkipNextAction)
         }
+
+        adapter.add(mSpeedAction)
     }
 
     override fun onCreateSecondaryActions(adapter: ArrayObjectAdapter) {
@@ -79,7 +89,8 @@ class VideoPlayerGlue(
                 action === mFastForwardAction ||
                 action === mThumbsDownAction ||
                 action === mThumbsUpAction ||
-                action === mRepeatAction
+                action === mRepeatAction ||
+                action === mSpeedAction
     }
 
     private fun dispatchAction(action: Action) {
@@ -88,6 +99,8 @@ class VideoPlayerGlue(
             rewind()
         } else if (action === mFastForwardAction) {
             fastForward()
+        } else if (action === mSpeedAction) {
+            mActionListener.onSpeed()
         } else if (action is MultiAction) {
             val multiAction = action
             multiAction.nextIndex()
@@ -192,6 +205,25 @@ class VideoPlayerGlue(
         fun onAudioTrack()
         fun onAudioSync()
         fun onActionSelected(action: Action?)
+    }
+
+    /**
+     * Our custom actions
+     */
+    class MyAction(context: Context, id: Int, icons: IntArray, labels: IntArray) : MultiAction(id) {
+        constructor(context: Context, id: Int, icon: Int, label: Int) : this(context, id, intArrayOf(icon), intArrayOf(label)) {}
+
+        init {
+            val res = context.resources
+            val drawables = arrayOfNulls<Drawable>(icons.size)
+            val labelStr = arrayOfNulls<String>(icons.size)
+            for (i in icons.indices) {
+                drawables[i] = ResourcesCompat.getDrawable(res, icons[i], null)
+                labelStr[i] = res.getString(labels[i])
+            }
+            setDrawables(drawables)
+            setLabels(labelStr)
+        }
     }
 
     companion object {
