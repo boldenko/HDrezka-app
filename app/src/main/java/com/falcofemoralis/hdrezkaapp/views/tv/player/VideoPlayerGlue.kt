@@ -22,6 +22,8 @@ class VideoPlayerGlue(
     private var mFastForwardAction: FastForwardAction? = null
     private var mRewindAction: RewindAction? = null
     private var mActionsVisible = false
+    private var mOffsetMillis: Long = 0
+    private var mSavedDuration: Long = -1
 
     init {
         mSkipPreviousAction = SkipPreviousAction(context)
@@ -132,28 +134,6 @@ class VideoPlayerGlue(
         mActionListener.onNext()
     }
 
-    interface OnActionClickedListener {
-        /** Skip to the previous item in the queue.  */
-        fun onPrevious()
-
-        /** Skip to the next item in the queue.  */
-        fun onNext()
-
-        //  fun onPlayCompleted(playlistPlayAction: org.mythtv.leanfront.player.VideoPlayerGlue.MyAction?)
-        fun onZoom()
-        fun onAspect()
-        fun onCaption()
-        fun onPivot()
-        fun onRewind()
-        fun onFastForward()
-        fun onJumpForward()
-        fun onJumpBack()
-        fun onSpeed()
-        fun onAudioTrack()
-        fun onAudioSync()
-        fun onActionSelected(action: Action?)
-    }
-
     fun setActions(showActions: Boolean) {
         if (showActions) {
             if (mActionsVisible) return
@@ -179,6 +159,39 @@ class VideoPlayerGlue(
             adapter.notifyArrayItemRangeChanged(0, 0)
             mActionsVisible = false
         }
+    }
+
+    fun myGetDuration(): Long {
+        var duration = duration
+        if (duration >= 0) duration += mOffsetMillis
+        if (duration > 0) mSavedDuration = duration
+        return duration
+    }
+
+    fun setOffsetMillis(offsetMillis: Long) {
+        mOffsetMillis = offsetMillis
+    }
+
+    interface OnActionClickedListener {
+        /** Skip to the previous item in the queue.  */
+        fun onPrevious()
+
+        /** Skip to the next item in the queue.  */
+        fun onNext()
+
+        //  fun onPlayCompleted(playlistPlayAction: org.mythtv.leanfront.player.VideoPlayerGlue.MyAction?)
+        fun onZoom()
+        fun onAspect()
+        fun onCaption()
+        fun onPivot()
+        fun onRewind()
+        fun onFastForward()
+        fun onJumpForward()
+        fun onJumpBack()
+        fun onSpeed()
+        fun onAudioTrack()
+        fun onAudioSync()
+        fun onActionSelected(action: Action?)
     }
 
     companion object {

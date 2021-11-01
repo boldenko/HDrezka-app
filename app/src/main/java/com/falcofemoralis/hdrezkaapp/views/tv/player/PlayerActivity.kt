@@ -86,10 +86,10 @@ class PlayerActivity : FragmentActivity() {
             if ((keycode == KeyEvent.KEYCODE_DPAD_CENTER || keycode == KeyEvent.KEYCODE_ENTER) && !mPlaybackFragment!!.isControlsOverlayVisible) {
                 return if (event.isLongPress) {
                     isLongKeyPress = true
-                    val retu =  mPlaybackFragment?.mPlaybackActionListener?.onMenu()
-                    return if(retu != null){
+                    val retu = mPlaybackFragment?.mPlaybackActionListener?.onMenu()
+                    return if (retu != null) {
                         retu
-                    } else{
+                    } else {
                         false
                     }
                 } else {
@@ -133,41 +133,44 @@ class PlayerActivity : FragmentActivity() {
                     return true
                 }
             }
-        /*    if (keycode == KeyEvent.KEYCODE_DPAD_UP) {
+            if (keycode == KeyEvent.KEYCODE_DPAD_UP) {
                 if (!mArrowSkipJump && mPlaybackFragment!!.isControlsOverlayVisible) {
-                    if (mPlaybackFragment.onControlsUp()) return true
-                } else if (mJumpEnabled) {
-                    mArrowSkipJump = true
-                    mPlaybackFragment!!.tickle(true, false)
-                    mPlaybackFragment.jumpBack()
+                    if (mPlaybackFragment!!.onControlsUp()) {
+                        return true
+                    }
+                } else {
                     return true
-                } else return true
+                }
             }
-            if (mJumpEnabled && keycode == KeyEvent.KEYCODE_DPAD_DOWN) {
+            if (keycode == KeyEvent.KEYCODE_DPAD_DOWN) {
                 if (!mPlaybackFragment!!.isControlsOverlayVisible) {
                     mArrowSkipJump = true
                 }
-                mPlaybackFragment!!.tickle(mArrowSkipJump, !mArrowSkipJump)
+
+                mPlaybackFragment?.tickle(mArrowSkipJump, !mArrowSkipJump)
+
                 if (mArrowSkipJump) {
-                    mPlaybackFragment.jumpForward()
+                    mPlaybackFragment?.jumpForward()
                     return true
                 }
             }
             mArrowSkipJump = false
-            mPlaybackFragment.setActions(true)*/
+            mPlaybackFragment?.setActions(true)
         } else if (event.action == KeyEvent.ACTION_UP) {
-          /*  if ((keycode == KeyEvent.KEYCODE_DPAD_CENTER
-                        || keycode == KeyEvent.KEYCODE_ENTER)
-                && !isLongKeyPress
-            ) {
-                var wasVisible = mPlaybackFragment!!.isControlsOverlayVisible
-                if (wasVisible && mArrowSkipJump) wasVisible = false
+            if ((keycode == KeyEvent.KEYCODE_DPAD_CENTER || keycode == KeyEvent.KEYCODE_ENTER) && !isLongKeyPress) {
+                var wasVisible = mPlaybackFragment?.isControlsOverlayVisible
+                if (wasVisible == true && mArrowSkipJump) {
+                    wasVisible = false
+                }
                 mArrowSkipJump = false
-                mPlaybackFragment!!.tickle(false, !mArrowSkipJump)
-                if (!wasVisible) return true
+                mPlaybackFragment?.tickle(false, !mArrowSkipJump)
+                if (wasVisible == false) {
+                    return true
+                }
             }
-            isLongKeyPress = false*/
+            isLongKeyPress = false
         }
+
         val ret = super.dispatchKeyEvent(event)
         mPlaybackFragment?.actionSelected(null)
         return ret

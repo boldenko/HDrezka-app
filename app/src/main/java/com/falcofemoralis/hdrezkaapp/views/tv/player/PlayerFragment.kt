@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.leanback.app.VideoSupportFragment
 import androidx.leanback.app.VideoSupportFragmentGlueHost
 import androidx.leanback.widget.Action
+import androidx.leanback.widget.ArrayObjectAdapter
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.models.FilmModel
 import com.falcofemoralis.hdrezkaapp.objects.Film
@@ -40,13 +41,16 @@ class PlayerFragment : VideoSupportFragment() {
     private var mFocusView: View? = null
     private var mCurrentAction: Action? = null
     private val mRecordid: Long = -1
+    private val mJump: Int = 60000 * 5 // 5 min
+    var mIsBounded = true
+    var mBookmark: Long = 0 // milliseconds
+    private var mOffsetBytes: Long = 0
 
     /* Data elements */
     private var mFilm: Film? = null
     private var mStream: Stream? = null
     private var mTranslation: Voice? = null
     private var mPlaylist: Playlist = Playlist()
-    private var mPlaylistItem: Playlist.PlaylistItem? = null
 
     /* Variable elements */
     private var title: String? = null
@@ -108,7 +112,6 @@ class PlayerFragment : VideoSupportFragment() {
 
                     if (season == mTranslation?.selectedEpisode?.first && episode == mTranslation?.selectedEpisode?.second) {
                         mPlaylist.setCurrentPosition(mPlaylist.size() - 1)
-                        mPlaylistItem = item
                     }
                 }
             }
@@ -167,6 +170,7 @@ class PlayerFragment : VideoSupportFragment() {
             withContext(Dispatchers.Main) {
                 for (stream in streams) {
                     if (stream.quality == mStream?.quality) {
+                        mStream = stream
                         prepareMediaForPlaying(Uri.parse(stream.url))
                         mPlayerGlue?.play()
                         break
@@ -234,6 +238,78 @@ class PlayerFragment : VideoSupportFragment() {
             } else if (mCurrentAction != null) {
                 text.text = mCurrentAction?.label1
             }
+        }
+    }
+
+    fun onControlsUp(): Boolean {
+        val primaryActionsAdapter = mPlayerGlue!!.controlsRow.primaryActionsAdapter as ArrayObjectAdapter
+        if (primaryActionsAdapter.indexOf(mCurrentAction) >= 0) {
+            hideControlsOverlay(true)
+            return true
+        }
+        return false
+    }
+
+    fun setActions(showActions: Boolean) {
+        mPlayerGlue?.setActions(showActions)
+    }
+
+    /** Jumps backwards 5 min.  */
+    fun jumpBack() {
+        moveBackward(mJump)
+    }
+
+    /** Jumps forward 5 min.  */
+    fun jumpForward() {
+        moveForward(mJump)
+    }
+
+    private fun moveBackward(millis: Int) {
+        var newPosition = mPlayerGlue!!.currentPosition - millis
+        newPosition = if (newPosition < 0) 0 else newPosition
+        seekTo(newPosition, false)
+    }
+
+    private fun moveForward(millis: Int) {
+        var doReset = false
+        var resetDone = false
+
+        if (!mIsBounded) {
+            seekTo(-1, true)
+            resetDone = true
+        }
+
+        val duration: Long? = mPlayerGlue?.myGetDuration()
+        if (duration != null) {
+            if (duration > -1) {
+                var newPosition = mPlayerGlue!!.currentPosition + millis
+                if (newPosition > duration - 1000) {
+                    newPosition = duration - 1000
+                    doReset = true
+                }
+                seekTo(newPosition, doReset && !resetDone)
+            }
+        }
+    }
+
+    // set position to -1 for a reset with no seek.
+    // set doReset true to refresh file size information.
+    // If it is in unbounded state will reset to bounded state
+    // regardless of parameters.
+    private fun seekTo(position: Long, doReset: Boolean) {
+        val newPosition: Long = if (position == -1L) mPlayerGlue!!.currentPosition else position
+        if (mIsBounded && !doReset) {
+            if (position != -1L) {
+                mPlayerAdapter?.seekTo(newPosition)
+            }
+        } else {
+            mIsBounded = true
+            mBookmark = newPosition
+            mOffsetBytes = 0
+            mPlayerGlue?.setOffsetMillis(0)
+            mPlayer?.stop(true)
+
+            mStream?.let { play(it) }
         }
     }
 
