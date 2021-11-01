@@ -105,6 +105,7 @@ class PlayerActivity : FragmentActivity() {
 
             if (keycode == KeyEvent.KEYCODE_DPAD_RIGHT) {
                 if (!mPlaybackFragment!!.isControlsOverlayVisible) {
+                    mPlaybackFragment?.setActions(true)
                     mArrowSkipJump = true
                 }
                 mPlaybackFragment?.tickle(mArrowSkipJump, !mArrowSkipJump)
@@ -123,6 +124,7 @@ class PlayerActivity : FragmentActivity() {
 
             if (keycode == KeyEvent.KEYCODE_DPAD_LEFT) {
                 if (!mPlaybackFragment!!.isControlsOverlayVisible) {
+                    mPlaybackFragment?.setActions(true)
                     mArrowSkipJump = true
                 }
 
@@ -139,12 +141,14 @@ class PlayerActivity : FragmentActivity() {
                         return true
                     }
                 } else {
+                    //mPlaybackFragment?.jumpBack()
                     mPlaybackFragment?.tickle(false, true)
                     return true
                 }
             }
             if (keycode == KeyEvent.KEYCODE_DPAD_DOWN) {
                 if (!mPlaybackFragment!!.isControlsOverlayVisible) {
+                    mPlaybackFragment?.setActions(true)
                     mArrowSkipJump = true
                 }
 

@@ -2,6 +2,7 @@ package com.falcofemoralis.hdrezkaapp.views.tv.player
 
 import android.annotation.TargetApi
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -22,11 +23,13 @@ import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.ext.leanback.LeanbackPlayerAdapter
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.*
+import com.google.android.exoplayer2.text.Cue.TEXT_SIZE_TYPE_ABSOLUTE
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector.ParametersBuilder
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector.SelectionOverride
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector.MappedTrackInfo
 import com.google.android.exoplayer2.trackselection.TrackSelector
+import com.google.android.exoplayer2.ui.CaptionStyleCompat
 import com.google.android.exoplayer2.ui.SubtitleView
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.MimeTypes
@@ -146,6 +149,15 @@ class PlayerFragment : VideoSupportFragment() {
         val textComponent = mPlayer?.textComponent
         if (textComponent != null && mSubtitles != null) {
             mSubtitles?.setFractionalTextSize(SubtitleView.DEFAULT_TEXT_SIZE_FRACTION * mSubtitleSize / 100.0f)
+/*            mSubtitles?.setApplyEmbeddedFontSizes(false)
+            mSubtitles?.setApplyEmbeddedStyles(false)
+            mSubtitles?.setFixedTextSize(TEXT_SIZE_TYPE_ABSOLUTE, 30F)
+            mSubtitles?.setBottomPaddingFraction(.1F)
+
+            val style = CaptionStyleCompat(
+                Color.WHITE, Color.GRAY, Color.TRANSPARENT,
+                CaptionStyleCompat.EDGE_TYPE_NONE, Color.TRANSPARENT, null)
+            mSubtitles?.setStyle(style)*/
             textComponent.addTextOutput(mSubtitles!!)
         }
 
@@ -154,8 +166,9 @@ class PlayerFragment : VideoSupportFragment() {
         }
         mPlayerGlue = VideoPlayerGlue(activity, mPlayerAdapter, mPlaybackActionListener!!, isSerial)
         mPlayerGlue?.host = VideoSupportFragmentGlueHost(this)
+       // mPlayerGlue?.isControlsOverlayAutoHideEnabled = false
         mPlayerGlue?.playWhenPrepared()
-
+        hide()
         mStream?.let { play(it) }
     }
 
@@ -242,6 +255,10 @@ class PlayerFragment : VideoSupportFragment() {
 
     fun fastForward() {
         mPlayerGlue?.fastForward()
+    }
+
+    fun hide(){
+        hideControlsOverlay(false)
     }
 
     fun tickle(autohide: Boolean, showActions: Boolean) {

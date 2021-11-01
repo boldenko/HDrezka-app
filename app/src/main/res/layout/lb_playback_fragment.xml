@@ -1,28 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
     Copied from android source so that we can add the subtitle view
 -->
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/playback_fragment_root"
     android:layout_width="match_parent"
-    android:transitionGroup="false"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:transitionGroup="false">
 
     <FrameLayout
         android:id="@+id/playback_fragment_background"
-        android:transitionGroup="false"
         android:layout_width="match_parent"
+        android:layout_height="180dp"
         android:layout_gravity="bottom"
-        android:layout_height="180dp"/>
+        android:transitionGroup="false" />
 
     <FrameLayout
         android:id="@+id/playback_controls_dock"
-        android:transitionGroup="true"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_width="match_parent"/>
+        android:transitionGroup="true" />
 
     <com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+        android:id="@+id/surface_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center">

@@ -1011,6 +1011,9 @@ class FilmFragment : Fragment(), FilmView {
                     sharingIntent.putExtra(Intent.EXTRA_TEXT, body)
                     startActivity(sharingIntent)
                 } else {
+                    if (translation.subtitles != null && translation.subtitles!!.size > 0) {
+                        downloadSubtitle(translation.subtitles!![0].url, "$fileName.vtt")
+                    }
                     val request = DownloadManager.Request(parseUri)
                     request.setTitle(fileName)
                     request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
@@ -1045,6 +1048,14 @@ class FilmFragment : Fragment(), FilmView {
 
                 intent.setDataAndType(Uri.parse(url), "video/*")
                 intent.putExtra("title", newFilmTitle)
+
+                if (translation.subtitles != null && translation.subtitles!!.size > 0) {
+                    val filename = newFilmTitle.replace(" ", "").replace("/", "") + ".vtt"
+                    downloadSubtitle(translation.subtitles!![0].url, filename)
+                    val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/$filename"
+                    intent.putExtra("subtitles_location", path)
+                    intent.putExtra("subs", path)
+                }
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
                 try {
@@ -1058,5 +1069,18 @@ class FilmFragment : Fragment(), FilmView {
 
     override fun hideActors() {
         currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_actorsContainer).visibility = View.GONE
+    }
+
+    private fun downloadSubtitle(url: String, fileName: String) {
+        val manager: DownloadManager? = requireActivity().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager?
+        if (manager != null) {
+            val request = DownloadManager.Request(Uri.parse(url))
+            request.setTitle(fileName)
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+            request.allowScanningByMediaScanner()
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+            manager.enqueue(request)
+           // Toast.makeText(requireContext(), getString(R.string.download_started), Toast.LENGTH_SHORT).show()
+        }
     }
 }
