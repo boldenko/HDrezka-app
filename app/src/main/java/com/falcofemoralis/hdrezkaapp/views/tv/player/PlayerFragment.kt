@@ -2,34 +2,31 @@ package com.falcofemoralis.hdrezkaapp.views.tv.player
 
 import android.annotation.TargetApi
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.leanback.app.VideoSupportFragment
 import androidx.leanback.app.VideoSupportFragmentGlueHost
 import androidx.leanback.widget.Action
 import androidx.leanback.widget.ArrayObjectAdapter
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.models.FilmModel
-import com.falcofemoralis.hdrezkaapp.objects.Film
-import com.falcofemoralis.hdrezkaapp.objects.Playlist
-import com.falcofemoralis.hdrezkaapp.objects.Stream
-import com.falcofemoralis.hdrezkaapp.objects.Voice
-import com.google.android.exoplayer2.*
+import com.falcofemoralis.hdrezkaapp.objects.*
+import com.falcofemoralis.hdrezkaapp.views.fragments.FilmFragment
+import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.DefaultRenderersFactory
+import com.google.android.exoplayer2.Format
+import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.leanback.LeanbackPlayerAdapter
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
-import com.google.android.exoplayer2.source.*
-import com.google.android.exoplayer2.text.Cue.TEXT_SIZE_TYPE_ABSOLUTE
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.MergingMediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.source.SingleSampleMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector.ParametersBuilder
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector.SelectionOverride
-import com.google.android.exoplayer2.trackselection.MappingTrackSelector.MappedTrackInfo
 import com.google.android.exoplayer2.trackselection.TrackSelector
-import com.google.android.exoplayer2.ui.CaptionStyleCompat
 import com.google.android.exoplayer2.ui.SubtitleView
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.MimeTypes
@@ -57,7 +54,8 @@ class PlayerFragment : VideoSupportFragment() {
     var mSpeed: Float = SPEED_START_VALUE
     private var mSubtitles: SubtitleView? = null
     private val mSubtitleSize: Int = 100
-    private var selectedSubtitle: Int = 0
+    var selectedSubtitle: Int = 0
+    var selectedQuality: Int = 0
 
     /* Data elements */
     private var mFilm: Film? = null
@@ -135,6 +133,15 @@ class PlayerFragment : VideoSupportFragment() {
             isSerial = false
             mFilm?.title?.let { title = it }
         }
+
+        val mAvaliableStreams = mTranslation?.streams
+        if (mAvaliableStreams != null && mStream != null) {
+            for (ix in 0 until mAvaliableStreams.size) {
+                if (mAvaliableStreams[ix].quality == mStream!!.quality) {
+                    selectedQuality = ix
+                }
+            }
+        }
     }
 
     private fun initializePlayer() {
@@ -166,7 +173,7 @@ class PlayerFragment : VideoSupportFragment() {
         }
         mPlayerGlue = VideoPlayerGlue(activity, mPlayerAdapter, mPlaybackActionListener!!, isSerial)
         mPlayerGlue?.host = VideoSupportFragmentGlueHost(this)
-       // mPlayerGlue?.isControlsOverlayAutoHideEnabled = false
+        // mPlayerGlue?.isControlsOverlayAutoHideEnabled = false
         mPlayerGlue?.playWhenPrepared()
         hide()
         mStream?.let { play(it) }
@@ -196,10 +203,9 @@ class PlayerFragment : VideoSupportFragment() {
 
         GlobalScope.launch {
             FilmModel.getStreamsByEpisodeId(mTranslation!!, mFilm?.filmId!!, playlistItem.season, playlistItem.episode)
-            val streams: ArrayList<Stream> = FilmModel.parseStreams(mTranslation!!, mFilm?.filmId!!)
 
             withContext(Dispatchers.Main) {
-                for (stream in streams) {
+                for (stream in mTranslation?.streams!!) {
                     if (stream.quality == mStream?.quality) {
                         mStream = stream
                         prepareMediaForPlaying(stream.url, mTranslation?.subtitles?.get(0)?.url, true)
@@ -243,10 +249,21 @@ class PlayerFragment : VideoSupportFragment() {
 
     fun skipToNext() {
         mPlaylist.next()?.let { play(it) }
+        updateWatchLater()
     }
 
     fun skipToPrevious() {
         mPlaylist.previous()?.let { play(it) }
+        updateWatchLater()
+    }
+
+    fun updateWatchLater() {
+        val item: Playlist.PlaylistItem = mPlaylist.getCurrentItem()
+        mTranslation?.selectedEpisode = Pair(item.season, item.episode)
+
+        if (UserData.isLoggedIn == true) {
+            mTranslation?.let { FilmFragment.presenter.updateWatchLater(it) }
+        }
     }
 
     fun rewind() {
@@ -257,7 +274,7 @@ class PlayerFragment : VideoSupportFragment() {
         mPlayerGlue?.fastForward()
     }
 
-    fun hide(){
+    fun hide() {
         hideControlsOverlay(false)
     }
 
@@ -385,18 +402,22 @@ class PlayerFragment : VideoSupportFragment() {
     // Return = new track selection.
 
     fun subtitleSelector(selected: Int) {
+        if (selected == selectedQuality) {
+            return
+        }
         selectedSubtitle = selected
 
-        if (selectedSubtitle >= 0) {
-            if (mTranslation?.subtitles != null) {
-                if (selectedSubtitle < mTranslation?.subtitles!!.size) {
-                    val subtitleUrl = mTranslation?.subtitles!!.get(selectedSubtitle).url
-                    mStream?.let { prepareMediaForPlaying(it.url, subtitleUrl, false) }
+        if (mTranslation != null && mTranslation?.streams != null) {
+            if (selectedSubtitle >= 0) {
+                if (mTranslation?.subtitles != null) {
+                    if (selectedSubtitle < mTranslation?.subtitles!!.size) {
+                        val subtitleUrl = mTranslation?.subtitles!!.get(selectedSubtitle).url
+                        mStream?.let { prepareMediaForPlaying(mTranslation?.streams!![selectedQuality].url, subtitleUrl, false) }
+                    }
                 }
+            } else if (selectedSubtitle == -1) {
+                mStream?.let { prepareMediaForPlaying(mTranslation?.streams!![selectedQuality].url, null, false) }
             }
-
-        } else if (selectedSubtitle == -1) {
-            mStream?.let { prepareMediaForPlaying(it.url, null, false) }
         }
 
 /*        val curPos = mPlayerGlue?.currentPosition
@@ -404,6 +425,23 @@ class PlayerFragment : VideoSupportFragment() {
         if (curPos != null) {
             mPlayerGlue?.seekTo(curPos)
         }*/
+    }
+
+    fun qualitySelector(selected: Int) {
+        if (selected == selectedQuality) {
+            return
+        }
+        selectedQuality = selected
+        val stream = mTranslation?.streams?.get(selected)
+
+        if (stream != null && mTranslation?.subtitles != null) {
+            val subtitleUrl = if (selectedSubtitle >= 0) {
+                mTranslation?.subtitles!![selectedSubtitle].url
+            } else {
+                null
+            }
+            prepareMediaForPlaying(stream.url, subtitleUrl, false)
+        }
     }
 
 

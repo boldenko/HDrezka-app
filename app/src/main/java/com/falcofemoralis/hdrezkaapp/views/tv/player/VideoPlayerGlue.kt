@@ -6,10 +6,10 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.leanback.media.PlaybackTransportControlGlue
 import androidx.leanback.widget.Action
 import androidx.leanback.widget.ArrayObjectAdapter
-import androidx.leanback.widget.PlaybackControlsRow
 import androidx.leanback.widget.PlaybackControlsRow.*
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.constants.ActionConstants
+import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.google.android.exoplayer2.ext.leanback.LeanbackPlayerAdapter
 import java.util.concurrent.TimeUnit
 
@@ -31,6 +31,7 @@ class VideoPlayerGlue(
     private var mSavedDuration: Long = -1
     private var mSpeedAction: MyAction? = null
     private var mClosedCaptioningAction: ClosedCaptioningAction? = null
+    private var mQualityAction: MyAction? = null
 
     init {
         mSkipPreviousAction = SkipPreviousAction(context)
@@ -45,6 +46,7 @@ class VideoPlayerGlue(
         mRepeatAction = RepeatAction(context)
 
         mSpeedAction = MyAction(context!!, ActionConstants.ACTION_SPEEDUP, R.drawable.ic_speed_increase, R.string.button_speedup)
+        mQualityAction = MyAction(context!!, ActionConstants.ACTION_SELECT_QUALITY, R.drawable.ic_high_quality, R.string.select_quality)
         mClosedCaptioningAction = ClosedCaptioningAction(context)
         val res = context.resources
         val labels = arrayOfNulls<String>(1)
@@ -65,16 +67,16 @@ class VideoPlayerGlue(
             adapter.add(mSkipPreviousAction)
             adapter.add(mSkipNextAction)
         }
-
-        adapter.add(mSpeedAction)
     }
 
     override fun onCreateSecondaryActions(adapter: ArrayObjectAdapter) {
         super.onCreateSecondaryActions(adapter)
         adapter.add(mClosedCaptioningAction)
+        adapter.add(mQualityAction)
+        adapter.add(mSpeedAction)
         // adapter.add(mThumbsDownAction)
-       // adapter.add(mThumbsUpAction)
-       // adapter.add(mRepeatAction)
+        // adapter.add(mThumbsUpAction)
+        // adapter.add(mRepeatAction)
     }
 
     // отправлять
@@ -98,8 +100,8 @@ class VideoPlayerGlue(
                 action === mThumbsUpAction ||
                 action === mRepeatAction ||
                 action === mSpeedAction ||
-                action === mClosedCaptioningAction
-
+                action === mClosedCaptioningAction ||
+                action === mQualityAction
     }
 
     private fun dispatchAction(action: Action) {
@@ -112,6 +114,8 @@ class VideoPlayerGlue(
             mActionListener.onSpeed()
         } else if (action === mClosedCaptioningAction) {
             mActionListener.onCaption()
+        } else if (action === mQualityAction) {
+            mActionListener.onQualitySelected()
         } else if (action is MultiAction) {
             val multiAction = action
             multiAction.nextIndex()
@@ -196,6 +200,13 @@ class VideoPlayerGlue(
         mOffsetMillis = offsetMillis
     }
 
+    override fun onPlayCompleted() {
+        if(SettingsData.autoPlayNextEpisode == true && isSerial){
+            mActionListener.onNext()
+        }
+        super.onPlayCompleted()
+    }
+
     interface OnActionClickedListener {
         /** Skip to the previous item in the queue.  */
         fun onPrevious()
@@ -216,6 +227,7 @@ class VideoPlayerGlue(
         fun onAudioTrack()
         fun onAudioSync()
         fun onActionSelected(action: Action?)
+        fun onQualitySelected()
     }
 
     /**

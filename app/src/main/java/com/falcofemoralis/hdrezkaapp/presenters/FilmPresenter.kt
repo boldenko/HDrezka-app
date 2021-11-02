@@ -236,7 +236,11 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
     fun initStreams(translation: Voice, isDownload: Boolean, vararg additionalInfo: String) {
         GlobalScope.launch {
             try {
-                val streams: ArrayList<Stream> = FilmModel.parseStreams(translation, film.filmId!!)
+                if(translation.streams?.isNullOrEmpty() == true){
+                    val streams: ArrayList<Stream> = FilmModel.getStreams(translation, film.filmId!!)
+                    translation.streams = streams
+                }
+
                 val additionalTitle = StringBuilder()
                 translation.name?.let {
                     additionalTitle.append(it)
@@ -249,11 +253,11 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
                 withContext(Dispatchers.Main) {
                     film.title?.let {
                         if (SettingsData.isMaxQuality == true) {
-                            filmView.openStream(streams[streams.size - 1], it, additionalTitle.toString(), isDownload, translation)
+                            filmView.openStream(translation.streams!![translation.streams!!.size - 1], it, additionalTitle.toString(), isDownload, translation)
                         } else if(SettingsData.defaultQuality != null){
                             var isDefaultQualityFound = false
 
-                            for(stream in streams){
+                            for(stream in translation.streams!!){
                                 if(stream.quality == SettingsData.defaultQuality){
                                     filmView.openStream(stream, it, additionalTitle.toString(), isDownload, translation)
                                     isDefaultQualityFound = true
@@ -261,10 +265,10 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
                             }
 
                             if(!isDefaultQualityFound){
-                                filmView.openStream(streams[streams.size - 1], it, additionalTitle.toString(), isDownload, translation)
+                                filmView.openStream(translation.streams!![translation.streams!!.size - 1], it, additionalTitle.toString(), isDownload, translation)
                             }
                         } else {
-                            filmView.showStreams(streams, it, additionalTitle.toString(), isDownload, translation)
+                            filmView.showStreams(translation.streams!!, it, additionalTitle.toString(), isDownload, translation)
                         }
                     }
                 }

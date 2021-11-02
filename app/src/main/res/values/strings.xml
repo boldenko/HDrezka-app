@@ -147,4 +147,5 @@
     <string name="title_select_caption">Select Subtitles</string>
     <string name="msg_subtitle_on">Subtitle %1$s enabled.</string>
     <string name="msg_subtitle_cc">Closed Caption</string>
+    <string name="select_quality">Select Quality</string>
 </resources>

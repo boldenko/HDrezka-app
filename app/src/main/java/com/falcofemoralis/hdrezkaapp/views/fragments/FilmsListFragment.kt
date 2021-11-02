@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -27,7 +28,7 @@ open class FilmsListFragment : Fragment(), FilmsListView {
     private lateinit var progressBar: ProgressBar
     private lateinit var scrollView: NestedScrollView
     private lateinit var fragmentListener: OnFragmentInteractionListener
-    private lateinit var callView: FilmListCallView
+    private var callView: FilmListCallView? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -50,12 +51,16 @@ open class FilmsListFragment : Fragment(), FilmsListView {
 
                 if (diff == 0) {
                     setProgressBarState(IProgressState.StateType.LOADING)
-                    callView.triggerEnd()
+                    callView?.triggerEnd()
                 }
             }
         })
 
-        callView.onFilmsListCreated()
+        if(callView != null){
+            callView?.onFilmsListCreated()
+        } else {
+            Toast.makeText(requireContext(), getString(R.string.error_occured), Toast.LENGTH_LONG).show()
+        }
 
         return currentView
     }
@@ -74,7 +79,7 @@ open class FilmsListFragment : Fragment(), FilmsListView {
             AdapterAction.UPDATE -> viewList.adapter?.notifyItemRangeChanged(from, count)
             AdapterAction.DELETE -> viewList.adapter?.notifyItemRangeRemoved(from, count)
         }
-        callView.dataInited()
+        callView?.dataInited()
     }
 
     override fun setProgressBarState(type: IProgressState.StateType) {

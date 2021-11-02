@@ -3,10 +3,12 @@ package com.falcofemoralis.hdrezkaapp.views.tv.player
 import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
@@ -64,10 +66,11 @@ class PlaybackActionListener(private val playerFragment: PlayerFragment) : Video
 
         // Theme_AppCompat_Light_Dialog_Alert or Theme_AppCompat_Dialog_Alert
         val builder = playerFragment.context?.let { AlertDialog.Builder(it, R.style.Theme_AppCompat_Dialog_Alert) }
+        val adapter = playerFragment.context?.let { ArrayAdapter(it, android.R.layout.simple_spinner_dropdown_item, prompts) }
 
         builder
             ?.setTitle(R.string.title_select_caption)
-            ?.setItems(prompts.toTypedArray(),
+/*            ?.setItems(prompts.toTypedArray(),
                 object : DialogInterface.OnClickListener {
                     var mActions = actions // needed because used in inner class
 
@@ -75,10 +78,21 @@ class PlaybackActionListener(private val playerFragment: PlayerFragment) : Video
                         // The 'which' argument contains the index position
                         // of the selected item
                         if (which < mActions.size) {
-                            playerFragment.subtitleSelector (mActions[which])
+                            playerFragment.subtitleSelector(mActions[which])
                         }
                     }
-                })
+                })*/
+            ?.setSingleChoiceItems(adapter, playerFragment.selectedSubtitle, object : DialogInterface.OnClickListener{
+                var mActions = actions // needed because used in inner class
+
+                override fun onClick(dialog: DialogInterface?, which: Int) {
+                    if (which < mActions.size) {
+                        playerFragment.subtitleSelector(mActions[which])
+                        mDialog?.hide()
+                    }
+                }
+
+            })
         mDialog = builder?.create()
         mDialog?.show()
 
@@ -191,6 +205,58 @@ class PlaybackActionListener(private val playerFragment: PlayerFragment) : Video
 
     override fun onActionSelected(action: Action?) {
         TODO("Not yet implemented")
+    }
+
+    override fun onQualitySelected() {
+        playerFragment.hideControlsOverlay(false)
+
+        val streams = playerFragment.mTranslation?.streams
+        val prompts = ArrayList<String>()
+        val actions = ArrayList<Int>()
+
+        if (streams != null) {
+            for (ix in 0 until streams.size) {
+                prompts.add(streams[ix].quality)
+                actions.add(ix)
+            }
+        }
+
+        // Theme_AppCompat_Light_Dialog_Alert or Theme_AppCompat_Dialog_Alert
+        val builder = playerFragment.context?.let { AlertDialog.Builder(it, R.style.Theme_AppCompat_Dialog_Alert) }
+        val adapter = playerFragment.context?.let { ArrayAdapter(it, android.R.layout.simple_spinner_dropdown_item, prompts) }
+
+        builder
+            ?.setTitle(R.string.select_quality)
+ /*           ?.setItems(prompts.toTypedArray(),
+                object : DialogInterface.OnClickListener {
+                    var mActions = actions // needed because used in inner class
+
+                    override fun onClick(dialog: DialogInterface, which: Int) {
+                        // The 'which' argument contains the index position
+                        // of the selected item
+                        if (which < mActions.size) {
+                            playerFragment.qualitySelector(mActions[which])
+                        }
+                    }
+                })*/
+            ?.setSingleChoiceItems(adapter, playerFragment.selectedQuality, object : DialogInterface.OnClickListener{
+                var mActions = actions // needed because used in inner class
+
+                override fun onClick(dialog: DialogInterface?, which: Int) {
+                    if (which < mActions.size) {
+                        playerFragment.qualitySelector(mActions[which])
+                        mDialog?.hide()
+                    }
+                }
+
+            })
+        mDialog = builder?.create()
+        mDialog?.show()
+
+        val lp = mDialog!!.window!!.attributes
+        lp.dimAmount = 0.0f // Dim level. 0.0 - no dim, 1.0 - completely opaque
+        mDialog!!.window!!.attributes = lp
+        mDialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.argb(100, 0, 0, 0)))
     }
 
     fun onMenu(): Boolean? {

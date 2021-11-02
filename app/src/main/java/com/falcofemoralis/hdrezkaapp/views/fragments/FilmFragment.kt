@@ -1011,9 +1011,9 @@ class FilmFragment : Fragment(), FilmView {
                     sharingIntent.putExtra(Intent.EXTRA_TEXT, body)
                     startActivity(sharingIntent)
                 } else {
-                    if (translation.subtitles != null && translation.subtitles!!.size > 0) {
+                  /*  if (translation.subtitles != null && translation.subtitles!!.size > 0) {
                         downloadSubtitle(translation.subtitles!![0].url, "$fileName.vtt")
-                    }
+                    }*/
                     val request = DownloadManager.Request(parseUri)
                     request.setTitle(fileName)
                     request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
@@ -1049,13 +1049,13 @@ class FilmFragment : Fragment(), FilmView {
                 intent.setDataAndType(Uri.parse(url), "video/*")
                 intent.putExtra("title", newFilmTitle)
 
-                if (translation.subtitles != null && translation.subtitles!!.size > 0) {
+               /* if (translation.subtitles != null && translation.subtitles!!.size > 0) {
                     val filename = newFilmTitle.replace(" ", "").replace("/", "") + ".vtt"
                     downloadSubtitle(translation.subtitles!![0].url, filename)
                     val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/$filename"
                     intent.putExtra("subtitles_location", path)
                     intent.putExtra("subs", path)
-                }
+                }*/
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
                 try {

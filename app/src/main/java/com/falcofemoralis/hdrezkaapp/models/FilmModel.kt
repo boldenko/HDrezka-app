@@ -330,7 +330,7 @@ object FilmModel : BaseModel() {
                 if (film.isMovieTranslation!!) {
                     val index = stringedDoc.indexOf("initCDNMoviesEvents")
                     val subString = stringedDoc.substring(stringedDoc.indexOf("{\"id\"", index), stringedDoc.indexOf("});", index) + 1)
-                    filmTranslations.add(Voice(JSONObject(subString).getString("streams")))
+                    filmTranslations.add(Voice(parseSteams(JSONObject(subString).getString("streams"))))
                 } else {
                     val startIndex = stringedDoc.indexOf("initCDNSeriesEvents")
                     var endIndex = stringedDoc.indexOf("{\"id\"", startIndex)
@@ -481,19 +481,27 @@ object FilmModel : BaseModel() {
         }
     }
 
-    fun parseStreams(translation: Voice, filmId: Number): ArrayList<Stream> {
-        val parsedStreams: ArrayList<Stream> = ArrayList()
+    fun getStreams(translation: Voice, filmId: Number): ArrayList<Stream> {
+        var streamsText = ""
 
-        if (translation.id != null && translation.streams == null) {
-            translation.streams = getStreamsByTranslationId(filmId, translation)
+        if (translation.id != null) {
+            streamsText = getStreamsByTranslationId(filmId, translation)
         }
 
-        val split: Array<String> = translation.streams!!.split(",").toTypedArray()
-        for (str in split) {
-            if (str.contains(" or ")) {
-                parsedStreams.add(Stream(str.split(" or ").toTypedArray()[1], str.substring(1, str.indexOf("]"))))
-            } else {
-                parsedStreams.add(Stream(str.substring(str.indexOf("]") + 1), str.substring(1, str.indexOf("]"))))
+        return parseSteams(streamsText)
+    }
+
+    fun parseSteams(streams: String?): ArrayList<Stream> {
+        val parsedStreams: ArrayList<Stream> = ArrayList()
+
+        if (streams != null && streams.isNotEmpty()) {
+            val split: Array<String> = streams.split(",")?.toTypedArray()
+            for (str in split) {
+                if (str.contains(" or ")) {
+                    parsedStreams.add(Stream(str.split(" or ").toTypedArray()[1], str.substring(1, str.indexOf("]"))))
+                } else {
+                    parsedStreams.add(Stream(str.substring(str.indexOf("]") + 1), str.substring(1, str.indexOf("]"))))
+                }
             }
         }
 
@@ -559,7 +567,7 @@ object FilmModel : BaseModel() {
 
             if (jsonObject.getBoolean("success")) {
                 translation.subtitles = parseSubtitles(jsonObject.getString("subtitle"))
-                translation.streams = jsonObject.getString("url")
+                translation.streams = parseSteams(jsonObject.getString("url"))
             } else {
                 throw HttpStatusException("failed to get stream", 400, SettingsData.provider)
             }

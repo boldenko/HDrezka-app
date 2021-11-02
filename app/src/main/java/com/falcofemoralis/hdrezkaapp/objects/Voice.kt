@@ -8,7 +8,7 @@ open class Voice : Serializable {
         this.id = id
     }
 
-    constructor(streams: String) {
+    constructor(streams: ArrayList<Stream>) {
         this.streams = streams
     }
 
@@ -19,7 +19,7 @@ open class Voice : Serializable {
 
     var name: String? = null
     var id: String? = null
-    var streams: String? = null
+    var streams: ArrayList<Stream>? = null
     var seasons: HashMap<String, ArrayList<String>>? = null
     var isCamrip: String = "0"
     var isDirector: String = "0"

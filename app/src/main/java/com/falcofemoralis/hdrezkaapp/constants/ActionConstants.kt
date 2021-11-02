@@ -47,4 +47,5 @@ object ActionConstants {
     const val ACTION_ALLOW_RERECORD = 45
     const val ACTION_REMOVE_RECENT = 46
     const val ACTION_PLAYLIST_PLAY = 47
+    const val ACTION_SELECT_QUALITY = 48
 }

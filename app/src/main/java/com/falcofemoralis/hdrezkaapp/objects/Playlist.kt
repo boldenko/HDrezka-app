@@ -38,6 +38,10 @@ class Playlist {
         this.currentPosition = currentPosition
     }
 
+    fun getCurrentItem(): PlaylistItem {
+        return playlist[currentPosition]
+    }
+
     /**
      * Returns the size of the playlist.
      *
