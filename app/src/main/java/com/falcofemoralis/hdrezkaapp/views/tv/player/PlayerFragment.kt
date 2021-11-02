@@ -227,12 +227,7 @@ class PlayerFragment : VideoSupportFragment() {
 
         if (subtitleUri != null && subtitleUri.isNotEmpty()) {
             // create subtitle text format
-            val textFormat = Format.createTextSampleFormat(
-                null,
-                MimeTypes.TEXT_VTT,
-                C.SELECTION_FLAG_DEFAULT,
-                null
-            )
+            val textFormat = Format.Builder().setSampleMimeType(MimeTypes.TEXT_VTT).setSelectionFlags(C.SELECTION_FLAG_DEFAULT).build()
 
             // create the subtitle source
             val subtitleSource = SingleSampleMediaSource
