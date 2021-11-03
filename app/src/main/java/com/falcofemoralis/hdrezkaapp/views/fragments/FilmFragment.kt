@@ -815,7 +815,7 @@ class FilmFragment : Fragment(), FilmView {
                     val textView: TextView = layoutInflater.inflate(R.layout.inflate_translation_item, null) as TextView
                     translation.name?.let { textView.text = it }
                     textView.setOnClickListener {
-                        filmPresenter.initStreams(translation, isDownload)
+                        filmPresenter.getAndOpenFilmStream(translation, isDownload)
 
                         if (activeNameTextView != null && !isDownload) {
                             activeNameTextView?.setTextColor(requireContext().getColor(R.color.day_night_text))
@@ -842,7 +842,7 @@ class FilmFragment : Fragment(), FilmView {
                 builder.setView(sv)
                 builder.create().show()
             } else if (translations.size == 1) {
-                filmPresenter.initStreams(translations[0], isDownload)
+                filmPresenter.getAndOpenFilmStream(translations[0], isDownload)
             } else {
                 Toast.makeText(requireContext(), getString(R.string.error_empty), Toast.LENGTH_SHORT).show()
             }

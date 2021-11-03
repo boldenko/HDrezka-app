@@ -7,6 +7,7 @@ import androidx.leanback.media.PlaybackTransportControlGlue
 import androidx.leanback.widget.Action
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.PlaybackControlsRow.*
+import androidx.leanback.widget.PlaybackSeekDataProvider
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.constants.ActionConstants
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData

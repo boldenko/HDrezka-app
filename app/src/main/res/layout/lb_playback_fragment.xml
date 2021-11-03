@@ -8,6 +8,7 @@
     android:transitionGroup="false">
 
     <FrameLayout
+        android:visibility="gone"
         android:id="@+id/playback_fragment_background"
         android:layout_width="match_parent"
         android:layout_height="180dp"

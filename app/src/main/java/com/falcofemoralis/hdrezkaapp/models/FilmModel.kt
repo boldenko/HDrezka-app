@@ -455,7 +455,7 @@ object FilmModel : BaseModel() {
         }
     }
 
-    private fun getStreamsByTranslationId(filmId: Number, translation: Voice): String {
+    fun getStreamsByTranslationId(filmId: Number, translation: Voice){
         val data: ArrayMap<String, String> = ArrayMap()
         data["id"] = filmId.toString()
         data["translator_id"] = translation.id
@@ -472,23 +472,14 @@ object FilmModel : BaseModel() {
             val jsonObject = JSONObject(bodyString)
 
             if (jsonObject.getBoolean("success")) {
-                return jsonObject.getString("url")
+                translation.streams = parseSteams(jsonObject.getString("url"))
+                translation.subtitles = parseSubtitles(jsonObject.getString("subtitle"))
             } else {
                 throw HttpStatusException("failed to get stream", 400, SettingsData.provider)
             }
         } else {
             throw HttpStatusException("failed to get stream", 400, SettingsData.provider)
         }
-    }
-
-    fun getStreams(translation: Voice, filmId: Number): ArrayList<Stream> {
-        var streamsText = ""
-
-        if (translation.id != null) {
-            streamsText = getStreamsByTranslationId(filmId, translation)
-        }
-
-        return parseSteams(streamsText)
     }
 
     fun parseSteams(streams: String?): ArrayList<Stream> {

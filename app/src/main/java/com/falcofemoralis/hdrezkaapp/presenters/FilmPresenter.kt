@@ -236,11 +236,6 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
     fun initStreams(translation: Voice, isDownload: Boolean, vararg additionalInfo: String) {
         GlobalScope.launch {
             try {
-                if(translation.streams?.isNullOrEmpty() == true){
-                    val streams: ArrayList<Stream> = FilmModel.getStreams(translation, film.filmId!!)
-                    translation.streams = streams
-                }
-
                 val additionalTitle = StringBuilder()
                 translation.name?.let {
                     additionalTitle.append(it)
@@ -305,6 +300,21 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
                     initStreams(translation, isDownload, "Сезон $season -", "Эпизод $episode")
                 }
             } catch (e: Exception) {
+                catchException(e, filmView)
+            }
+        }
+    }
+
+    fun getAndOpenFilmStream(translation: Voice, isDownload: Boolean){
+        GlobalScope.launch {
+            try{
+                if(translation.streams == null){
+                    if (translation.id != null) {
+                        film.filmId?.let { FilmModel.getStreamsByTranslationId(it, translation) }
+                        initStreams(translation, isDownload)
+                    }
+                }
+            } catch (e: Exception){
                 catchException(e, filmView)
             }
         }

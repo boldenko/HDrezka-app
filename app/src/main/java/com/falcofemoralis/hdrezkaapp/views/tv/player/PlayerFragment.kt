@@ -397,7 +397,7 @@ class PlayerFragment : VideoSupportFragment() {
     // Return = new track selection.
 
     fun subtitleSelector(selected: Int) {
-        if (selected == selectedQuality) {
+        if (selected == selectedSubtitle) {
             return
         }
         selectedSubtitle = selected
