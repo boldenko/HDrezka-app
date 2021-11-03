@@ -5,6 +5,8 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.leanback.app.VideoSupportFragment
@@ -15,6 +17,7 @@ import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.models.FilmModel
 import com.falcofemoralis.hdrezkaapp.objects.*
 import com.falcofemoralis.hdrezkaapp.views.fragments.FilmFragment
+import com.falcofemoralis.hdrezkaapp.views.tv.player.seek.StoryboardSeekDataProvider
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.DefaultRenderersFactory
 import com.google.android.exoplayer2.Format
@@ -150,7 +153,6 @@ class PlayerFragment : VideoSupportFragment() {
         renderFactory.setEnableDecoderFallback(true)
         mTrackSelector = DefaultTrackSelector(requireContext())
         mPlayer = SimpleExoPlayer.Builder(requireContext(), renderFactory).setTrackSelector(mTrackSelector as DefaultTrackSelector).build()
-        mPlayerAdapter = LeanbackPlayerAdapter(requireActivity(), mPlayer!!, UPDATE_DELAY)
 
         mSubtitles = requireActivity().findViewById(R.id.leanback_subtitles)
         val textComponent = mPlayer?.textComponent
@@ -171,11 +173,16 @@ class PlayerFragment : VideoSupportFragment() {
         if (mPlaybackActionListener == null) {
             mPlaybackActionListener = PlaybackActionListener(this)
         }
+        mPlayerAdapter = LeanbackPlayerAdapter(requireActivity(), mPlayer!!, UPDATE_DELAY)
         mPlayerGlue = VideoPlayerGlue(activity, mPlayerAdapter, mPlaybackActionListener!!, isSerial)
         mPlayerGlue?.host = VideoSupportFragmentGlueHost(this)
-        // mPlayerGlue?.isControlsOverlayAutoHideEnabled = false
+        mPlayerGlue?.isSeekEnabled = true
+        mPlayerGlue?.isControlsOverlayAutoHideEnabled = false
+        StoryboardSeekDataProvider.setSeekProvider(mTranslation!!, mPlayerGlue!!, requireContext())
         mPlayerGlue?.playWhenPrepared()
+
         hide()
+
         mStream?.let { play(it) }
     }
 
@@ -273,114 +280,6 @@ class PlayerFragment : VideoSupportFragment() {
         hideControlsOverlay(false)
     }
 
-    fun tickle(autohide: Boolean, showActions: Boolean) {
-        mPlayerGlue?.setActions(showActions)
-        isControlsOverlayAutoHideEnabled = false
-        showControlsOverlay(true)
-        if (autohide) {
-            isControlsOverlayAutoHideEnabled = true
-        }
-    }
-
-    // Overridden because the default tickle disables the fade timer.
-    override fun tickle() {
-        tickle(false, true)
-    }
-
-    fun actionSelected(action: Action?) {
-        val view = view
-        val text = view?.findViewById<TextView>(R.id.button_selected) ?: return
-
-        if (action != null) {
-            mCurrentAction = action
-            text.text = action.label1
-            mFocusView = view.findFocus()
-        } else {
-            // Called with null when a key is pressed. Will clear help message
-            // if we are no longer on the control.
-            val newView = view.findFocus()
-            if (newView !== mFocusView) {
-                text.text = ""
-                mFocusView = newView
-                mCurrentAction = null
-            } else if (mCurrentAction != null) {
-                text.text = mCurrentAction?.label1
-            }
-        }
-    }
-
-    fun onControlsUp(): Boolean {
-        val primaryActionsAdapter = mPlayerGlue!!.controlsRow.primaryActionsAdapter as ArrayObjectAdapter
-        if (primaryActionsAdapter.indexOf(mCurrentAction) >= 0) {
-            hideControlsOverlay(true)
-            return true
-        }
-        return false
-    }
-
-    fun setActions(showActions: Boolean) {
-        mPlayerGlue?.setActions(showActions)
-    }
-
-    /** Jumps backwards 5 min.  */
-    fun jumpBack() {
-        moveBackward(mJump)
-    }
-
-    /** Jumps forward 5 min.  */
-    fun jumpForward() {
-        moveForward(mJump)
-    }
-
-    private fun moveBackward(millis: Int) {
-        var newPosition = mPlayerGlue!!.currentPosition - millis
-        newPosition = if (newPosition < 0) 0 else newPosition
-        seekTo(newPosition, false)
-    }
-
-    private fun moveForward(millis: Int) {
-        var doReset = false
-        var resetDone = false
-
-        if (!mIsBounded) {
-            seekTo(-1, true)
-            resetDone = true
-        }
-
-        val duration: Long? = mPlayerGlue?.myGetDuration()
-        if (duration != null) {
-            if (duration > -1) {
-                var newPosition = mPlayerGlue!!.currentPosition + millis
-                if (newPosition > duration - 1000) {
-                    newPosition = duration - 1000
-                    doReset = true
-                }
-                seekTo(newPosition, doReset && !resetDone)
-            }
-        }
-    }
-
-    // set position to -1 for a reset with no seek.
-    // set doReset true to refresh file size information.
-    // If it is in unbounded state will reset to bounded state
-    // regardless of parameters.
-    private fun seekTo(position: Long, doReset: Boolean) {
-        val newPosition: Long = if (position == -1L) mPlayerGlue!!.currentPosition else position
-        if (mIsBounded && !doReset) {
-            if (position != -1L) {
-                mPlayerAdapter?.seekTo(newPosition)
-            }
-        } else {
-            mIsBounded = true
-            mBookmark = newPosition
-            mOffsetBytes = 0
-            mPlayerGlue?.setOffsetMillis(0)
-            mPlayer?.stop(true)
-
-            mStream?.let { play(it) }
-        }
-    }
-
     fun hideNavigation() {
         if (requireActivity().packageManager.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)) {
             val view = view
@@ -439,6 +338,15 @@ class PlayerFragment : VideoSupportFragment() {
         }
     }
 
+    fun onDispatchKeyEvent(event: KeyEvent?) {
+        // NOP
+    }
+
+    fun onDispatchTouchEvent(event: MotionEvent) {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            tickle()
+        }
+    }
 
     companion object {
         const val UPDATE_DELAY = 16

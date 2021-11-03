@@ -3,23 +3,23 @@ package com.falcofemoralis.hdrezkaapp.views.tv.player
 import android.content.Context
 import android.graphics.drawable.Drawable
 import androidx.core.content.res.ResourcesCompat
+import androidx.leanback.media.PlaybackGlueHost
 import androidx.leanback.media.PlaybackTransportControlGlue
+import androidx.leanback.media.PlayerAdapter
 import androidx.leanback.widget.Action
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.PlaybackControlsRow.*
-import androidx.leanback.widget.PlaybackSeekDataProvider
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.constants.ActionConstants
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
-import com.google.android.exoplayer2.ext.leanback.LeanbackPlayerAdapter
 import java.util.concurrent.TimeUnit
 
 class VideoPlayerGlue(
     context: Context?,
-    playerAdapter: LeanbackPlayerAdapter?,
+    playerAdapter: PlayerAdapter?,
     private val mActionListener: PlaybackActionListener,
     private val isSerial: Boolean
-) : PlaybackTransportControlGlue<LeanbackPlayerAdapter?>(context, playerAdapter) {
+) : PlaybackTransportControlGlue<PlayerAdapter?>(context, playerAdapter) {
     private var mRepeatAction: RepeatAction? = null
     private var mThumbsUpAction: ThumbsUpAction? = null
     private var mThumbsDownAction: ThumbsDownAction? = null
@@ -27,9 +27,6 @@ class VideoPlayerGlue(
     private var mSkipNextAction: SkipNextAction? = null
     private var mFastForwardAction: FastForwardAction? = null
     private var mRewindAction: RewindAction? = null
-    private var mActionsVisible = false
-    private var mOffsetMillis: Long = 0
-    private var mSavedDuration: Long = -1
     private var mSpeedAction: MyAction? = null
     private var mClosedCaptioningAction: ClosedCaptioningAction? = null
     private var mQualityAction: MyAction? = null
@@ -80,7 +77,6 @@ class VideoPlayerGlue(
         // adapter.add(mRepeatAction)
     }
 
-    // отправлять
     override fun onActionClicked(action: Action?) {
         if (shouldDispatchAction(action)) {
             if (action != null) {
@@ -141,17 +137,17 @@ class VideoPlayerGlue(
 
     /** Skips backwards 10 seconds.  */
     fun rewind() {
-        var newPosition: Long = currentPosition - TEN_SECONDS
+        var newPosition = currentPosition - TEN_SECONDS
         newPosition = if (newPosition < 0) 0 else newPosition
-        playerAdapter?.seekTo(newPosition)
+        playerAdapter!!.seekTo(newPosition)
     }
 
     /** Skips forward 10 seconds.  */
     fun fastForward() {
         if (duration > -1) {
-            var newPosition: Long = currentPosition + TEN_SECONDS
-            newPosition = if (newPosition > duration) duration else newPosition
-            playerAdapter?.seekTo(newPosition)
+            var newPosition = currentPosition + TEN_SECONDS
+            newPosition = Math.min(newPosition, duration)
+            playerAdapter!!.seekTo(newPosition)
         }
     }
 
@@ -163,49 +159,15 @@ class VideoPlayerGlue(
         mActionListener.onNext()
     }
 
-    fun setActions(showActions: Boolean) {
-        if (showActions) {
-            if (mActionsVisible) return
-            val row = controlsRow
-            var adapter = row.primaryActionsAdapter as ArrayObjectAdapter
-            adapter.clear()
-            onCreatePrimaryActions(adapter)
-            adapter.notifyArrayItemRangeChanged(0, adapter.size())
-            adapter = row.secondaryActionsAdapter as ArrayObjectAdapter
-            adapter.clear()
-            onCreateSecondaryActions(adapter)
-            adapter.notifyArrayItemRangeChanged(0, adapter.size())
-            mActionsVisible = true
-            onPlayStateChanged()
-        } else {
-            if (!mActionsVisible) return
-            val row = controlsRow
-            var adapter = row.primaryActionsAdapter as ArrayObjectAdapter
-            adapter.clear()
-            adapter.notifyArrayItemRangeChanged(0, 0)
-            adapter = row.secondaryActionsAdapter as ArrayObjectAdapter
-            adapter.clear()
-            adapter.notifyArrayItemRangeChanged(0, 0)
-            mActionsVisible = false
-        }
-    }
-
-    fun myGetDuration(): Long {
-        var duration = duration
-        if (duration >= 0) duration += mOffsetMillis
-        if (duration > 0) mSavedDuration = duration
-        return duration
-    }
-
-    fun setOffsetMillis(offsetMillis: Long) {
-        mOffsetMillis = offsetMillis
-    }
-
     override fun onPlayCompleted() {
-        if(SettingsData.autoPlayNextEpisode == true && isSerial){
+        if (SettingsData.autoPlayNextEpisode == true && isSerial) {
             mActionListener.onNext()
         }
         super.onPlayCompleted()
+    }
+
+    override fun onAttachedToHost(host: PlaybackGlueHost?) {
+        super.onAttachedToHost(host)
     }
 
     interface OnActionClickedListener {
@@ -216,18 +178,8 @@ class VideoPlayerGlue(
         fun onNext()
 
         //  fun onPlayCompleted(playlistPlayAction: org.mythtv.leanfront.player.VideoPlayerGlue.MyAction?)
-        fun onZoom()
-        fun onAspect()
         fun onCaption()
-        fun onPivot()
-        fun onRewind()
-        fun onFastForward()
-        fun onJumpForward()
-        fun onJumpBack()
         fun onSpeed()
-        fun onAudioTrack()
-        fun onAudioSync()
-        fun onActionSelected(action: Action?)
         fun onQualitySelected()
     }
 
@@ -253,4 +205,5 @@ class VideoPlayerGlue(
     companion object {
         val TEN_SECONDS = TimeUnit.SECONDS.toMillis(10)
     }
+
 }

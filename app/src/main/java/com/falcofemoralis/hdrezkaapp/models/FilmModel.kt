@@ -9,7 +9,9 @@ import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import org.jsoup.safety.Whitelist
 import org.jsoup.select.Elements
+
 
 object FilmModel : BaseModel() {
     private const val FILM_TITLE = "div.b-post__title h1"
@@ -455,7 +457,7 @@ object FilmModel : BaseModel() {
         }
     }
 
-    fun getStreamsByTranslationId(filmId: Number, translation: Voice){
+    fun getStreamsByTranslationId(filmId: Number, translation: Voice) {
         val data: ArrayMap<String, String> = ArrayMap()
         data["id"] = filmId.toString()
         data["translator_id"] = translation.id
@@ -474,12 +476,90 @@ object FilmModel : BaseModel() {
             if (jsonObject.getBoolean("success")) {
                 translation.streams = parseSteams(jsonObject.getString("url"))
                 translation.subtitles = parseSubtitles(jsonObject.getString("subtitle"))
+                val thumbnailsUrl = jsonObject.getString("thumbnails")
+                if (thumbnailsUrl.isNotEmpty()) {
+                    getThumbnails(thumbnailsUrl, translation)
+                }
             } else {
                 throw HttpStatusException("failed to get stream", 400, SettingsData.provider)
             }
         } else {
             throw HttpStatusException("failed to get stream", 400, SettingsData.provider)
         }
+    }
+
+    fun getThumbnails(thumbnailsUrl: String, translation: Voice) {
+        val result: Document? = getJsoup(SettingsData.provider + thumbnailsUrl).post()
+
+        if (result != null) {
+            val responseText: String = result.select("body").text()
+
+            if (responseText.isNotEmpty()) {
+                translation.thumbnails = ArrayList()
+
+                val rows = responseText.split(" ")
+                if (rows[0].indexOf("WEBVTT") > -1) {
+                    for ((i, row) in rows.withIndex()) {
+                        if (row.indexOf("-->") > -1) {
+                            val t1 = timeVtt(rows[i - 1])
+                            val t2 = timeVtt(rows[i + 1])
+
+                            var x_url = ""
+                            if (i < rows.size - 1) {
+                                x_url = rows[i + 2]
+                                if (x_url.indexOf("http") != 0 && x_url.indexOf("//") != 0) {
+                                    x_url = thumbnailsUrl.substring(0, thumbnailsUrl.lastIndexOf("/") + if (x_url.indexOf("/") == 0) 0 else 1) + x_url
+                                }
+                            }
+
+                            if(x_url.indexOf("xywh") > 0){
+                                val xy = x_url.substring(x_url.indexOf("xywh") + 5)
+                                val xywh = xy.split(",")
+
+                                translation.thumbnails!!.add(Thumbnail(t1, t2, x_url, xywh[0].toInt(), xywh[1].toInt(), xywh[2].toInt(),xywh[3].toInt()))
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    fun br2nl(html: String?): String? {
+        if (html == null) return html
+        val document = Jsoup.parse(html)
+        document.outputSettings(Document.OutputSettings().prettyPrint(false)) //makes html() preserve linebreaks and spacing
+        document.select("br").append("\\n")
+        document.select("p").prepend("\\n\\n")
+        val s = document.html().replace("\\\\n".toRegex(), "\n")
+        return Jsoup.clean(s, "", Whitelist.none(), Document.OutputSettings().prettyPrint(false))
+    }
+
+    private fun timeVtt(srt: String): Float {
+        val tmp: ArrayList<String> = ArrayList()
+
+        for (s in srt.split(":")) {
+            tmp.add(s)
+        }
+
+        var out: Float = 0f
+        if (tmp.size == 2) {
+            tmp.add(0, "00")
+        }
+
+        if (tmp[0] != "00") {
+            out += (tmp[0].toFloat() * 3600)
+        }
+
+        if (tmp[1] != "00") {
+            out += tmp[1].toFloat() * 60
+        }
+
+        out += tmp[2].substring(0, 2).toFloat() * 1
+        out += tmp[2].substring(2).toFloat() * 1
+
+        return out
     }
 
     fun parseSteams(streams: String?): ArrayList<Stream> {
@@ -559,6 +639,10 @@ object FilmModel : BaseModel() {
             if (jsonObject.getBoolean("success")) {
                 translation.subtitles = parseSubtitles(jsonObject.getString("subtitle"))
                 translation.streams = parseSteams(jsonObject.getString("url"))
+                val thumbnailsUrl = jsonObject.getString("thumbnails")
+                if (thumbnailsUrl.isNotEmpty()) {
+                    getThumbnails(thumbnailsUrl, translation)
+                }
             } else {
                 throw HttpStatusException("failed to get stream", 400, SettingsData.provider)
             }
