@@ -92,7 +92,7 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
                     }
                 }
             }
-        } else{
+        } else {
             filmView.hideActors()
         }
     }
@@ -249,17 +249,17 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
                     film.title?.let {
                         if (SettingsData.isMaxQuality == true) {
                             filmView.openStream(translation.streams!![translation.streams!!.size - 1], it, additionalTitle.toString(), isDownload, translation)
-                        } else if(SettingsData.defaultQuality != null){
+                        } else if (SettingsData.defaultQuality != null) {
                             var isDefaultQualityFound = false
 
-                            for(stream in translation.streams!!){
-                                if(stream.quality == SettingsData.defaultQuality){
+                            for (stream in translation.streams!!) {
+                                if (stream.quality == SettingsData.defaultQuality) {
                                     filmView.openStream(stream, it, additionalTitle.toString(), isDownload, translation)
                                     isDefaultQualityFound = true
                                 }
                             }
 
-                            if(!isDefaultQualityFound){
+                            if (!isDefaultQualityFound) {
                                 filmView.openStream(translation.streams!![translation.streams!!.size - 1], it, additionalTitle.toString(), isDownload, translation)
                             }
                         } else {
@@ -305,16 +305,17 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
         }
     }
 
-    fun getAndOpenFilmStream(translation: Voice, isDownload: Boolean){
+    fun getAndOpenFilmStream(translation: Voice, isDownload: Boolean) {
         GlobalScope.launch {
-            try{
-                if(translation.streams == null){
-                    if (translation.id != null) {
+            try {
+                if (translation.id != null) {
+                    if (translation.streams == null) {
                         film.filmId?.let { FilmModel.getStreamsByTranslationId(it, translation) }
-                        initStreams(translation, isDownload)
                     }
                 }
-            } catch (e: Exception){
+
+                initStreams(translation, isDownload)
+            } catch (e: Exception) {
                 catchException(e, filmView)
             }
         }
@@ -328,7 +329,7 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
                 }
                 filmView.updateWatchPager()
             } catch (e: Exception) {
-               // catchException(e, filmView)
+                // catchException(e, filmView)
             }
         }
     }

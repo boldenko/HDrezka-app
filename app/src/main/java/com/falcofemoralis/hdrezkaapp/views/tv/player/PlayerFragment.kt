@@ -145,6 +145,8 @@ class PlayerFragment : VideoSupportFragment() {
                 }
             }
         }
+
+        selectedSubtitle = if(mTranslation?.subtitles != null && mTranslation!!.subtitles!!.size > 0) 0 else -1
     }
 
     private fun initializePlayer() {

@@ -3,6 +3,7 @@ package com.falcofemoralis.hdrezkaapp.views.tv.player.seek
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.util.Log
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.target.Target
@@ -12,6 +13,9 @@ import com.falcofemoralis.hdrezkaapp.objects.Thumbnail
 class StoryboardManager(private val context: Context) {
     private var mSeekPositions: LongArray? = null
     private var mThumbnails: ArrayList<Thumbnail>? = null
+    private var currentImageIndex: Int = -1
+    private var mSeekDirection = DIRECTION_RIGHT
+    private val mCachedImageIndexs: ArrayList<Int>? = null
 
     fun setThumbnails(thumbnails: ArrayList<Thumbnail>) {
         mThumbnails = thumbnails
@@ -47,10 +51,11 @@ class StoryboardManager(private val context: Context) {
         if (mThumbnails == null || mSeekPositions == null || index >= mSeekPositions!!.size) {
             return
         }
-        loadPreview(mThumbnails!![index], callback)
+
+        loadPreview(index, mThumbnails!![index], callback)
     }
 
-    private fun loadPreview(thumb: Thumbnail, callback: (bitmap: Bitmap?) -> Unit) {
+    private fun loadPreview(index: Int, thumb: Thumbnail, callback: (bitmap: Bitmap?) -> Unit) {
         if (mThumbnails == null) {
             return
         }
@@ -72,36 +77,41 @@ class StoryboardManager(private val context: Context) {
                 }
             })
 
-        /*  if (mCurrentImgNum != imgNum) {
-              mSeekDirection = if (mCurrentImgNum < imgNum) StoryboardManager.DIRECTION_RIGHT else StoryboardManager.DIRECTION_LEFT
-              mCachedImageNums.add(imgNum)
-              mCurrentImgNum = imgNum
+          if (currentImageIndex != index) {
+              mSeekDirection = if (currentImageIndex < index) DIRECTION_RIGHT else DIRECTION_LEFT
+              mCachedImageIndexs?.add(index)
+              currentImageIndex = index
               preloadNextImage()
-          }*/
+          }
     }
 
-/*    private fun preloadNextImage() {
-        if (mStoryboard == null) {
+    private fun preloadNextImage() {
+        if (mThumbnails == null) {
             return
         }
-        for (i in 1..MAX_PRELOADED_IMAGES) {
-            val imgNum: Int = if (mSeekDirection == StoryboardManager.DIRECTION_RIGHT) mCurrentImgNum + i else mCurrentImgNum - i // get next image
-            preloadImage(imgNum)
-        }
-    }*/
 
-/*    private fun preloadImage(imgNum: Int) {
-        if (mCachedImageNums.contains(imgNum) || imgNum < 0) {
+        for (i in 1..MAX_PRELOADED_IMAGES) {
+            val imgIndex: Int = if (mSeekDirection == DIRECTION_RIGHT) currentImageIndex + i else currentImageIndex - i // get next image
+            preloadImage(imgIndex)
+        }
+    }
+
+    private fun preloadImage(imgIndex: Int) {
+        if (mCachedImageIndexs?.contains(imgIndex) == true || imgIndex < 0) {
             return
         }
-        mCachedImageNums.add(imgNum)
-        val link = mStoryboard!!.getGroupUrl(imgNum)
-        Glide.with(mContext)
+
+        mCachedImageIndexs?.add(imgIndex)
+        val link = mThumbnails?.get(imgIndex)?.url
+
+        Glide.with(context)
             .load(link)
             .preload()
-    }*/
+    }
 
     companion object {
-        private const val MAX_PRELOADED_IMAGES = 3
+        private const val MAX_PRELOADED_IMAGES = 25
+        private const val DIRECTION_RIGHT = 0
+        private const val DIRECTION_LEFT = 1
     }
 }

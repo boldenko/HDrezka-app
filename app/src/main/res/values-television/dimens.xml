@@ -13,4 +13,5 @@
     <dimen name="search_margin_top">15dp</dimen>
     <dimen name="search_margin_top_clear">7dp</dimen>
     <dimen name="tv_navigation_width">50dp</dimen>
+    <dimen name="lb_playback_other_rows_center_to_bottom">190dp</dimen>
 </resources>

@@ -332,16 +332,28 @@ object FilmModel : BaseModel() {
                 if (film.isMovieTranslation!!) {
                     val index = stringedDoc.indexOf("initCDNMoviesEvents")
                     val subString = stringedDoc.substring(stringedDoc.indexOf("{\"id\"", index), stringedDoc.indexOf("});", index) + 1)
-                    filmTranslations.add(Voice(parseSteams(JSONObject(subString).getString("streams"))))
+                    val jsonObject = JSONObject(subString)
+                    val trans = Voice(parseSteams(jsonObject.getString("streams")))
+                    trans.subtitles = parseSubtitles(jsonObject.getString("subtitle"))
+                    getThumbnails(jsonObject.getString("thumbnails"), trans)
+                    filmTranslations.add(trans)
                 } else {
                     val startIndex = stringedDoc.indexOf("initCDNSeriesEvents")
                     var endIndex = stringedDoc.indexOf("{\"id\"", startIndex)
+                    var startObjIndex = endIndex
                     if (endIndex == -1) {
                         endIndex = stringedDoc.indexOf("{\"url\"", startIndex)
+                        startObjIndex = endIndex
                     }
+                    var endObjIndex = stringedDoc.indexOf("});")
+
                     val subString = stringedDoc.substring(startIndex, endIndex)
-                    val transId = subString.split(",")[1]
-                    filmTranslations.add(Voice(transId, parseSeasons(document)))
+                    val trans = Voice(subString.split(",")[1], parseSeasons(document))
+                    val jsonObject = JSONObject(stringedDoc.substring(startObjIndex, endObjIndex + 1))
+                    trans.streams = parseSteams(jsonObject.getString("streams"))
+                    trans.subtitles = parseSubtitles(jsonObject.getString("subtitle"))
+                    getThumbnails(jsonObject.getString("thumbnails"), trans)
+                    filmTranslations.add(trans)
                 }
             }
         } catch (e: Exception) {
@@ -512,11 +524,11 @@ object FilmModel : BaseModel() {
                                 }
                             }
 
-                            if(x_url.indexOf("xywh") > 0){
+                            if (x_url.indexOf("xywh") > 0) {
                                 val xy = x_url.substring(x_url.indexOf("xywh") + 5)
                                 val xywh = xy.split(",")
 
-                                translation.thumbnails!!.add(Thumbnail(t1, t2, x_url, xywh[0].toInt(), xywh[1].toInt(), xywh[2].toInt(),xywh[3].toInt()))
+                                translation.thumbnails!!.add(Thumbnail(t1, t2, x_url, xywh[0].toInt(), xywh[1].toInt(), xywh[2].toInt(), xywh[3].toInt()))
                             }
                         }
                     }
