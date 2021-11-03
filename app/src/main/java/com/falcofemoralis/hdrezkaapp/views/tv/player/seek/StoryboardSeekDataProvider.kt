@@ -28,7 +28,7 @@ class StoryboardSeekDataProvider(translation: Voice, context: Context) : Playbac
 
         mStoryboardManager?.getBitmap(index, ::ready)
     }
-
+/*
     companion object{
         fun setSeekProvider(translation: Voice, glue: VideoPlayerGlue, context: Context) {
             if (glue.isPrepared) {
@@ -46,5 +46,5 @@ class StoryboardSeekDataProvider(translation: Voice, context: Context) : Playbac
                 })
             }
         }
-    }
+    }*/
 }

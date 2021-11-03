@@ -2,6 +2,7 @@ package com.falcofemoralis.hdrezkaapp.views.tv.player
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.core.content.res.ResourcesCompat
 import androidx.leanback.media.PlaybackGlueHost
 import androidx.leanback.media.PlaybackTransportControlGlue
@@ -12,7 +13,9 @@ import androidx.leanback.widget.PlaybackControlsRow.*
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.constants.ActionConstants
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.concurrent.schedule
 
 class VideoPlayerGlue(
     context: Context?,
@@ -200,6 +203,10 @@ class VideoPlayerGlue(
             setDrawables(drawables)
             setLabels(labelStr)
         }
+    }
+
+    fun getCurrentPos(): Long {
+        return currentPosition
     }
 
     companion object {

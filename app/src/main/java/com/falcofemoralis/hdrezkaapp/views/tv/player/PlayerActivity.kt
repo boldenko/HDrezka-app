@@ -23,7 +23,7 @@ class PlayerActivity : FragmentActivity() {
 
     override fun onStop() {
         super.onStop()
-        finish()
+        //finish()
     }
 
     @SuppressLint("RestrictedApi")

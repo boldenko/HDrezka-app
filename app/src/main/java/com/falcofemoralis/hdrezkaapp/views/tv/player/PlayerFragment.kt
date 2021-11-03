@@ -8,11 +8,9 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
-import android.widget.TextView
 import androidx.leanback.app.VideoSupportFragment
 import androidx.leanback.app.VideoSupportFragmentGlueHost
-import androidx.leanback.widget.Action
-import androidx.leanback.widget.ArrayObjectAdapter
+import androidx.leanback.media.PlaybackGlue
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.models.FilmModel
 import com.falcofemoralis.hdrezkaapp.objects.*
@@ -39,6 +37,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
+import java.util.concurrent.TimeUnit
+import kotlin.concurrent.schedule
 
 
 class PlayerFragment : VideoSupportFragment() {
@@ -48,23 +48,19 @@ class PlayerFragment : VideoSupportFragment() {
     var mPlayer: SimpleExoPlayer? = null
     private var mTrackSelector: TrackSelector? = null
     var mPlaybackActionListener: PlaybackActionListener? = null
-    private var mFocusView: View? = null
-    private var mCurrentAction: Action? = null
-    private val mJump: Int = 60000 * 5 // 5 min
-    var mIsBounded = true
-    var mBookmark: Long = 0 // milliseconds
-    private var mOffsetBytes: Long = 0
     var mSpeed: Float = SPEED_START_VALUE
     private var mSubtitles: SubtitleView? = null
     private val mSubtitleSize: Int = 100
     var selectedSubtitle: Int = 0
     var selectedQuality: Int = 0
+    private var playbackPositionManager: PlaybackPositionManager? = null
 
     /* Data elements */
     private var mFilm: Film? = null
     private var mStream: Stream? = null
     var mTranslation: Voice? = null
     var mPlaylist: Playlist = Playlist()
+    var lastPosition: Long = 0L
 
     /* Variable elements */
     private var title: String? = null
@@ -146,7 +142,17 @@ class PlayerFragment : VideoSupportFragment() {
             }
         }
 
-        selectedSubtitle = if(mTranslation?.subtitles != null && mTranslation!!.subtitles!!.size > 0) 0 else -1
+        selectedSubtitle = if (mTranslation?.subtitles != null && mTranslation!!.subtitles!!.size > 0) 0 else -1
+
+        if (playbackPositionManager == null) {
+            playbackPositionManager = PlaybackPositionManager(requireContext(), isSerial)
+        }
+
+        lastPosition = if (isSerial && playbackPositionManager != null) {
+            playbackPositionManager!!.getLastTime(mFilm?.filmId, mTranslation?.id, mTranslation?.selectedEpisode?.first, mTranslation?.selectedEpisode?.second)
+        } else {
+            playbackPositionManager!!.getLastTime(mFilm?.filmId, mTranslation?.id)
+        }
     }
 
     private fun initializePlayer() {
@@ -180,10 +186,29 @@ class PlayerFragment : VideoSupportFragment() {
         mPlayerGlue?.host = VideoSupportFragmentGlueHost(this)
         mPlayerGlue?.isSeekEnabled = true
         mPlayerGlue?.isControlsOverlayAutoHideEnabled = false
-        StoryboardSeekDataProvider.setSeekProvider(mTranslation!!, mPlayerGlue!!, requireContext())
+      //  StoryboardSeekDataProvider.setSeekProvider(mTranslation!!, mPlayerGlue!!, requireContext())
+
+        if (mPlayerGlue?.isPrepared == true) {
+            mPlayerGlue?.seekProvider = StoryboardSeekDataProvider(mTranslation!!, requireContext())
+        } else {
+            mPlayerGlue?.addPlayerCallback(object : PlaybackGlue.PlayerCallback() {
+                override fun onPreparedStateChanged(glue: PlaybackGlue) {
+                    if (mPlayerGlue?.isPrepared == true) {
+                        mPlayerGlue?.removePlayerCallback(this)
+                        mPlayerGlue?.seekProvider = StoryboardSeekDataProvider(mTranslation!!, requireContext())
+
+                        if (lastPosition > 0) {
+                            mPlayerGlue?.seekTo(lastPosition)
+                        }
+                    }
+                }
+            })
+        }
         mPlayerGlue?.playWhenPrepared()
 
         hide()
+
+        initAutoSave()
 
         mStream?.let { play(it) }
     }
@@ -196,6 +221,29 @@ class PlayerFragment : VideoSupportFragment() {
             mPlayerGlue = null
             mPlayerAdapter = null
             mPlaybackActionListener = null
+        }
+    }
+
+    private fun initAutoSave() {
+        if (mPlayerGlue?.getCurrentPos() != 0L) {
+            Timer("ProgressSave", false).schedule(SAVE_EVERY_5_MIN) {
+                GlobalScope.launch {
+                    withContext(Dispatchers.Main) {
+                        val lastPos = mPlayerGlue?.getCurrentPos()
+
+                        if (lastPos != null) {
+                            // save
+                            if (isSerial) {
+                                playbackPositionManager?.updateTime(mFilm?.filmId, mTranslation?.id, mTranslation?.selectedEpisode?.first, mTranslation?.selectedEpisode?.second, lastPos)
+                            } else {
+                                playbackPositionManager?.updateTime(mFilm?.filmId, mTranslation?.id, lastPos)
+                            }
+
+                            initAutoSave()
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -217,6 +265,7 @@ class PlayerFragment : VideoSupportFragment() {
                 for (stream in mTranslation?.streams!!) {
                     if (stream.quality == mStream?.quality) {
                         mStream = stream
+                        mTranslation?.selectedEpisode = Pair(playlistItem.season, playlistItem.episode)
                         prepareMediaForPlaying(stream.url, mTranslation?.subtitles?.get(0)?.url, true)
                         mPlayerGlue?.play()
                         break
@@ -353,5 +402,6 @@ class PlayerFragment : VideoSupportFragment() {
     companion object {
         const val UPDATE_DELAY = 16
         const val SPEED_START_VALUE = 1.0f
+        val SAVE_EVERY_5_MIN = TimeUnit.SECONDS.toMillis(10) //TimeUnit.MINUTES.toMillis(5)
     }
 }
