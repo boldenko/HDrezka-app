@@ -22,14 +22,11 @@
             app:title="@string/films_row_title"
             app:useSimpleSummaryProvider="true" />
 
-        <ListPreference
-            android:defaultValue="3"
-            app:entries="@array/filmMultipliers"
-            app:entryValues="@array/filmMultipliers"
-            app:key="rowMultiplier"
-            app:layout="@layout/custom_list_preference"
-            app:title="@string/films_row_multiplier_title"
-            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:layout="@layout/custom_title_preference"
+        app:title="@string/player_title">
 
         <CheckBoxPreference
             android:defaultValue="true"
@@ -37,22 +34,6 @@
             app:key="autoPlayNextEpisode"
             app:summary="@string/next_episode_hint"
             app:title="@string/next_episode_title" />
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:layout="@layout/custom_title_preference"
-        app:title="@string/cat_app">
-        <EditTextPreference
-            app:key="ownProvider"
-            app:layout="@layout/custom_edit_preference"
-            app:summary="@string/own_provider_hint"
-            app:title="@string/own_provider" />
-
-        <CheckBoxPreference
-            android:layout="@layout/custom_checkbox_preference"
-            app:key="isPlayer"
-            app:summary="@string/isplayer_hint"
-            app:title="Использовать стороний плеер" />
 
         <CheckBoxPreference
             android:layout="@layout/custom_checkbox_preference"
@@ -71,9 +52,41 @@
 
         <CheckBoxPreference
             android:layout="@layout/custom_checkbox_preference"
+            app:key="isPlayer"
+            app:summary="@string/isplayer_hint"
+            app:title="Использовать стороний плеер" />
+
+        <CheckBoxPreference
+            android:layout="@layout/custom_checkbox_preference"
             app:key="isPlayerChooser"
             app:summary="@string/player_chooser_hint"
             app:title="@string/player_chooser_title" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:layout="@layout/custom_checkbox_preference"
+            app:key="isSubtitlesDownload"
+            app:summary="@string/subtitle_download_hint"
+            app:title="@string/subtitle_download_title" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:layout="@layout/custom_title_preference"
+        app:title="@string/cat_app">
+        <EditTextPreference
+            app:key="ownProvider"
+            app:layout="@layout/custom_edit_preference"
+            app:summary="@string/own_provider_hint"
+            app:title="@string/own_provider" />
+
+        <ListPreference
+            android:defaultValue="3"
+            app:entries="@array/filmMultipliers"
+            app:entryValues="@array/filmMultipliers"
+            app:key="rowMultiplier"
+            app:layout="@layout/custom_list_preference"
+            app:title="@string/films_row_multiplier_title"
+            app:useSimpleSummaryProvider="true" />
 
         <CheckBoxPreference
             android:layout="@layout/custom_checkbox_preference"

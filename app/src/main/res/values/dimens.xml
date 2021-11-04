@@ -4,7 +4,7 @@
     <dimen name="normal_text">@dimen/_12ssp</dimen>
     <dimen name="small_text">@dimen/_10ssp</dimen>
     <dimen name="spinner_text">@dimen/_10ssp</dimen>
-    <dimen name="pref_padding">56dp</dimen>
+    <dimen name="pref_padding">36dp</dimen>
     <dimen name="root_pref_space">10dp</dimen>
     <dimen name="dimens_100dp">100dp</dimen>
     <dimen name="dimens_17dp">17dp</dimen>

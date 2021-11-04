@@ -92,6 +92,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 }
                 SettingsData.defaultQuality = defaultQuality
             }
+            "isSubtitlesDownload" -> {
+                SettingsData.isSubtitlesDownload = preferences.getBoolean("isSubtitlesDownload", true)
+            }
         }
     }
 

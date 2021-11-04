@@ -148,4 +148,7 @@
     <string name="msg_subtitle_on">Субтитры %1$s включены</string>
     <string name="msg_subtitle_cc">Субтитры</string>
     <string name="select_quality">Выберите качество</string>
+    <string name="player_title">Плеер</string>
+    <string name="subtitle_download_hint">Всегда будут скачиваться субтитры для внешнего плеера</string>
+    <string name="subtitle_download_title">Скачивание субтитров</string>
 </resources>

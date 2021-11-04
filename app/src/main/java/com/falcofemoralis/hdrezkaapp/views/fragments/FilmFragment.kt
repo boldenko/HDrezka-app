@@ -817,7 +817,7 @@ class FilmFragment : Fragment(), FilmView {
                     textView.setOnClickListener {
                         filmPresenter.getAndOpenFilmStream(translation, isDownload)
 
-                        if (activeNameTextView != null && !isDownload) {
+                        if (activeNameTextView != null && !isDownload && UserData.isLoggedIn == true) {
                             activeNameTextView?.setTextColor(requireContext().getColor(R.color.day_night_text))
                             activeNameTextView = textView
                             activeNameTextView?.setTextColor(requireContext().getColor(R.color.main_color_3))
@@ -826,7 +826,7 @@ class FilmFragment : Fragment(), FilmView {
                         }
                     }
 
-                    if (filmPresenter.film.lastVoiceId == translation.id) {
+                    if (filmPresenter.film.lastVoiceId == translation.id && UserData.isLoggedIn == true) {
                         activeNameTextView = textView
                     }
 
@@ -878,7 +878,7 @@ class FilmFragment : Fragment(), FilmView {
                         nameTextView.setOnClickListener {
                             filmPresenter.getAndOpenEpisodeStream(translations[selectedTranslation], season, episode, isDownload)
 
-                            if (activeNameTextView != null && !isDownload) {
+                            if (activeNameTextView != null && !isDownload && UserData.isLoggedIn == true) {
                                 activeNameTextView?.setTextColor(requireContext().getColor(R.color.day_night_text))
                                 activeNameTextView = nameTextView
                                 activeNameTextView?.setTextColor(requireContext().getColor(R.color.main_color_3))
@@ -889,7 +889,7 @@ class FilmFragment : Fragment(), FilmView {
                             }
                         }
 
-                        if (filmPresenter.film.lastSeason == season && filmPresenter.film.lastEpisode == episode && filmPresenter.film.lastVoiceId == translations[selectedTranslation].id) {
+                        if (filmPresenter.film.lastSeason == season && filmPresenter.film.lastEpisode == episode && filmPresenter.film.lastVoiceId == translations[selectedTranslation].id && UserData.isLoggedIn == true) {
                             activeNameTextView = nameTextView
                         }
 
@@ -1011,9 +1011,6 @@ class FilmFragment : Fragment(), FilmView {
                     sharingIntent.putExtra(Intent.EXTRA_TEXT, body)
                     startActivity(sharingIntent)
                 } else {
-                  /*  if (translation.subtitles != null && translation.subtitles!!.size > 0) {
-                        downloadSubtitle(translation.subtitles!![0].url, "$fileName.vtt")
-                    }*/
                     val request = DownloadManager.Request(parseUri)
                     request.setTitle(fileName)
                     request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
@@ -1021,6 +1018,10 @@ class FilmFragment : Fragment(), FilmView {
                     request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName.toString())
                     manager.enqueue(request)
                     Toast.makeText(requireContext(), getString(R.string.download_started), Toast.LENGTH_SHORT).show()
+                }
+
+                if (translation.subtitles != null && translation.subtitles!!.size > 0) {
+                    downloadSubtitle(translation.subtitles!![0].url, "$fileName.vtt")
                 }
             } else {
                 Toast.makeText(requireContext(), getString(R.string.no_manager), Toast.LENGTH_LONG).show()
@@ -1049,13 +1050,14 @@ class FilmFragment : Fragment(), FilmView {
                 intent.setDataAndType(Uri.parse(url), "video/*")
                 intent.putExtra("title", newFilmTitle)
 
-               /* if (translation.subtitles != null && translation.subtitles!!.size > 0) {
-                    val filename = newFilmTitle.replace(" ", "").replace("/", "") + ".vtt"
+                val filename = newFilmTitle.replace(" ", "").replace("/", "") + ".vtt"
+                val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/$filename"
+                if (translation.subtitles != null && translation.subtitles!!.size > 0 && SettingsData.isSubtitlesDownload == true) {
                     downloadSubtitle(translation.subtitles!![0].url, filename)
-                    val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/$filename"
                     intent.putExtra("subtitles_location", path)
                     intent.putExtra("subs", path)
-                }*/
+                }
+
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
                 try {
@@ -1080,7 +1082,7 @@ class FilmFragment : Fragment(), FilmView {
             request.allowScanningByMediaScanner()
             request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
             manager.enqueue(request)
-           // Toast.makeText(requireContext(), getString(R.string.download_started), Toast.LENGTH_SHORT).show()
+            // Toast.makeText(requireContext(), getString(R.string.download_started), Toast.LENGTH_SHORT).show()
         }
     }
 }
