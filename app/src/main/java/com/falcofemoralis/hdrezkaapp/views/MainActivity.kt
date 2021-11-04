@@ -126,7 +126,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         if (!isSettingsOpened) {
             val f = if (mainFragment.isVisible) mainFragment
             else currentFragment
-            onFragmentInteraction(f, UserFragment(), Action.NEXT_FRAGMENT_HIDE, true, null, null, null)
+            onFragmentInteraction(f, SettingsFragment(), Action.NEXT_FRAGMENT_HIDE, true, null, null, null)
             isSettingsOpened = true
         }
     }
@@ -268,7 +268,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                 is SearchFragment -> true
                 is BookmarksFragment -> true
                 is WatchLaterFragment -> true
-                is UserFragment -> true
+                is SettingsFragment -> true
                 else -> false
             }
 
@@ -310,7 +310,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                 fragmentTo = WatchLaterFragment()
             }
             NavigationMenuTabs.nav_menu_settings -> {
-                fragmentTo = UserFragment()
+                fragmentTo = SettingsFragment()
             }
         }
 

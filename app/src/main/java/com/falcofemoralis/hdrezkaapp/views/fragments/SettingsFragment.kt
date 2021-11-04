@@ -8,21 +8,38 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.falcofemoralis.hdrezkaapp.R
+import com.falcofemoralis.hdrezkaapp.constants.AuthType
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.constants.GridLayoutSizes
+import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.objects.UserData
+import com.falcofemoralis.hdrezkaapp.presenters.UserPresenter
+import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.views.MainActivity
+import com.falcofemoralis.hdrezkaapp.views.viewsInterface.UserView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
+class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener, UserView {
     private lateinit var preferences: SharedPreferences
     private var mActivity: FragmentActivity? = null
     private var mContext: Context? = null
+    private var userPresenter: UserPresenter? = null
+    private var popupWindowView: LinearLayout? = null
+    private var popupWindow: AlertDialog? = null
+    private var imm: InputMethodManager? = null
+    private var registerBtn: Preference? = null
+    private var loginBtn: Preference? = null
+    private var exitBtn: Preference? = null
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
@@ -30,6 +47,153 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         preferences.registerOnSharedPreferenceChangeListener(this)
         mActivity = requireActivity()
         mContext = requireContext()
+
+        // Start of userFragment implementation
+        // currentView = /
+        userPresenter = UserPresenter(this, requireContext())
+        imm = mActivity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+        registerBtn = findPreference(getString(R.string.register_pref))
+        loginBtn = findPreference(getString(R.string.login_pref))
+        exitBtn = findPreference(getString(R.string.exit_pref))
+
+        initExitButton()
+
+        UserData.isLoggedIn?.let {
+            initAuthPanel(it)
+        }
+    }
+
+    private fun initExitButton() {
+        exitBtn?.setOnPreferenceClickListener { //code for what you want it to do
+            val builder = MaterialAlertDialogBuilder(requireContext())
+            builder.setTitle(getString(R.string.confirm_exit))
+            builder.setPositiveButton(getString(R.string.confirm)) { dialog, id ->
+                initAuthPanel(false)
+                userPresenter?.exit()
+
+                mActivity?.let { it1 ->
+                    (it1 as MainActivity).updatePager()
+                }
+            }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, id ->
+                dialog.dismiss()
+            }
+
+            val d = builder.create()
+            d.show()
+            true
+        }
+    }
+
+    private fun initAuthPanel(isLogged: Boolean) {
+        if (isLogged) {
+            //  popupWindowCloseBtn?.visibility = View.GONE
+            registerBtn?.isVisible = false
+            loginBtn?.isVisible = false
+            exitBtn?.isVisible = true
+        } else {
+            registerBtn?.isVisible = true
+            loginBtn?.isVisible = true
+            exitBtn?.isVisible = false
+
+            loginBtn?.setOnPreferenceClickListener {
+                showAuthDialog(AuthType.LOGIN)
+                true
+            }
+
+            registerBtn?.setOnPreferenceClickListener {
+                showAuthDialog(AuthType.REGISTER)
+                true
+            }
+        }
+    }
+
+    private fun showAuthDialog(type: AuthType) {
+        mActivity?.let {
+            val builder = MaterialAlertDialogBuilder(it)
+            popupWindowView = requireActivity().layoutInflater.inflate(R.layout.dialog_auth, null) as LinearLayout
+
+            val emailView = popupWindowView?.findViewById<EditText>(R.id.dialog_auth_email)
+            val usernameView = popupWindowView?.findViewById<EditText>(R.id.dialog_auth_username)
+            val nameView = popupWindowView?.findViewById<EditText>(R.id.dialog_auth_name)
+            val passwordView = popupWindowView?.findViewById<EditText>(R.id.dialog_auth_password)
+
+            if (type == AuthType.LOGIN) {
+                builder.setTitle(getString(R.string.login))
+                emailView?.visibility = View.GONE
+                usernameView?.visibility = View.GONE
+                val submitBtn = popupWindowView?.findViewById<Button>(R.id.dialog_auth_submit)
+                submitBtn?.text = getString(R.string.submit_login)
+                submitBtn?.setOnClickListener {
+                    val name: String = nameView?.text.toString()
+                    val password: String = passwordView?.text.toString()
+
+                    changeAuthLoadingState(true)
+                    userPresenter?.login(name, password)
+                    imm?.hideSoftInputFromWindow(popupWindowView?.windowToken, 0)
+                }
+            } else {
+                builder.setTitle(getString(R.string.register))
+                nameView?.visibility = View.GONE
+                val submitBtn = popupWindowView?.findViewById<Button>(R.id.dialog_auth_submit)
+                submitBtn?.text = getString(R.string.submit_register)
+                submitBtn?.setOnClickListener {
+                    val email: String = emailView?.text.toString()
+                    val username: String = usernameView?.text.toString()
+                    val password: String = passwordView?.text.toString()
+
+                    changeAuthLoadingState(true)
+                    userPresenter?.register(email, username, password)
+                    imm?.hideSoftInputFromWindow(popupWindowView?.windowToken, 0)
+                }
+            }
+
+            builder.setView(popupWindowView)
+            popupWindow = builder.create()
+            popupWindow?.show()
+        }
+    }
+
+    private fun changeAuthLoadingState(isActive: Boolean) {
+        val loadingBar = popupWindowView?.findViewById<ProgressBar>(R.id.dialog_auth_loading)
+        val submitBtn = popupWindowView?.findViewById<Button>(R.id.dialog_auth_submit)
+
+        if (isActive) {
+            loadingBar?.visibility = View.VISIBLE
+            submitBtn?.visibility = View.GONE
+        } else {
+            loadingBar?.visibility = View.GONE
+            submitBtn?.visibility = View.VISIBLE
+        }
+    }
+
+    override fun showError(text: String) {
+        changeAuthLoadingState(false)
+
+        val error = text.replace("</u>", "").replace("</b>", "")
+
+        val errorView = popupWindowView?.findViewById<TextView>(R.id.dialog_auth_error)
+        errorView?.visibility = View.VISIBLE
+        errorView?.text = error
+    }
+
+    override fun setUserAvatar() {
+        (mActivity as MainActivity).setUserAvatar()
+    }
+
+    override fun completeAuth() {
+        popupWindow?.dismiss()
+
+        initAuthPanel(true)
+
+        mActivity?.let {
+            (it as MainActivity).updatePager()
+        }
+    }
+
+    override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
+        ExceptionHelper.showToastError(requireContext(), type, errorText)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

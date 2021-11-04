@@ -3,6 +3,30 @@
 
     <PreferenceCategory
         android:layout="@layout/custom_title_preference"
+        app:title="@string/account">
+
+        <Preference
+            android:icon="@drawable/ic_baseline_login_24"
+            android:key="@string/login_pref"
+            android:layout="@layout/custom_preference"
+            app:title="@string/login" />
+
+        <Preference
+            android:icon="@drawable/ic_baseline_register_24"
+            android:key="@string/register_pref"
+            android:layout="@layout/custom_preference"
+            app:title="@string/register" />
+
+        <Preference
+            android:icon="@drawable/ic_baseline_exit_to_app_24"
+            android:key="@string/exit_pref"
+            android:layout="@layout/custom_preference"
+            app:title="@string/exit" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:layout="@layout/custom_title_preference"
         app:title="@string/cat_interface">
 
         <ListPreference
