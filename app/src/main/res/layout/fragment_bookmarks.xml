@@ -66,6 +66,11 @@
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
             android:spinnerMode="dialog"
+            app:smsp_searchHintColor="@color/white"
+            app:smsp_searchFilterColor="@color/white"
+            app:smsp_searchTextColor="@color/white"
+            app:smsp_dismissSearchColor="@color/white"
+
             app:smsp_arrowColor="@color/white"
             app:smsp_enableSearchHeader="false"
             app:smsp_floatingLabelColor="@color/white"
@@ -74,10 +79,10 @@
             app:smsp_hintSize="@dimen/small_text"
             app:smsp_isSearchable="true"
             app:smsp_itemColor="@color/white"
-            app:smsp_itemListBackgroundColor="@color/search_dialog_background"
+            app:smsp_itemListBackgroundColor="@color/light_background"
             app:smsp_itemListColor="@color/day_night_text"
             app:smsp_itemListHintColor="@color/white"
-            app:smsp_searchBackgroundColor="@color/search_dialog_background"
+            app:smsp_searchBackgroundColor="@color/light_background"
             app:smsp_selectedItemListColor="@color/main_color_3" />
     </LinearLayout>
 

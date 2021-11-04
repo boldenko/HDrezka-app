@@ -6,7 +6,6 @@ import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlin.system.exitProcess
 
 object ConnectionManager {
@@ -33,16 +32,14 @@ object ConnectionManager {
 
     fun showConnectionErrorDialog(context: Context, type: IConnection.ErrorType, retryCallback: () -> Unit) {
         if (type == IConnection.ErrorType.NO_INTERNET) {
-            val dialog = MaterialAlertDialogBuilder(context)
-            dialog.setTitle(context.getString(R.string.no_connection))
-            dialog.setPositiveButton(context.getString(R.string.exit)) { dialog, id ->
+            val builder = DialogManager.getDialog(context, false, R.string.no_connection)
+            builder.setPositiveButton(context.getString(R.string.exit)) { dialog, id ->
                 exitProcess(0)
             }
-            dialog.setNegativeButton(context.getString(R.string.retry)) { dialog, id ->
+            builder.setNegativeButton(context.getString(R.string.retry)) { dialog, id ->
                 retryCallback()
             }
-            dialog.setCancelable(false)
-            val d = dialog.create()
+            val d = builder.create()
             d.show()
         }
     }

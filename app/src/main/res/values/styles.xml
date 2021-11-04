@@ -7,9 +7,65 @@
         <item name="colorPrimaryDark">@color/dark_background</item>
         <item name="colorAccent">@color/main_color_3</item>
         <item name="android:windowContentTransitions">true</item>
-        <item name="android:windowBackground">#00000000</item>
+        <item name="android:windowBackground">@color/transparent</item>
         <item name="android:navigationBarColor">@color/dark_background</item>
         <item name="colorControlHighlight">@color/focusableColor</item>
+        <item name="alertDialogTheme">@style/CustomAlertDialog</item>
+        <item name="materialAlertDialogTheme">@style/CustomMaterialAlertDialog</item>
+        <item name="android:editTextStyle">@style/editTextStyle</item>
+        <item name="editTextStyle">@style/editTextStyle</item>
+    </style>
+
+    <style name="editTextStyle" parent="@style/Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!-- Alert Dialog -->
+    <style name="CustomAlertDialog" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="android:colorBackground">@color/light_background</item>
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="textColorAlertDialogListItem">@color/white</item>
+        <item name="color">@color/main_color_3</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Alert.Button.Positive</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Alert.Button.Neutral</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Alert.Button.Neutral</item>
+
+        <!-- Used for the buttons -->
+        <item name="colorAccent">@color/main_color_3</item>
+        <!-- Used for the title and text -->
+        <item name="android:textColorPrimary">@color/white</item>
+        <!-- Used for the background -->
+        <item name="android:background">@color/light_background</item>
+    </style>
+
+    <style name="Alert.Button.Positive" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="backgroundTint">@color/transparent</item>
+        <item name="rippleColor">@color/main_color_3</item>
+        <item name="android:textColor">@color/main_color_3</item>
+    </style>
+
+    <style name="Alert.Button.Neutral" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="backgroundTint">@color/transparent</item>
+        <item name="rippleColor">@color/main_color_3</item>
+        <item name="android:textColor">@color/main_color_3</item>
+    </style>
+
+    <!-- Material Alert Dialog -->
+    <style name="CustomMaterialAlertDialog" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="android:background">@color/light_background</item>
+        <!-- Text Color for title and message -->
+        <item name="colorOnSurface">@color/white</item>
+
+        <!-- Used for the buttons -->
+        <item name="colorAccent">@color/main_color_3</item>
+
+        <!-- Used for the title and text -->
+        <item name="android:textColorPrimary">@color/white</item>
+
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="textColorAlertDialogListItem">@color/white</item>
+
+        <item name="android:colorAccent">@color/main_color_3</item>
     </style>
 
     <style name="UserSettingElement">

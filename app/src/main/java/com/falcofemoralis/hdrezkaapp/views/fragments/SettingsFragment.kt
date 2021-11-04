@@ -24,6 +24,7 @@ import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.objects.UserData
 import com.falcofemoralis.hdrezkaapp.presenters.UserPresenter
+import com.falcofemoralis.hdrezkaapp.utils.DialogManager
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.views.MainActivity
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.UserView
@@ -66,8 +67,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     private fun initExitButton() {
         exitBtn?.setOnPreferenceClickListener { //code for what you want it to do
-            val builder = MaterialAlertDialogBuilder(requireContext())
-            builder.setTitle(getString(R.string.confirm_exit))
+            val builder = DialogManager.getDialog(requireContext(), false, R.string.confirm_exit)
             builder.setPositiveButton(getString(R.string.confirm)) { dialog, id ->
                 initAuthPanel(false)
                 userPresenter?.exit()

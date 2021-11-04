@@ -72,7 +72,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Career"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/normal_text" />
 
                     <TextView
@@ -80,7 +80,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Borndate"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/normal_text" />
 
                     <TextView
@@ -88,7 +88,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Bornplace"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/normal_text" />
 
                     <TextView
