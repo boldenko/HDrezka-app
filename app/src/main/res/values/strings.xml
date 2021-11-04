@@ -140,12 +140,12 @@
     <string name="defaultq_hint">Будет выбрано автоматически указанное качество видео</string>
     <string name="defaultq_title">Качество по умолчанию</string>
     <string name="playback_tag">PLAYBACK_TAG</string>
-    <string name="button_speedup">Change Playback Speed</string>
-    <string name="title_select_speed">Set Playback Speed</string>
-    <string name="button_cc">Subtitles</string>
-    <string name="msg_subtitle_off">Subtitle Disabled.</string>
-    <string name="title_select_caption">Select Subtitles</string>
-    <string name="msg_subtitle_on">Subtitle %1$s enabled.</string>
-    <string name="msg_subtitle_cc">Closed Caption</string>
-    <string name="select_quality">Select Quality</string>
+    <string name="button_speedup">Изменить скорость воспроизведения</string>
+    <string name="title_select_speed">Установить скорость воспроизведения</string>
+    <string name="button_cc">Субтитры</string>
+    <string name="msg_subtitle_off">Субтитры отключены</string>
+    <string name="title_select_caption">Выбрать субтитры</string>
+    <string name="msg_subtitle_on">Субтитры %1$s включены</string>
+    <string name="msg_subtitle_cc">Субтитры</string>
+    <string name="select_quality">Выберите качество</string>
 </resources>

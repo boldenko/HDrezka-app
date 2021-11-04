@@ -402,6 +402,6 @@ class PlayerFragment : VideoSupportFragment() {
     companion object {
         const val UPDATE_DELAY = 16
         const val SPEED_START_VALUE = 1.0f
-        val SAVE_EVERY_5_MIN = TimeUnit.SECONDS.toMillis(10) //TimeUnit.MINUTES.toMillis(5)
+        val SAVE_EVERY_5_MIN = TimeUnit.MINUTES.toMillis(5)
     }
 }

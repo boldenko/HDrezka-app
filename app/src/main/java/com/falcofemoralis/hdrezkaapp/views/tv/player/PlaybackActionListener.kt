@@ -108,7 +108,7 @@ class PlaybackActionListener(private val playerFragment: PlayerFragment) : Video
         seekBar?.progress = Math.round(playerFragment.mSpeed * 100.0f).toInt()
         val seekValue: TextView? = mDialog?.findViewById<TextView>(R.id.seekbar_value)
         val value = (playerFragment.mSpeed * 100.0f)
-        seekValue?.setText("$value%")
+        seekValue?.text = "${value.toInt()}"
 
         mDialog?.setOnKeyListener { dlg: DialogInterface, keyCode: Int, event: KeyEvent ->
             when (keyCode) {
@@ -142,7 +142,7 @@ class PlaybackActionListener(private val playerFragment: PlayerFragment) : Video
                     var value = value
                     value = value / 10 * 10
                     if (value < 10) value = 10
-                    seekValue?.text = "$value%"
+                    seekValue?.text = "${value.toInt()}"
                     playerFragment.mSpeed = value.toFloat() * 0.01f
                     val parms = PlaybackParameters(playerFragment.mSpeed)
                     playerFragment.mPlayer?.playbackParameters = parms
