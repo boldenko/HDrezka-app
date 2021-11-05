@@ -69,4 +69,5 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer:$exoplayer_version"
     implementation "com.google.android.exoplayer:extension-leanback:$exoplayer_version"
     implementation 'com.google.code.gson:gson:2.8.6'
+    implementation "com.algolia.instantsearch:voice:1.1.0"
 }

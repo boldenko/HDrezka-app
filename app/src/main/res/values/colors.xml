@@ -20,4 +20,7 @@
     <color name="day_night_text_hint">#D8D8D8</color>
     <color name="tv_show">#909215</color>
     <color name="nav_text_color">#CECCD5</color>
+    <color name="blue_light">@color/main_color_3</color>
+    <color name="blue_dark">#FF403F</color>
+    <color name="blue_cyan">#FF5C5B</color>
 </resources>

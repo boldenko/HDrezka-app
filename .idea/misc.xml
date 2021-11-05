@@ -19,6 +19,7 @@
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/drawable/ic_baseline_categories_24_sel.xml" value="0.32222222222222224" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/drawable/ic_baseline_high_quality_24.xml" value="0.3828125" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/drawable/ic_baseline_login_24.xml" value="0.32222222222222224" />
+        <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/drawable/ic_baseline_mic_24.xml" value="0.3296875" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/drawable/ic_baseline_movie_24.xml" value="0.2865740740740741" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/drawable/ic_baseline_movie_24_sel.xml" value="0.32222222222222224" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/drawable/ic_baseline_play_arrow2_24.xml" value="0.3223684210526316" />
@@ -84,7 +85,7 @@
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/fragment_newest_films.xml" value="0.29717813051146386" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/fragment_playback.xml" value="0.35104166666666664" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/fragment_register.xml" value="0.30833333333333335" />
-        <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/fragment_search.xml" value="0.2" />
+        <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/fragment_search.xml" value="0.5" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/fragment_user.xml" value="0.2" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/fragment_view_pager.xml" value="0.31203703703703706" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/ic_star.xml" value="0.22291666666666668" />

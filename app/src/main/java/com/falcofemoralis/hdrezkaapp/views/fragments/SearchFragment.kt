@@ -1,7 +1,12 @@
 package com.falcofemoralis.hdrezkaapp.views.fragments
 
+import android.Manifest
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -10,7 +15,9 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.algolia.instantsearch.voice.ui.VoicePermissionDialogFragment
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
@@ -32,6 +39,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
     private lateinit var hintLayout: LinearLayout
     private lateinit var fragmentListener: OnFragmentInteractionListener
     private lateinit var clearBtn: TextView
+    private lateinit var voiceBtn: ImageView
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -41,6 +49,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentView = inflater.inflate(R.layout.fragment_search, container, false)
         clearBtn = currentView.findViewById(R.id.fragment_search_tv_clear)
+        voiceBtn = currentView.findViewById(R.id.fragment_search_voice)
 
         filmsListFragment = FilmsListFragment()
         filmsListFragment.setCallView(this)
@@ -122,6 +131,13 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
             autoCompleteTextView.setText("")
         }
 
+        voiceBtn.setOnClickListener {
+            when (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                true -> displaySpeechRecognizer()
+                false -> VoicePermissionDialogFragment().show(parentFragmentManager, "PERMISSION")
+            }
+        }
+
         if (SettingsData.deviceType == DeviceType.TV) {
             autoCompleteTextView.setOnClickListener {
                 imm.hideSoftInputFromWindow(autoCompleteTextView.windowToken, 0)
@@ -131,6 +147,42 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
 
             //  autoCompleteTextView.requestFocus()
         }
+    }
+
+    private val SPEECH_REQUEST_CODE = 0
+    private fun displaySpeechRecognizer() {
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ru-RU")
+        }
+        // This starts the activity and populates the intent with the speech text.
+        startActivityForResult(intent, SPEECH_REQUEST_CODE)
+    }
+
+    // This callback is invoked when the Speech Recognizer returns.
+    // This is where you process the intent and extract the speech text from the intent.
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == SPEECH_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val spokenText: String? =
+                data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS).let { results ->
+                    results?.get(0)
+                }
+            // Do something with spokenText.
+            if (spokenText != null) {
+                //autoCompleteTextView.dismissDropDown()
+                autoCompleteTextView.setText(spokenText)
+
+                //проверяем ведденный текст
+                if (spokenText.isEmpty()) {
+                    Toast.makeText(context, getString(R.string.enter_film_name), Toast.LENGTH_SHORT).show()
+                } else {
+                    hintLayout.visibility = View.GONE
+                    imm.hideSoftInputFromWindow(autoCompleteTextView.windowToken, 0)
+                    searchPresenter.setQuery(spokenText)
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun redrawSearchFilms(films: ArrayList<String>) {
