@@ -238,9 +238,10 @@ class FilmFragment : Fragment(), FilmView {
 
         playerView.settings.javaScriptEnabled = true
         playerView.settings.domStorageEnabled = true
+        // playerView.settings.userAgentString = BaseModel.userAgent
         playerView.addJavascriptInterface(WebAppInterface(requireActivity()), "Android")
         playerView.addJavascriptInterface(PlayerJsInterface(requireContext()), "JSOUT")
-        playerView.webViewClient = PlayerWebViewClient(requireContext(), this) {
+        playerView.webViewClient = PlayerWebViewClient(requireContext(), this, filmPresenter.film) {
             container.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
             currentView.findViewById<ProgressBar>(R.id.fragment_film_pb_player_loading).visibility = View.GONE
             playerView.visibility = View.VISIBLE
@@ -818,7 +819,7 @@ class FilmFragment : Fragment(), FilmView {
                         filmPresenter.getAndOpenFilmStream(translation, isDownload)
 
                         if (activeNameTextView != null && !isDownload && UserData.isLoggedIn == true) {
-                            activeNameTextView?.setTextColor(requireContext().getColor(R.color.day_night_text))
+                            activeNameTextView?.setTextColor(requireContext().getColor(R.color.text_color))
                             activeNameTextView = textView
                             activeNameTextView?.setTextColor(requireContext().getColor(R.color.main_color_3))
 
@@ -879,7 +880,7 @@ class FilmFragment : Fragment(), FilmView {
                             filmPresenter.getAndOpenEpisodeStream(translations[selectedTranslation], season, episode, isDownload)
 
                             if (activeNameTextView != null && !isDownload && UserData.isLoggedIn == true) {
-                                activeNameTextView?.setTextColor(requireContext().getColor(R.color.day_night_text))
+                                activeNameTextView?.setTextColor(requireContext().getColor(R.color.text_color))
                                 activeNameTextView = nameTextView
                                 activeNameTextView?.setTextColor(requireContext().getColor(R.color.main_color_3))
 

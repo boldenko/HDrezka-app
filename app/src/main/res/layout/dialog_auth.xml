@@ -17,7 +17,7 @@
         android:nextFocusDown="@id/dialog_auth_password"
         android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:textColor="@color/day_night_text"
+        android:textColor="@color/text_color"
         android:textColorHint="@color/day_night_text_hint" />
 
     <EditText
@@ -33,7 +33,7 @@
         android:nextFocusDown="@id/dialog_auth_username"
         android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:textColor="@color/day_night_text"
+        android:textColor="@color/text_color"
         android:textColorHint="@color/day_night_text_hint" />
 
     <EditText
@@ -49,7 +49,7 @@
         android:nextFocusDown="@id/dialog_auth_password"
         android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:textColor="@color/day_night_text"
+        android:textColor="@color/text_color"
         android:textColorHint="@color/day_night_text_hint" />
 
     <EditText
@@ -65,7 +65,7 @@
         android:inputType="textPassword"
         android:nextFocusDown="@id/dialog_auth_submit"
         android:selectAllOnFocus="true"
-        android:textColor="@color/day_night_text"
+        android:textColor="@color/text_color"
         android:textColorHint="@color/day_night_text_hint" />
 
     <TextView

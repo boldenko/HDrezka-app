@@ -13,14 +13,14 @@
         android:spinnerMode="dialog"
         android:focusable="true"
         android:foreground="?attr/selectableItemBackground"
-        app:smsp_arrowColor="@color/day_night_text"
-        app:smsp_floatingLabelColor="@color/day_night_text"
+        app:smsp_arrowColor="@color/text_color"
+        app:smsp_floatingLabelColor="@color/text_color"
         app:smsp_hint="@string/translation"
-        app:smsp_hintColor="@color/day_night_text"
+        app:smsp_hintColor="@color/text_color"
         app:smsp_hintSize="@dimen/small_text"
-        app:smsp_itemColor="@color/day_night_text"
-        app:smsp_itemListColor="@color/day_night_text"
-        app:smsp_itemListHintColor="@color/day_night_text"
+        app:smsp_itemColor="@color/text_color"
+        app:smsp_itemListColor="@color/text_color"
+        app:smsp_itemListHintColor="@color/text_color"
         app:smsp_selectedItemListColor="@color/main_color_3" />
 
     <ProgressBar

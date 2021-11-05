@@ -19,7 +19,7 @@
             android:layout_height="48dp"
             android:layout_weight="0.9"
             android:padding="8dp"
-            android:textColor="@color/day_night_text"
+            android:textColor="@color/text_color"
             android:textSize="@dimen/normal_text" />
 
         <RelativeLayout
@@ -32,7 +32,7 @@
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:background="@drawable/triangle"
-                android:backgroundTint="@color/day_night_text" />
+                android:backgroundTint="@color/text_color" />
         </RelativeLayout>
     </LinearLayout>
 

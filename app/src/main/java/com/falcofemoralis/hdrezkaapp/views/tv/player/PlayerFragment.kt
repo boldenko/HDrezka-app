@@ -104,6 +104,7 @@ class PlayerFragment : VideoSupportFragment() {
     override fun onStop() {
         super.onStop()
 
+        saveCurrentTime()
         if (Util.SDK_INT > 23) {
             releasePlayer()
         }
@@ -229,18 +230,8 @@ class PlayerFragment : VideoSupportFragment() {
             Timer("ProgressSave", false).schedule(SAVE_EVERY_5_MIN) {
                 GlobalScope.launch {
                     withContext(Dispatchers.Main) {
-                        val lastPos = mPlayerGlue?.getCurrentPos()
-
-                        if (lastPos != null) {
-                            // save
-                            if (isSerial) {
-                                playbackPositionManager?.updateTime(mFilm?.filmId, mTranslation?.id, mTranslation?.selectedEpisode?.first, mTranslation?.selectedEpisode?.second, lastPos)
-                            } else {
-                                playbackPositionManager?.updateTime(mFilm?.filmId, mTranslation?.id, lastPos)
-                            }
-
-                            initAutoSave()
-                        }
+                        saveCurrentTime()
+                        initAutoSave()
                     }
                 }
             }
@@ -398,6 +389,19 @@ class PlayerFragment : VideoSupportFragment() {
             tickle()
         }
     }
+
+    private fun saveCurrentTime(){
+        val lastPos = mPlayerGlue?.getCurrentPos()
+        if (lastPos != null) {
+            // save
+            if (isSerial) {
+                playbackPositionManager?.updateTime(mFilm?.filmId, mTranslation?.id, mTranslation?.selectedEpisode?.first, mTranslation?.selectedEpisode?.second, lastPos)
+            } else {
+                playbackPositionManager?.updateTime(mFilm?.filmId, mTranslation?.id, lastPos)
+            }
+        }
+    }
+
 
     companion object {
         const val UPDATE_DELAY = 16

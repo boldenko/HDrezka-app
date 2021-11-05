@@ -119,14 +119,14 @@
                     android:focusable="true"
                     android:foreground="?attr/selectableItemBackground"
                     android:spinnerMode="dialog"
-                    app:smsp_arrowColor="@color/day_night_text"
+                    app:smsp_arrowColor="@color/text_color"
                     app:smsp_floatingLabelColor="@color/day_night_text_hint"
                     app:smsp_hint="@string/choose_genre_hint"
-                    app:smsp_hintColor="@color/day_night_text"
+                    app:smsp_hintColor="@color/text_color"
                     app:smsp_hintSize="@dimen/spinner_text"
-                    app:smsp_itemColor="@color/day_night_text"
-                    app:smsp_itemListColor="@color/day_night_text"
-                    app:smsp_itemListHintColor="@color/day_night_text"
+                    app:smsp_itemColor="@color/text_color"
+                    app:smsp_itemListColor="@color/text_color"
+                    app:smsp_itemListHintColor="@color/text_color"
                     app:smsp_selectedItemListColor="@color/main_color_3" />
 
 
@@ -137,14 +137,14 @@
                     android:focusable="true"
                     android:foreground="?attr/selectableItemBackground"
                     android:spinnerMode="dialog"
-                    app:smsp_arrowColor="@color/day_night_text"
+                    app:smsp_arrowColor="@color/text_color"
                     app:smsp_floatingLabelColor="@color/day_night_text_hint"
                     app:smsp_hint="@string/choose_year_hint"
-                    app:smsp_hintColor="@color/day_night_text"
+                    app:smsp_hintColor="@color/text_color"
                     app:smsp_hintSize="@dimen/spinner_text"
-                    app:smsp_itemColor="@color/day_night_text"
-                    app:smsp_itemListColor="@color/day_night_text"
-                    app:smsp_itemListHintColor="@color/day_night_text"
+                    app:smsp_itemColor="@color/text_color"
+                    app:smsp_itemListColor="@color/text_color"
+                    app:smsp_itemListHintColor="@color/text_color"
                     app:smsp_selectedItemListColor="@color/main_color_3" />
             </LinearLayout>
 
@@ -155,7 +155,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:textColor="@color/day_night_text"
+                    android:textColor="@color/text_color"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
@@ -192,7 +192,7 @@
                     android:layout_marginBottom="10dp">
 
                     <RadioButton
-                        android:textColor="@color/day_night_text"
+                        android:textColor="@color/text_color"
                         android:id="@+id/type_all"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -201,7 +201,7 @@
                         android:textSize="@dimen/normal_text" />
 
                     <RadioButton
-                        android:textColor="@color/day_night_text"
+                        android:textColor="@color/text_color"
                         android:id="@+id/type_films"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -209,7 +209,7 @@
                         android:textSize="@dimen/normal_text" />
 
                     <RadioButton
-                        android:textColor="@color/day_night_text"
+                        android:textColor="@color/text_color"
                         android:id="@+id/type_serials"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -217,7 +217,7 @@
                         android:textSize="@dimen/normal_text" />
 
                     <RadioButton
-                        android:textColor="@color/day_night_text"
+                        android:textColor="@color/text_color"
                         android:id="@+id/type_multfilms"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -225,7 +225,7 @@
                         android:textSize="@dimen/normal_text" />
 
                     <RadioButton
-                        android:textColor="@color/day_night_text"
+                        android:textColor="@color/text_color"
                         android:id="@+id/type_anime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -241,7 +241,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:textColor="@color/day_night_text"
+                    android:textColor="@color/text_color"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/sort_header"
@@ -254,7 +254,7 @@
                     android:layout_marginBottom="10dp">
 
                     <RadioButton
-                        android:textColor="@color/day_night_text"
+                        android:textColor="@color/text_color"
                         android:id="@+id/sort_last"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -263,7 +263,7 @@
                         android:textSize="@dimen/normal_text" />
 
                     <RadioButton
-                        android:textColor="@color/day_night_text"
+                        android:textColor="@color/text_color"
                         android:id="@+id/sort_popular"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -271,7 +271,7 @@
                         android:textSize="@dimen/normal_text" />
 
                     <RadioButton
-                        android:textColor="@color/day_night_text"
+                        android:textColor="@color/text_color"
                         android:id="@+id/sort_now"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

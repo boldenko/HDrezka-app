@@ -6,15 +6,15 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
+import com.falcofemoralis.hdrezkaapp.objects.Film
 
 
-class PlayerWebViewClient(val context: Context, val mainView: IConnection, val callback: () -> Unit) : WebViewClient() {
+class PlayerWebViewClient(val context: Context, val mainView: IConnection, val film: Film, val callback: () -> Unit) : WebViewClient() {
 
     @TargetApi(Build.VERSION_CODES.N)
     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
@@ -150,10 +150,12 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
                 "})()"
         view?.evaluateJavascript(script2, null)
 
-        view?.evaluateJavascript("var vkGroups = document.getElementById('vk_groups');\n" +
-                "if(vkGroups){\n" +
-                "    vkGroups.style.setProperty('display', 'none', 'important');\n" +
-                "}", null)
+        view?.evaluateJavascript(
+            "var vkGroups = document.getElementById('vk_groups');\n" +
+                    "if(vkGroups){\n" +
+                    "    vkGroups.style.setProperty('display', 'none', 'important');\n" +
+                    "}", null
+        )
 
         // fix translators block width
         val script3 = "var translationsHint = document.getElementsByClassName('b-rgstats__help')[0];" +
@@ -253,6 +255,11 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val c
                 "    }\n" +
                 "}"
         view?.evaluateJavascript(script6, null)
+
+        if (film.autoswitch != null && film.autoswitch!!.isNotEmpty()) {
+            view?.evaluateJavascript(film.autoswitch!!, null)
+        }
+
         callback()
 
         super.onPageFinished(view, url)

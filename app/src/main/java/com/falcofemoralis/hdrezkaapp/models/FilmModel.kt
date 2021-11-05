@@ -325,9 +325,9 @@ object FilmModel : BaseModel() {
         }
 
         // no film translations
+        val stringedDoc = document.toString()
         try {
             if (filmTranslations.size == 0) {
-                val stringedDoc = document.toString()
 
                 if (film.isMovieTranslation!!) {
                     val index = stringedDoc.indexOf("initCDNMoviesEvents")
@@ -368,8 +368,15 @@ object FilmModel : BaseModel() {
                 break
             }
         }
-
         film.translations = filmTranslations
+
+        if(film.isMovieTranslation == false && SettingsData.autoPlayNextEpisode == true){
+            val firstIndex = stringedDoc.indexOf("\$(function () { sof.tv.initCDNSeriesEvents")
+            val secondIndex = stringedDoc.indexOf("; \$(function ()")
+            val autoswitch = stringedDoc.substring(firstIndex, secondIndex)
+            film.autoswitch = autoswitch
+        }
+
 
         film.hasAdditionalData = true
 

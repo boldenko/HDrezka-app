@@ -58,6 +58,18 @@
 
     <PreferenceCategory
         android:layout="@layout/custom_title_preference"
+        app:title="@string/player">
+
+    <SwitchPreferenceCompat
+        android:layout="@layout/custom_switch_preference"
+        android:defaultValue="true"
+        app:key="autoPlayNextEpisode"
+        app:summary="@string/next_episode_hint"
+        app:title="@string/next_episode_title" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:layout="@layout/custom_title_preference"
         app:title="@string/player_title">
 
         <SwitchPreferenceCompat

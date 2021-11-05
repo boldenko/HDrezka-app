@@ -28,7 +28,7 @@
             app:smsp_hintColor="@color/white"
             app:smsp_hintSize="@dimen/spinner_text"
             app:smsp_itemColor="@color/white"
-            app:smsp_itemListColor="@color/day_night_text"
+            app:smsp_itemListColor="@color/text_color"
             app:smsp_itemListHintColor="@color/white"
             app:smsp_selectedItemListColor="@color/main_color_3" />
 

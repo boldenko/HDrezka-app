@@ -52,4 +52,5 @@ open class Film : Serializable {
     var lastVoiceId: String? = null
     var lastSeason: String? = null
     var lastEpisode: String? = null
+    var autoswitch: String? = null
 }

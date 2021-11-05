@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:textColor="@color/day_night_text"
+        android:textColor="@color/text_color"
         android:textColorHint="@color/gray"
         android:hint="@string/new_cat_hint"
         android:inputType="text" />
