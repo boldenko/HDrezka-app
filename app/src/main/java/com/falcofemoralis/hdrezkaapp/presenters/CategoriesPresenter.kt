@@ -1,6 +1,7 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
 import android.util.ArrayMap
+import android.widget.Toast
 import com.falcofemoralis.hdrezkaapp.models.CategoriesModel
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper.catchException
@@ -104,5 +105,6 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
         filmsListPresenter.appliedFilters = appliedFilters
         updateCategories()
        // filmsListPresenter.applyFilter()
+        categoriesView.showFilterMsg()
     }
 }

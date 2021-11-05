@@ -115,7 +115,9 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
                 }
             }
             R.id.fragment_bookmarks_sp_list -> {
-                bookmarksPresenter.bookmarks?.get(position)?.let { bookmarksPresenter.setBookmark(it) }
+                if(bookmarksPresenter.bookmarks != null && bookmarksPresenter.bookmarks!!.size > 0){
+                    bookmarksPresenter.bookmarks?.get(position)?.let { bookmarksPresenter.setBookmark(it) }
+                }
             }
         }
     }

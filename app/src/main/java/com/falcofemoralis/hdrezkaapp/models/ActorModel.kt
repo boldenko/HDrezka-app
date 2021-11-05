@@ -11,7 +11,8 @@ import org.jsoup.nodes.Document
 
 object ActorModel : BaseModel() {
     private const val POST_ACTOR = "/ajax/person_info/"
-    const val NO_PHOTO = "/i/nopersonphoto.png"
+    const val NO_PHOTO = "nopersonphoto"
+    const val STATIC_PROTOCOL = "static"
 
     fun getActorMainInfo(actor: Actor): Actor {
         val data: ArrayMap<String, String> = ArrayMap()

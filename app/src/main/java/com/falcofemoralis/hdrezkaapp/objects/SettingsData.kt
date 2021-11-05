@@ -9,14 +9,6 @@ import com.falcofemoralis.hdrezkaapp.utils.FileManager
 
 object SettingsData {
     var provider: String? = null
-    private var f = "ka"
-    private var d = "re"
-    private var a = "https://static."
-    private var b = "h"
-    private var e = "z"
-    private var g = ".ac"
-    private var c = "d"
-    var staticProvider: String = a + b + c + d + e + f + g
     var mainScreen: Int? = null
     var isPlayer: Boolean? = null
     var isMaxQuality: Boolean? = null

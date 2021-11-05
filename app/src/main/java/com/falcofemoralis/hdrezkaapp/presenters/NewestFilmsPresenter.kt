@@ -51,5 +51,7 @@ class NewestFilmsPresenter(
         } else {
             filmsListPresenter.applyFilter()
         }
+
+        newestFilmsView.showFilterMsg()
     }
 }

@@ -7,4 +7,6 @@ interface CategoriesView : IConnection{
     fun setCategories()
 
     fun showList()
+
+    fun showFilterMsg()
 }

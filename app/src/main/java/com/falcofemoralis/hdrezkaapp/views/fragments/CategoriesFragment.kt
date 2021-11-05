@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
@@ -131,5 +132,9 @@ class CategoriesFragment : Fragment(), CategoriesView, AdapterView.OnItemSelecte
 
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
         ExceptionHelper.showToastError(requireContext(), type, errorText)
+    }
+
+    override fun showFilterMsg(){
+        Toast.makeText(requireContext(), R.string.filter_applied_hint, Toast.LENGTH_LONG).show()
     }
 }

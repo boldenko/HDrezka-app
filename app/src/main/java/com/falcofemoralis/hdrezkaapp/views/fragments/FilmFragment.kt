@@ -324,7 +324,7 @@ class FilmFragment : Fragment(), FilmView {
                 layout.findViewById<TextView>(R.id.actor_name).text = actor.name
                 layout.findViewById<TextView>(R.id.actor_career).text = actor.careers
 
-                if (actor.photo != null && actor.photo!!.isNotEmpty() && actor.photo != SettingsData.staticProvider + ActorModel.NO_PHOTO) {
+                if (actor.photo != null && actor.photo!!.isNotEmpty() && actor.photo?.contains(ActorModel.NO_PHOTO) == false) {
                     val actorProgress: ProgressBar = layout.findViewById(R.id.actor_loading)
                     val actorLayout: LinearLayout = layout.findViewById(R.id.actor_layout)
 

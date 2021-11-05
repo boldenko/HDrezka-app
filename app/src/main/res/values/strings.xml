@@ -156,4 +156,5 @@
     <string name="register_pref">fragment_user_tv_register</string>
     <string name="exit_pref">fragment_user_tv_exit</string>
     <string name="player">Плеер</string>
+    <string name="filter_applied_hint">Происходит поиск с установленными фильтрами. Это может занять значительное время…</string>
 </resources>

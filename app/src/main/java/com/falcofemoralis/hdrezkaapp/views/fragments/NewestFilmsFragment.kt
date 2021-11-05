@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
@@ -58,5 +59,9 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
 
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
         ExceptionHelper.showToastError(requireContext(), type, errorText)
+    }
+
+    override fun showFilterMsg(){
+        Toast.makeText(requireContext(), R.string.filter_applied_hint, Toast.LENGTH_LONG).show()
     }
 }

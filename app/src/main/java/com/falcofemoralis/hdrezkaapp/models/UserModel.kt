@@ -23,7 +23,24 @@ object UserModel : BaseModel() {
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
             .get()
         val str = doc.select("div.b-userprofile__avatar_holder img").attr("src")
-        return if (str != "https://static.hdrezka.ac/templates/hdrezka/images/noavatar.png") {
+
+        return if (str.contains("//static") && str.contains("http") && str.contains("noavatar")) {
+            // has protocol, is noavatar
+            null
+        } else if (!str.contains("//static") && !str.contains("http") && str.contains("noavatar")) {
+            // no protocol, is noavatar
+            null
+        } else if (str.contains("//static") && str.contains("http")) {
+            // has protocol, no noavatar
+            null
+        } else if (!str.contains("//static") && !str.contains("http")) {
+            // no protocol, no noavatar
+            null
+        } else if (str.contains("http") && str.contains("upload")) {
+            // has protocol, user avatar
+            str
+        } else if (!str.contains("http") && str.contains("upload")) {
+            // no protocol, user avatar
             SettingsData.provider + str
         } else {
             null
