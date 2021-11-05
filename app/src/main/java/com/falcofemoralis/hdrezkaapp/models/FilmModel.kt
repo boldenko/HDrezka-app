@@ -27,6 +27,8 @@ object FilmModel : BaseModel() {
     private const val GET_STREAM_POST = "/ajax/get_cdn_series"
     private const val SEND_WATCH = "/ajax/send_save"
 
+    const val AWAITING_TEXT = "В ожидании"
+
     fun getMainData(film: Film): Film {
         try {
             if (film.filmId == null) {

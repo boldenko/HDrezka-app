@@ -2,7 +2,6 @@ package com.falcofemoralis.hdrezkaapp.views.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,10 +12,12 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
+import com.falcofemoralis.hdrezkaapp.models.FilmModel
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+import jp.wasabeef.picasso.transformations.ColorFilterTransformation
 
 
 class FilmsListRecyclerViewAdapter(private val context: Context, private val films: ArrayList<Film>, private val openFilm: (film: Film) -> Unit) :
@@ -42,7 +43,11 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
         }
 
         val film = films[position]
-        Picasso.get().load(film.posterPath).into(holder.filmPoster, object : Callback {
+        val picasso = Picasso.get().load(film.posterPath)
+        if (film.subInfo?.contains(FilmModel.AWAITING_TEXT) == true) {
+            picasso.transform(ColorFilterTransformation(R.color.black))
+        }
+        picasso.into(holder.filmPoster, object : Callback {
             override fun onSuccess() {
                 holder.progressView.visibility = View.GONE
                 holder.posterLayoutView.visibility = View.VISIBLE
@@ -94,7 +99,7 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
             holder.subInfoView.visibility = View.VISIBLE
             holder.subInfoView.text = film.subInfo
             holder.subInfoView.setBackgroundColor(color)
-        } else{
+        } else {
             holder.subInfoView.visibility = View.GONE
         }
 
