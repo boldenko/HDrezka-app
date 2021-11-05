@@ -63,6 +63,7 @@
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/custom_list_preference.xml" value="0.3078125" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/custom_list_preference2.xml" value="0.3078125" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/custom_preference.xml" value="0.35104166666666664" />
+        <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/custom_switch_preference.xml" value="0.35104166666666664" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/custom_title_preference.xml" value="0.3087719298245614" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/dialog_auth.xml" value="0.3211050724637681" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/dialog_auth_register.xml" value="0.31157407407407406" />
@@ -121,8 +122,8 @@
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.22760416666666666" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/mipmap-anydpi/ic_launcher.xml" value="0.22760416666666666" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/mipmap-anydpi/ic_launcher_round.xml" value="0.22760416666666666" />
-        <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/xml-television/root_preferences.xml" value="0.25" />
-        <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/xml/root_preferences.xml" value="0.33" />
+        <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/xml-television/root_preferences.xml" value="0.33" />
+        <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/xml/root_preferences.xml" value="0.25" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/drawable/ic_app.xml" value="0.8493975903614458" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/drawable/ic_baseline_movie_24.xml" value="0.315625" />
         <entry key="..\:/Developer/Projects/AndroidStudio/OnlineFilmsTracker/app/src/main/res/drawable/ic_baseline_pause_24.xml" value="0.8493975903614458" />
@@ -160,5 +161,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.35104166666666664" />
+      </ProjectState>
+    </option>
   </component>
 </project>

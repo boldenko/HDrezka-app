@@ -63,6 +63,10 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         UserData.isLoggedIn?.let {
             initAuthPanel(it)
         }
+
+        SettingsData.isPlayer?.let {
+            setStateExternalPlayerPrefs(it)
+        }
     }
 
     private fun initExitButton() {
@@ -216,6 +220,10 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             }
             "isPlayer" -> {
                 SettingsData.isPlayer = preferences.getBoolean("isPlayer", false)
+
+                SettingsData.isPlayer?.let {
+                    setStateExternalPlayerPrefs(it)
+                }
             }
             "isMaxQuality" -> {
                 SettingsData.isMaxQuality = preferences.getBoolean("isMaxQuality", false)
@@ -258,6 +266,20 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             }
             "isSubtitlesDownload" -> {
                 SettingsData.isSubtitlesDownload = preferences.getBoolean("isSubtitlesDownload", true)
+            }
+        }
+    }
+
+    private fun setStateExternalPlayerPrefs(state: Boolean) {
+        val prefsKey = arrayOf("isPlayerChooser", "isMaxQuality", "defaultQuality", "isSubtitlesDownload")
+        for (prefKey in prefsKey) {
+            if (SettingsData.deviceType == DeviceType.TV && (prefKey == "isMaxQuality" || prefKey == "defaultQuality")) {
+                continue
+            }
+
+            val pref: Preference? = findPreference(prefKey)
+            if (pref != null) {
+                pref.isEnabled = state
             }
         }
     }

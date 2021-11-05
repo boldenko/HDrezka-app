@@ -148,11 +148,12 @@
     <string name="msg_subtitle_on">Субтитры %1$s включены</string>
     <string name="msg_subtitle_cc">Субтитры</string>
     <string name="select_quality">Выберите качество</string>
-    <string name="player_title">Плеер</string>
+    <string name="player_title">Внешний плеер</string>
     <string name="subtitle_download_hint">Всегда будут скачиваться субтитры для внешнего плеера</string>
     <string name="subtitle_download_title">Скачивание субтитров</string>
     <string name="login_pref">fragment_user_tv_login</string>
     <string name="account">Аккаунт</string>
     <string name="register_pref">fragment_user_tv_register</string>
     <string name="exit_pref">fragment_user_tv_exit</string>
+    <string name="player">Плеер</string>
 </resources>

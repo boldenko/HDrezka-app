@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:paddingStart="@dimen/pref_padding"
     android:paddingTop="@dimen/root_pref_space"
@@ -21,8 +22,8 @@
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
             android:singleLine="true"
-            android:textColor="@color/pref_text_color"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/pref_text_color"
             android:textSize="@dimen/normal_text" />
 
         <TextView
@@ -30,14 +31,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="4"
-            android:textSize="@dimen/small_text"
-            android:textColor="@color/pref_text_color" />
+            android:textColor="@color/pref_text_color"
+            android:textSize="@dimen/small_text" />
     </LinearLayout>
 
-    <CheckBox
-        android:id="@android:id/checkbox"
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@id/switchWidget"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center" />
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:textColor="@android:color/white"
+        android:textIsSelectable="false"
+        android:textSize="18sp"
+        android:theme="@style/CustomSwitch"
+        android:textStyle="bold" />
 
 </LinearLayout>

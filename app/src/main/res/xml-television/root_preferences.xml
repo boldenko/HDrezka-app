@@ -46,21 +46,22 @@
             app:title="@string/films_row_title"
             app:useSimpleSummaryProvider="true" />
 
+
     </PreferenceCategory>
 
     <PreferenceCategory
         android:layout="@layout/custom_title_preference"
-        app:title="@string/player_title">
+        app:title="@string/player">
 
-        <CheckBoxPreference
+        <SwitchPreferenceCompat
+            android:layout="@layout/custom_switch_preference"
             android:defaultValue="true"
-            android:layout="@layout/custom_checkbox_preference"
             app:key="autoPlayNextEpisode"
             app:summary="@string/next_episode_hint"
             app:title="@string/next_episode_title" />
 
-        <CheckBoxPreference
-            android:layout="@layout/custom_checkbox_preference"
+        <SwitchPreferenceCompat
+            android:layout="@layout/custom_switch_preference"
             app:key="isMaxQuality"
             app:summary="@string/ismaxq_hint"
             app:title="@string/ismaxq_title" />
@@ -74,21 +75,27 @@
             app:title="@string/defaultq_title"
             app:useSimpleSummaryProvider="true" />
 
-        <CheckBoxPreference
-            android:layout="@layout/custom_checkbox_preference"
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:layout="@layout/custom_title_preference"
+        app:title="@string/player_title">
+
+        <SwitchPreferenceCompat
+            android:layout="@layout/custom_switch_preference"
             app:key="isPlayer"
             app:summary="@string/isplayer_hint"
             app:title="Использовать стороний плеер" />
 
-        <CheckBoxPreference
-            android:layout="@layout/custom_checkbox_preference"
+        <SwitchPreferenceCompat
+            android:layout="@layout/custom_switch_preference"
             app:key="isPlayerChooser"
             app:summary="@string/player_chooser_hint"
             app:title="@string/player_chooser_title" />
 
-        <CheckBoxPreference
+        <SwitchPreferenceCompat
+            android:layout="@layout/custom_switch_preference"
             android:defaultValue="true"
-            android:layout="@layout/custom_checkbox_preference"
             app:key="isSubtitlesDownload"
             app:summary="@string/subtitle_download_hint"
             app:title="@string/subtitle_download_title" />
@@ -112,8 +119,8 @@
             app:title="@string/films_row_multiplier_title"
             app:useSimpleSummaryProvider="true" />
 
-        <CheckBoxPreference
-            android:layout="@layout/custom_checkbox_preference"
+        <SwitchPreferenceCompat
+            android:layout="@layout/custom_switch_preference"
             app:key="isExternalDownload"
             app:summary="@string/isExternalManager_hint"
             app:title="@string/isExternalManager_title" />
