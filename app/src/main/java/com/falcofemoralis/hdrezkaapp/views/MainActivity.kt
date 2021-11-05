@@ -14,6 +14,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.algolia.instantsearch.voice.VoiceSpeechRecognizer
+import com.algolia.instantsearch.voice.ui.Voice
+import com.algolia.instantsearch.voice.ui.Voice.shouldExplainPermission
+import com.algolia.instantsearch.voice.ui.Voice.showPermissionRationale
+import com.algolia.instantsearch.voice.ui.VoicePermissionDialogFragment
 import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.clients.PlayerJsInterface
@@ -37,9 +42,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
 import kotlin.system.exitProcess
 
-
 class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnection, IPagerView, NavigationStateListener, FragmentChangeListener,
-    NavigationMenuCallback {
+    NavigationMenuCallback, VoiceSpeechRecognizer.ResultsListener {
     private var isSettingsOpened: Boolean = false
     private lateinit var mainFragment: Fragment
     private lateinit var currentFragment: Fragment
@@ -281,10 +285,10 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                 this.doubleBackToExitPressedOnce = true
                 Toast.makeText(this, getString(R.string.double_click_hint), Toast.LENGTH_SHORT).show()
                 Handler(Looper.getMainLooper()).postDelayed({ doubleBackToExitPressedOnce = false }, 2000)
-            } else{
+            } else {
                 super.onBackPressed()
             }
-        } else{
+        } else {
             super.onBackPressed()
         }
     }
@@ -339,4 +343,45 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         PlayerJsInterface.notifyanager?.cancel(0)
         super.onDestroy()
     }
+
+    // This callback is invoked when the Speech Recognizer returns.
+    // This is where you process the intent and extract the speech text from the intent.
+    override fun onResults(possibleTexts: Array<out String>) {
+/*        if (requestCode == SPEECH_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val spokenText: String? =
+                data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS).let { results ->
+                    results?.get(0)
+                }
+
+        }
+        super.onActivityResult(requestCode, resultCode, data)*/
+
+        val spokenText = possibleTexts.firstOrNull() //?.capitalize()
+        if (mainFragment is SearchFragment) {
+            (mainFragment as SearchFragment).showVoiceResult(spokenText)
+        } else if (mainFragment is ViewPagerFragment) {
+            (mainFragment as ViewPagerFragment).showVoiceCommand(spokenText)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (Voice.isRecordPermissionWithResults(requestCode, grantResults)) {
+            when {
+                Voice.isPermissionGranted(grantResults) -> {
+                    if (mainFragment is SearchFragment) {
+                        (mainFragment as SearchFragment).showVoiceDialog()
+                    } else if (mainFragment is ViewPagerFragment) {
+                        (mainFragment as ViewPagerFragment).setVoiceCommand()
+                    }
+                }
+                shouldExplainPermission() -> showPermissionRationale(getPermissionView())
+                else -> Voice.showPermissionManualInstructions(getPermissionView())
+            }
+        }
+    }
+
+    private fun getPermissionView(): View = getPermissionDialog()!!.requireView().findViewById(R.id.positive)
+    private fun getPermissionDialog() = supportFragmentManager.findFragmentByTag(SearchFragment.Tag.getTag().name) as? VoicePermissionDialogFragment
 }

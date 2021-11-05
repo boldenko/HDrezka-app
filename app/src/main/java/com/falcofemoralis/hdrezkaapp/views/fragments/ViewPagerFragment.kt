@@ -80,4 +80,16 @@ class ViewPagerFragment : Fragment() {
             UpdateItem.WATCH_LATER_CHANGED -> (fragmentList[4] as WatchLaterFragment).updateAdapter()
         }
     }
+
+    fun setVoiceCommand() {
+        if (fragmentList[viewPager2.currentItem] is SearchFragment) {
+            (fragmentList[viewPager2.currentItem] as SearchFragment).showVoiceDialog()
+        }
+    }
+
+    fun showVoiceCommand(spokenText: String?) {
+        if (fragmentList[viewPager2.currentItem] is SearchFragment) {
+            (fragmentList[viewPager2.currentItem] as SearchFragment).showVoiceResult(spokenText)
+        }
+    }
 }
