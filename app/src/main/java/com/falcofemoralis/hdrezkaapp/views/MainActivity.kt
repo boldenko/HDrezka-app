@@ -72,6 +72,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                     showProviderEnter()
                 } else {
                     interfaceMode = (getSystemService(UI_MODE_SERVICE) as UiModeManager).currentModeType
+
                     when (interfaceMode) {
                         Configuration.UI_MODE_TYPE_TELEVISION -> {
                             SettingsData.init(applicationContext, DeviceType.TV)
