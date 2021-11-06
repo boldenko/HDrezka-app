@@ -54,7 +54,7 @@ object ConnectionManager {
 
     fun showConnectionErrorDialog(context: Context, type: IConnection.ErrorType, retryCallback: () -> Unit) {
         if (type == IConnection.ErrorType.NO_INTERNET) {
-            val builder = DialogManager.getDialog(context, false, R.string.no_connection)
+            val builder = DialogManager.getDialog(context,  R.string.no_connection, false)
             builder.setPositiveButton(context.getString(R.string.exit)) { dialog, id ->
                 exitProcess(0)
             }

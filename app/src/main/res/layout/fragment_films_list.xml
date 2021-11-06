@@ -6,6 +6,7 @@
     tools:context="com.falcofemoralis.hdrezkaapp.views.fragments.FilmsListFragment">
 
     <androidx.core.widget.NestedScrollView
+        android:layout_margin="@dimen/leanback_margin"
         android:id="@+id/fragment_films_list_nsv_films"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

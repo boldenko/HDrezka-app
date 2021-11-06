@@ -2,6 +2,7 @@ package com.falcofemoralis.hdrezkaapp.views.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,7 @@ import jp.wasabeef.picasso.transformations.ColorFilterTransformation
 
 class FilmsListRecyclerViewAdapter(private val context: Context, private val films: ArrayList<Film>, private val openFilm: (film: Film) -> Unit) :
     RecyclerView.Adapter<FilmsListRecyclerViewAdapter.ViewHolder>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.inflate_film, parent, false)
         return ViewHolder(view)
@@ -31,10 +33,12 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
         if (SettingsData.deviceType == DeviceType.TV) {
             holder.layout.setOnFocusChangeListener { v, hasFocus ->
                 if (hasFocus) {
+                    v.foreground = ColorDrawable(ContextCompat.getColor(context, R.color.transparent));
                     val anim: Animation = AnimationUtils.loadAnimation(context, R.anim.scale_in_tv)
                     v.startAnimation(anim)
                     anim.fillAfter = true
                 } else {
+                    v.foreground = ColorDrawable(ContextCompat.getColor(context, R.color.unselected_film));
                     val anim: Animation = AnimationUtils.loadAnimation(context, R.anim.scale_out_tv)
                     v.startAnimation(anim)
                     anim.fillAfter = true

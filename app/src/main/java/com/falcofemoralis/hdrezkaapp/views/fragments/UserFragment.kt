@@ -15,11 +15,11 @@ import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
 import com.falcofemoralis.hdrezkaapp.objects.UserData
 import com.falcofemoralis.hdrezkaapp.presenters.UserPresenter
+import com.falcofemoralis.hdrezkaapp.utils.DialogManager
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
 import com.falcofemoralis.hdrezkaapp.views.MainActivity
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.UserView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class UserFragment : Fragment(), UserView {
     private lateinit var currentView: View
@@ -78,7 +78,7 @@ class UserFragment : Fragment(), UserView {
 
     private fun showAuthDialog(type: AuthType) {
         activity?.let {
-            val builder = MaterialAlertDialogBuilder(it)
+            val builder = DialogManager.getDialog(requireContext(), null)
             popupWindowView = requireActivity().layoutInflater.inflate(R.layout.dialog_auth, null) as LinearLayout
 
             val emailView = popupWindowView.findViewById<EditText>(R.id.dialog_auth_email)
@@ -161,8 +161,7 @@ class UserFragment : Fragment(), UserView {
 
     private fun initExitButton() {
         exitPanel.setOnClickListener {
-            val builder = MaterialAlertDialogBuilder(requireContext())
-            builder.setTitle(getString(R.string.confirm_exit))
+            val builder = DialogManager.getDialog(requireContext(), R.string.confirm_exit)
             builder.setPositiveButton(getString(R.string.confirm)) { dialog, id ->
                 initAuthPanel(false)
                 userPresenter.exit()

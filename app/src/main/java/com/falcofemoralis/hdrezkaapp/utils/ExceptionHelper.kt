@@ -7,15 +7,12 @@ import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection.ErrorType
 import com.falcofemoralis.hdrezkaapp.views.MainActivity
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jsoup.HttpStatusException
 import org.jsoup.parser.ParseError
-import java.io.IOException
-import java.lang.Error
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.net.ssl.SSLHandshakeException
@@ -49,8 +46,7 @@ object ExceptionHelper {
     }
 
     private fun createDialog(textId: Int, context: Context) {
-        val builder = MaterialAlertDialogBuilder(context)
-        builder.setTitle(context.getString(textId))
+        val builder = DialogManager.getDialog(context, textId)
         builder.setPositiveButton(context.getString(R.string.provider_change)) { dialog, id ->
             dialog.cancel()
         }

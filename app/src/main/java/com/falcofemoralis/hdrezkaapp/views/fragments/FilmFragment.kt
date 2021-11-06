@@ -52,6 +52,7 @@ import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
 import com.falcofemoralis.hdrezkaapp.models.ActorModel
 import com.falcofemoralis.hdrezkaapp.objects.*
 import com.falcofemoralis.hdrezkaapp.presenters.FilmPresenter
+import com.falcofemoralis.hdrezkaapp.utils.DialogManager
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
 import com.falcofemoralis.hdrezkaapp.utils.UnitsConverter
@@ -61,7 +62,6 @@ import com.falcofemoralis.hdrezkaapp.views.elements.CommentEditor
 import com.falcofemoralis.hdrezkaapp.views.tv.player.PlayerActivity
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmView
 import com.github.aakira.expandablelayout.ExpandableLinearLayout
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.willy.ratingbar.ScaleRatingBar
@@ -610,43 +610,41 @@ class FilmFragment : Fragment(), FilmView {
             }
 
             activity?.let {
-                val builder = MaterialAlertDialogBuilder(it)
-                builder.setTitle(getString(R.string.choose_bookmarks))
-                builder.setMultiChoiceItems(data, checkedItems) { dialog, which, isChecked ->
+                val builder = context?.let { it1 -> DialogManager.getDialog(it1, R.string.choose_bookmarks) }
+                builder?.setMultiChoiceItems(data, checkedItems) { dialog, which, isChecked ->
                     filmPresenter.setBookmark(bookmarks[which].catId)
                     updateBookmarksFilmsPager()
                     checkedItems[which] = isChecked
                 }
-                builder.setPositiveButton(getString(R.string.ok)) { dialog, id ->
+                builder?.setPositiveButton(getString(R.string.ok)) { dialog, id ->
                     dialog.dismiss()
                 }
 
                 // new catalog btn
-                val catalogDialogBuilder = MaterialAlertDialogBuilder(it)
-                catalogDialogBuilder.setTitle(getString(R.string.new_cat))
+                val catalogDialogBuilder = context?.let { it1 -> DialogManager.getDialog(it1, R.string.new_cat) }
 
                 val dialogCatLayout: LinearLayout = layoutInflater.inflate(R.layout.dialog_new_cat, null) as LinearLayout
                 val input: EditText = dialogCatLayout.findViewById(R.id.dialog_cat_input)
 
-                catalogDialogBuilder.setView(dialogCatLayout)
-                catalogDialogBuilder.setPositiveButton(getString(R.string.ok)) { dialog, id ->
+                catalogDialogBuilder?.setView(dialogCatLayout)
+                catalogDialogBuilder?.setPositiveButton(getString(R.string.ok)) { dialog, id ->
                     filmPresenter.createNewCatalogue(input.text.toString())
                     Toast.makeText(requireContext(), getString(R.string.created_cat), Toast.LENGTH_SHORT).show()
                 }
-                catalogDialogBuilder.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
+                catalogDialogBuilder?.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
                     dialog.cancel()
                 }
 
-                val n = catalogDialogBuilder.create()
+                val n = catalogDialogBuilder?.create()
 
-                builder.setNeutralButton(getString(R.string.new_cat)) { dialog, id ->
-                    n.show()
+                builder?.setNeutralButton(getString(R.string.new_cat)) { dialog, id ->
+                    n?.show()
                 }
 
                 if (bookmarksDialog != null) {
                     bookmarksDialog?.dismiss()
                 }
-                bookmarksDialog = builder.create()
+                bookmarksDialog = builder?.create()
                 btn.setOnClickListener {
                     bookmarksDialog?.show()
                 }
@@ -807,7 +805,7 @@ class FilmFragment : Fragment(), FilmView {
     override fun showTranslations(translations: ArrayList<Voice>, isDownload: Boolean, isMovie: Boolean) {
         if (isMovie) {
             if (translations.size > 1) {
-                val builder = MaterialAlertDialogBuilder(requireContext())
+                val builder = DialogManager.getDialog(requireContext(), R.string.translation)
                 val sv: ScrollView = layoutInflater.inflate(R.layout.inflate_translations, null) as ScrollView
                 val layout: LinearLayout = sv.getChildAt(0) as LinearLayout
                 var activeNameTextView: TextView? = null
@@ -839,7 +837,6 @@ class FilmFragment : Fragment(), FilmView {
                     activeNameTextView?.requestFocus()
                 }
 
-                builder.setTitle(getString(R.string.translation))
                 builder.setView(sv)
                 builder.create().show()
             } else if (translations.size == 1) {
@@ -965,7 +962,7 @@ class FilmFragment : Fragment(), FilmView {
                 Toast.makeText(requireContext(), getString(R.string.error_empty), Toast.LENGTH_SHORT).show()
             }
 
-            val builder = MaterialAlertDialogBuilder(requireContext())
+            val builder = DialogManager.getDialog(requireContext(), null)
             builder.setView(transView)
             d = builder.create()
             d.show()
@@ -973,8 +970,7 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun showStreams(streams: ArrayList<Stream>, filmTitle: String, title: String, isDownload: Boolean, translation: Voice) {
-        val builder = MaterialAlertDialogBuilder(requireContext())
-        builder.setTitle(getString(R.string.choose_quality))
+        val builder = DialogManager.getDialog(requireContext(), R.string.choose_quality)
         val qualities: ArrayList<String> = ArrayList()
         for (stream in streams) {
             qualities.add(stream.quality)

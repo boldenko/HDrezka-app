@@ -56,7 +56,7 @@ open class FilmsListFragment : Fragment(), FilmsListView {
             }
         })
 
-        if(callView != null){
+        if (callView != null) {
             callView?.onFilmsListCreated()
         } else {
             Toast.makeText(requireContext(), getString(R.string.error_occured), Toast.LENGTH_LONG).show()
@@ -65,7 +65,7 @@ open class FilmsListFragment : Fragment(), FilmsListView {
         return currentView
     }
 
-    fun setCallView(cv: FilmListCallView) {
+    override fun setCallView(cv: FilmListCallView) {
         callView = cv
     }
 
@@ -73,7 +73,7 @@ open class FilmsListFragment : Fragment(), FilmsListView {
         viewList.adapter = context?.let { FilmsListRecyclerViewAdapter(it, films, ::listCallback) }
     }
 
-    override fun redrawFilms(from: Int, count: Int, action: AdapterAction) {
+    override fun redrawFilms(from: Int, count: Int, action: AdapterAction, films: ArrayList<Film>) {
         when (action) {
             AdapterAction.ADD -> viewList.adapter?.notifyItemRangeInserted(from, count)
             AdapterAction.UPDATE -> viewList.adapter?.notifyItemRangeChanged(from, count)

@@ -1,14 +1,13 @@
 package com.falcofemoralis.hdrezkaapp.views.elements
 
 import android.util.ArrayMap
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
 import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
 import com.falcofemoralis.hdrezkaapp.R
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.falcofemoralis.hdrezkaapp.utils.DialogManager
 import com.google.android.material.slider.RangeSlider
 
 
@@ -35,7 +34,7 @@ class FiltersMenu(
         SPINNER_YEARS
     }
 
-    private var filtersDialogBuilder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(activity)
+    private var filtersDialogBuilder: AlertDialog.Builder = DialogManager.getDialog(activity, null)
     private val filtersDialogView: FrameLayout = activity.layoutInflater.inflate(R.layout.dialog_filters, null) as FrameLayout
     private var appliedFilters: ArrayMap<AppliedFilter, Array<String?>> = ArrayMap() // applied filters
     private var onSelectionAppliedFilters: ArrayMap<AppliedFilter, Array<String?>> = ArrayMap() // active filters during selecting..
@@ -142,14 +141,12 @@ class FiltersMenu(
                 btnViewId = R.id.bt_genres_inverted
             }
         }
-        val title = titleId?.let { activity.getString(it) }
         val btnView: TextView? = btnViewId?.let { filtersDialogView.findViewById(it) }
 
         btnView?.visibility = View.VISIBLE
 
         activity.let {
-            val builder = MaterialAlertDialogBuilder(it)
-            builder.setTitle(title)
+            val builder = DialogManager.getDialog(activity, titleId)
             btnView?.setOnClickListener {
                 var checkedItems: Array<String?> = arrayOfNulls(data.size)
 

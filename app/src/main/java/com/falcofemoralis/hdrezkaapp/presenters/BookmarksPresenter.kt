@@ -68,7 +68,7 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
         val itemsCount = activeFilms.size
         activeFilms.clear()
         loadedFilms.clear()
-        filmsListView.redrawFilms(0, itemsCount, AdapterAction.DELETE)
+        filmsListView.redrawFilms(0, itemsCount, AdapterAction.DELETE, ArrayList())
     }
 
     fun getNextFilms() {
@@ -139,7 +139,7 @@ class BookmarksPresenter(private val bookmarksView: BookmarksView, private val f
         isLoading = false
         val itemsCount = activeFilms.size
         activeFilms.addAll(films)
-        filmsListView.redrawFilms(itemsCount, films.size, AdapterAction.ADD)
+        filmsListView.redrawFilms(itemsCount, films.size, AdapterAction.ADD, films)
         filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
     }
 

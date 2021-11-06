@@ -69,7 +69,7 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
         val itemsCount = activeListFilms.size
         activeListFilms.clear()
         loadedListFilms.clear()
-        filmsListView.redrawFilms(0, itemsCount, AdapterAction.DELETE)
+        filmsListView.redrawFilms(0, itemsCount, AdapterAction.DELETE, ArrayList())
         currentPage = 1
         isLoading = false
         token = text
@@ -130,7 +130,7 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
         isLoading = false
         val itemsCount = activeListFilms.size
         activeListFilms.addAll(films)
-        filmsListView.redrawFilms(itemsCount, films.size, AdapterAction.ADD)
+        filmsListView.redrawFilms(itemsCount, films.size, AdapterAction.ADD, films)
         filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
     }
 }

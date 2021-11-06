@@ -34,11 +34,11 @@ import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.objects.UserData
 import com.falcofemoralis.hdrezkaapp.utils.ConnectionManager.isInternetAvailable
 import com.falcofemoralis.hdrezkaapp.utils.ConnectionManager.showConnectionErrorDialog
+import com.falcofemoralis.hdrezkaapp.utils.DialogManager
 import com.falcofemoralis.hdrezkaapp.views.fragments.*
 import com.falcofemoralis.hdrezkaapp.views.tv.NavigationMenu
 import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.FragmentChangeListener
 import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.NavigationStateListener
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
 import kotlin.system.exitProcess
 
@@ -218,7 +218,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     }
 
     fun showProviderEnter() {
-        val dialog = MaterialAlertDialogBuilder(this)
+        val dialog = DialogManager.getDialog(this, R.string.provider_enter_title)
         val dialogView = layoutInflater.inflate(R.layout.dialog_provider_enter, null)
         val spinner = dialogView.findViewById<SmartMaterialSpinner<String>>(R.id.dialog_provider_protocol)
         val editText = dialogView.findViewById<EditText>(R.id.dialog_provider_enter)
@@ -236,7 +236,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         }
         spinner.setSelection(0)
 
-        dialog.setTitle(getString(R.string.provider_enter_title))
         dialog.setNegativeButton(getString(R.string.exit)) { dialog, id ->
             exitProcess(0)
         }

@@ -7,7 +7,7 @@
     <color name="black">#000000</color>
     <color name="main_color_2">#1684fc</color>
     <color name="dark_main_color_2">#0e3b80</color>
-    <color name="main_color_3">#f9302f</color>
+    <color name="main_color_3">#eb233c</color>
     <color name="focusableColor">#FF5554</color>
     <color name="film">#00a0b0</color>
     <color name="multfilm">#216d2b</color>
@@ -24,4 +24,6 @@
     <color name="blue_dark">#FF403F</color>
     <color name="blue_cyan">#FF5C5B</color>
     <color name="day_night_text">#000</color>
+    <color name="unselected_film">#00000000</color>
+    <color name="dialog_focusableColor">#FF5554</color>
 </resources>

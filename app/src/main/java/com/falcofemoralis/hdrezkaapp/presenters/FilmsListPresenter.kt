@@ -97,7 +97,7 @@ class FilmsListPresenter(
         }
         val itemsCount = activeFilms.size
         activeFilms.addAll(sortedFilms)
-        filmsListView.redrawFilms(itemsCount, films.size, AdapterAction.ADD)
+        filmsListView.redrawFilms(itemsCount, films.size, AdapterAction.ADD, sortedFilms)
 
         sortedFilmsCount += sortedFilms.size
         if (sortedFilmsCount >= filmsPerPage) {
@@ -114,13 +114,13 @@ class FilmsListPresenter(
         val itemsCount = activeFilms.size
         activeFilms.clear()
         sortedFilmsCount = 0
-        filmsListView.redrawFilms(0, itemsCount, AdapterAction.DELETE)
+        filmsListView.redrawFilms(0, itemsCount, AdapterAction.DELETE, ArrayList())
     }
 
     fun applyFilter() {
         val itemsCount = activeFilms.size
         activeFilms.clear()
-        filmsListView.redrawFilms(0, itemsCount, AdapterAction.DELETE)
+        filmsListView.redrawFilms(0, itemsCount, AdapterAction.DELETE, ArrayList())
         filmsListView.setProgressBarState(IProgressState.StateType.LOADING)
         addFilms(allFilms)
     }

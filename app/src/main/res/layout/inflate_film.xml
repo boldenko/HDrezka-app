@@ -3,9 +3,13 @@
     android:id="@+id/film_layout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
+    android:layout_marginTop="@dimen/inflate_film_layout_top_margin"
+    android:layout_marginEnd="5dp"
+    android:layout_marginBottom="5dp"
+    android:layout_marginStart="5dp"
     android:focusable="true"
     android:clipToPadding="false"
+    android:foreground="@color/unselected_film"
     android:orientation="vertical">
 
     <ProgressBar

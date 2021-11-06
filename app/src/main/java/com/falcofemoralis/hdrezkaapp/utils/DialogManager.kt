@@ -1,15 +1,13 @@
 package com.falcofemoralis.hdrezkaapp.utils
 
 import android.content.Context
-import com.falcofemoralis.hdrezkaapp.R
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import androidx.appcompat.app.AlertDialog
 
 object DialogManager {
-    fun getDialog(context: Context, isCancelable: Boolean, titleResId: Int?): MaterialAlertDialogBuilder {
-        val builder = MaterialAlertDialogBuilder(context)
-        if(titleResId != null){
+    fun getDialog(context: Context, titleResId: Int?, isCancelable: Boolean = true): AlertDialog.Builder {
+        val builder = AlertDialog.Builder(context)
+        if (titleResId != null) {
             builder.setTitle(context.getString(titleResId))
-
         }
         builder.setCancelable(isCancelable)
 

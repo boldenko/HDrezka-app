@@ -21,6 +21,7 @@
 
     <!-- Alert Dialog -->
     <style name="CustomAlertDialog" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="colorControlHighlight">@color/dialog_focusableColor</item>
         <item name="android:colorBackground">@color/light_background</item>
         <item name="android:textColorSecondary">@color/white</item>
         <item name="textColorAlertDialogListItem">@color/white</item>
@@ -34,7 +35,7 @@
         <!-- Used for the title and text -->
         <item name="android:textColorPrimary">@color/white</item>
         <!-- Used for the background -->
-        <item name="android:background">@color/light_background</item>
+      <!--  <item name="android:background">@color/light_background</item>-->
     </style>
 
     <style name="Alert.Button.Positive" parent="Widget.MaterialComponents.Button.TextButton">
@@ -52,6 +53,7 @@
     <!-- Material Alert Dialog -->
     <style name="CustomMaterialAlertDialog" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="android:background">@color/light_background</item>
+
         <!-- Text Color for title and message -->
         <item name="colorOnSurface">@color/white</item>
 
@@ -63,7 +65,6 @@
 
         <item name="android:textColorSecondary">@color/white</item>
         <item name="textColorAlertDialogListItem">@color/white</item>
-
         <item name="android:colorAccent">@color/main_color_3</item>
     </style>
 
@@ -95,5 +96,35 @@
 
         <!-- inactive track color (30% transparency) -->
         <item name="android:colorForeground">#575757</item>
+    </style>
+
+    <!-- Theme used for styling video cards in the vertical grid view -->
+    <style name="VideoGridCardTheme" parent="Theme.Leanback">
+        <item name="imageCardViewStyle">@style/GridCardStyle</item>
+        <item name="imageCardViewImageStyle">@style/VideoGridCardImageStyle</item>
+    </style>
+
+    <style name="GridCardStyle" parent="Widget.Leanback.ImageCardViewStyle">
+        <item name="cardBackground">@null</item>
+    </style>
+
+    <style name="VideoGridCardImageStyle" parent="Widget.Leanback.ImageCardView.ImageStyle">
+        <item name="android:layout_width">140dp</item>
+        <item name="android:layout_height">155dp</item>
+    </style>
+
+    <style name="DefaultCardTheme" parent="Theme.Leanback">
+        <item name="imageCardViewStyle">@style/DefaultCardStyle</item>
+        <item name="imageCardViewImageStyle">@style/DefaultCardImageStyle</item>
+    </style>
+
+    <style name="DefaultCardStyle" parent="Widget.Leanback.ImageCardViewStyle">
+        <item name="cardBackground">@null</item>
+    </style>
+
+    <!-- A default card style. Used in cards example. -->
+    <style name="DefaultCardImageStyle" parent="Widget.Leanback.ImageCardView.ImageStyle">
+        <item name="android:layout_width">@dimen/default_image_card_width</item>
+        <item name="android:layout_height">@dimen/default_image_card_height</item>
     </style>
 </resources>

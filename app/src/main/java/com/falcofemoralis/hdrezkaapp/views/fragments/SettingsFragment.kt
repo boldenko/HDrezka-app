@@ -28,7 +28,6 @@ import com.falcofemoralis.hdrezkaapp.utils.DialogManager
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.views.MainActivity
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.UserView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener, UserView {
     private lateinit var preferences: SharedPreferences
@@ -71,7 +70,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     private fun initExitButton() {
         exitBtn?.setOnPreferenceClickListener { //code for what you want it to do
-            val builder = DialogManager.getDialog(requireContext(), false, R.string.confirm_exit)
+            val builder = DialogManager.getDialog(requireContext(), R.string.confirm_exit, false)
             builder.setPositiveButton(getString(R.string.confirm)) { dialog, id ->
                 initAuthPanel(false)
                 userPresenter?.exit()
@@ -115,7 +114,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     private fun showAuthDialog(type: AuthType) {
         mActivity?.let {
-            val builder = MaterialAlertDialogBuilder(it)
+            val builder = context?.let { it1 -> DialogManager.getDialog(it1, null) }
             popupWindowView = requireActivity().layoutInflater.inflate(R.layout.dialog_auth, null) as LinearLayout
 
             val emailView = popupWindowView?.findViewById<EditText>(R.id.dialog_auth_email)
@@ -124,7 +123,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             val passwordView = popupWindowView?.findViewById<EditText>(R.id.dialog_auth_password)
 
             if (type == AuthType.LOGIN) {
-                builder.setTitle(getString(R.string.login))
+                builder?.setTitle(getString(R.string.login))
                 emailView?.visibility = View.GONE
                 usernameView?.visibility = View.GONE
                 val submitBtn = popupWindowView?.findViewById<Button>(R.id.dialog_auth_submit)
@@ -138,7 +137,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                     imm?.hideSoftInputFromWindow(popupWindowView?.windowToken, 0)
                 }
             } else {
-                builder.setTitle(getString(R.string.register))
+                builder?.setTitle(getString(R.string.register))
                 nameView?.visibility = View.GONE
                 val submitBtn = popupWindowView?.findViewById<Button>(R.id.dialog_auth_submit)
                 submitBtn?.text = getString(R.string.submit_register)
@@ -153,8 +152,8 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 }
             }
 
-            builder.setView(popupWindowView)
-            popupWindow = builder.create()
+            builder?.setView(popupWindowView)
+            popupWindow = builder?.create()
             popupWindow?.show()
         }
     }

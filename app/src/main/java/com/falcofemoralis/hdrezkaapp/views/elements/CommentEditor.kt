@@ -13,8 +13,8 @@ import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.models.CommentsModel
 import com.falcofemoralis.hdrezkaapp.objects.Comment
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
+import com.falcofemoralis.hdrezkaapp.utils.DialogManager
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -70,8 +70,7 @@ class CommentEditor(
         editorView.findViewById<ImageView>(R.id.comment_editor_iv_tag_s).setOnClickListener { addTag(textArea, "[s]") }
         editorView.findViewById<ImageView>(R.id.comment_editor_iv_tag_spoiler).setOnClickListener { addTag(textArea, "[spoiler]") }
 
-        val dialog = MaterialAlertDialogBuilder(context)
-        dialog.setTitle(context.getString(R.string.new_comment_header))
+        val dialog = DialogManager.getDialog(context, R.string.new_comment_header)
         dialog.setPositiveButton(context.getString(R.string.add)) { dialog, id ->
             GlobalScope.launch {
                 try {
@@ -95,7 +94,7 @@ class CommentEditor(
         editorView.findViewById<ImageView>(R.id.comment_editor_iv_add).setOnClickListener {
             if (textArea.text.toString().isNotEmpty()) {
                 d.show()
-                if(SettingsData.deviceType == DeviceType.TV){
+                if (SettingsData.deviceType == DeviceType.TV) {
                     iCommentEditor.changeCommentEditorState(false)
                 }
                 iCommentEditor.onDialogVisible()
@@ -107,7 +106,7 @@ class CommentEditor(
         textArea.setKeyImeChangeListener(object : CommentEditorEditText.KeyImeChange {
             override fun onKeyIme(keyCode: Int, event: KeyEvent?) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    if(SettingsData.deviceType != DeviceType.TV){
+                    if (SettingsData.deviceType != DeviceType.TV) {
                         iCommentEditor.changeCommentEditorState(false)
                     }
                 }

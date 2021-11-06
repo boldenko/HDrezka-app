@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="focusableColor">#304ffe</color>
+    <color name="unselected_film">#65000000</color>
 </resources>

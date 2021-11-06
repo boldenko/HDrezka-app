@@ -292,6 +292,7 @@
         android:weightSum="3">
 
         <Button
+            android:nextFocusRight="@id/filter_cancel"
             android:id="@+id/filter_clear"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
@@ -304,6 +305,8 @@
             android:textSize="@dimen/small_text" />
 
         <Button
+            android:nextFocusLeft="@id/filter_clear"
+            android:nextFocusRight="@id/filter_set"
             android:id="@+id/filter_cancel"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
@@ -316,6 +319,7 @@
             android:textSize="@dimen/small_text" />
 
         <Button
+            android:nextFocusLeft="@id/filter_cancel"
             android:id="@+id/filter_set"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"

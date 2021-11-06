@@ -14,4 +14,10 @@
     <dimen name="search_margin_top_clear">7dp</dimen>
     <dimen name="tv_navigation_width">50dp</dimen>
     <dimen name="lb_playback_other_rows_center_to_bottom">190dp</dimen>
+    <dimen name="default_image_card_width">224dp</dimen>
+    <dimen name="default_image_card_height">126dp</dimen>
+    <dimen name="leanback_margin">15dp</dimen>
+    <dimen name="scale_from">100%</dimen>
+    <dimen name="scale_to">110%</dimen>
+    <dimen name="inflate_film_layout_top_margin">12dp</dimen>
 </resources>
