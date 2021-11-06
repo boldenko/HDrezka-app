@@ -22,6 +22,7 @@ object SettingsData {
     const val PROVIDER_FILE = "provider"
     var defaultQuality: String? = null
     var isSubtitlesDownload: Boolean? = null
+    var isCheckNewVersion: Boolean? = null
 
     fun initProvider(context: Context) {
         if (provider == null || provider == "") {
@@ -46,6 +47,7 @@ object SettingsData {
         isAutorotate = prefs?.getBoolean("isAutorotate", true)
         autoPlayNextEpisode = prefs?.getBoolean("autoPlayNextEpisode", true)
         isSubtitlesDownload = prefs?.getBoolean("isSubtitlesDownload", true)
+        isCheckNewVersion = prefs?.getBoolean("isCheckNewVersion", true)
         (prefs?.getString("filmsInRow", (if (deviceType == DeviceType.TV) GridLayoutSizes.TV else GridLayoutSizes.MOBILE).toString())).let {
             if (it != null) {
                 filmsInRow = it.toInt()

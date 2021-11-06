@@ -157,6 +157,10 @@
     <string name="exit_pref">fragment_user_tv_exit</string>
     <string name="player">Плеер</string>
     <string name="filter_applied_hint">Происходит поиск с установленными фильтрами. Это может занять значительное время…</string>
+    <string name="new_version_hint">Доступна новая версия!</string>
+    <string name="ok_text">ОК</string>
+    <string name="new_version_pref_title">Проверка новой версии</string>
+    <string name="new_version_pref_hint">Проверять наличие новой версии приложения</string>
 
     <!-- VoiceInputDialogFragment -->
     <string name="input_title_listening">Говорите…</string>

@@ -110,6 +110,13 @@
             app:summary="@string/own_provider_hint"
             app:title="@string/own_provider" />
 
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:layout="@layout/custom_switch_preference"
+            app:key="isCheckNewVersion"
+            app:summary="@string/new_version_pref_hint"
+            app:title="@string/new_version_pref_title" />
+
         <ListPreference
             android:defaultValue="3"
             app:entries="@array/filmMultipliers"

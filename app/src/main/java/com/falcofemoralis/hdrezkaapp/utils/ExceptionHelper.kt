@@ -7,6 +7,9 @@ import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection.ErrorType
 import com.falcofemoralis.hdrezkaapp.views.MainActivity
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -65,6 +68,10 @@ object ExceptionHelper {
     }
 
     fun catchException(e: Exception, view: IConnection) {
+        Firebase.crashlytics.recordException(e)
+
+        FirebaseCrashlytics.getInstance().recordException(e)
+
         e.printStackTrace()
 
         val type: ErrorType = when (e) {

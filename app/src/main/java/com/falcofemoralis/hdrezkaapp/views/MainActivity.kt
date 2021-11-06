@@ -20,6 +20,7 @@ import com.algolia.instantsearch.voice.ui.Voice.shouldExplainPermission
 import com.algolia.instantsearch.voice.ui.Voice.showPermissionRationale
 import com.algolia.instantsearch.voice.ui.VoicePermissionDialogFragment
 import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
+import com.falcofemoralis.hdrezkaapp.BuildConfig
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.clients.PlayerJsInterface
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
@@ -39,8 +40,18 @@ import com.falcofemoralis.hdrezkaapp.views.fragments.*
 import com.falcofemoralis.hdrezkaapp.views.tv.NavigationMenu
 import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.FragmentChangeListener
 import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.NavigationStateListener
+import com.google.firebase.FirebaseApp
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
+import java.net.URI
+import java.nio.charset.StandardCharsets
 import kotlin.system.exitProcess
+
 
 class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnection, IPagerView, NavigationStateListener, FragmentChangeListener,
     NavigationMenuCallback, VoiceSpeechRecognizer.ResultsListener {
@@ -60,7 +71,11 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         setContentView(R.layout.activity_main)
         this.savedInstanceState = savedInstanceState
 
+        FirebaseApp.initializeApp(this);
+
         initApp()
+
+        checkAppVersion()
     }
 
     @SuppressLint("SourceLockedOrientationActivity")
@@ -384,4 +399,60 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
 
     private fun getPermissionView(): View = getPermissionDialog()!!.requireView().findViewById(R.id.positive)
     private fun getPermissionDialog() = supportFragmentManager.findFragmentByTag(SearchFragment.Tag.getTag().name) as? VoicePermissionDialogFragment
+
+    private fun checkAppVersion() {
+        if (SettingsData.isCheckNewVersion == true) {
+            val _context = this
+            //val versionFilePath = filesDir.path + "/version"
+
+            GlobalScope.launch {
+                val uri: URI = URI.create("https://www.dropbox.com/s/1nkqxfe0ifxpvlc/version.txt?dl=1")
+                uri.toURL().openStream().use { inputStream ->
+                    // InputStream -> String
+                    val serverVersion = convertInputStreamToString(inputStream)
+                    try {
+                        val isNewVersion = compareAppVersion(serverVersion)
+
+                        withContext(Dispatchers.Main) {
+                            if (isNewVersion) {
+                                // show dialog
+                                val builder = DialogManager.getDialog(_context, R.string.new_version_hint)
+                                builder.setPositiveButton(R.string.ok_text) { d, i ->
+                                    d.dismiss()
+                                }
+                                builder.setMessage("${BuildConfig.VERSION_NAME} -> $serverVersion")
+                                val d = builder.create()
+                                d.show()
+                            }
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+        }
+    }
+
+    fun compareAppVersion(version: String?): Boolean {
+        if (version.isNullOrEmpty()) {
+            throw Exception("File not found")
+        }
+
+        return version != BuildConfig.VERSION_NAME
+    }
+
+    private fun convertInputStreamToString(inputStream: InputStream): String? {
+        val result = ByteArrayOutputStream()
+        val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+        var length: Int
+        while (inputStream.read(buffer).also { length = it } != -1) {
+            result.write(buffer, 0, length)
+        }
+
+        // Java 1.1
+        return result.toString(StandardCharsets.UTF_8.name())
+
+        // Java 10
+        // return result.toString(StandardCharsets.UTF_8);
+    }
 }

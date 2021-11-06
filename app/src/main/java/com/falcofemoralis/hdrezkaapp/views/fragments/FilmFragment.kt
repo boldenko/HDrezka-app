@@ -54,6 +54,7 @@ import com.falcofemoralis.hdrezkaapp.objects.*
 import com.falcofemoralis.hdrezkaapp.presenters.FilmPresenter
 import com.falcofemoralis.hdrezkaapp.utils.DialogManager
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
+import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper.catchException
 import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
 import com.falcofemoralis.hdrezkaapp.utils.UnitsConverter
 import com.falcofemoralis.hdrezkaapp.views.MainActivity
@@ -660,7 +661,6 @@ class FilmFragment : Fragment(), FilmView {
     override fun setShareBtn(title: String, link: String) {
         val btn: View = currentView.findViewById(R.id.fragment_film_iv_share)
         btn.setOnClickListener {
-            throw RuntimeException("Test Crash"); // Force a crash
             val sharingIntent = Intent(Intent.ACTION_SEND)
             sharingIntent.type = "text/plain"
             val body: String = getString(R.string.share_body, title, link)

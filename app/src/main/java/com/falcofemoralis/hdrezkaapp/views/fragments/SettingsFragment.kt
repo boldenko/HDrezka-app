@@ -266,6 +266,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             "isSubtitlesDownload" -> {
                 SettingsData.isSubtitlesDownload = preferences.getBoolean("isSubtitlesDownload", true)
             }
+            "isCheckNewVersion" -> {
+                SettingsData.isCheckNewVersion = preferences.getBoolean("isCheckNewVersion", true)
+            }
         }
     }
 
