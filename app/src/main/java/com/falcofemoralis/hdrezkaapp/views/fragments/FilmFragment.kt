@@ -362,7 +362,7 @@ class FilmFragment : Fragment(), FilmView {
                             e.printStackTrace()
                         }
                     })
-                    actorLayout.setOnClickListener {
+                    layout.setOnClickListener {
                         FragmentOpener.openWithData(this, fragmentListener, actor, "actor")
                     }
                     FilmsListRecyclerViewAdapter.zoom(layout, actorPhoto, nameView, careerView, requireContext())

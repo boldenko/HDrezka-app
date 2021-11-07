@@ -114,6 +114,7 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
     }
 
     override fun redrawWatchLaterList() {
+        listView.recycledViewPool.clear();
         listView.adapter?.notifyDataSetChanged()
     }
 

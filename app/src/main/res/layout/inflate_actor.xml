@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:focusable="true"
+    android:id="@+id/actor_layout_container"
     android:orientation="vertical">
 
     <ProgressBar
