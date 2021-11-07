@@ -163,29 +163,25 @@
     <string name="new_version_pref_hint">Проверять наличие новой версии приложения</string>
     <string name="trailer">Трейлер</string>
     <string name="no_yt_player">Отсуствует приложение Youtube</string>
-
-    <!-- VoiceInputDialogFragment -->
     <string name="input_title_listening">Говорите…</string>
     <string name="input_subtitle_listening">Скажите что-нибудь вроде:</string>
     <string name="input_title_error">Извините,речь не разобрана.</string>
     <string name="input_subtitle_error">Попробуйте повторить свой запрос.</string>
     <string name="input_hint_error">Попробуйте снова</string>
-
-    <!-- VoicePermissionDialogFragment -->
     <string name="permission_title">Голосовой поиск можно испольозвать для поиска фильмов.</string>
     <string name="permission_subtitle">Можно ли получить доступ к микрофону вашего устройства, чтобы включить голосовой поиск?</string>
     <string name="permission_button_allow">Разрешить доступ к микрофону</string>
     <string name="permission_button_reject">Нет</string>
-
-    <!-- Rationale/Try Again -->
     <string name="permission_rationale">Для голосового поиска требуется это разрешение.</string>
     <string name="permission_button_again">Запросить еще раз?</string>
-
-    <!-- Manual Instructions -->
     <string name="permission_enable_rationale">В доступе отказано, разрешите чтобы использовать голосовой поиск.</string>
     <string name="permission_button_enable">Разрешить запись</string>
     <string name="permission_enable_instructions">На следующем экране нажмите «Разрешения», затем «Микрофон».</string>
     <string name="add_to_bookmarks">Добавить в закладки</string>
     <string name="share_name">Поделиться</string>
     <string name="download_name">Скачать</string>
+    <string name="downloading">Загрузка…</string>
+    <string name="title_file_download">APK загружается</string>
+    <string name="storage_access_required">Для загрузки файла требуется доступ к хранилищу.</string>
+    <string name="storage_permission_denied">Права на хранение былы отклонены.</string>
 </resources>

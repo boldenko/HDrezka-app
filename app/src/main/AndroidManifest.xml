@@ -18,6 +18,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
         android:allowBackup="true"
@@ -68,5 +69,6 @@
             android:name=".views.tv.player.PlayerActivity"
             android:exported="false"
             android:theme="@style/ATVTheme" />
+
     </application>
 </manifest>

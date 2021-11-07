@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="7dp"
         android:layout_marginTop="7dp"
-        android:layout_marginStart="@dimen/leanback_margin"
+        android:layout_marginStart="@dimen/leanback_margin_filters"
         android:layout_marginEnd="7dp"
         android:background="@drawable/roundedbutton"
         android:foreground="?attr/selectableItemBackground"

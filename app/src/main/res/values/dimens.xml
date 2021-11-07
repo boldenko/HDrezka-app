@@ -20,4 +20,5 @@
     <dimen name="scale_from">100%</dimen>
     <dimen name="scale_to">110%</dimen>
     <dimen name="inflate_film_layout_top_margin">5dp</dimen>
+    <dimen name="leanback_margin_filters">5dp</dimen>
 </resources>

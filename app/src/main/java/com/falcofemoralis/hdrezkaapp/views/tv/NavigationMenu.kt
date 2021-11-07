@@ -373,7 +373,7 @@ class NavigationMenu : Fragment() {
 
     private fun animateMenuNamesEntry(view: View, visibility: Int, viewCode: Int, anim: Int) {
         view.postDelayed({
-            val animate = AnimationUtils.loadAnimation(context, anim)
+            val animate = AnimationUtils.loadAnimation(requireContext(), anim)
             if (visibility == View.GONE) {
                 val duration = context?.resources?.getInteger(R.integer.animation_duration)?.toLong()
                 duration?.let {
