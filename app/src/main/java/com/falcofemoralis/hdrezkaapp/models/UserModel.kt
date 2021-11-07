@@ -33,9 +33,9 @@ object UserModel : BaseModel() {
         } else if (str.contains("//static") && str.contains("http")) {
             // has protocol, no noavatar
             null
-        } else if (!str.contains("//static") && !str.contains("http")) {
+/*        } else if (!str.contains("//static") && !str.contains("http")) {
             // no protocol, no noavatar
-            null
+            null*/
         } else if (str.contains("http") && str.contains("upload")) {
             // has protocol, user avatar
             str

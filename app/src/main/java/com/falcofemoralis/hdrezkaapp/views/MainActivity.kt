@@ -46,6 +46,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.net.URI
@@ -406,23 +407,29 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
             //val versionFilePath = filesDir.path + "/version"
 
             GlobalScope.launch {
-                val uri: URI = URI.create("https://www.dropbox.com/s/1nkqxfe0ifxpvlc/version.txt?dl=1")
+                val uri: URI = URI.create("https://www.dropbox.com/s/yhvwhwdzmiiqu6x/version.json?dl=1")
                 uri.toURL().openStream().use { inputStream ->
                     // InputStream -> String
-                    val serverVersion = convertInputStreamToString(inputStream)
+                    val versionString = convertInputStreamToString(inputStream)
                     try {
-                        val isNewVersion = compareAppVersion(serverVersion)
+                        if (versionString != null) {
+                            val versionObject = JSONObject(versionString)
+                            val serverVersion = versionObject.getString("version")
+                            val newFeatures = versionObject.getString("newFeatures")
 
-                        withContext(Dispatchers.Main) {
-                            if (isNewVersion) {
-                                // show dialog
-                                val builder = DialogManager.getDialog(_context, R.string.new_version_hint)
-                                builder.setPositiveButton(R.string.ok_text) { d, i ->
-                                    d.dismiss()
+                            val isNewVersion = compareAppVersion(serverVersion)
+
+                            withContext(Dispatchers.Main) {
+                                if (isNewVersion) {
+                                    // show dialog
+                                    val builder = DialogManager.getDialog(_context, R.string.new_version_hint)
+                                    builder.setPositiveButton(R.string.ok_text) { d, i ->
+                                        d.dismiss()
+                                    }
+                                    builder.setMessage("${BuildConfig.VERSION_NAME} -> $serverVersion\n\n $newFeatures")
+                                    val d = builder.create()
+                                    d.show()
                                 }
-                                builder.setMessage("${BuildConfig.VERSION_NAME} -> $serverVersion")
-                                val d = builder.create()
-                                d.show()
                             }
                         }
                     } catch (e: Exception) {

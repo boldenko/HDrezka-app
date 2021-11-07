@@ -3,6 +3,7 @@ package com.falcofemoralis.hdrezkaapp.views.tv
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
@@ -52,6 +53,7 @@ class NavigationMenu : Fragment() {
     companion object {
         var isFree = true
         var isFocusOut = false
+        var closed = false
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -112,6 +114,7 @@ class NavigationMenu : Fragment() {
                         setMenuNameFocusView(tv, true)
                         focusIn(ib)
                     } else {
+                        closed = false
                         openNav()
                     }
                 } else {
@@ -133,11 +136,14 @@ class NavigationMenu : Fragment() {
             if (event.action == KeyEvent.ACTION_DOWN) {//only when key is pressed down
                 when (keyCode) {
                     KeyEvent.KEYCODE_DPAD_RIGHT -> {
-                        isFocusOut = true
-                        closeNav()
-                        navigationStateListener.onStateChanged(false, lastSelectedMenu)
+                        if(!closed) {
+                            isFocusOut = true
+                            closeNav()
+                            navigationStateListener.onStateChanged(false, lastSelectedMenu)
+                        }
                     }
                     KeyEvent.KEYCODE_ENTER -> {
+                        closed = true
                         lastSelectedMenu = lastMenu
                         fragmentChangeListener.switchFragment(lastMenu)
                         // closeNav()
@@ -147,6 +153,7 @@ class NavigationMenu : Fragment() {
                             ib.isFocusable = true
                     }
                     KeyEvent.KEYCODE_DPAD_CENTER -> {
+                        closed = true
                         lastSelectedMenu = lastMenu
                         fragmentChangeListener.switchFragment(lastMenu)
                         closeNav()
@@ -161,6 +168,7 @@ class NavigationMenu : Fragment() {
                 lastSelectedMenu = lastMenu
                 fragmentChangeListener.switchFragment(lastMenu)
                 closeNav()
+                closed = true
             } else{
                 openNav()
             }
@@ -179,7 +187,6 @@ class NavigationMenu : Fragment() {
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> {
                  //   highlightMenuSelection(lastMenu)
-
                     tv.setTextColor(
                         ContextCompat.getColor(
                             requireContext(),
@@ -189,7 +196,6 @@ class NavigationMenu : Fragment() {
                 }
                 MotionEvent.ACTION_UP -> {
                   //  unHighlightMenuSelections(lastMenu)
-
                     tv.setTextColor(
                         ContextCompat.getColor(
                             requireContext(),

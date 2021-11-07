@@ -57,4 +57,6 @@ interface FilmView : IConnection, CommentEditor.ICommentEditor {
     fun openStream(stream: Stream, filmTitle: String, title: String, isDownload: Boolean, translation: Voice)
 
     fun hideActors()
+
+    fun setTrailer(link: String?)
 }

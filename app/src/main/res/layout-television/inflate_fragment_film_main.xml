@@ -40,7 +40,7 @@
             android:paddingEnd="7dp"
             android:gravity="center"
             android:foreground="?attr/selectableItemBackground"
-            android:text="Добавить в закладки"
+            android:text="@string/add_to_bookmarks"
             android:textColor="@color/white"
             android:textSize="@dimen/normal_text" />
 
@@ -55,7 +55,7 @@
             android:gravity="center"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
-            android:text="Поделиться"
+            android:text="@string/share_name"
             android:textColor="@color/white"
             android:textSize="@dimen/normal_text" />
 
@@ -70,7 +70,22 @@
             android:gravity="center"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
-            android:text="Скачать"
+            android:text="@string/download_name"
+            android:textColor="@color/white"
+            android:textSize="@dimen/normal_text" />
+
+        <TextView
+            android:drawablePadding="10dp"
+            app:drawableStartCompat="@drawable/ic_baseline_local_movies_24"
+            android:id="@+id/fragment_film_tv_trailer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingStart="7dp"
+            android:paddingEnd="7dp"
+            android:gravity="center"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="@string/trailer"
             android:textColor="@color/white"
             android:textSize="@dimen/normal_text" />
     </LinearLayout>

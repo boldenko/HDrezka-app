@@ -26,6 +26,7 @@ object FilmModel : BaseModel() {
     private const val GET_FILM_POST = "/engine/ajax/quick_content.php"
     private const val GET_STREAM_POST = "/ajax/get_cdn_series"
     private const val SEND_WATCH = "/ajax/send_save"
+    private const val GET_TRAILER_VIDEO = "/engine/ajax/gettrailervideo.php"
 
     const val AWAITING_TEXT = "В ожидании"
 
@@ -59,7 +60,9 @@ object FilmModel : BaseModel() {
 
         if (doc != null) {
             val titleEl = doc.select("div.b-content__bubble_title a")
-            film.filmLink = titleEl.attr("href")
+            if(film.filmLink.isNullOrEmpty()){
+                film.filmLink = titleEl.attr("href")
+            }
             film.type = getTypeByName(doc.select("i.entity").text())
             film.title = titleEl.text()
             film.ratingIMDB = doc.select("span.imdb b").text()
@@ -372,13 +375,14 @@ object FilmModel : BaseModel() {
         }
         film.translations = filmTranslations
 
-        if(film.isMovieTranslation == false && SettingsData.autoPlayNextEpisode == true){
+        if (film.isMovieTranslation == false && SettingsData.autoPlayNextEpisode == true) {
             val firstIndex = stringedDoc.indexOf("\$(function () { sof.tv.initCDNSeriesEvents")
             val secondIndex = stringedDoc.indexOf("; \$(function ()")
             val autoswitch = stringedDoc.substring(firstIndex, secondIndex)
             film.autoswitch = autoswitch
         }
 
+        film.filmId?.let { film.youtubeLink = getTrailerVideo(it) }
 
         film.hasAdditionalData = true
 
@@ -715,6 +719,33 @@ object FilmModel : BaseModel() {
             }
         } else {
             throw HttpStatusException("failed to save watch", 400, SettingsData.provider)
+        }
+    }
+
+    fun getTrailerVideo(filmId: Int): String? {
+        val data: ArrayMap<String, String> = ArrayMap()
+        data["id"] = filmId.toString()
+
+        val result: Document? = getJsoup(SettingsData.provider + GET_TRAILER_VIDEO)
+            .data(data)
+            .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
+            .post()
+
+        if (result != null) {
+            val bodyString: String = result.select("body").text()
+            val jsonObject = JSONObject(bodyString)
+
+            if (jsonObject.getBoolean("success")) {
+                val code = jsonObject.getString("code")
+                val startIndex = code.indexOf("https://")
+                val endIndex = code.indexOf("lay=1") + 5
+                val ytlink = code.substring(startIndex, endIndex)
+                return ytlink
+            } else {
+               return null
+            }
+        } else {
+            throw HttpStatusException("failed to get youtube trailer", 400, SettingsData.provider)
         }
     }
 }

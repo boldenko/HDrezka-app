@@ -9,7 +9,6 @@
     android:layout_marginStart="5dp"
     android:focusable="true"
     android:clipToPadding="false"
-    android:foreground="@color/unselected_film"
     android:orientation="vertical">
 
     <ProgressBar
@@ -19,6 +18,7 @@
         android:layout_height="wrap_content"/>
 
     <RelativeLayout
+        android:foreground="@color/unselected_film"
         android:id="@+id/film_posterLayout"
         android:visibility="gone"
         android:adjustViewBounds="true"
@@ -62,12 +62,13 @@
     </RelativeLayout>
 
     <TextView
+        android:maxHeight="70dp"
         android:id="@+id/film_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:breakStrategy="balanced"
         android:text="Title"
-        android:textColor="@color/white"
+        android:textColor="@color/unselected_title"
         android:textSize="@dimen/normal_text" />
 
     <TextView
@@ -76,7 +77,7 @@
         android:layout_height="wrap_content"
         android:singleLine="false"
         android:text="Info"
-        android:textColor="@color/gray"
+        android:textColor="@color/unselected_subtitle"
         android:textSize="@dimen/normal_text" />
 
 </LinearLayout>

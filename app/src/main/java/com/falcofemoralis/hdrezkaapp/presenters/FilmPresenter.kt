@@ -53,9 +53,19 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
                             }
                         }
                     }
+                    filmView.setTrailer(film.youtubeLink)
                 }
             } catch (e: Exception) {
-                catchException(e, filmView)
+                if (e is IllegalArgumentException) {
+                    val nul = if(film.filmId == null){
+                        "null"
+                    } else{
+                        film.filmId
+                    }
+                    catchException(IllegalArgumentException("Битая ссылка: filmId=$nul, filmLink=${film.filmLink}"), filmView)
+                } else {
+                    catchException(e, filmView)
+                }
                 return@launch
             }
         }

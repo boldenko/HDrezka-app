@@ -23,6 +23,10 @@ class WatchLaterRecyclerViewAdapter(private val watchLaterList: ArrayList<WatchL
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val watchLaterItem = watchLaterList[position]
 
+        if(position == 0){
+            holder.layout.requestFocus()
+        }
+
         Picasso.get().load(watchLaterItem.posterPath).into(holder.posterView, object : Callback {
             override fun onSuccess() {
                 holder.posterProgressBar.visibility = View.GONE

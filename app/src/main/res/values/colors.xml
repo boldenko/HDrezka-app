@@ -26,4 +26,6 @@
     <color name="day_night_text">#000</color>
     <color name="unselected_film">#00000000</color>
     <color name="dialog_focusableColor">#FF5554</color>
+    <color name="unselected_title">@color/white</color>
+    <color name="unselected_subtitle">@color/gray</color>
 </resources>

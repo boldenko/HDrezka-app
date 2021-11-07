@@ -3,13 +3,13 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
+    android:focusable="true"
     android:orientation="vertical">
 
     <ProgressBar
         android:id="@+id/actor_loading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:focusable="true"
         android:foreground="?attr/selectableItemBackground"
         android:visibility="gone" />
 
@@ -17,11 +17,10 @@
         android:id="@+id/actor_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackground"
         android:orientation="vertical">
 
         <ImageView
+            android:foreground="@color/unselected_film"
             android:id="@+id/actor_photo"
             android:layout_width="100dp"
             android:layout_height="130dp"
@@ -35,7 +34,7 @@
             android:layout_height="wrap_content"
             android:breakStrategy="balanced"
             android:gravity="center"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/unselected_title"
             android:textSize="@dimen/small_text" />
 
         <TextView
@@ -44,7 +43,7 @@
             android:layout_height="wrap_content"
             android:breakStrategy="balanced"
             android:gravity="center"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/unselected_subtitle"
             android:textSize="@dimen/small_text" />
     </LinearLayout>
 </LinearLayout>

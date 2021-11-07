@@ -148,7 +148,7 @@
     <string name="msg_subtitle_on">Субтитры %1$s включены</string>
     <string name="msg_subtitle_cc">Субтитры</string>
     <string name="select_quality">Выберите качество</string>
-    <string name="player_title">Внешний плеер</string>
+    <string name="player_title">Сторонний плеер</string>
     <string name="subtitle_download_hint">Всегда будут скачиваться субтитры для внешнего плеера</string>
     <string name="subtitle_download_title">Скачивание субтитров</string>
     <string name="login_pref">fragment_user_tv_login</string>
@@ -159,8 +159,10 @@
     <string name="filter_applied_hint">Происходит поиск с установленными фильтрами. Это может занять значительное время…</string>
     <string name="new_version_hint">Доступна новая версия!</string>
     <string name="ok_text">ОК</string>
-    <string name="new_version_pref_title">Проверка новой версии</string>
+    <string name="new_version_pref_title">Автопроверка новой версии</string>
     <string name="new_version_pref_hint">Проверять наличие новой версии приложения</string>
+    <string name="trailer">Трейлер</string>
+    <string name="no_yt_player">Отсуствует приложение Youtube</string>
 
     <!-- VoiceInputDialogFragment -->
     <string name="input_title_listening">Говорите…</string>
@@ -183,4 +185,7 @@
     <string name="permission_enable_rationale">В доступе отказано, разрешите чтобы использовать голосовой поиск.</string>
     <string name="permission_button_enable">Разрешить запись</string>
     <string name="permission_enable_instructions">На следующем экране нажмите «Разрешения», затем «Микрофон».</string>
+    <string name="add_to_bookmarks">Добавить в закладки</string>
+    <string name="share_name">Поделиться</string>
+    <string name="download_name">Скачать</string>
 </resources>

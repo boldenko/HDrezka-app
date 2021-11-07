@@ -53,4 +53,5 @@ open class Film : Serializable {
     var lastSeason: String? = null
     var lastEpisode: String? = null
     var autoswitch: String? = null
+    var youtubeLink: String? = null
 }

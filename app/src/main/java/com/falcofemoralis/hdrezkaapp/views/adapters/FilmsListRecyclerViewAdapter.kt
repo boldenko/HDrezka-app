@@ -30,21 +30,7 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
     }
 
     override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
-        if (SettingsData.deviceType == DeviceType.TV) {
-            holder.layout.setOnFocusChangeListener { v, hasFocus ->
-                if (hasFocus) {
-                    v.foreground = ColorDrawable(ContextCompat.getColor(context, R.color.transparent));
-                    val anim: Animation = AnimationUtils.loadAnimation(context, R.anim.scale_in_tv)
-                    v.startAnimation(anim)
-                    anim.fillAfter = true
-                } else {
-                    v.foreground = ColorDrawable(ContextCompat.getColor(context, R.color.unselected_film));
-                    val anim: Animation = AnimationUtils.loadAnimation(context, R.anim.scale_out_tv)
-                    v.startAnimation(anim)
-                    anim.fillAfter = true
-                }
-            }
-        }
+        zoom(holder.layout, holder.posterLayoutView, holder.titleView, holder.infoView, context)
 
         val film = films[position]
         val picasso = Picasso.get().load(film.posterPath)
@@ -131,5 +117,31 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
         val progressView: ProgressBar = view.findViewById(R.id.film_loading)
         val posterLayoutView: RelativeLayout = view.findViewById(R.id.film_posterLayout)
         val subInfoView: TextView = view.findViewById(R.id.film_sub_info)
+    }
+
+    companion object{
+        fun zoom(layout: LinearLayout, posterLayout: View, titleView: TextView, subView: TextView?, context: Context){
+            if (SettingsData.deviceType == DeviceType.TV) {
+                layout.setOnFocusChangeListener { v, hasFocus ->
+                    if (hasFocus) {
+                        posterLayout.foreground = ColorDrawable(ContextCompat.getColor(context, R.color.transparent))
+                        titleView.setTextColor(context.getColor(R.color.white))
+                        subView?.setTextColor(context.getColor(R.color.gray))
+
+                        val anim: Animation = AnimationUtils.loadAnimation(context, R.anim.scale_in_tv)
+                        v.startAnimation(anim)
+                        anim.fillAfter = true
+                    } else {
+                        posterLayout.foreground = ColorDrawable(ContextCompat.getColor(context, R.color.unselected_film))
+                        titleView.setTextColor(context.getColor(R.color.unselected_title))
+                        subView?.setTextColor(context.getColor(R.color.unselected_subtitle))
+
+                        val anim: Animation = AnimationUtils.loadAnimation(context, R.anim.scale_out_tv)
+                        v.startAnimation(anim)
+                        anim.fillAfter = true
+                    }
+                }
+            }
+        }
     }
 }

@@ -54,11 +54,11 @@ import com.falcofemoralis.hdrezkaapp.objects.*
 import com.falcofemoralis.hdrezkaapp.presenters.FilmPresenter
 import com.falcofemoralis.hdrezkaapp.utils.DialogManager
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
-import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper.catchException
 import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
 import com.falcofemoralis.hdrezkaapp.utils.UnitsConverter
 import com.falcofemoralis.hdrezkaapp.views.MainActivity
 import com.falcofemoralis.hdrezkaapp.views.adapters.CommentsRecyclerViewAdapter
+import com.falcofemoralis.hdrezkaapp.views.adapters.FilmsListRecyclerViewAdapter
 import com.falcofemoralis.hdrezkaapp.views.elements.CommentEditor
 import com.falcofemoralis.hdrezkaapp.views.tv.player.PlayerActivity
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmView
@@ -198,7 +198,7 @@ class FilmFragment : Fragment(), FilmView {
                 Toast.makeText(requireContext(), getString(R.string.perm_write_hint), Toast.LENGTH_LONG).show()
             }
         }
-        currentView.findViewById<TextView>(R.id.fragment_film_tv_download).setOnClickListener {
+        currentView.findViewById<View>(R.id.fragment_film_tv_download).setOnClickListener {
             when (PackageManager.PERMISSION_GRANTED) {
                 ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) -> {
                     filmPresenter.showTranslations(true)
@@ -211,6 +211,23 @@ class FilmFragment : Fragment(), FilmView {
                     )
                 }
             }
+        }
+    }
+
+    override fun setTrailer(link: String?) {
+        val trailerBtn = currentView.findViewById<TextView>(R.id.fragment_film_tv_trailer)
+        if (link != null && link.isNotEmpty()) {
+            trailerBtn.setOnClickListener {
+                val linkIntent = Intent(Intent.ACTION_VIEW, Uri.parse(filmPresenter.film.youtubeLink))
+
+                try {
+                    startActivity(linkIntent)
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), getString(R.string.no_yt_player), Toast.LENGTH_LONG).show()
+                }
+            }
+        } else {
+            trailerBtn.visibility = View.GONE
         }
     }
 
@@ -322,17 +339,19 @@ class FilmFragment : Fragment(), FilmView {
         context?.let {
             for (actor in actors.reversed()) {
                 val layout: LinearLayout = LayoutInflater.from(it).inflate(R.layout.inflate_actor, null) as LinearLayout
-
-                layout.findViewById<TextView>(R.id.actor_name).text = actor.name
-                layout.findViewById<TextView>(R.id.actor_career).text = actor.careers
+                val nameView: TextView = layout.findViewById(R.id.actor_name)
+                val careerView: TextView = layout.findViewById(R.id.actor_career)
+                nameView.text = actor.name
+                careerView.text = actor.careers
 
                 if (actor.photo != null && actor.photo!!.isNotEmpty() && actor.photo?.contains(ActorModel.NO_PHOTO) == false) {
                     val actorProgress: ProgressBar = layout.findViewById(R.id.actor_loading)
                     val actorLayout: LinearLayout = layout.findViewById(R.id.actor_layout)
+                    val actorPhoto: ImageView = layout.findViewById(R.id.actor_photo)
 
                     actorProgress.visibility = View.VISIBLE
                     actorLayout.visibility = View.GONE
-                    Picasso.get().load(actor.photo).into(layout.findViewById(R.id.actor_photo), object : Callback {
+                    Picasso.get().load(actor.photo).into(actorPhoto, object : Callback {
                         override fun onSuccess() {
                             actorProgress.visibility = View.GONE
                             actorLayout.visibility = View.VISIBLE
@@ -346,6 +365,7 @@ class FilmFragment : Fragment(), FilmView {
                     actorLayout.setOnClickListener {
                         FragmentOpener.openWithData(this, fragmentListener, actor, "actor")
                     }
+                    FilmsListRecyclerViewAdapter.zoom(layout, actorPhoto, nameView, careerView, requireContext())
                 } else {
                     actorsLayout.addView(layout)
                 }
@@ -549,6 +569,8 @@ class FilmFragment : Fragment(), FilmView {
             val layout: LinearLayout = layoutInflater.inflate(R.layout.inflate_film, null) as LinearLayout
             val titleView: TextView = layout.findViewById(R.id.film_title)
             val infoView: TextView = layout.findViewById(R.id.film_info)
+            val posterLayout: RelativeLayout = layout.findViewById(R.id.film_posterLayout)
+            FilmsListRecyclerViewAdapter.zoom(layout, posterLayout, titleView, infoView, requireContext())
             layout.findViewById<TextView>(R.id.film_type).visibility = View.GONE
             titleView.text = film.title
             titleView.textSize = 12F
@@ -651,9 +673,9 @@ class FilmFragment : Fragment(), FilmView {
                 }
             }
         } else {
-            if (SettingsData.deviceType != DeviceType.TV) {
-                currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_title_layout).layoutParams = LinearLayout.LayoutParams(0, WindowManager.LayoutParams.WRAP_CONTENT, 0.85f)
-            }
+            /*       if (SettingsData.deviceType != DeviceType.TV) {
+                       currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_title_layout).layoutParams = LinearLayout.LayoutParams(0, WindowManager.LayoutParams.WRAP_CONTENT, 0.85f)
+                   }*/
             btn.visibility = View.GONE
         }
     }
@@ -977,7 +999,7 @@ class FilmFragment : Fragment(), FilmView {
             qualities.add(stream.quality)
         }
 
-        builder.setAdapter(ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, qualities)) { dialog, which ->
+        builder.setAdapter(ArrayAdapter(requireContext(), R.layout.simple_list_item, qualities)) { dialog, which ->
             openStream(streams[which], filmTitle, title, isDownload, translation)
         }
         builder.show()

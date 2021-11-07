@@ -370,7 +370,7 @@ class PlayerFragment : VideoSupportFragment() {
         selectedQuality = selected
         val stream = mTranslation?.streams?.get(selected)
 
-        if (stream != null && mTranslation?.subtitles != null) {
+        if (stream != null) { // && mTranslation?.subtitles != null
             val subtitleUrl = if (selectedSubtitle >= 0) {
                 mTranslation?.subtitles!![selectedSubtitle].url
             } else {
