@@ -13,8 +13,8 @@ android {
         applicationId "com.falcofemoralis.hdrezkaapp"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 19
-        versionName "1.6"
+        versionCode 20
+        versionName "2.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

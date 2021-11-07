@@ -43,6 +43,7 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val f
         // block advert
         val script = "XMLHttpRequest.prototype.open = (function (open) {" +
                 "    return function (method, url, async) {" +
+                "        console.log(url);" +
                 "        if (url.match(/franecki.net/g) || url.match(/biocdn.net/g) || url.match(/franeski.net/g) || url.match(/reichelcormier.bid/g) || url.match(/track.adpod.in.bid/g)) {" +
                 "            console.log('blocked');" +
                 "        } else {" +

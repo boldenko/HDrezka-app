@@ -183,7 +183,7 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/normal_text" />
 
-            <LinearLayout
+           <!-- <LinearLayout
                 android:weightSum="3"
                 android:gravity="center"
                 android:layout_width="match_parent"
@@ -234,11 +234,37 @@
                     android:nextFocusDown="@id/fragment_film_iv_poster"
                     android:src="@drawable/ic_baseline_share_24" />
 
-            </LinearLayout>
+            </LinearLayout>-->
         </LinearLayout>
     </LinearLayout>
 
-<!--
+    <!-- Plot -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:text="@string/plot"
+            android:textColor="@color/white"
+            android:textSize="@dimen/head_text" />
+
+        <TextView
+            android:id="@+id/fragment_film_tv_plot"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:justificationMode="inter_word"
+            android:textColor="@color/white"
+            android:textSize="@dimen/normal_text" />
+    </LinearLayout>
+
+
+    <!-- Action buttons -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -254,7 +280,7 @@
             <ImageView
                 android:id="@+id/fragment_film_iv_bookmark"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
                 android:layout_margin="5dp"
                 android:background="#00000000"
                 android:clickable="true"
@@ -283,7 +309,7 @@
             <ImageView
                 android:id="@+id/fragment_film_tv_download"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
                 android:layout_margin="5dp"
                 android:background="#00000000"
                 android:clickable="true"
@@ -312,7 +338,7 @@
             <ImageView
                 android:id="@+id/fragment_film_iv_share"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
                 android:layout_margin="5dp"
                 android:background="#00000000"
                 android:clickable="true"
@@ -334,32 +360,7 @@
 
 
     </LinearLayout>
--->
 
-    <!-- Plot -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
-            android:text="@string/plot"
-            android:textColor="@color/white"
-            android:textSize="@dimen/head_text" />
-
-        <TextView
-            android:id="@+id/fragment_film_tv_plot"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:justificationMode="inter_word"
-            android:textColor="@color/white"
-            android:textSize="@dimen/normal_text" />
-    </LinearLayout>
 
     <!-- Open in player -->
     <LinearLayout

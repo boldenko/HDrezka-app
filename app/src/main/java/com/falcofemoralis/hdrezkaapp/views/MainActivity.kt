@@ -407,7 +407,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
             //val versionFilePath = filesDir.path + "/version"
 
             GlobalScope.launch {
-                val uri: URI = URI.create("https://www.dropbox.com/s/yhvwhwdzmiiqu6x/version.json?dl=1")
+                val uri: URI = URI.create("https://www.dropbox.com/s/nrifw23v6ngbdx3/version.json?dl=1")
                 uri.toURL().openStream().use { inputStream ->
                     // InputStream -> String
                     val versionString = convertInputStreamToString(inputStream)

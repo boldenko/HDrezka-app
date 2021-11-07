@@ -44,7 +44,7 @@
             android:background="@drawable/ic_baseline_close_24"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
-            android:visibility="gone "/>
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/fragment_search_voice"
@@ -56,7 +56,7 @@
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
             android:nextFocusLeft="@id/fragment_search_tv_clear"
-            app:srcCompat="@drawable/ic_baseline_mic_24" />
+            app:srcCompat="@drawable/ic_baseline_mic_none_24" />
 
     </FrameLayout>
 

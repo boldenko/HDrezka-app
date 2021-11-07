@@ -21,6 +21,7 @@
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/drawable/ic_baseline_local_movies_24.xml" value="0.24322916666666666" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/drawable/ic_baseline_login_24.xml" value="0.32222222222222224" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/drawable/ic_baseline_mic_24.xml" value="0.3296875" />
+        <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/drawable/ic_baseline_mic_none_24.xml" value="0.33697916666666666" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/drawable/ic_baseline_movie_24.xml" value="0.2865740740740741" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/drawable/ic_baseline_movie_24_sel.xml" value="0.32222222222222224" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/drawable/ic_baseline_pause_24.xml" value="0.32760416666666664" />
@@ -51,6 +52,7 @@
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/drawable/lb_playback_now_playing_bar.xml" value="0.21574074074074073" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/drawable/lb_playback_progress_bar.xml" value="0.21574074074074073" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/drawable/logo_tv.xml" value="0.3223684210526316" />
+        <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/drawable/nav_item_color_state.xml" value="0.23645833333333333" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/drawable/roundedbutton.xml" value="0.3263888888888889" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/drawable/triangle.xml" value="0.3181818181818182" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout-television/activity_main.xml" value="0.22" />
@@ -97,7 +99,7 @@
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/inflate_colletion_item.xml" value="0.31203703703703706" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/inflate_comment.xml" value="0.18" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/inflate_comment_editor.xml" value="0.31203703703703706" />
-        <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/inflate_film.xml" value="0.9" />
+        <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/inflate_film.xml" value="0.22" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/inflate_fragment_film_main.xml" value="0.33" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/inflate_schedule_item.xml" value="0.31203703703703706" />
         <entry key="..\:/Developer/Projects/AndroidStudio/HDrezka-app/app/src/main/res/layout/inflate_schedule_layout.xml" value="0.31203703703703706" />
