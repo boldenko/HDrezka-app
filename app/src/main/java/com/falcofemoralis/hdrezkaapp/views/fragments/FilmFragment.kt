@@ -723,9 +723,11 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
-        try {
-            ExceptionHelper.showToastError(requireContext(), type, errorText)
-        } catch (e: Exception) {
+        try{
+            if(context != null){
+                ExceptionHelper.showToastError(requireContext(), type, errorText)
+            }
+        } catch (e: Exception){
             e.printStackTrace()
         }
     }

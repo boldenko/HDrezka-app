@@ -231,7 +231,11 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     }
 
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
-        showConnectionErrorDialog(this, type, ::initApp)
+       try{
+           showConnectionErrorDialog(this, type, ::initApp)
+       } catch (e: Exception){
+           e.printStackTrace()
+       }
     }
 
     fun showProviderEnter() {

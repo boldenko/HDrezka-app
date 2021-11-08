@@ -180,6 +180,12 @@ class UserFragment : Fragment(), UserView {
     }
 
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
-        ExceptionHelper.showToastError(requireContext(), type, errorText)
+        try{
+            if(context != null){
+                ExceptionHelper.showToastError(requireContext(), type, errorText)
+            }
+        } catch (e: Exception){
+            e.printStackTrace()
+        }
     }
 }

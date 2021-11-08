@@ -131,7 +131,13 @@ class CategoriesFragment : Fragment(), CategoriesView, AdapterView.OnItemSelecte
     }
 
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
-        ExceptionHelper.showToastError(requireContext(), type, errorText)
+        try{
+            if(context != null){
+                ExceptionHelper.showToastError(requireContext(), type, errorText)
+            }
+        } catch (e: Exception){
+            e.printStackTrace()
+        }
     }
 
     override fun showFilterMsg(){

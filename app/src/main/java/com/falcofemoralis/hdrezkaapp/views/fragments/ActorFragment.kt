@@ -17,6 +17,7 @@ import com.falcofemoralis.hdrezkaapp.objects.Actor
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.presenters.ActorPresenter
+import com.falcofemoralis.hdrezkaapp.utils.ConnectionManager
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
 import com.falcofemoralis.hdrezkaapp.views.adapters.FilmsListRecyclerViewAdapter
@@ -109,7 +110,13 @@ class ActorFragment : Fragment(), ActorView {
     }
 
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
-        ExceptionHelper.showToastError(requireContext(), type, errorText)
+        try{
+            if(context != null){
+                ExceptionHelper.showToastError(requireContext(), type, errorText)
+            }
+        } catch (e: Exception){
+            e.printStackTrace()
+        }
     }
 
     private fun listCallback(film: Film) {
