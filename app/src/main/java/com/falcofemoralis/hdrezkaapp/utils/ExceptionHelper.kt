@@ -6,6 +6,7 @@ import androidx.appcompat.app.AlertDialog
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection.ErrorType
+import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.views.MainActivity
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.crashlytics.ktx.crashlytics
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jsoup.HttpStatusException
 import org.jsoup.parser.ParseError
+import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.net.ssl.SSLHandshakeException
@@ -23,7 +25,7 @@ import javax.net.ssl.SSLHandshakeException
 object ExceptionHelper {
     var activeDialog: AlertDialog? = null
 
-    fun showToastError(context: Context, type: ErrorType, errorText: String) {
+    fun showToastError(context: Context, type: ErrorType, error: String) {
         GlobalScope.launch {
             withContext(Dispatchers.Main) {
                 val textId: Int = when (type) {
@@ -41,8 +43,17 @@ object ExceptionHelper {
 
                 if (type == ErrorType.BLOCKED_SITE) {
                     createDialog(textId, context)
+                } else if(type == ErrorType.MALFORMED_URL) {
+                    val urlErrorString = if(SettingsData.provider == null){
+                        "ссылка на сайт пустая!"
+                    } else if(!SettingsData.provider!!.contains("http://") && !SettingsData.provider!!.contains("https://")){
+                        "отсуствует протокол (http:// или https://) в ссылке!"
+                    } else {
+                        "убедитесь что ваша ссылка на сайт рабочая!"
+                    }
+                    Toast.makeText(context, "${context.getString(textId)}: $urlErrorString Ваш URL: ${SettingsData.provider}", Toast.LENGTH_LONG).show()
                 } else if (type != ErrorType.PROVIDER_TIMEOUT) {
-                    Toast.makeText(context, context.getString(textId) + ": " + errorText, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(textId) + ": " + error.toString(), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -89,7 +100,8 @@ object ExceptionHelper {
             is IllegalArgumentException -> ErrorType.MALFORMED_URL
             is IndexOutOfBoundsException -> ErrorType.BLOCKED_SITE
             is SSLHandshakeException -> ErrorType.BLOCKED_SITE
-            is UnknownHostException -> ErrorType.BLOCKED_SITE
+            is UnknownHostException -> ErrorType.MALFORMED_URL
+            is ConnectException -> ErrorType.MALFORMED_URL
             //is IOException -> ErrorType.BLOCKED_SITE
             else -> ErrorType.ERROR
         }

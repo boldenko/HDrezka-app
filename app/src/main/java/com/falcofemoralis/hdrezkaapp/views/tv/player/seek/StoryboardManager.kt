@@ -101,12 +101,14 @@ class StoryboardManager(private val context: Context) {
             return
         }
 
-        mCachedImageIndexs?.add(imgIndex)
-        val link = mThumbnails?.get(imgIndex)?.url
+        if(mThumbnails != null && imgIndex < mThumbnails!!.size){
+            mCachedImageIndexs?.add(imgIndex)
+            val link = mThumbnails?.get(imgIndex)?.url
 
-        Glide.with(context)
-            .load(link)
-            .preload()
+            Glide.with(context)
+                .load(link)
+                .preload()
+        }
     }
 
     companion object {

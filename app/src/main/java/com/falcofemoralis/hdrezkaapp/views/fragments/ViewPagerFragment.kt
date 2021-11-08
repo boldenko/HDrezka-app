@@ -67,7 +67,7 @@ class ViewPagerFragment : Fragment() {
             WatchLaterFragment()
 
         )
-        viewPager2.adapter = ViewPagerAdapter(fragmentList, requireActivity().supportFragmentManager, lifecycle)
+        viewPager2.adapter = ViewPagerAdapter(fragmentList, childFragmentManager, lifecycle)
         SettingsData.mainScreen?.let {
             viewPager2.setCurrentItem(it, false)
         }

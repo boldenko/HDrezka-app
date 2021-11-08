@@ -263,11 +263,12 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         d.show()
 
         d.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-            val enteredText = editText.text.toString()
+            val enteredText = editText.text.toString().replace(" ", "")
 
             if (enteredText.isNotEmpty()) {
-                Toast.makeText(this, getString(R.string.new_provider, selectedProtocol + enteredText), Toast.LENGTH_LONG).show()
-                SettingsData.setProvider(selectedProtocol + enteredText, this, true)
+                val link = selectedProtocol + enteredText
+                Toast.makeText(this, getString(R.string.new_provider, link), Toast.LENGTH_LONG).show()
+                SettingsData.setProvider(link, this, true)
                 d.cancel()
                 initApp()
             } else {
