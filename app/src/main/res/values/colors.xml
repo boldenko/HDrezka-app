@@ -28,4 +28,5 @@
     <color name="dialog_focusableColor">#FF5554</color>
     <color name="unselected_title">@color/white</color>
     <color name="unselected_subtitle">@color/gray</color>
+    <color name="lb_control_button_color">@color/main_color_3</color>
 </resources>

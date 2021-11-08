@@ -506,7 +506,7 @@ object FilmModel : BaseModel() {
                 translation.streams = parseSteams(jsonObject.getString("url"))
                 translation.subtitles = parseSubtitles(jsonObject.getString("subtitle"))
                 val thumbnailsUrl = jsonObject.getString("thumbnails")
-                if (thumbnailsUrl.isNotEmpty()) {
+                if (thumbnailsUrl.isNotEmpty() && thumbnailsUrl != "false") {
                     getThumbnails(thumbnailsUrl, translation)
                 }
             } else {
