@@ -1,5 +1,6 @@
 package com.falcofemoralis.hdrezkaapp.utils
 
+import android.app.Activity
 import android.content.Context
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -44,10 +45,10 @@ object ExceptionHelper {
 
                 if (type == ErrorType.BLOCKED_SITE) {
                     createDialog(textId, context)
-                } else if(type == ErrorType.MALFORMED_URL) {
-                    val urlErrorString = if(SettingsData.provider == null){
+                } else if (type == ErrorType.MALFORMED_URL) {
+                    val urlErrorString = if (SettingsData.provider == null) {
                         "ссылка на сайт пустая!"
-                    } else if(!SettingsData.provider!!.contains("http://") && !SettingsData.provider!!.contains("https://")){
+                    } else if (!SettingsData.provider!!.contains("http://") && !SettingsData.provider!!.contains("https://")) {
                         "отсуствует протокол (http:// или https://) в ссылке!"
                     } else {
                         "убедитесь что ваша ссылка на сайт рабочая!"
@@ -61,23 +62,25 @@ object ExceptionHelper {
     }
 
     private fun createDialog(textId: Int, context: Context) {
-        val builder = DialogManager.getDialog(context, textId)
-        builder.setPositiveButton(context.getString(R.string.provider_change)) { dialog, id ->
-            dialog.cancel()
-        }
-        builder.setNegativeButton(context.getString(R.string.cancel)) { dialog, id ->
-            dialog.dismiss()
-        }
-        builder.setOnCancelListener {
-            activeDialog = null
-            (context as MainActivity).showProviderEnter()
-        }
-        builder.setCancelable(false)
+        if (!(context as Activity).isFinishing) {
+            val builder = DialogManager.getDialog(context, textId)
+            builder.setPositiveButton(context.getString(R.string.provider_change)) { dialog, id ->
+                dialog.cancel()
+            }
+            builder.setNegativeButton(context.getString(R.string.cancel)) { dialog, id ->
+                dialog.dismiss()
+            }
+            builder.setOnCancelListener {
+                activeDialog = null
+                (context as MainActivity).showProviderEnter()
+            }
+            builder.setCancelable(false)
 
-        if (activeDialog == null) {
-            activeDialog = builder.create()
+            if (activeDialog == null) {
+                activeDialog = builder.create()
+            }
+            activeDialog!!.show()
         }
-        activeDialog!!.show()
     }
 
     fun catchException(e: Exception, view: IConnection) {

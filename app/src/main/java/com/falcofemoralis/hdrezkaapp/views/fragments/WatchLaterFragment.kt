@@ -2,7 +2,6 @@ package com.falcofemoralis.hdrezkaapp.views.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -89,13 +88,15 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
         listView.visibility = View.GONE
         progressBar.visibility = View.GONE
 
-        val text = when (type) {
-            IMsg.MsgType.NOT_AUTHORIZED -> getString(R.string.register_user_only)
-            IMsg.MsgType.NOTHING_ADDED -> getString(R.string.empty_watch_later)
-            IMsg.MsgType.NOTHING_FOUND -> getString(R.string.nothing_found)
-        }
+        if(context != null) {
+            val text = when (type) {
+                IMsg.MsgType.NOT_AUTHORIZED -> getString(R.string.register_user_only)
+                IMsg.MsgType.NOTHING_ADDED -> getString(R.string.empty_watch_later)
+                IMsg.MsgType.NOTHING_FOUND -> getString(R.string.nothing_found)
+            }
 
-        msgView.text = text
+            msgView.text = text
+        }
     }
 
     override fun hideMsg() {
@@ -110,7 +111,9 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
     }
 
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
-        ExceptionHelper.showToastError(requireContext(), type, errorText)
+        if (context != null) {
+            ExceptionHelper.showToastError(requireContext(), type, errorText)
+        }
     }
 
     override fun redrawWatchLaterList() {

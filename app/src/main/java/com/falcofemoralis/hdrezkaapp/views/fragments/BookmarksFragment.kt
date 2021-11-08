@@ -115,7 +115,7 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
                 }
             }
             R.id.fragment_bookmarks_sp_list -> {
-                if(bookmarksPresenter.bookmarks != null && bookmarksPresenter.bookmarks!!.size > 0){
+                if (bookmarksPresenter.bookmarks != null && bookmarksPresenter.bookmarks!!.size > 0) {
                     bookmarksPresenter.bookmarks?.get(position)?.let { bookmarksPresenter.setBookmark(it) }
                 }
             }
@@ -128,10 +128,12 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
     override fun showMsg(type: IMsg.MsgType) {
         msgView.visibility = View.VISIBLE
 
-        when (type) {
-            IMsg.MsgType.NOT_AUTHORIZED -> msgView.text = getString(R.string.register_user_only)
-            IMsg.MsgType.NOTHING_FOUND -> msgView.text = getString(R.string.nothing_found)
-            IMsg.MsgType.NOTHING_ADDED -> msgView.text = getString(R.string.empty_bookmarks)
+        if (context != null) {
+            when (type) {
+                IMsg.MsgType.NOT_AUTHORIZED -> msgView.text = getString(R.string.register_user_only)
+                IMsg.MsgType.NOTHING_FOUND -> msgView.text = getString(R.string.nothing_found)
+                IMsg.MsgType.NOTHING_ADDED -> msgView.text = getString(R.string.empty_bookmarks)
+            }
         }
     }
 
@@ -140,7 +142,9 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
     }
 
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
-        ExceptionHelper.showToastError(requireContext(), type, errorText)
+        if (context != null) {
+            ExceptionHelper.showToastError(requireContext(), type, errorText)
+        }
     }
 
     override fun triggerEnd() {

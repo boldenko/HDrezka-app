@@ -71,16 +71,20 @@ class FilmsListPresenter(
                 }
 
                 FilmModel.getFilmsData(filmList, filmsPerPage, ::processFilms)
-            } catch (e: HttpStatusException) {
-                if (e.statusCode != 404 || e.statusCode == 503) {
+            } catch (e: Exception) {
+                if (e is HttpStatusException) {
+                    if (e.statusCode != 404 || e.statusCode == 503) {
+                        ExceptionHelper.catchException(e, view)
+                    }
+
+                    isLoading = false
+                    withContext(Dispatchers.Main) {
+                        filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
+                    }
+                    return@launch
+                } else {
                     ExceptionHelper.catchException(e, view)
                 }
-
-                isLoading = false
-                withContext(Dispatchers.Main) {
-                    filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
-                }
-                return@launch
             }
         }
     }

@@ -466,29 +466,31 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun setFullSizeImage(posterPath: String) {
-        val dialog = Dialog(requireActivity())
-        val layout: RelativeLayout = layoutInflater.inflate(R.layout.modal_image, null) as RelativeLayout
-        Picasso.get().load(posterPath).into(layout.findViewById(R.id.modal_image), object : Callback {
-            override fun onSuccess() {
-                layout.findViewById<ProgressBar>(R.id.modal_progress).visibility = View.GONE
-                layout.findViewById<ImageView>(R.id.modal_image).visibility = View.VISIBLE
+        if(context != null) {
+            val dialog = Dialog(requireActivity())
+            val layout: RelativeLayout = layoutInflater.inflate(R.layout.modal_image, null) as RelativeLayout
+            Picasso.get().load(posterPath).into(layout.findViewById(R.id.modal_image), object : Callback {
+                override fun onSuccess() {
+                    layout.findViewById<ProgressBar>(R.id.modal_progress).visibility = View.GONE
+                    layout.findViewById<ImageView>(R.id.modal_image).visibility = View.VISIBLE
+                }
+
+                override fun onError(e: Exception) {
+                }
+            })
+            dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
+            dialog.setContentView(layout)
+
+            val lp: WindowManager.LayoutParams = WindowManager.LayoutParams()
+            lp.copyFrom(dialog.window?.attributes)
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+            dialog.window?.attributes = lp
+
+            modalDialog = dialog
+            layout.findViewById<Button>(R.id.modal_bt_close).setOnClickListener {
+                dialog.dismiss()
             }
-
-            override fun onError(e: Exception) {
-            }
-        })
-        dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(layout)
-
-        val lp: WindowManager.LayoutParams = WindowManager.LayoutParams()
-        lp.copyFrom(dialog.window?.attributes)
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
-        dialog.window?.attributes = lp
-
-        modalDialog = dialog
-        layout.findViewById<Button>(R.id.modal_bt_close).setOnClickListener {
-            dialog.dismiss()
         }
     }
 
