@@ -357,12 +357,16 @@ object FilmModel : BaseModel() {
                     val jsonObject = JSONObject(stringedDoc.substring(startObjIndex, endObjIndex + 1))
                     trans.streams = parseSteams(jsonObject.getString("streams"))
                     trans.subtitles = parseSubtitles(jsonObject.getString("subtitle"))
-                    getThumbnails(jsonObject.getString("thumbnails"), trans)
+                    try {
+                        getThumbnails(jsonObject.getString("thumbnails"), trans)
+                    } catch (e: Exception) {
+                        // ignore
+                    }
                     filmTranslations.add(trans)
                 }
             }
         } catch (e: Exception) {
-            film.isAwaiting = true
+            film.isPendingRelease = true
         }
 
         val episodes = document.select("li.b-simple_episode__item")

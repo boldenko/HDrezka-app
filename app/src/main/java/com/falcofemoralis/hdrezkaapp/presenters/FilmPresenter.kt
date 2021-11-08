@@ -46,7 +46,7 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
                     film.title?.let { film.filmLink?.let { it1 -> filmView.setShareBtn(it, it1) } }
                     film.ratingHR.let {
                         film.isHRratingActive.let { it1 ->
-                            if (it != null && it.isNotEmpty() && !film.isAwaiting) {
+                            if (it != null && it.isNotEmpty() && !film.isPendingRelease) {
                                 filmView.setHRrating(it.toFloat(), it1)
                             } else {
                                 filmView.setHRrating(-1f, false)

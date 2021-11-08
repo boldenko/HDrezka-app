@@ -47,7 +47,7 @@ open class Film : Serializable {
     var bookmarks: ArrayList<Bookmark>? = null
     var isMovieTranslation: Boolean? = null
     var translations: ArrayList<Voice>? = null
-    var isAwaiting: Boolean = false
+    var isPendingRelease: Boolean = false
     var subInfo: String? = null
     var lastVoiceId: String? = null
     var lastSeason: String? = null
