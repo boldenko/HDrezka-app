@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         if (isInternetAvailable(applicationContext)) {
             if (savedInstanceState == null) {
                 SettingsData.initProvider(this)
-                if (SettingsData.provider == "" || SettingsData.provider == null) {
+                if (SettingsData.provider == null || SettingsData.provider == "") {
                     showProviderEnter()
                 } else {
                     interfaceMode = (getSystemService(UI_MODE_SERVICE) as UiModeManager).currentModeType

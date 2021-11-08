@@ -131,7 +131,7 @@
     <string name="rotate_title">Автоповорот экрана</string>
     <string name="films_row_multiplier_title">Множитель подгружаемых фильмов</string>
     <string name="provider_enter_title">Введите URL сайта</string>
-    <string name="empty_provider">Пустая ссылка на сайт не доступна!</string>
+    <string name="empty_provider">Пустая ссылка на сайт недоступна!</string>
     <string name="new_provider">Сайт: %1$s</string>
     <string name="next_episode_title">Автопереход на следующую серию</string>
     <string name="next_episode_hint">Позволяет включить автопереход на следующую серию"</string>
@@ -165,7 +165,7 @@
     <string name="no_yt_player">Отсуствует приложение Youtube</string>
     <string name="input_title_listening">Говорите…</string>
     <string name="input_subtitle_listening">Скажите что-нибудь вроде:</string>
-    <string name="input_title_error">Извините,речь не разобрана.</string>
+    <string name="input_title_error">Извините, речь не разобрана.</string>
     <string name="input_subtitle_error">Попробуйте повторить свой запрос.</string>
     <string name="input_hint_error">Попробуйте снова</string>
     <string name="permission_title">Голосовой поиск можно испольозвать для поиска фильмов.</string>
@@ -184,4 +184,7 @@
     <string name="title_file_download">APK загружается</string>
     <string name="storage_access_required">Для загрузки файла требуется доступ к хранилищу.</string>
     <string name="storage_permission_denied">Права на хранение былы отклонены.</string>
+    <string name="url_error_empty">ссылка на сайт пустая!</string>
+    <string name="url_error_no_protocol">отсуствует протокол (http:// или https://) в ссылке!</string>
+    <string name="url_error_malformed">убедитесь что ваша ссылка на сайт рабочая!</string>
 </resources>

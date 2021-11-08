@@ -198,7 +198,7 @@ class FilmFragment : Fragment(), FilmView {
                 Toast.makeText(requireContext(), getString(R.string.perm_write_hint), Toast.LENGTH_LONG).show()
             }
         }
-        currentView.findViewById<View>(R.id.fragment_film_tv_download).setOnClickListener {
+        currentView.findViewById<View>(R.id.fragment_film_btn_download).setOnClickListener {
             when (PackageManager.PERMISSION_GRANTED) {
                 ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) -> {
                     filmPresenter.showTranslations(true)
@@ -240,9 +240,29 @@ class FilmFragment : Fragment(), FilmView {
         }
 
         if (SettingsData.isPlayer == true || SettingsData.deviceType == DeviceType.TV) {
-            openPlayBtn.setOnClickListener {
-                filmPresenter.showTranslations(false)
+            val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+                if (isGranted) {
+                    filmPresenter.showTranslations(false)
+                } else {
+                    Toast.makeText(requireContext(), getString(R.string.perm_write_hint), Toast.LENGTH_LONG).show()
+                }
             }
+
+            openPlayBtn.setOnClickListener {
+                when (PackageManager.PERMISSION_GRANTED) {
+                    ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) -> {
+                        filmPresenter.showTranslations(false)
+                    }
+                    else -> {
+                        // You can directly ask for the permission.
+                        // The registered ActivityResultCallback gets the result of this request.
+                        requestPermissionLauncher.launch(
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        )
+                    }
+                }
+            }
+
             playerContainer.visibility = View.GONE
         } else {
             filmPresenter.initPlayer()
@@ -622,7 +642,7 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun setBookmarksList(bookmarks: ArrayList<Bookmark>) {
-        val btn: View = currentView.findViewById(R.id.fragment_film_iv_bookmark)
+        val btn: View = currentView.findViewById(R.id.fragment_film_btn_bookmark)
         if (UserData.isLoggedIn == true) {
             val data: Array<String?> = arrayOfNulls(bookmarks.size)
             val checkedItems = BooleanArray(bookmarks.size)
@@ -681,7 +701,7 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun setShareBtn(title: String, link: String) {
-        val btn: View = currentView.findViewById(R.id.fragment_film_iv_share)
+        val btn: View = currentView.findViewById(R.id.fragment_film_btn_share)
         btn.setOnClickListener {
             val sharingIntent = Intent(Intent.ACTION_SEND)
             sharingIntent.type = "text/plain"

@@ -32,7 +32,7 @@
         <TextView
             android:drawablePadding="10dp"
             app:drawableStartCompat="@drawable/ic_baseline_bookmarks_24"
-            android:id="@+id/fragment_film_iv_bookmark"
+            android:id="@+id/fragment_film_btn_bookmark"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:focusable="true"
@@ -47,7 +47,7 @@
         <TextView
             android:drawablePadding="10dp"
             app:drawableStartCompat="@drawable/ic_baseline_share_24"
-            android:id="@+id/fragment_film_iv_share"
+            android:id="@+id/fragment_film_btn_share"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:paddingStart="7dp"
@@ -62,7 +62,7 @@
         <TextView
             android:drawablePadding="10dp"
             app:drawableStartCompat="@drawable/ic_baseline_arrow_circle_down_24"
-            android:id="@+id/fragment_film_tv_download"
+            android:id="@+id/fragment_film_btn_download"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:paddingStart="7dp"

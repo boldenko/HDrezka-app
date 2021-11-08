@@ -27,7 +27,7 @@ object ActorModel : BaseModel() {
 
             val isSuccess: Boolean = jsonObject.getBoolean("success")
 
-            if (isSuccess) {
+            if (isSuccess && jsonObject.has("person")) {
                 val person: JSONObject = jsonObject.getJSONObject("person")
                 actor.careers = getJsonString(person, "careers")
                 actor.link = getJsonString(person, "link")
@@ -41,7 +41,7 @@ object ActorModel : BaseModel() {
                 actor.deathday = getJsonString(person, "deathday")
                 actor.deathplace = getJsonString(person, "deathplace")
             } else {
-                throw HttpStatusException("failed to get actor data with msg ${jsonObject.getString("message")}", 400, SettingsData.provider)
+                return actor
             }
         } else {
             throw HttpStatusException("failed to get actor data", 400, SettingsData.provider)

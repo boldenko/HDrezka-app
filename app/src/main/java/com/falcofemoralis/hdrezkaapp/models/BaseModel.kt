@@ -24,5 +24,6 @@ open class BaseModel {
             .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
             .header("Accept-Encoding", "gzip, deflate")
             .header("Accept-Language", "ru-UA,ru;q=0.9,en-US;q=0.8,en;q=0.7,uk-UA;q=0.6,uk;q=0.5,ml-IN;q=0.4,ml;q=0.3,ru-RU;q=0.2")
+            .timeout(20000)
     }
 }

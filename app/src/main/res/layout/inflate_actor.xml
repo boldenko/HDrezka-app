@@ -30,6 +30,7 @@
             android:src="@drawable/nopersonphoto" />
 
         <TextView
+            android:text="Без имени"
             android:id="@+id/actor_name"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
