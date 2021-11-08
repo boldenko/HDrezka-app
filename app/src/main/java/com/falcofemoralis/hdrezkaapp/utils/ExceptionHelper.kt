@@ -72,6 +72,7 @@ object ExceptionHelper {
             (context as MainActivity).showProviderEnter()
         }
         builder.setCancelable(false)
+
         if (activeDialog == null) {
             activeDialog = builder.create()
         }

@@ -1,7 +1,6 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
 import android.content.Context
-import android.util.Log
 import com.falcofemoralis.hdrezkaapp.constants.AdapterAction
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
@@ -112,14 +111,19 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
                 if (tokenTmp == token) {
                     FilmModel.getFilmsData(loadedListFilms, filmsPerPage, ::processFilms)
                 }
-            } catch (e: HttpStatusException) {
-                if (e.statusCode != 404) {
+            } catch (e: Exception) {
+                if (e is HttpStatusException) {
+                    if (e.statusCode != 404) {
+                        catchException(e, searchView)
+                    }
+                    isLoading = false
+                    withContext(Dispatchers.Main) {
+                        filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
+                    }
+                } else {
                     catchException(e, searchView)
                 }
-                isLoading = false
-                withContext(Dispatchers.Main) {
-                    filmsListView.setProgressBarState(IProgressState.StateType.LOADED)
-                }
+
                 return@launch
             }
         }

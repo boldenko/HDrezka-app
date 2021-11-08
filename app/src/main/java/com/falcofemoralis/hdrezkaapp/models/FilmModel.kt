@@ -60,7 +60,7 @@ object FilmModel : BaseModel() {
 
         if (doc != null) {
             val titleEl = doc.select("div.b-content__bubble_title a")
-            if(film.filmLink.isNullOrEmpty()){
+            if (film.filmLink.isNullOrEmpty()) {
                 film.filmLink = titleEl.attr("href")
             }
             film.type = getTypeByName(doc.select("i.entity").text())
@@ -592,11 +592,16 @@ object FilmModel : BaseModel() {
 
         if (streams != null && streams.isNotEmpty()) {
             val split: Array<String> = streams.split(",")?.toTypedArray()
+
             for (str in split) {
-                if (str.contains(" or ")) {
-                    parsedStreams.add(Stream(str.split(" or ").toTypedArray()[1], str.substring(1, str.indexOf("]"))))
-                } else {
-                    parsedStreams.add(Stream(str.substring(str.indexOf("]") + 1), str.substring(1, str.indexOf("]"))))
+                try {
+                    if (str.contains(" or ")) {
+                        parsedStreams.add(Stream(str.split(" or ").toTypedArray()[1], str.substring(1, str.indexOf("]"))))
+                    } else {
+                        parsedStreams.add(Stream(str.substring(str.indexOf("]") + 1), str.substring(1, str.indexOf("]"))))
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
         }
@@ -742,7 +747,7 @@ object FilmModel : BaseModel() {
                 val ytlink = code.substring(startIndex, endIndex)
                 return ytlink
             } else {
-               return null
+                return null
             }
         } else {
             throw HttpStatusException("failed to get youtube trailer", 400, SettingsData.provider)
