@@ -187,4 +187,5 @@
     <string name="url_error_empty">ссылка на сайт пустая!</string>
     <string name="url_error_no_protocol">отсуствует протокол (http:// или https://) в ссылке!</string>
     <string name="url_error_malformed">убедитесь что ваша ссылка на сайт рабочая!</string>
+    <string name="no_webview_installed">На девайсе отсуствует WebView</string>
 </resources>

@@ -1,6 +1,5 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
-import android.util.Log
 import com.falcofemoralis.hdrezkaapp.interfaces.IMsg
 import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
 import com.falcofemoralis.hdrezkaapp.models.FilmModel
@@ -55,7 +54,7 @@ class WatchLaterPresenter(private val watchLaterView: WatchLaterView) {
             }
 
             loadFilmData(dataToLoad)
-        } else{
+        } else {
             watchLaterView.setProgressBarState(IProgressState.StateType.LOADED)
         }
     }
@@ -89,12 +88,14 @@ class WatchLaterPresenter(private val watchLaterView: WatchLaterView) {
     fun deleteWatchLaterItem(id: String, pos: Int) {
         GlobalScope.launch {
             try {
-                WatchLaterModel.removeItem(id)
-                activeWatchLaterList.removeAt(pos)
+                if (pos < activeWatchLaterList.size) {
+                    WatchLaterModel.removeItem(id)
+                    activeWatchLaterList.removeAt(pos)
 
-                withContext(Dispatchers.Main) {
-                    watchLaterView.redrawWatchLaterList()
-                    getNextWatchLater()
+                    withContext(Dispatchers.Main) {
+                        watchLaterView.redrawWatchLaterList()
+                        getNextWatchLater()
+                    }
                 }
             } catch (e: Exception) {
                 catchException(e, watchLaterView)

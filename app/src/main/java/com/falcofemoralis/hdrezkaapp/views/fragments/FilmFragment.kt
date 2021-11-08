@@ -83,6 +83,7 @@ class FilmFragment : Fragment(), FilmView {
     private var commentEditor: CommentEditor? = null
     private var bookmarksDialog: AlertDialog? = null
     private lateinit var wl: PowerManager.WakeLock
+    private var isWebviewInstalled = true
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -90,8 +91,9 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun onDestroy() {
-        Log.d("TESTTEST", "destroyed film page")
-        playerView.destroy()
+        if(isWebviewInstalled) {
+            playerView.destroy()
+        }
         activity?.window?.clearFlags(FLAG_KEEP_SCREEN_ON)
         if (SettingsData.deviceType == DeviceType.TV) {
             wl.release()
@@ -102,8 +104,10 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun onResume() {
-        wv = playerView
-        presenter = filmPresenter
+        if(isWebviewInstalled) {
+            wv = playerView
+            presenter = filmPresenter
+        }
         if (isFullscreen) {
             requireActivity().window.decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN)
         }
@@ -130,7 +134,12 @@ class FilmFragment : Fragment(), FilmView {
         var isFullscreen: Boolean = false
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        if (SettingsData.deviceType != DeviceType.TV && context?.packageManager != null && context?.packageManager?.hasSystemFeature(PackageManager.FEATURE_WEBVIEW) == false) {
+            Toast.makeText(requireContext(), getString(R.string.no_webview_installed), Toast.LENGTH_LONG).show()
+            isWebviewInstalled = false
+            return inflater.inflate(R.layout.empty_layout, container, false)
+        }
         currentView = inflater.inflate(R.layout.fragment_film, container, false)
 
         progressBar = currentView.findViewById(R.id.fragment_film_pb_loading)

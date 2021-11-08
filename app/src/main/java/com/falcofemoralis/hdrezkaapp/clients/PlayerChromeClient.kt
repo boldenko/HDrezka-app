@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.widget.FrameLayout
+import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.views.fragments.FilmFragment
 
 class PlayerChromeClient(private val activity: Activity) : WebChromeClient() {
@@ -31,7 +32,13 @@ class PlayerChromeClient(private val activity: Activity) : WebChromeClient() {
         activity.window.decorView.setSystemUiVisibility(mOriginalSystemUiVisibility)
         mCustomViewCallback!!.onCustomViewHidden()
         mCustomViewCallback = null
-        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
+        if(SettingsData.isAutorotate == true){
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+        } else{
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+
         FilmFragment.isFullscreen = false
     }
 
