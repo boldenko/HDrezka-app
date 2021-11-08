@@ -7,7 +7,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.falcofemoralis.hdrezkaapp.R
@@ -23,7 +22,7 @@ class NotificationListener : BroadcastReceiver() {
         createNotificationChannel(context, id)
 
         val expandedView = RemoteViews(context.packageName, R.layout.notification_ui_expanded)
-        expandedView.setTextViewText(R.id.title, presenter.film.title)
+        expandedView.setTextViewText(R.id.title, presenter?.film?.title)
 
         if (PlayerJsInterface.playing) {
             wv.evaluateJavascript("mediaElement.pause();", null)
@@ -49,9 +48,10 @@ class NotificationListener : BroadcastReceiver() {
         PlayerJsInterface.notifyanager = notificationManager
 
         val built = builder.build()
-        Picasso.get().load(presenter.film.posterPath).into(expandedView, R.id.notif_poster, id, built)
+        Picasso.get().load(presenter?.film?.posterPath).into(expandedView, R.id.notif_poster, id, built)
 
         notificationManager.notify(id, built)
+
     }
 
     private fun createNotificationChannel(mContext: Context, id: Number) {

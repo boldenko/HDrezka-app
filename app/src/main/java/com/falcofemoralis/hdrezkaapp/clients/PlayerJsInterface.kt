@@ -26,7 +26,7 @@ class PlayerJsInterface(val mContext: Context) {
         createNotificationChannel(id)
 
         val expandedView = RemoteViews(mContext.packageName, R.layout.notification_ui_expanded)
-        expandedView.setTextViewText(R.id.title, presenter.film.title)
+        expandedView.setTextViewText(R.id.title, presenter?.film?.title)
 
         if (playing) {
             expandedView.setImageViewResource(R.id.pausePlay, R.drawable.ic_baseline_pause_24)
@@ -47,7 +47,7 @@ class PlayerJsInterface(val mContext: Context) {
         notifyanager = notificationManager
 
         val built = builder.build()
-        Picasso.get().load(presenter.film.posterPath).into(expandedView, R.id.notif_poster, id, built)
+        Picasso.get().load(presenter?.film?.posterPath).into(expandedView, R.id.notif_poster, id, built)
         notificationManager.notify(id, built)
     }
 

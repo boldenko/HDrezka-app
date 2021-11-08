@@ -130,7 +130,7 @@ class FilmFragment : Fragment(), FilmView {
 
     companion object {
         lateinit var wv: WebView
-        lateinit var presenter: FilmPresenter
+        var presenter: FilmPresenter? = null
         var isFullscreen: Boolean = false
     }
 
@@ -1081,12 +1081,12 @@ class FilmFragment : Fragment(), FilmView {
             }
         } else {
             if (UserData.isLoggedIn == true) {
-                presenter.updateWatchLater(translation)
+                filmPresenter.updateWatchLater(translation)
             }
 
             if (SettingsData.isPlayer == false && SettingsData.deviceType == DeviceType.TV) {
                 val intent = Intent(requireContext(), PlayerActivity::class.java)
-                intent.putExtra(PlayerActivity.FILM, presenter.film)
+                intent.putExtra(PlayerActivity.FILM, filmPresenter.film)
                 intent.putExtra(PlayerActivity.STREAM, stream)
                 intent.putExtra(PlayerActivity.TRANSLATION, translation)
                 startActivity(intent)

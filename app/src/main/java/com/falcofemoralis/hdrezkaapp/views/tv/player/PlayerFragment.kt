@@ -306,7 +306,7 @@ class PlayerFragment : VideoSupportFragment() {
         mTranslation?.selectedEpisode = Pair(item.season, item.episode)
 
         if (UserData.isLoggedIn == true) {
-            mTranslation?.let { FilmFragment.presenter.updateWatchLater(it) }
+            mTranslation?.let { FilmFragment.presenter?.updateWatchLater(it) }
         }
     }
 
