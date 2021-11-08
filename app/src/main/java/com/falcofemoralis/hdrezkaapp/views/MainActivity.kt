@@ -408,61 +408,65 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
             //val versionFilePath = filesDir.path + "/version"
 
             GlobalScope.launch {
-                val uri: URI = URI.create("https://www.dropbox.com/s/yhvwhwdzmiiqu6x/version.json?dl=1")
-                uri.toURL().openStream().use { inputStream ->
-                    // InputStream -> String
-                    val versionString = convertInputStreamToString(inputStream)
-                    try {
-                        if (versionString != null) {
-                            val versionObject = JSONObject(versionString)
-                            val serverVersion = versionObject.getString("version")
-                            val newFeatures = versionObject.getString("newFeatures")
+                try {
+                    val uri: URI = URI.create("https://dl.dropboxusercontent.com/s/yhvwhwdzmiiqu6x/version.json?dl=1")
+                    uri.toURL().openStream().use { inputStream ->
+                        // InputStream -> String
+                        val versionString = convertInputStreamToString(inputStream)
+                        try {
+                            if (versionString != null) {
+                                val versionObject = JSONObject(versionString)
+                                val serverVersion = versionObject.getString("version")
+                                val newFeatures = versionObject.getString("newFeatures")
 
-                            val isNewVersion = compareAppVersion(serverVersion)
+                                val isNewVersion = compareAppVersion(serverVersion)
 
-                            withContext(Dispatchers.Main) {
-                                if (isNewVersion) {
-                                    // show dialog
-                                    val builder = DialogManager.getDialog(_context, R.string.new_version_hint)
-                                    builder.setPositiveButton(R.string.ok_text) { d, i ->
-                                        d.dismiss()
+                                withContext(Dispatchers.Main) {
+                                    if (isNewVersion) {
+                                        // show dialog
+                                        val builder = DialogManager.getDialog(_context, R.string.new_version_hint)
+                                        builder.setPositiveButton(R.string.ok_text) { d, i ->
+                                            d.dismiss()
+                                        }
+                                        /*       builder.setNegativeButton(R.string.cancel) { d, i ->
+                                         fun downloadApk() {
+                                             val apkUrl = "https://androidwave.com/source/apk/app-pagination-recyclerview.apk"
+                                             val downloadController = DownloadController(_context, apkUrl)
+                                             downloadController.enqueueDownload()
+                                         }
+
+                                         val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+                                             if (isGranted) {
+                                                 // Permission is granted. Continue the action or workflow in your
+                                                 downloadApk()
+                                             } else {
+                                                 Toast.makeText(_context, getString(R.string.perm_write_hint), Toast.LENGTH_LONG).show()
+                                             }
+                                         }
+
+                                         when (PackageManager.PERMISSION_GRANTED) {
+                                             ContextCompat.checkSelfPermission(_context, Manifest.permission.WRITE_EXTERNAL_STORAGE) -> {
+                                                 downloadApk()
+                                             }
+                                             else -> {
+                                                 // You can directly ask for the permission.
+                                                 // The registered ActivityResultCallback gets the result of this request.
+                                                 requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                             }
+                                         }
+                                     }*/
+                                        builder.setMessage("${BuildConfig.VERSION_NAME} -> $serverVersion\n\n $newFeatures")
+                                        val d = builder.create()
+                                        d.show()
                                     }
-                             /*       builder.setNegativeButton(R.string.cancel) { d, i ->
-                                        fun downloadApk() {
-                                            val apkUrl = "https://androidwave.com/source/apk/app-pagination-recyclerview.apk"
-                                            val downloadController = DownloadController(_context, apkUrl)
-                                            downloadController.enqueueDownload()
-                                        }
-
-                                        val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-                                            if (isGranted) {
-                                                // Permission is granted. Continue the action or workflow in your
-                                                downloadApk()
-                                            } else {
-                                                Toast.makeText(_context, getString(R.string.perm_write_hint), Toast.LENGTH_LONG).show()
-                                            }
-                                        }
-
-                                        when (PackageManager.PERMISSION_GRANTED) {
-                                            ContextCompat.checkSelfPermission(_context, Manifest.permission.WRITE_EXTERNAL_STORAGE) -> {
-                                                downloadApk()
-                                            }
-                                            else -> {
-                                                // You can directly ask for the permission.
-                                                // The registered ActivityResultCallback gets the result of this request.
-                                                requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                                            }
-                                        }
-                                    }*/
-                                    builder.setMessage("${BuildConfig.VERSION_NAME} -> $serverVersion\n\n $newFeatures")
-                                    val d = builder.create()
-                                    d.show()
                                 }
                             }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
                     }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
         }

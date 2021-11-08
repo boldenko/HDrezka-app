@@ -3,7 +3,6 @@ package com.falcofemoralis.hdrezkaapp.models
 import android.util.ArrayMap
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
-import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 
@@ -41,8 +40,10 @@ object CategoriesModel : BaseModel() {
 
         val years: ArrayList<String> = ArrayList()
         val els: Elements = doc.select("select.select-year")[0].select("option")
-        for (el in els) {
-            years.add(el.text())
+        if (els.size > 0) {
+            for (el in els) {
+                years.add(el.text())
+            }
         }
 
         return years
