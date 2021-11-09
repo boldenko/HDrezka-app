@@ -57,7 +57,7 @@ import kotlin.system.exitProcess
 class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnection, IPagerView, NavigationStateListener, FragmentChangeListener,
     NavigationMenuCallback, VoiceSpeechRecognizer.ResultsListener {
     private var isSettingsOpened: Boolean = false
-    private lateinit var mainFragment: Fragment
+    private var mainFragment: Fragment? = null
     private lateinit var currentFragment: Fragment
     private var savedInstanceState: Bundle? = null
     private lateinit var interfaceMode: Number
@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
 
     fun openUserMenu() {
         if (!isSettingsOpened) {
-            val f = if (mainFragment.isVisible) mainFragment
+            val f = if (mainFragment?.isVisible == true) mainFragment
             else currentFragment
             onFragmentInteraction(f, SettingsFragment(), Action.NEXT_FRAGMENT_HIDE, true, null, null, null)
             isSettingsOpened = true
@@ -175,9 +175,9 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         }
     }
 
-    override fun onFragmentInteraction(fragmentSource: Fragment?, fragmentReceiver: Fragment, action: Action, isBackStack: Boolean, backStackTag: String?, data: Bundle?, callback: (() -> Unit)?) {
+    override fun onFragmentInteraction(fragmentSource: Fragment?, fragmentReceiver: Fragment?, action: Action, isBackStack: Boolean, backStackTag: String?, data: Bundle?, callback: (() -> Unit)?) {
         val fTrans: FragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentReceiver.arguments = data
+        fragmentReceiver?.arguments = data
 
         val animIn = R.anim.fade_in
         val animOut = R.anim.fade_out
@@ -185,7 +185,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
 
         when (action) {
             Action.NEXT_FRAGMENT_HIDE -> {
-                if (mainFragment.isVisible) fTrans.hide(mainFragment)
+                if (mainFragment?.isVisible == true) fTrans.hide(mainFragment!!)
                 else fragmentSource?.let { fTrans.hide(it) }
 
                 val frags: List<Fragment> = supportFragmentManager.fragments
@@ -196,12 +196,18 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                         break
                     }
                 }
-                currentFragment = fragmentReceiver
+                if (fragmentReceiver != null) {
+                    currentFragment = fragmentReceiver
+                }
 
                 if (f == null) {
-                    fTrans.add(R.id.activity_main_fcv_container, fragmentReceiver)
+                    if (fragmentReceiver != null) {
+                        fTrans.add(R.id.activity_main_fcv_container, fragmentReceiver)
+                    }
                 } else {
-                    fTrans.show(fragmentReceiver)
+                    if (fragmentReceiver != null) {
+                        fTrans.show(fragmentReceiver)
+                    }
                 }
 
                 if (isBackStack) {
@@ -210,7 +216,9 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                 fTrans.commit()
             }
             Action.NEXT_FRAGMENT_REPLACE -> {
-                fTrans.replace(R.id.activity_main_fcv_container, fragmentReceiver)
+                if (fragmentReceiver != null) {
+                    fTrans.replace(R.id.activity_main_fcv_container, fragmentReceiver)
+                }
                 if (isBackStack) {
                     fTrans.addToBackStack(backStackTag)
                 }
@@ -297,7 +305,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                 else -> false
             }
 
-            if (acceptableFragment && mainFragment.isVisible) {
+            if (acceptableFragment && mainFragment?.isVisible == true) {
                 if (doubleBackToExitPressedOnce) {
                     super.onBackPressed()
                     return

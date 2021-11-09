@@ -42,6 +42,9 @@ open class FilmsListFragment : Fragment(), FilmsListView {
 
         viewList = currentView.findViewById(R.id.fragment_films_list_rv_films)
         viewList.layoutManager = SettingsData.filmsInRow?.let { GridLayoutManager(context, it) }
+        viewList.setRecyclerListener {
+
+        }
 
         scrollView = currentView.findViewById(R.id.fragment_films_list_nsv_films)
         scrollView.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {

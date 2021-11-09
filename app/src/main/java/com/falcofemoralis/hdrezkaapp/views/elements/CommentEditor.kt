@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
@@ -19,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jsoup.HttpStatusException
 
 class CommentEditor(
     val editorContainer: LinearLayout,
@@ -81,7 +83,15 @@ class CommentEditor(
                         textArea.text?.clear()
                     }
                 } catch (e: Exception) {
-                    ExceptionHelper.catchException(e, iConnection)
+                    if (e is HttpStatusException) {
+                        if (e.statusCode == 403) {
+                            Toast.makeText(context, context.getString(R.string.comment_need_apply), Toast.LENGTH_SHORT).show()
+                        } else {
+                            ExceptionHelper.catchException(e, iConnection)
+                        }
+                    } else {
+                        ExceptionHelper.catchException(e, iConnection)
+                    }
                 }
             }
 

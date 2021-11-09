@@ -96,7 +96,6 @@ object ExceptionHelper {
                 when (e.statusCode) {
                     401 -> ErrorType.EMPTY_SEARCH
                     404 -> ErrorType.EMPTY
-                    403 -> ErrorType.MODERATE_BY_ADMIN
                     503 -> ErrorType.PROVIDER_TIMEOUT
                     else -> ErrorType.ERROR
                 }
