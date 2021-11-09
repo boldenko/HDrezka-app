@@ -66,6 +66,10 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         SettingsData.isPlayer?.let {
             setStateExternalPlayerPrefs(it)
         }
+
+        SettingsData.isMaxQuality?.let {
+            setStateDefaultQuality(!it)
+        }
     }
 
     private fun initExitButton() {
@@ -196,11 +200,11 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     }
 
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
-        try{
-            if(context != null){
+        try {
+            if (context != null) {
                 ExceptionHelper.showToastError(requireContext(), type, errorText)
             }
-        } catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -232,6 +236,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             }
             "isMaxQuality" -> {
                 SettingsData.isMaxQuality = preferences.getBoolean("isMaxQuality", false)
+                SettingsData.isMaxQuality?.let { setStateDefaultQuality(!it) }
             }
             "isPlayerChooser" -> {
                 SettingsData.isPlayerChooser = preferences.getBoolean("isPlayerChooser", false)
@@ -289,6 +294,13 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             if (pref != null) {
                 pref.isEnabled = state
             }
+        }
+    }
+
+    private fun setStateDefaultQuality(state: Boolean) {
+        val pref: Preference? = findPreference("defaultQuality")
+        if (pref != null) {
+            pref.isEnabled = state
         }
     }
 
