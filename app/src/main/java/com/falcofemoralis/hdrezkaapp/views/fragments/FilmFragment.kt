@@ -65,6 +65,7 @@ import com.github.aakira.expandablelayout.ExpandableLinearLayout
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.willy.ratingbar.ScaleRatingBar
+import java.io.File
 
 
 class FilmFragment : Fragment(), FilmView {
@@ -1130,14 +1131,19 @@ class FilmFragment : Fragment(), FilmView {
         currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_actorsContainer).visibility = View.GONE
     }
 
-    private fun downloadSubtitle(url: String, fileName: String) {
+    private fun downloadSubtitle(url: String, filename: String) {
+        val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/$filename")
+        if (file.exists()) {
+            return
+        }
+
         val manager: DownloadManager? = requireActivity().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager?
         if (manager != null) {
             val request = DownloadManager.Request(Uri.parse(url))
-            request.setTitle(fileName)
+            request.setTitle(filename)
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
             request.allowScanningByMediaScanner()
-            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename)
             manager.enqueue(request)
             // Toast.makeText(requireContext(), getString(R.string.download_started), Toast.LENGTH_SHORT).show()
         }
