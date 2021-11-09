@@ -21,7 +21,6 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.DisplayMetrics
-import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
@@ -91,7 +90,7 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun onDestroy() {
-        if(isWebviewInstalled) {
+        if (isWebviewInstalled) {
             playerView.destroy()
         }
         activity?.window?.clearFlags(FLAG_KEEP_SCREEN_ON)
@@ -104,7 +103,7 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun onResume() {
-        if(isWebviewInstalled) {
+        if (isWebviewInstalled) {
             wv = playerView
             presenter = filmPresenter
         }
@@ -370,13 +369,13 @@ class FilmFragment : Fragment(), FilmView {
                 val layout: LinearLayout = LayoutInflater.from(it).inflate(R.layout.inflate_actor, null) as LinearLayout
                 val nameView: TextView = layout.findViewById(R.id.actor_name)
                 val careerView: TextView = layout.findViewById(R.id.actor_career)
+                val actorLayout: LinearLayout = layout.findViewById(R.id.actor_layout)
+                val actorPhoto: ImageView = layout.findViewById(R.id.actor_photo)
                 nameView.text = actor.name
                 careerView.text = actor.careers
 
                 if (actor.photo != null && actor.photo!!.isNotEmpty() && actor.photo?.contains(ActorModel.NO_PHOTO) == false) {
                     val actorProgress: ProgressBar = layout.findViewById(R.id.actor_loading)
-                    val actorLayout: LinearLayout = layout.findViewById(R.id.actor_layout)
-                    val actorPhoto: ImageView = layout.findViewById(R.id.actor_photo)
 
                     actorProgress.visibility = View.VISIBLE
                     actorLayout.visibility = View.GONE
@@ -394,11 +393,11 @@ class FilmFragment : Fragment(), FilmView {
                     layout.setOnClickListener {
                         FragmentOpener.openWithData(this, fragmentListener, actor, "actor")
                     }
-                    FilmsListRecyclerViewAdapter.zoom(layout, actorPhoto, nameView, careerView, requireContext())
                 } else {
                     actorsLayout.addView(layout)
                 }
 
+                FilmsListRecyclerViewAdapter.zoom(layout, actorPhoto, nameView, careerView, requireContext())
             }
         }
     }
@@ -466,7 +465,7 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun setFullSizeImage(posterPath: String) {
-        if(context != null) {
+        if (context != null) {
             val dialog = Dialog(requireActivity())
             val layout: RelativeLayout = layoutInflater.inflate(R.layout.modal_image, null) as RelativeLayout
             Picasso.get().load(posterPath).into(layout.findViewById(R.id.modal_image), object : Callback {
@@ -500,7 +499,7 @@ class FilmFragment : Fragment(), FilmView {
 
     override fun setSchedule(schedule: ArrayList<Pair<String, ArrayList<Schedule>>>) {
         if (schedule.size == 0) {
-            currentView.findViewById<TextView>(R.id.fragment_film_tv_schedule_header).visibility = View.GONE
+            currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_schedule_container).visibility = View.GONE
             return
         }
 
@@ -566,7 +565,7 @@ class FilmFragment : Fragment(), FilmView {
 
     override fun setCollection(collection: ArrayList<Film>) {
         if (collection.size == 0) {
-            currentView.findViewById<TextView>(R.id.fragment_film_tv_collection_header).visibility = View.GONE
+            currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_collection_container).visibility = View.GONE
             return
         }
 
@@ -594,6 +593,11 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun setRelated(relatedList: ArrayList<Film>) {
+        if (relatedList.size == 0) {
+            currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_related_list_container).visibility = View.GONE
+            return
+        }
+
         val relatedLayout = currentView.findViewById<LinearLayout>(R.id.fragment_film_tv_related_list)
 
         for (film in relatedList) {
@@ -723,11 +727,11 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
-        try{
-            if(context != null){
+        try {
+            if (context != null) {
                 ExceptionHelper.showToastError(requireContext(), type, errorText)
             }
-        } catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }

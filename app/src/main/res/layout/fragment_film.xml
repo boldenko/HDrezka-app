@@ -132,6 +132,7 @@
 
             <!-- Schedule -->
             <LinearLayout
+                android:id="@+id/fragment_film_ll_schedule_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
@@ -159,6 +160,7 @@
 
             <!-- Collection -->
             <LinearLayout
+                android:id="@+id/fragment_film_ll_collection_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
@@ -184,6 +186,7 @@
 
             <!-- Relative -->
             <LinearLayout
+                android:id="@+id/fragment_film_ll_related_list_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
