@@ -391,13 +391,13 @@ class FilmFragment : Fragment(), FilmView {
                             e.printStackTrace()
                         }
                     })
-                    layout.setOnClickListener {
-                        FragmentOpener.openWithData(this, fragmentListener, actor, "actor")
-                    }
                 } else {
                     actorsLayout.addView(layout)
                 }
 
+                layout.setOnClickListener {
+                    FragmentOpener.openWithData(this, fragmentListener, actor, "actor")
+                }
                 FilmsListRecyclerViewAdapter.zoom(layout, actorPhoto, nameView, careerView, requireContext())
             }
         }
