@@ -240,6 +240,12 @@ class FilmFragment : Fragment(), FilmView {
         }
     }
 
+    override fun showMsg(msgType: IConnection.ErrorType) {
+        if (msgType == IConnection.ErrorType.PARSING_ERROR) {
+            Toast.makeText(requireContext(), getString(R.string.server_error_503), Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun initPlayer() {
         val openPlayBtn = currentView.findViewById<TextView>(R.id.fragment_film_tv_open_player)
         val playerContainer = currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_player_container)

@@ -37,12 +37,15 @@ object CategoriesModel : BaseModel() {
 
     fun getYears(): ArrayList<String> {
         val doc: Document = getJsoup(SettingsData.provider).get()
-
         val years: ArrayList<String> = ArrayList()
-        val els: Elements = doc.select("select.select-year")[0].select("option")
-        if (els.size > 0) {
-            for (el in els) {
-                years.add(el.text())
+
+        val yearsList = doc.select("select.select-year")
+        if(yearsList.size > 0) {
+            val els: Elements = yearsList[0].select("option")
+            if (els.size > 0) {
+                for (el in els) {
+                    years.add(el.text())
+                }
             }
         }
 

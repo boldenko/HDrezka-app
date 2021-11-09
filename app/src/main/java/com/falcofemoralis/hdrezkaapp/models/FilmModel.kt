@@ -518,39 +518,41 @@ object FilmModel : BaseModel() {
     }
 
     fun getThumbnails(thumbnailsUrl: String, translation: Voice) {
-        val result: Document? = getJsoup(SettingsData.provider + thumbnailsUrl).post()
+        if (thumbnailsUrl != "false") {
+            val result: Document? = getJsoup(SettingsData.provider + thumbnailsUrl).post()
 
-        if (result != null) {
-            val responseText: String = result.select("body").text()
+            if (result != null) {
+                val responseText: String = result.select("body").text()
 
-            if (responseText.isNotEmpty()) {
-                translation.thumbnails = ArrayList()
+                if (responseText.isNotEmpty()) {
+                    translation.thumbnails = ArrayList()
 
-                val rows = responseText.split(" ")
-                if (rows[0].indexOf("WEBVTT") > -1) {
-                    for ((i, row) in rows.withIndex()) {
-                        if (row.indexOf("-->") > -1) {
-                            val t1 = timeVtt(rows[i - 1])
-                            val t2 = timeVtt(rows[i + 1])
+                    val rows = responseText.split(" ")
+                    if (rows[0].indexOf("WEBVTT") > -1) {
+                        for ((i, row) in rows.withIndex()) {
+                            if (row.indexOf("-->") > -1) {
+                                val t1 = timeVtt(rows[i - 1])
+                                val t2 = timeVtt(rows[i + 1])
 
-                            var x_url = ""
-                            if (i < rows.size - 1) {
-                                x_url = rows[i + 2]
-                                if (x_url.indexOf("http") != 0 && x_url.indexOf("//") != 0) {
-                                    x_url = thumbnailsUrl.substring(0, thumbnailsUrl.lastIndexOf("/") + if (x_url.indexOf("/") == 0) 0 else 1) + x_url
+                                var x_url = ""
+                                if (i < rows.size - 1) {
+                                    x_url = rows[i + 2]
+                                    if (x_url.indexOf("http") != 0 && x_url.indexOf("//") != 0) {
+                                        x_url = thumbnailsUrl.substring(0, thumbnailsUrl.lastIndexOf("/") + if (x_url.indexOf("/") == 0) 0 else 1) + x_url
+                                    }
                                 }
-                            }
 
-                            if (x_url.indexOf("xywh") > 0) {
-                                val xy = x_url.substring(x_url.indexOf("xywh") + 5)
-                                val xywh = xy.split(",")
+                                if (x_url.indexOf("xywh") > 0) {
+                                    val xy = x_url.substring(x_url.indexOf("xywh") + 5)
+                                    val xywh = xy.split(",")
 
-                                translation.thumbnails!!.add(Thumbnail(t1, t2, x_url, xywh[0].toInt(), xywh[1].toInt(), xywh[2].toInt(), xywh[3].toInt()))
+                                    translation.thumbnails!!.add(Thumbnail(t1, t2, x_url, xywh[0].toInt(), xywh[1].toInt(), xywh[2].toInt(), xywh[3].toInt()))
+                                }
                             }
                         }
                     }
-                }
 
+                }
             }
         }
     }

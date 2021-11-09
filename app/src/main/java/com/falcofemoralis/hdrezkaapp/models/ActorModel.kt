@@ -23,25 +23,28 @@ object ActorModel : BaseModel() {
 
         if (result != null) {
             val bodyString: String = result.select("body").text()
-            val jsonObject = JSONObject(bodyString)
+            if(bodyString != "503") {
+                val jsonObject = JSONObject(bodyString)
 
-            val isSuccess: Boolean = jsonObject.getBoolean("success")
+                val isSuccess: Boolean = jsonObject.getBoolean("success")
 
-            if (isSuccess && jsonObject.has("person")) {
-                val person: JSONObject = jsonObject.getJSONObject("person")
-                actor.careers = getJsonString(person, "careers")
-                actor.link = getJsonString(person, "link")
-                actor.name = getJsonString(person, "name")
-                actor.nameOrig = getJsonString(person, "name_alt")
-                actor.photo = getJsonString(person, "photo")
-                actor.diedOnAge = getJsonString(person, "agefull")
-                actor.age = getJsonString(person, "age")
-                actor.birthday = getJsonString(person, "birthday")
-                actor.birthplace = getJsonString(person, "birthplace")
-                actor.deathday = getJsonString(person, "deathday")
-                actor.deathplace = getJsonString(person, "deathplace")
-            } else {
-                return actor
+                if (isSuccess && jsonObject.has("person")) {
+                    val person: JSONObject = jsonObject.getJSONObject("person")
+                    actor.careers = getJsonString(person, "careers")
+                    actor.link = getJsonString(person, "link")
+                    actor.name = getJsonString(person, "name")
+                    actor.nameOrig = getJsonString(person, "name_alt")
+                    actor.photo = getJsonString(person, "photo")
+                    actor.diedOnAge = getJsonString(person, "agefull")
+                    actor.age = getJsonString(person, "age")
+                    actor.birthday = getJsonString(person, "birthday")
+                    actor.birthplace = getJsonString(person, "birthplace")
+                    actor.deathday = getJsonString(person, "deathday")
+                    actor.deathplace = getJsonString(person, "deathplace")
+                } else {
+                    return actor
+                }
+                throw HttpStatusException("failed to get actor data", 503, SettingsData.provider)
             }
         } else {
             throw HttpStatusException("failed to get actor data", 400, SettingsData.provider)

@@ -1,6 +1,7 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
 import android.widget.ImageView
+import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.models.ActorModel
 import com.falcofemoralis.hdrezkaapp.models.BookmarksModel
 import com.falcofemoralis.hdrezkaapp.models.CommentsModel
@@ -57,9 +58,9 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
                 }
             } catch (e: Exception) {
                 if (e is IllegalArgumentException) {
-                    val nul = if(film.filmId == null){
+                    val nul = if (film.filmId == null) {
                         "null"
-                    } else{
+                    } else {
                         film.filmId
                     }
                     catchException(IllegalArgumentException("Битая ссылка: filmId=$nul, filmLink=${film.filmLink}"), filmView)
@@ -97,7 +98,15 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
                             }
                         }
                     } catch (e: Exception) {
-                        catchException(e, filmView)
+                        if (e is HttpStatusException) {
+                            if (e.statusCode == 503) {
+                                //filmView.showMsg(IConnection.ErrorType.PARSING_ERROR)
+                            } else {
+                                catchException(e, filmView)
+                            }
+                        } else {
+                            catchException(e, filmView)
+                        }
                         return@launch
                     }
                 }

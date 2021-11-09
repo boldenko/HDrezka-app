@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jsoup.HttpStatusException
 
 class ActorPresenter(
     private val actorView: ActorView,
@@ -53,7 +54,15 @@ class ActorPresenter(
                     }
                 }
             } catch (e: Exception) {
-                ExceptionHelper.catchException(e, actorView)
+                if (e is HttpStatusException) {
+                    if (e.statusCode == 503) {
+                        //actorView.showMsg(IConnection.ErrorType.PARSING_ERROR)
+                    } else {
+                        ExceptionHelper.catchException(e, actorView)
+                    }
+                } else {
+                    ExceptionHelper.catchException(e, actorView)
+                }
             }
         }
     }
