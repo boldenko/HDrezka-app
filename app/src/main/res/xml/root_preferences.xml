@@ -140,6 +140,12 @@
             app:summary="@string/isExternalManager_hint"
             app:title="@string/isExternalManager_title" />
 
+        <SwitchPreferenceCompat
+            android:layout="@layout/custom_switch_preference"
+            app:key="isAltLoading"
+            app:summary="@string/isAltLoading_hint"
+            app:title="@string/isAltLoading_title" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

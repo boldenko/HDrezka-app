@@ -189,4 +189,6 @@
     <string name="url_error_malformed">убедитесь что ваша ссылка на сайт рабочая!</string>
     <string name="no_webview_installed">На девайсе отсуствует WebView</string>
     <string name="server_error_503">Сервер не готов обработать запрос</string>
+    <string name="isAltLoading_title">Альтернативная загрузка данных</string>
+    <string name="isAltLoading_hint">Активируйте если ничего не грузится! Возможно поможет</string>
 </resources>

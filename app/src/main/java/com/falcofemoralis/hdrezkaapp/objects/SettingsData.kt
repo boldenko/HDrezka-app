@@ -23,6 +23,7 @@ object SettingsData {
     var defaultQuality: String? = null
     var isSubtitlesDownload: Boolean? = null
     var isCheckNewVersion: Boolean? = null
+    var isAltLoading: Boolean? = null
 
     fun initProvider(context: Context) {
         if (provider == null || provider == "") {
@@ -48,6 +49,7 @@ object SettingsData {
         autoPlayNextEpisode = prefs?.getBoolean("autoPlayNextEpisode", true)
         isSubtitlesDownload = prefs?.getBoolean("isSubtitlesDownload", true)
         isCheckNewVersion = prefs?.getBoolean("isCheckNewVersion", true)
+        isAltLoading = prefs?.getBoolean("isAltLoading", false)
         (prefs?.getString("filmsInRow", (if (deviceType == DeviceType.TV) GridLayoutSizes.TV else GridLayoutSizes.MOBILE).toString())).let {
             if (it != null) {
                 filmsInRow = it.toInt()

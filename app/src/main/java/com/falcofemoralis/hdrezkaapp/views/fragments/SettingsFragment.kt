@@ -282,6 +282,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             "isCheckNewVersion" -> {
                 SettingsData.isCheckNewVersion = preferences.getBoolean("isCheckNewVersion", true)
             }
+            "isAltLoading" ->{
+                SettingsData.isAltLoading = preferences.getBoolean("isAltLoading", false)
+            }
         }
     }
 
