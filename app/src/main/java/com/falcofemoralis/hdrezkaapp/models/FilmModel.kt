@@ -445,10 +445,15 @@ object FilmModel : BaseModel() {
         }
     }
 
-    fun getFilmPosterByLink(filmLink: String): String {
+    fun getFilmPosterByLink(filmLink: String): String? {
         val filmPage: Document = getJsoup(filmLink).get()
-        val posterElement: Element = filmPage.select(FILM_POSTER)[0]
-        return posterElement.select("img").attr("src")
+        val posterElements = filmPage.select(FILM_POSTER)
+        return if (posterElements.size > 0) {
+            val posterElement: Element = posterElements[0]
+            posterElement.select("img").attr("src")
+        } else {
+            null
+        }
     }
 
     fun postWatch(watchId: Int) {

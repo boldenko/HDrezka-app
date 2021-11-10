@@ -26,6 +26,7 @@ import com.falcofemoralis.hdrezkaapp.clients.PlayerJsInterface
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.constants.NavigationMenuTabs
 import com.falcofemoralis.hdrezkaapp.constants.UpdateItem
+import com.falcofemoralis.hdrezkaapp.controllers.SocketFactory
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.IPagerView
 import com.falcofemoralis.hdrezkaapp.interfaces.NavigationMenuCallback
@@ -51,6 +52,7 @@ import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.net.URI
 import java.nio.charset.StandardCharsets
+import javax.net.ssl.HttpsURLConnection.setDefaultSSLSocketFactory
 import kotlin.system.exitProcess
 
 
@@ -84,6 +86,11 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         if (isInternetAvailable(applicationContext)) {
             if (savedInstanceState == null) {
                 SettingsData.initProvider(this)
+                try {
+                    setDefaultSSLSocketFactory(SocketFactory())
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
                 if (SettingsData.provider == null || SettingsData.provider == "") {
                     showProviderEnter()
                 } else {
@@ -239,11 +246,11 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     }
 
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
-       try{
-           showConnectionErrorDialog(this, type, ::initApp)
-       } catch (e: Exception){
-           e.printStackTrace()
-       }
+        try {
+            showConnectionErrorDialog(this, type, ::initApp)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun showProviderEnter() {
@@ -275,7 +282,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         d.show()
 
         d.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-            val enteredText = editText.text.toString().replace(" ", "")
+            val enteredText = editText.text.toString().replace(" ", "").replace("\n", "")
 
             if (enteredText.isNotEmpty()) {
                 val link = selectedProtocol + enteredText
@@ -428,10 +435,11 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                         try {
                             if (versionString != null) {
                                 val versionObject = JSONObject(versionString)
+                                val versionCode = versionObject.getInt("code")
                                 val serverVersion = versionObject.getString("version")
                                 val newFeatures = versionObject.getString("newFeatures")
 
-                                val isNewVersion = compareAppVersion(serverVersion)
+                                val isNewVersion = compareAppVersion(versionCode)
 
                                 withContext(Dispatchers.Main) {
                                     if (isNewVersion) {
@@ -484,12 +492,12 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         }
     }
 
-    fun compareAppVersion(version: String?): Boolean {
-        if (version.isNullOrEmpty()) {
+    fun compareAppVersion(version: Int?): Boolean {
+        if (version == null) {
             throw Exception("File not found")
         }
 
-        return version != BuildConfig.VERSION_NAME
+        return BuildConfig.VERSION_CODE < version
     }
 
     private fun convertInputStreamToString(inputStream: InputStream): String? {

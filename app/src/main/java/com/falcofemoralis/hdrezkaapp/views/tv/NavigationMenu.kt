@@ -2,8 +2,8 @@ package com.falcofemoralis.hdrezkaapp.views.tv
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
@@ -49,6 +49,7 @@ class NavigationMenu : Fragment() {
 
     private var lastSelectedMenu: String? = newestFilms
     private var menuTextAnimationDelay = 0 //200
+    private var _context: Context? = null
 
     companion object {
         var isFree = true
@@ -78,6 +79,8 @@ class NavigationMenu : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        _context = context
 
         //by default selection
         SettingsData.mainScreen?.let {
@@ -136,7 +139,7 @@ class NavigationMenu : Fragment() {
             if (event.action == KeyEvent.ACTION_DOWN) {//only when key is pressed down
                 when (keyCode) {
                     KeyEvent.KEYCODE_DPAD_RIGHT -> {
-                        if(!closed) {
+                        if (!closed) {
                             isFocusOut = true
                             closeNav()
                             navigationStateListener.onStateChanged(false, lastSelectedMenu)
@@ -163,19 +166,19 @@ class NavigationMenu : Fragment() {
             false
         }
 
-        ib.setOnClickListener{
+        ib.setOnClickListener {
             if (isNavigationOpen()) {
                 lastSelectedMenu = lastMenu
                 fragmentChangeListener.switchFragment(lastMenu)
                 closeNav()
                 closed = true
-            } else{
+            } else {
                 openNav()
             }
         }
 
-        tv.setOnClickListener{
-            if(isNavigationOpen()){
+        tv.setOnClickListener {
+            if (isNavigationOpen()) {
                 highlightMenuSelection(lastMenu)
                 lastSelectedMenu = lastMenu
                 fragmentChangeListener.switchFragment(lastMenu)
@@ -186,7 +189,7 @@ class NavigationMenu : Fragment() {
         tv.setOnTouchListener { v, event ->
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> {
-                 //   highlightMenuSelection(lastMenu)
+                    //   highlightMenuSelection(lastMenu)
                     tv.setTextColor(
                         ContextCompat.getColor(
                             requireContext(),
@@ -195,7 +198,7 @@ class NavigationMenu : Fragment() {
                     )
                 }
                 MotionEvent.ACTION_UP -> {
-                  //  unHighlightMenuSelections(lastMenu)
+                    //  unHighlightMenuSelections(lastMenu)
                     tv.setTextColor(
                         ContextCompat.getColor(
                             requireContext(),
@@ -372,8 +375,13 @@ class NavigationMenu : Fragment() {
     }
 
     private fun animateMenuNamesEntry(view: View, visibility: Int, viewCode: Int, anim: Int) {
+        if(_context == null){
+            return
+        }
+
         view.postDelayed({
-            val animate = AnimationUtils.loadAnimation(requireContext(), anim)
+            val animate = AnimationUtils.loadAnimation(_context, anim)
+
             if (visibility == View.GONE) {
                 val duration = context?.resources?.getInteger(R.integer.animation_duration)?.toLong()
                 duration?.let {
