@@ -368,6 +368,7 @@ class FilmFragment : Fragment(), FilmView {
         val actorsLayout: LinearLayout = currentView.findViewById(R.id.fragment_film_ll_actorsLayout)
 
         if (actors == null) {
+            currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_actorsContainer).visibility = View.GONE
             return
         }
 

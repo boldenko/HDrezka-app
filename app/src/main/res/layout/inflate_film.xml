@@ -62,7 +62,8 @@
     </RelativeLayout>
 
     <TextView
-        android:maxHeight="70dp"
+        android:ellipsize="end"
+        android:maxLines="2"
         android:id="@+id/film_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

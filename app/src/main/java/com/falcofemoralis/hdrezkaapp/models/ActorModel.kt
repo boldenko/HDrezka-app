@@ -41,10 +41,10 @@ object ActorModel : BaseModel() {
                     actor.birthplace = getJsonString(person, "birthplace")
                     actor.deathday = getJsonString(person, "deathday")
                     actor.deathplace = getJsonString(person, "deathplace")
-                } else {
                     return actor
+                } else {
+                    throw HttpStatusException("failed to get actor data", 503, SettingsData.provider)
                 }
-                throw HttpStatusException("failed to get actor data", 503, SettingsData.provider)
             }
         } else {
             throw HttpStatusException("failed to get actor data", 400, SettingsData.provider)
