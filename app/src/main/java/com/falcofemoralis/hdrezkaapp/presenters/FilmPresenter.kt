@@ -177,8 +177,12 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
                     withContext(Dispatchers.Main) {
                         getNextComments()
                     }
-                } catch (e: HttpStatusException) {
-                    if (e.statusCode != 404) {
+                } catch (e: Exception) {
+                    if(e is HttpStatusException) {
+                        if (e.statusCode != 404) {
+                            catchException(e, filmView)
+                        }
+                    } else{
                         catchException(e, filmView)
                     }
                     isCommentsLoading = false
