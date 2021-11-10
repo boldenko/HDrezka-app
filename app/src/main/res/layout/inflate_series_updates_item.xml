@@ -8,54 +8,60 @@
     android:paddingStart="5dp"
     android:paddingTop="15dp"
     android:paddingEnd="5dp"
-    android:paddingBottom="15dp">
+    android:paddingBottom="15dp"
+    android:weightSum="2">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:weightSum="1">
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/inflate_series_updates_item_title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.7"
-            android:orientation="vertical">
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:text="Title"
+            android:textColor="@color/text_color"
+            android:textSize="@dimen/normal_text" />
 
-            <TextView
-                android:id="@+id/inflate_series_updates_item_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="3"
-                android:text="Title"
-                android:textColor="@color/text_color"
-                android:textSize="@dimen/normal_text" />
+        <TextView
+            android:id="@+id/inflate_series_updates_item_season"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="(5 сезон)"
+            android:textColor="@color/text_color"
+            android:textSize="@dimen/normal_text" />
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/inflate_series_updates_item_season"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="(5 сезон)"
-                android:textColor="@color/text_color"
-                android:textSize="@dimen/normal_text" />
-        </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.3"
-            android:orientation="vertical">
+        <TextView
+            android:id="@+id/inflate_series_updates_item_episode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:ellipsize="end"
+            android:gravity="end"
+            android:maxLines="3"
+            android:text="Title"
+            android:textColor="@color/text_color"
+            android:textSize="@dimen/normal_text" />
 
-            <TextView
-                android:id="@+id/inflate_series_updates_item_episode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:gravity="end"
-                android:text="6 серия"
-                android:textColor="@color/text_color"
-                android:textSize="@dimen/normal_text" />
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/inflate_series_updates_item_voice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:gravity="end"
+            android:text="(5 сезон)"
+            android:textColor="@color/text_color"
+            android:textSize="@dimen/normal_text" />
     </LinearLayout>
 </LinearLayout>

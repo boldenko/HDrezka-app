@@ -6,7 +6,7 @@
     android:orientation="vertical"
     tools:context="com.falcofemoralis.hdrezkaapp.views.fragments.NewestFilmsFragment">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -15,7 +15,6 @@
             android:id="@+id/fragment_newest_films_tv_filters"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_marginStart="@dimen/leanback_margin_filters"
             android:layout_marginTop="7dp"
             android:layout_marginEnd="7dp"
@@ -31,10 +30,10 @@
             android:textStyle="bold" />
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/fragment_newest_films_tv_new_series"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:layout_marginStart="@dimen/leanback_margin_filters"
             android:layout_marginTop="7dp"
             android:layout_marginEnd="7dp"
@@ -48,8 +47,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/normal_text"
             android:textStyle="bold" />
-    </RelativeLayout>
-
+    </LinearLayout>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_newest_films_fcv_container"

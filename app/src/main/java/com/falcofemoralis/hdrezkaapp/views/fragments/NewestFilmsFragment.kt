@@ -113,25 +113,18 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
                     }
 
                     var lastColor = R.color.light_background
-                    var count = 0
                     for (item in updateItems) {
                         if (item.title.isEmpty()) {
                             continue
                         }
 
-
-                        if(count == 20){
-                            break
-                        }
-                        count++
-
                         val itemView = layoutInflater.inflate(R.layout.inflate_series_updates_item, null) as LinearLayout
                         itemView.findViewById<TextView>(R.id.inflate_series_updates_item_title).text = item.title
                         itemView.findViewById<TextView>(R.id.inflate_series_updates_item_season).text = item.season
                         itemView.findViewById<TextView>(R.id.inflate_series_updates_item_episode).text = item.episode
-                        /*    if(!item.voice.isNullOrEmpty()){
-                                itemView.findViewById<TextView>(R.id.inflate_series_updates_item_voice).text = item.voice
-                            }*/
+                        if (!item.voice.isNullOrEmpty()) {
+                            itemView.findViewById<TextView>(R.id.inflate_series_updates_item_voice).text = item.voice
+                        }
 
                         val film = Film(SettingsData.provider + item.filmLink)
                         itemView.setOnClickListener {

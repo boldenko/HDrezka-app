@@ -318,7 +318,12 @@ class FilmFragment : Fragment(), FilmView {
         Picasso.get().load(film.posterPath).into(currentView.findViewById<ImageView>(R.id.fragment_film_iv_poster))
 
         currentView.findViewById<TextView>(R.id.fragment_film_tv_title).text = film.title
-        currentView.findViewById<TextView>(R.id.fragment_film_tv_origtitle).text = film.origTitle
+        val origTileView =  currentView.findViewById<TextView>(R.id.fragment_film_tv_origtitle)
+        if(!film.origTitle.isNullOrEmpty()){
+            origTileView.text = film.origTitle
+        } else{
+            origTileView.visibility = View.GONE
+        }
 
         val dateView = currentView.findViewById<TextView>(R.id.fragment_film_tv_releaseDate)
         if (film.date != null) {

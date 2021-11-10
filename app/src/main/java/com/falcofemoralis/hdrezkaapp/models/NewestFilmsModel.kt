@@ -1,12 +1,10 @@
 package com.falcofemoralis.hdrezkaapp.models
 
-import android.util.ArrayMap
+import android.webkit.CookieManager
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SeriesUpdateItem
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import org.jsoup.nodes.Document
-
-import android.webkit.CookieManager
 
 object NewestFilmsModel {
     private const val NEWEST = "/new/page/"
@@ -38,11 +36,15 @@ object NewestFilmsModel {
                     val title = item.select("div.cell a.b-seriesupdate__block_list_link").text()
                     val link = item.select("div.cell a.b-seriesupdate__block_list_link").attr("href")
                     val season = item.select("span.season").text()
-                    val episode = item.select("span.cell").text()
+                    val episodeItems = item.select("span.cell")
+                    var episode = ""
+                    if (episodeItems.size > 0) {
+                        episode = episodeItems[0].ownText()
+                    }
                     val voice = item.select("span.cell i").text()
                     val isUserWatch = item.hasClass("tracked")
 
-                    if(link.isNotEmpty() && title.isNotEmpty()) {
+                    if (link.isNotEmpty() && title.isNotEmpty()) {
                         series.add(SeriesUpdateItem(link, title, season, episode, voice, isUserWatch))
                     }
                 }
