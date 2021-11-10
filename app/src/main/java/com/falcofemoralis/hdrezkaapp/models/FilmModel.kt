@@ -356,7 +356,9 @@ object FilmModel : BaseModel() {
                     val trans = Voice(subString.split(",")[1], parseSeasons(document))
                     val jsonObject = JSONObject(stringedDoc.substring(startObjIndex, endObjIndex + 1))
                     trans.streams = parseSteams(jsonObject.getString("streams"))
-                    trans.subtitles = parseSubtitles(jsonObject.getString("subtitle"))
+                    if(jsonObject.has("subtitle")){
+                        trans.subtitles = parseSubtitles(jsonObject.getString("subtitle"))
+                    }
                     try {
                         getThumbnails(jsonObject.getString("thumbnails"), trans)
                     } catch (e: Exception) {

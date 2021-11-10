@@ -68,7 +68,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         }
 
         SettingsData.isMaxQuality?.let {
-            setStateDefaultQuality(!it)
+            if (SettingsData.isPlayer != null && SettingsData.isPlayer == true) {
+                setStateDefaultQuality(!it)
+            }
         }
     }
 

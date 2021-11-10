@@ -19,6 +19,7 @@
             android:weightSum="100">
 
             <LinearLayout
+                android:id="@+id/inflate_watch_poster_layout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="@integer/watch_later_left"
@@ -52,7 +53,6 @@
                     android:text="Игра престолов (2011-2019, проект завершен)"
                     android:textColor="@color/white"
                     android:textSize="@dimen/normal_text" />
-
 
                 <TextView
                     android:id="@+id/watchLater_date"

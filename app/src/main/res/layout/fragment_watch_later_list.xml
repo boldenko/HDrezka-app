@@ -21,8 +21,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layoutManager="LinearLayoutManager"
-                tools:listitem="@layout/inflate_watch_later"
-                tools:context="com.falcofemoralis.hdrezkaapp.views.fragments.WatchLaterFragment" />
+                tools:context="com.falcofemoralis.hdrezkaapp.views.fragments.WatchLaterFragment"
+                tools:listitem="@layout/inflate_watch_later" />
         </androidx.core.widget.NestedScrollView>
 
         <ProgressBar
