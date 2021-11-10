@@ -191,4 +191,7 @@
     <string name="server_error_503">Сервер не готов обработать запрос</string>
     <string name="isAltLoading_title">Альтернативная загрузка данных</string>
     <string name="isAltLoading_hint">Активируйте если ничего не грузится! Возможно поможет</string>
+    <string name="series_update">Обновления</string>
+    <string name="series_update_hot">Горячие обновления сериалов</string>
+
 </resources>

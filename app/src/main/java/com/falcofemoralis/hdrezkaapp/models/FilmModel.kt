@@ -646,8 +646,8 @@ object FilmModel {
         }
     }
 
-    private fun parseSeasons(document: Document): HashMap<String, ArrayList<String>> {
-        val seasonList: HashMap<String, ArrayList<String>> = HashMap()
+    private fun parseSeasons(document: Document): LinkedHashMap<String, ArrayList<String>> {
+        val seasonList: LinkedHashMap<String, ArrayList<String>> = LinkedHashMap()
         val seasons = document.select("ul.b-simple_episodes__list")
 
         for ((i, season) in seasons.withIndex()) {

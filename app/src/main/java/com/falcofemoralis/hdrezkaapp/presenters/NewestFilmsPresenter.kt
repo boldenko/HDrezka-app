@@ -1,14 +1,17 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
 import android.util.ArrayMap
-import android.util.Log
 import com.falcofemoralis.hdrezkaapp.models.NewestFilmsModel
 import com.falcofemoralis.hdrezkaapp.objects.Film
+import com.falcofemoralis.hdrezkaapp.objects.SeriesUpdateItem
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.views.elements.FiltersMenu
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmsListView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.NewestFilmsView
-import java.lang.Exception
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class NewestFilmsPresenter(
     private val newestFilmsView: NewestFilmsView,
@@ -22,6 +25,19 @@ class NewestFilmsPresenter(
     fun initFilms() {
         filmsListView.setFilms(filmsListPresenter.activeFilms)
         filmsListPresenter.getNextFilms()
+
+    }
+
+    fun initSeriesUpdates(callback: (seriesUpdates: LinkedHashMap<String, ArrayList<SeriesUpdateItem>>) -> Unit) {
+        GlobalScope.launch {
+            val seriesUpdates = NewestFilmsModel.getSeriesUpdates()
+
+            if (seriesUpdates.size > 0) {
+                withContext(Dispatchers.Main) {
+                    callback(seriesUpdates)
+                }
+            }
+        }
     }
 
     override fun getMoreFilms(): ArrayList<Film> {
@@ -29,7 +45,7 @@ class NewestFilmsPresenter(
             val films: ArrayList<Film> = NewestFilmsModel.getNewestFilms(currentPage, sortFilter)
             currentPage++
             films
-        } catch (e: Exception){
+        } catch (e: Exception) {
             ExceptionHelper.catchException(e, newestFilmsView)
             ArrayList()
         }

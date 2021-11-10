@@ -292,7 +292,7 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
         }
     }
 
-    fun initTranslationsSeries(translation: Voice, callback: (seasons: HashMap<String, ArrayList<String>>) -> Unit) {
+    fun initTranslationsSeries(translation: Voice, callback: (seasons: LinkedHashMap<String, ArrayList<String>>) -> Unit) {
         GlobalScope.launch {
             try {
                 film.filmId?.let {

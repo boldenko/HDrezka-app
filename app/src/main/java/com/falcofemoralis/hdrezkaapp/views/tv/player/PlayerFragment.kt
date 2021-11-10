@@ -117,7 +117,7 @@ class PlayerFragment : VideoSupportFragment() {
 
         if (mTranslation?.seasons != null && mTranslation?.seasons!!.size > 0) {
             isSerial = true
-            val seasons: HashMap<String, ArrayList<String>> = mTranslation?.seasons!!
+            val seasons: LinkedHashMap<String, ArrayList<String>> = mTranslation?.seasons!!
             for ((season, episodes) in seasons) {
                 for (episode in episodes) {
                     val item = Playlist.PlaylistItem(season, episode)

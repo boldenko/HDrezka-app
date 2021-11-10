@@ -920,7 +920,7 @@ class FilmFragment : Fragment(), FilmView {
             val translationProgressBar = transView.findViewById<ProgressBar>(R.id.translations_progress)
             val container = transView.findViewById<LinearLayout>(R.id.translations_container)
 
-            fun showTranslationsSeries(seasons: HashMap<String, ArrayList<String>>) {
+            fun showTranslationsSeries(seasons: LinkedHashMap<String, ArrayList<String>>) {
                 var activeNameTextView: TextView? = null
 
                 for ((season, episodes) in seasons) {

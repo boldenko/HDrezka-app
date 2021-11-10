@@ -12,7 +12,7 @@ open class Voice : Serializable {
         this.streams = streams
     }
 
-    constructor(id: String, seasons: HashMap<String, ArrayList<String>>) {
+    constructor(id: String, seasons: LinkedHashMap<String, ArrayList<String>>) {
         this.id = id
         this.seasons = seasons
     }
@@ -20,7 +20,7 @@ open class Voice : Serializable {
     var name: String? = null
     var id: String? = null
     var streams: ArrayList<Stream>? = null
-    var seasons: HashMap<String, ArrayList<String>>? = null
+    var seasons: LinkedHashMap<String, ArrayList<String>>? = null
     var isCamrip: String = "0"
     var isDirector: String = "0"
     var isAds: String = "0"
