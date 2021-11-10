@@ -9,7 +9,7 @@ import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
-object ActorModel : BaseModel() {
+object ActorModel {
     private const val POST_ACTOR = "/ajax/person_info/"
     const val NO_PHOTO = "nopersonphoto"
     const val STATIC_PROTOCOL = "static"
@@ -19,11 +19,11 @@ object ActorModel : BaseModel() {
         data["id"] = actor.id.toString()
         data["pid"] = actor.pid.toString()
 
-        val result: Document? = getJsoup(SettingsData.provider + POST_ACTOR).data(data).post()
+        val result: Document? = BaseModel.getJsoup(SettingsData.provider + POST_ACTOR).data(data).post()
 
         if (result != null) {
             val bodyString: String = result.select("body").text()
-            if(bodyString != "503") {
+            if (bodyString != "503") {
                 val jsonObject = JSONObject(bodyString)
 
                 val isSuccess: Boolean = jsonObject.getBoolean("success")
@@ -70,7 +70,7 @@ object ActorModel : BaseModel() {
 
     fun getActorFilms(actor: Actor) {
         // actor.link already with provider host!
-        val document: Document = getJsoup(actor.link).get()
+        val document: Document = BaseModel.getJsoup(actor.link).get()
 
         val careerEls = document.select("div.b-person__career")
         val careers: ArrayList<Pair<String, ArrayList<Film>>> = ArrayList()

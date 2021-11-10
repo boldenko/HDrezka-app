@@ -8,11 +8,11 @@ import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import java.net.URLEncoder
 
-object SearchModel : BaseModel() {
+object SearchModel {
     private const val SEARCH_URL = "/engine/ajax/search.php"
 
     fun getFilmsListByQuery(text: String): ArrayList<Film> {
-        val doc: Document = getJsoup(SettingsData.provider + SEARCH_URL).data("q", text).post()
+        val doc: Document = BaseModel.getJsoup(SettingsData.provider + SEARCH_URL).data("q", text).post()
 
         val films: ArrayList<Film> = ArrayList()
         val els: Elements = doc.select("li")
@@ -42,7 +42,7 @@ object SearchModel : BaseModel() {
     }
 
     fun getFilmsFromSearchPage(query: String, page: Int): ArrayList<Film> {
-        val doc: Document = getJsoup(SettingsData.provider + "/search/?do=search&subaction=search&q=${URLEncoder.encode(query, "UTF-8")}&page=$page")
+        val doc: Document = BaseModel.getJsoup(SettingsData.provider + "/search/?do=search&subaction=search&q=${URLEncoder.encode(query, "UTF-8")}&page=$page")
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
             .userAgent(System.getProperty("http.agent"))
             .get()

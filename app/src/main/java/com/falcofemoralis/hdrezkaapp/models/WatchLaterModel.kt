@@ -7,11 +7,11 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 
-object WatchLaterModel : BaseModel() {
+object WatchLaterModel {
     private const val MAIN_PAGE = "/continue/"
 
     fun getWatchLaterList(): ArrayList<WatchLater> {
-        val document: Document = getJsoup(SettingsData.provider + MAIN_PAGE)
+        val document: Document = BaseModel.getJsoup(SettingsData.provider + MAIN_PAGE)
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
             .get()
 
@@ -38,7 +38,7 @@ object WatchLaterModel : BaseModel() {
     }
 
     fun removeItem(id: String) {
-        getJsoup(SettingsData.provider + "/engine/ajax/cdn_saves_remove.php")
+        BaseModel.getJsoup(SettingsData.provider + "/engine/ajax/cdn_saves_remove.php")
             .data("id", id)
             .userAgent("Mozilla")
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))

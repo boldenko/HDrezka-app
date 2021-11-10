@@ -13,7 +13,7 @@ import org.jsoup.safety.Whitelist
 import org.jsoup.select.Elements
 
 
-object FilmModel : BaseModel() {
+object FilmModel {
     private const val FILM_TITLE = "div.b-post__title h1"
     private const val FILM_POSTER = "div.b-sidecover a"
     private const val FILM_TABLE_INFO = "table.b-post__info tbody tr"
@@ -53,7 +53,7 @@ object FilmModel : BaseModel() {
 
         val doc: Document?
         try {
-            doc = getJsoup(SettingsData.provider + GET_FILM_POST).data(data).post()
+            doc = BaseModel.getJsoup(SettingsData.provider + GET_FILM_POST).data(data).post()
         } catch (e: Exception) {
             throw e
         }
@@ -82,7 +82,7 @@ object FilmModel : BaseModel() {
     }
 
     private fun getMainDataByLink(film: Film): Film {
-        val filmPage: Document = getJsoup(film.filmLink).get()
+        val filmPage: Document = BaseModel.getJsoup(film.filmLink).get()
 
         film.type = film.filmLink?.split("/")?.get(3)?.let { getTypeByName(it) }
         film.title = filmPage.select(FILM_TITLE).text()
@@ -155,7 +155,7 @@ object FilmModel : BaseModel() {
     }
 
     fun getAdditionalData(film: Film): Film {
-        val document: Document = getJsoup(film.filmLink)
+        val document: Document = BaseModel.getJsoup(film.filmLink)
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider) + "; allowed_comments=1;")
             .get()
         film.origTitle = document.select("div.b-post__origtitle").text()
@@ -448,7 +448,7 @@ object FilmModel : BaseModel() {
     }
 
     fun getFilmPosterByLink(filmLink: String): String? {
-        val filmPage: Document = getJsoup(filmLink).get()
+        val filmPage: Document = BaseModel.getJsoup(filmLink).get()
         val posterElements = filmPage.select(FILM_POSTER)
         return if (posterElements.size > 0) {
             val posterElement: Element = posterElements[0]
@@ -459,7 +459,7 @@ object FilmModel : BaseModel() {
     }
 
     fun postWatch(watchId: Int) {
-        val result: Element? = getJsoup(SettingsData.provider + WATCH_ADD)
+        val result: Element? = BaseModel.getJsoup(SettingsData.provider + WATCH_ADD)
             .data("id", watchId.toString())
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider) + "; allowed_comments=1;")
             .post()
@@ -476,7 +476,7 @@ object FilmModel : BaseModel() {
     }
 
     fun postRating(film: Film, rating: Float) {
-        val result: String = getJsoup(SettingsData.provider + RATING_ADD + "?news_id=${film.filmId}&go_rate=${rating}&skin=hdrezka")
+        val result: String = BaseModel.getJsoup(SettingsData.provider + RATING_ADD + "?news_id=${film.filmId}&go_rate=${rating}&skin=hdrezka")
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
             .execute()
             .body()
@@ -503,7 +503,7 @@ object FilmModel : BaseModel() {
         data["action"] = "get_movie"
 
         val unixTime = System.currentTimeMillis()
-        val result: Document? = getJsoup(SettingsData.provider + GET_STREAM_POST + "/?t=$unixTime").data(data).post()
+        val result: Document? = BaseModel.getJsoup(SettingsData.provider + GET_STREAM_POST + "/?t=$unixTime").data(data).post()
 
         if (result != null) {
             val bodyString: String = result.select("body").text()
@@ -526,7 +526,7 @@ object FilmModel : BaseModel() {
 
     fun getThumbnails(thumbnailsUrl: String, translation: Voice) {
         if (thumbnailsUrl != "false") {
-            val result: Document? = getJsoup(SettingsData.provider + thumbnailsUrl).post()
+            val result: Document? = BaseModel.getJsoup(SettingsData.provider + thumbnailsUrl).post()
 
             if (result != null) {
                 val responseText: String = result.select("body").text()
@@ -629,7 +629,7 @@ object FilmModel : BaseModel() {
         data["action"] = "get_episodes"
 
         val unixTime = System.currentTimeMillis()
-        val result: Document? = getJsoup(SettingsData.provider + GET_STREAM_POST + "/?t=$unixTime").data(data).post()
+        val result: Document? = BaseModel.getJsoup(SettingsData.provider + GET_STREAM_POST + "/?t=$unixTime").data(data).post()
 
         if (result != null) {
             val bodyString: String = result.select("body").text()
@@ -673,7 +673,7 @@ object FilmModel : BaseModel() {
         data["action"] = "get_stream"
 
         val unixTime = System.currentTimeMillis()
-        val result: Document? = getJsoup(SettingsData.provider + GET_STREAM_POST + "/?t=$unixTime").data(data).post()
+        val result: Document? = BaseModel.getJsoup(SettingsData.provider + GET_STREAM_POST + "/?t=$unixTime").data(data).post()
 
         if (result != null) {
             val bodyString: String = result.select("body").text()
@@ -723,7 +723,7 @@ object FilmModel : BaseModel() {
         //data["duration"] = "1"
 
         val unixTime = System.currentTimeMillis()
-        val result: Document? = getJsoup(SettingsData.provider + SEND_WATCH + "/?t=$unixTime")
+        val result: Document? = BaseModel.getJsoup(SettingsData.provider + SEND_WATCH + "/?t=$unixTime")
             .data(data)
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
             .post()
@@ -744,7 +744,7 @@ object FilmModel : BaseModel() {
         val data: ArrayMap<String, String> = ArrayMap()
         data["id"] = filmId.toString()
 
-        val result: Document? = getJsoup(SettingsData.provider + GET_TRAILER_VIDEO)
+        val result: Document? = BaseModel.getJsoup(SettingsData.provider + GET_TRAILER_VIDEO)
             .data(data)
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
             .post()

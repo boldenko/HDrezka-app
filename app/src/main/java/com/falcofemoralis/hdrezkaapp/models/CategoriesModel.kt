@@ -6,9 +6,9 @@ import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 
-object CategoriesModel : BaseModel() {
+object CategoriesModel {
     fun getCategories(): ArrayMap<Pair<String, String>, ArrayList<Pair<String, String>>> {
-        val doc: Document = getJsoup(SettingsData.provider).get()
+        val doc: Document = BaseModel.getJsoup(SettingsData.provider).get()
 
         val categories: ArrayMap<Pair<String, String>, ArrayList<Pair<String, String>>> = ArrayMap()
         val els: Elements = doc.select("li.b-topnav__item")
@@ -36,7 +36,7 @@ object CategoriesModel : BaseModel() {
     }
 
     fun getYears(): ArrayList<String> {
-        val doc: Document = getJsoup(SettingsData.provider).get()
+        val doc: Document = BaseModel.getJsoup(SettingsData.provider).get()
         val years: ArrayList<String> = ArrayList()
 
         val yearsList = doc.select("select.select-year")
@@ -53,7 +53,7 @@ object CategoriesModel : BaseModel() {
     }
 
     fun getFilmsFromCategory(catLink: String, page: Int): ArrayList<Film> {
-        val doc: Document = getJsoup(SettingsData.provider + catLink + "page/" + page).get()
+        val doc: Document = BaseModel.getJsoup(SettingsData.provider + catLink + "page/" + page).get()
         return FilmsListModel.getFilmsFromPage(doc)
     }
 }

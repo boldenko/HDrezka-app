@@ -48,6 +48,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
+import org.jsoup.helper.HttpConnection
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.net.URI

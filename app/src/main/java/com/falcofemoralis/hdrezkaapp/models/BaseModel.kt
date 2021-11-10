@@ -1,13 +1,14 @@
 package com.falcofemoralis.hdrezkaapp.models
 
+import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
+import com.falcofemoralis.hdrezkaapp.views.fragments.FilmFragment
+import com.squareup.picasso.Picasso
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 
-open class BaseModel {
-    companion object {
-        const val userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36"
-    }
+object BaseModel {
+    const val userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36"
 
     fun getJsoup(link: String?): Connection {
         val connection = Jsoup.connect(link?.replace(" ", "")?.replace("\n", ""))
@@ -32,4 +33,11 @@ open class BaseModel {
         }
         return connection
     }
+
+ /*   fun getPicasso(url: String,){
+        Picasso
+            .get()
+            .load(FilmFragment.presenter?.film?.posterPath)
+
+    }*/
 }

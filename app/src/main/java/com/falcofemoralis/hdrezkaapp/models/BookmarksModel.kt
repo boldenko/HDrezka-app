@@ -11,12 +11,12 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 
-object BookmarksModel : BaseModel() {
+object BookmarksModel {
     private const val MAIN_PAGE = "/favorites/"
     private const val POST_URL = "/ajax/favorites/"
 
     fun getBookmarksList(): ArrayList<Bookmark> {
-        val document: Document = getJsoup(SettingsData.provider + MAIN_PAGE).header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider)).get()
+        val document: Document = BaseModel.getJsoup(SettingsData.provider + MAIN_PAGE).header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider)).get()
 
         val bookmarks: ArrayList<Bookmark> = ArrayList()
 
@@ -45,7 +45,7 @@ object BookmarksModel : BaseModel() {
             url += "&genre=${show}"
         }
 
-        val doc: Document = getJsoup(url).header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider)).get()
+        val doc: Document = BaseModel.getJsoup(url).header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider)).get()
         return FilmsListModel.getFilmsFromPage(doc)
     }
 
@@ -54,7 +54,7 @@ object BookmarksModel : BaseModel() {
         data["name"] = name
         data["action"] = "add_cat"
 
-        val result: Element? = getJsoup(SettingsData.provider + POST_URL)
+        val result: Element? = BaseModel.getJsoup(SettingsData.provider + POST_URL)
             .data(data)
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
             .post()
@@ -82,7 +82,7 @@ object BookmarksModel : BaseModel() {
         data["cat_id"] = catId
         data["action"] = "add_post"
 
-        getJsoup(SettingsData.provider + POST_URL)
+        BaseModel.getJsoup(SettingsData.provider + POST_URL)
             .data(data)
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
             .post()

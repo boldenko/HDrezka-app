@@ -12,7 +12,7 @@ import org.jsoup.nodes.Element
 import org.jsoup.nodes.TextNode
 import org.jsoup.select.Elements
 
-object CommentsModel : BaseModel() {
+object CommentsModel {
     private const val COMMENT_LINK = "/ajax/get_comments/"
     private const val COMMENT_ADD = "/ajax/add_comment/"
     private const val COMMENT_LIKE = "/engine/ajax/comments_like.php"
@@ -23,7 +23,7 @@ object CommentsModel : BaseModel() {
     // cstart = page
     fun getCommentsFromPage(page: Int, filmId: String): ArrayList<Comment> {
         val unixTime = System.currentTimeMillis()
-        val result: String = getJsoup(SettingsData.provider + COMMENT_LINK + "?t=$unixTime&news_id=$filmId&cstart=$page&type=0&comment_id=0&skin=hdrezka")
+        val result: String = BaseModel.getJsoup(SettingsData.provider + COMMENT_LINK + "?t=$unixTime&news_id=$filmId&cstart=$page&type=0&comment_id=0&skin=hdrezka")
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
             .execute()
             .body()
@@ -115,7 +115,7 @@ object CommentsModel : BaseModel() {
         data["g_recaptcha_response"] = ""
         data["has_adb"] = "1"
 
-        val result: Document? = getJsoup(SettingsData.provider + COMMENT_ADD)
+        val result: Document? = BaseModel.getJsoup(SettingsData.provider + COMMENT_ADD)
             .data(data)
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider) + "; allowed_comments=1")
             .post()
@@ -145,7 +145,7 @@ object CommentsModel : BaseModel() {
     }
 
     fun postLike(comment: Comment, type: Comment.LikeType) {
-        getJsoup(SettingsData.provider + COMMENT_LIKE + "?id=${comment.id}")
+        BaseModel.getJsoup(SettingsData.provider + COMMENT_LIKE + "?id=${comment.id}")
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
             .execute()
             .body()
@@ -160,7 +160,7 @@ object CommentsModel : BaseModel() {
     }
 
     fun deleteComment(comment: Comment) {
-        getJsoup(
+        BaseModel.getJsoup(
             SettingsData.provider + DELETE_COMMENT +
                     "?id=${comment.id}" +
                     "&dle_allow_hash=${comment.deleteHash}"
