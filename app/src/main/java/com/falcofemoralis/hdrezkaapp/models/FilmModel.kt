@@ -388,7 +388,11 @@ object FilmModel {
             film.autoswitch = autoswitch
         }
 
-        film.filmId?.let { film.youtubeLink = getTrailerVideo(it) }
+        try{
+            film.filmId?.let { film.youtubeLink = getTrailerVideo(it) }
+        } catch (e: Exception){
+            // ignore
+        }
 
         film.hasAdditionalData = true
 
