@@ -29,24 +29,6 @@
             android:textSize="@dimen/normal_text"
             android:textStyle="bold" />
 
-        <TextView
-            android:visibility="gone"
-            android:id="@+id/fragment_newest_films_tv_new_series"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/leanback_margin_filters"
-            android:layout_marginTop="7dp"
-            android:layout_marginEnd="7dp"
-            android:layout_marginBottom="7dp"
-            android:background="@drawable/roundedbutton"
-            android:foreground="?attr/selectableItemBackground"
-            android:padding="7dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:text="@string/series_update"
-            android:textColor="@color/white"
-            android:textSize="@dimen/normal_text"
-            android:textStyle="bold" />
     </LinearLayout>
 
     <androidx.fragment.app.FragmentContainerView

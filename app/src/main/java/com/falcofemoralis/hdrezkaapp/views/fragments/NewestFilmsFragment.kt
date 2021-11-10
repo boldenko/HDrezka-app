@@ -6,25 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
-import com.falcofemoralis.hdrezkaapp.objects.Film
-import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.presenters.NewestFilmsPresenter
-import com.falcofemoralis.hdrezkaapp.utils.DialogManager
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
-import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
 import com.falcofemoralis.hdrezkaapp.views.elements.FiltersMenu
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmListCallView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.NewestFilmsView
-import com.github.aakira.expandablelayout.ExpandableLinearLayout
 
 class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
     private lateinit var currentView: View
@@ -45,7 +36,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
         filmsListFragment.setCallView(this)
         childFragmentManager.beginTransaction().replace(R.id.fragment_newest_films_fcv_container, filmsListFragment).commit()
 
-        initSeriesUpdatesBtn()
+        // initSeriesUpdatesBtn()
 
         return currentView
     }
@@ -87,7 +78,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
         Toast.makeText(requireContext(), R.string.filter_applied_hint, Toast.LENGTH_LONG).show()
     }
 
-    fun initSeriesUpdatesBtn() {
+    /*fun initSeriesUpdatesBtn() {
         val btn = currentView.findViewById<TextView>(R.id.fragment_newest_films_tv_new_series)
         btn.setOnClickListener {
             var dialog: AlertDialog? = null
@@ -154,5 +145,5 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
             dialog = builder.create()
             dialog.show()
         }
-    }
+    }*/
 }
