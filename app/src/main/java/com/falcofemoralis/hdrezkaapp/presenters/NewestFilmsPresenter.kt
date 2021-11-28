@@ -6,7 +6,6 @@ import com.falcofemoralis.hdrezkaapp.models.NewestFilmsModel
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SeriesUpdateItem
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
-import com.falcofemoralis.hdrezkaapp.views.elements.FiltersMenu
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmsListView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.NewestFilmsView
 import kotlinx.coroutines.Dispatchers
@@ -66,5 +65,4 @@ class NewestFilmsPresenter(
             }
         }
     }
-
 }

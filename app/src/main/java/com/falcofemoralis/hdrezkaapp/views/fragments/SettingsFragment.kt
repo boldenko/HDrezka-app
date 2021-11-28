@@ -263,8 +263,8 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 }
             }
             "rowMultiplier" -> {
-                SettingsData.rowMultiplier = preferences.getString("rowMultiplier", "3")?.toInt()
-                applyInterfaceChange()
+               // SettingsData.rowMultiplier = preferences.getString("rowMultiplier", "3")?.toInt()
+              //  applyInterfaceChange()
             }
             "autoPlayNextEpisode" -> {
                 SettingsData.autoPlayNextEpisode = preferences.getBoolean("autoPlayNextEpisode", true)

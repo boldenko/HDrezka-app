@@ -8,6 +8,8 @@ import com.falcofemoralis.hdrezkaapp.constants.GridLayoutSizes
 import com.falcofemoralis.hdrezkaapp.utils.FileManager
 
 object SettingsData {
+    const val PROVIDER_FILE = "provider"
+
     var provider: String? = null
     var mainScreen: Int? = null
     var isPlayer: Boolean? = null
@@ -17,9 +19,7 @@ object SettingsData {
     var deviceType: DeviceType? = null
     var filmsInRow: Int? = null
     var isAutorotate: Boolean? = null
-    var rowMultiplier: Int? = null
     var autoPlayNextEpisode: Boolean? = null
-    const val PROVIDER_FILE = "provider"
     var defaultQuality: String? = null
     var isSubtitlesDownload: Boolean? = null
     var isCheckNewVersion: Boolean? = null
@@ -55,7 +55,6 @@ object SettingsData {
                 filmsInRow = it.toInt()
             }
         }
-        rowMultiplier = prefs?.getString("rowMultiplier", "3")?.toInt()
         var defq = prefs?.getString("defaultQuality", null)
         if (defq == "Авто") {
             defq = null

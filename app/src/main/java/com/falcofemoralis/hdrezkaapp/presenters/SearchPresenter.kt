@@ -22,14 +22,7 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
     private var currentPage: Int = 1
     private var isLoading: Boolean = false
     private var query: String = ""
-    private var filmsPerPage: Int = 0
     private var token = ""
-
-    init {
-        SettingsData.filmsInRow?.let {
-            filmsPerPage = it * SettingsData.rowMultiplier!!
-        }
-    }
 
     fun initFilms() {
         filmsListView.setFilms(activeListFilms)
@@ -109,7 +102,8 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
                 }
 
                 if (tokenTmp == token) {
-                    FilmModel.getFilmsData(loadedListFilms, filmsPerPage, ::processFilms)
+                    FilmModel.getFilmsData(loadedListFilms, 9, ::processFilms)
+                    // TODO
                 }
             } catch (e: Exception) {
                 if (e is HttpStatusException) {

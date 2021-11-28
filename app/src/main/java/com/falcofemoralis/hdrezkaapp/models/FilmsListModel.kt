@@ -1,5 +1,6 @@
 package com.falcofemoralis.hdrezkaapp.models
 
+import com.falcofemoralis.hdrezkaapp.constants.FilmType
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import org.jsoup.nodes.Document
 
@@ -33,10 +34,22 @@ object FilmsListModel {
             film.countries = ArrayList()
             film.countries!!.add(separated[1].drop(1))
 
-            if(separated.size > 2){
+            if (separated.size > 2) {
                 film.genres = ArrayList()
                 film.genres!!.add(separated[2].drop(1))
             }
+
+            film.ratingKP = el.select("i.b-category-bestrating").text()
+
+            val catEl = el.select("span.cat")
+            film.type = catEl.select("i.entity")[0].ownText()
+            film.constFilmType =
+                if (catEl.hasClass("films")) FilmType.FILM
+                else if (catEl.hasClass("series")) FilmType.SERIES
+                else if (catEl.hasClass("cartoons")) FilmType.MULTFILMS
+                else if (catEl.hasClass("animation")) FilmType.ANIME
+                else if (catEl.hasClass("show")) FilmType.TVSHOWS
+                else FilmType.FILM
 
             films.add(film)
         }

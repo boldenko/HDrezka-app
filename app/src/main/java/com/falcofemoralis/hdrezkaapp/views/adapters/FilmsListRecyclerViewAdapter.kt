@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
+import com.falcofemoralis.hdrezkaapp.constants.FilmType
 import com.falcofemoralis.hdrezkaapp.models.FilmModel
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
@@ -65,22 +66,22 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
                 info += film.genres!![0]
             }
         }
-        if (film.ratingIMDB?.isNotEmpty() == true) {
-            info = addComma(info)
-            info += film.ratingIMDB
-        }
 
         holder.infoView.text = info
-        holder.typeView.text = film.type
 
-        val color: Int
-        val res = context.resources
-        color = when (film.type?.take(4)) {
-            res.getString(R.string.films).take(4) -> ContextCompat.getColor(context, R.color.film)
-            res.getString(R.string.multfilms).take(4) -> ContextCompat.getColor(context, R.color.multfilm)
-            res.getString(R.string.serials).take(4) -> ContextCompat.getColor(context, R.color.serial)
-            res.getString(R.string.anime).take(4) -> ContextCompat.getColor(context, R.color.anime)
-            res.getString(R.string.tv_show).take(4) -> ContextCompat.getColor(context, R.color.tv_show)
+        var typeText = film.type
+        if (film.ratingKP?.isNotEmpty() == true) {
+            typeText = typeText?.let { addComma(it) }
+            typeText += film.ratingKP
+        }
+        holder.typeView.text = typeText
+
+        val color: Int = when (film.constFilmType) {
+            FilmType.FILM -> ContextCompat.getColor(context, R.color.film)
+            FilmType.MULTFILMS -> ContextCompat.getColor(context, R.color.multfilm)
+            FilmType.SERIES -> ContextCompat.getColor(context, R.color.serial)
+            FilmType.ANIME -> ContextCompat.getColor(context, R.color.anime)
+            FilmType.TVSHOWS -> ContextCompat.getColor(context, R.color.tv_show)
             else -> ContextCompat.getColor(context, R.color.background)
         }
         holder.typeView.setBackgroundColor(color)
@@ -119,8 +120,8 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
         val subInfoView: TextView = view.findViewById(R.id.film_sub_info)
     }
 
-    companion object{
-        fun zoom(layout: LinearLayout, posterLayout: View, titleView: TextView, subView: TextView?, context: Context){
+    companion object {
+        fun zoom(layout: LinearLayout, posterLayout: View, titleView: TextView, subView: TextView?, context: Context) {
             if (SettingsData.deviceType == DeviceType.TV) {
                 layout.setOnFocusChangeListener { v, hasFocus ->
                     if (hasFocus) {

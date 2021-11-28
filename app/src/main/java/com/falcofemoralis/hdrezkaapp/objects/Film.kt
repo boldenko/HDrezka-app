@@ -1,5 +1,6 @@
 package com.falcofemoralis.hdrezkaapp.objects
 
+import com.falcofemoralis.hdrezkaapp.constants.FilmType
 import java.io.Serializable
 
 open class Film : Serializable {
@@ -54,4 +55,5 @@ open class Film : Serializable {
     var lastEpisode: String? = null
     var autoswitch: String? = null
     var youtubeLink: String? = null
+    var constFilmType: FilmType? = null
 }
