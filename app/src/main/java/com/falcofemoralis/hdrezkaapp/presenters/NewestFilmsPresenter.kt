@@ -30,7 +30,18 @@ class NewestFilmsPresenter(
 
     override fun getMoreFilms(): ArrayList<Film> {
         return try {
-            val films: ArrayList<Film> = NewestFilmsModel.getNewestFilms(currentPage, appliedFilters[AppliedFilter.SORT]!!, appliedFilters[AppliedFilter.TYPE]!!)
+            var films: ArrayList<Film> = ArrayList()
+
+            if (appliedFilters[AppliedFilter.SORT]!! == NewestFilmsModel.SORTS[3]) {
+                if (currentPage == 1) {
+                    films = NewestFilmsModel.getNewFilms(appliedFilters[AppliedFilter.TYPE]!!)
+                }
+            } else if (appliedFilters[AppliedFilter.SORT]!! == NewestFilmsModel.SORTS[4]) {
+                films = NewestFilmsModel.getAnnounce(currentPage, appliedFilters[AppliedFilter.TYPE]!!)
+            } else {
+                films = NewestFilmsModel.getNewestFilms(currentPage, appliedFilters[AppliedFilter.SORT]!!, appliedFilters[AppliedFilter.TYPE]!!)
+            }
+
             currentPage++
             films
         } catch (e: Exception) {
@@ -39,8 +50,8 @@ class NewestFilmsPresenter(
         }
     }
 
-    fun setFilter(type: AppliedFilter, pos: Int){
-        appliedFilters[type] = when(type){
+    fun setFilter(type: AppliedFilter, pos: Int) {
+        appliedFilters[type] = when (type) {
             AppliedFilter.TYPE -> NewestFilmsModel.TYPES[pos]
             AppliedFilter.SORT -> NewestFilmsModel.SORTS[pos]
             else -> ""

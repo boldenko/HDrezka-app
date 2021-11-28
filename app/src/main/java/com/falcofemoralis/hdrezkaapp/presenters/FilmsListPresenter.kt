@@ -50,6 +50,7 @@ class FilmsListPresenter(
 
                     withContext(Dispatchers.Main) {
                         addFilms(filmList)
+                        filmList.clear()
                     }
                 }
             } catch (e: Exception) {
