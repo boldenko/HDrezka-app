@@ -1,11 +1,11 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
 import android.util.ArrayMap
-import android.widget.Toast
+import com.falcofemoralis.hdrezkaapp.constants.AppliedFilter
 import com.falcofemoralis.hdrezkaapp.models.CategoriesModel
+import com.falcofemoralis.hdrezkaapp.objects.Category
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper.catchException
-import com.falcofemoralis.hdrezkaapp.views.elements.FiltersMenu
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.CategoriesView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmsListView
 import kotlinx.coroutines.Dispatchers
@@ -13,38 +13,27 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class CategoriesPresenter(private val categoriesView: CategoriesView, private val filmsListView: FilmsListView) : FiltersMenu.IFilters, FilmsListPresenter.IFilmsList {
+class CategoriesPresenter(private val categoriesView: CategoriesView, private val filmsListView: FilmsListView) : FilmsListPresenter.IFilmsList {
+    var filmsListPresenter: FilmsListPresenter = FilmsListPresenter(filmsListView, categoriesView, this)
+
     private var currentPage = 1
-    private var selectedCategoryLink: String? = null
     private var link = ""
 
-    var filmsListPresenter: FilmsListPresenter = FilmsListPresenter(filmsListView, categoriesView, this)
-    var categories: ArrayMap<Pair<String, String>, ArrayList<Pair<String, String>>> = ArrayMap()
-    var typesNames: ArrayList<String> = ArrayList()
-    var genresNames: ArrayMap<String, ArrayList<String>> = ArrayMap()
-    var yearsNames: ArrayList<String> = ArrayList()
+    var category: Category? = null
+    private var appliedFilters: ArrayMap<AppliedFilter, String> = ArrayMap()
+    private var selectedTypePos = 3
+
+    init {
+        filmsListView.setFilms(filmsListPresenter.activeFilms)
+    }
 
     fun initCategories() {
         GlobalScope.launch {
             try {
-                categories = CategoriesModel.getCategories()
-                yearsNames = CategoriesModel.getYears()
-
-                //  if (categories.size > 0 && yearsNames.size > 0) {
-                for ((key, value) in categories) {
-                    typesNames.add(key.first)
-
-                    val list: ArrayList<String> = ArrayList()
-                    for (genre in value) {
-                        list.add(genre.first)
-                    }
-
-                    genresNames[key.first] = list
-                }
+                category = CategoriesModel.getCategories()
 
                 withContext(Dispatchers.Main) {
-                    categoriesView.setCategories()
-                    filmsListView.setFilms(filmsListPresenter.activeFilms)
+                    categoriesView.showFilters()
                 }
             } catch (e: Exception) {
                 catchException(e, categoriesView)
@@ -53,32 +42,50 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
         }
     }
 
-    fun setCategory(typePos: Int?, genrePos: Int?, yearPos: Int?, isUpdate: Boolean) {
-        link = ""
+    fun setFilter(type: AppliedFilter, pos: Int) {
+        if (category != null && category!!.categories.size > 0) {
+            when (type) {
+                AppliedFilter.TYPE -> {
+                    appliedFilters.remove(AppliedFilter.GENRES)
+                    //appliedFilters.remove(AppliedFilter.YEARS)
+                    appliedFilters[type] = category!!.categories.keyAt(pos).second
+                    selectedTypePos = pos
 
-        typePos?.let {
-            link += categories.keyAt(typePos).second + "best/"
-
-            genrePos?.let {
-                link = categories.valueAt(typePos)[genrePos].second
-            }
-
-            yearPos?.let {
-                val year: String = yearsNames[yearPos]
-                if (year != "за все время") {
-                    link += "$year/"
+                    val genres: ArrayList<String> = ArrayList()
+                    for (genre in category!!.categories.valueAt(selectedTypePos)) {
+                        genres.add(genre.first)
+                    }
+                    categoriesView.setFilters(category!!.years, genres)
                 }
+                AppliedFilter.GENRES -> appliedFilters[type] = category!!.categories.valueAt(selectedTypePos)[pos].second
+                AppliedFilter.YEARS -> appliedFilters[type] = category!!.years[pos]
             }
-        }
-
-        if(isUpdate){
-            updateCategories()
         }
     }
 
-    private fun updateCategories(){
-        if(link.isNotEmpty()){
-            selectedCategoryLink = link
+    fun applyFilters() {
+        link = ""
+
+        link += appliedFilters[AppliedFilter.TYPE] + "best/"
+
+        if (appliedFilters[AppliedFilter.GENRES]?.isNotEmpty() == true) {
+            link = appliedFilters[AppliedFilter.GENRES]!!
+        }
+
+        if (appliedFilters[AppliedFilter.YEARS]?.isNotEmpty() == true) {
+            val year = appliedFilters[AppliedFilter.YEARS]!!
+
+            if (year != "за все время") {
+                link += "$year/"
+            }
+        }
+
+        updateCategories()
+    }
+
+
+    private fun updateCategories() {
+        if (link.isNotEmpty()) {
             currentPage = 1
             filmsListPresenter.reset()
             filmsListPresenter.filmList.clear()
@@ -89,22 +96,9 @@ class CategoriesPresenter(private val categoriesView: CategoriesView, private va
     }
 
     override fun getMoreFilms(): ArrayList<Film> {
-        var films: ArrayList<Film> = ArrayList()
-        selectedCategoryLink?.let {
-            films = CategoriesModel.getFilmsFromCategory(it, currentPage)
-            currentPage++
-        }
+        val films = CategoriesModel.getFilmsFromCategory(link, currentPage)
+        currentPage++
+
         return films
-    }
-
-    override fun onFilterCreated(appliedFilters: ArrayMap<FiltersMenu.AppliedFilter, Array<String?>>) {
-
-    }
-
-    override fun onApplyFilters(appliedFilters: ArrayMap<FiltersMenu.AppliedFilter, Array<String?>>) {
-        filmsListPresenter.appliedFilters = appliedFilters
-        updateCategories()
-       // filmsListPresenter.applyFilter()
-        categoriesView.showFilterMsg()
     }
 }

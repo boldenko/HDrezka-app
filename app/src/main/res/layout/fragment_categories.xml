@@ -8,46 +8,28 @@
     tools:context="com.falcofemoralis.hdrezkaapp.views.fragments.CategoriesFragment">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:weightSum="1">
-
-        <com.chivorn.smartmaterialspinner.SmartMaterialSpinner
-            android:id="@+id/fragment_categories_sp_types"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:foreground="?attr/selectableItemBackground"
-            android:spinnerMode="dialog"
-            android:focusable="true"
-            app:smsp_arrowColor="@color/white"
-            app:smsp_floatingLabelColor="@color/white"
-            app:smsp_hint="@string/categories"
-            app:smsp_hintColor="@color/white"
-            app:smsp_hintSize="@dimen/spinner_text"
-            app:smsp_itemColor="@color/white"
-            app:smsp_itemListColor="@color/text_color"
-            app:smsp_itemListHintColor="@color/white"
-            app:smsp_selectedItemListColor="@color/main_color_3" />
+        android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/fragment_categories_films_bt_filters"
-            android:layout_width="0dp"
-            android:layout_weight="0.35"
+            android:id="@+id/fragment_categories_films_tv_filters"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="7dp"
+            android:layout_marginStart="@dimen/leanback_margin_filters"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="7dp"
+            android:layout_marginBottom="7dp"
             android:background="@drawable/roundedbutton"
             android:foreground="?attr/selectableItemBackground"
             android:padding="7dp"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            android:gravity="center"
-            android:text="@string/filters"
+            android:text="@string/categories"
             android:textColor="@color/white"
             android:textSize="@dimen/normal_text"
             android:textStyle="bold" />
+
     </LinearLayout>
 
     <TextView

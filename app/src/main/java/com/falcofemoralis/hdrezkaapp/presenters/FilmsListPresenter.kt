@@ -2,9 +2,9 @@ package com.falcofemoralis.hdrezkaapp.presenters
 
 import android.util.ArrayMap
 import com.falcofemoralis.hdrezkaapp.constants.AdapterAction
+import com.falcofemoralis.hdrezkaapp.constants.AppliedFilter
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
-import com.falcofemoralis.hdrezkaapp.models.FilmModel
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
@@ -38,7 +38,7 @@ class FilmsListPresenter(
     val allFilms: ArrayList<Film> = ArrayList() // all loaded films
     val activeFilms: ArrayList<Film> = ArrayList() // current active films
     private var sortedFilmsCount: Int = 0 // current sorted films
-    var appliedFilters: ArrayMap<FiltersMenu.AppliedFilter, Array<String?>> = ArrayMap()
+    var appliedFilters: ArrayMap<AppliedFilter, Array<String?>> = ArrayMap()
     private var token = ""
 
     fun addMoreFilms(films: ArrayList<Film>) {
@@ -63,14 +63,13 @@ class FilmsListPresenter(
                 }
 
                 val tokenTmp = token
-                fun processFilms(films: ArrayList<Film>) {
-                    if (tokenTmp == token) {
-                        allFilms.addAll(films)
-                        addFilms(films)
+                if (tokenTmp == token) {
+                    allFilms.addAll(filmList)
+
+                    withContext(Dispatchers.Main) {
+                        addFilms(filmList)
                     }
                 }
-
-                FilmModel.getFilmsData(filmList, filmsPerPage, ::processFilms)
             } catch (e: Exception) {
                 if (e is HttpStatusException) {
                     if (e.statusCode != 404 || e.statusCode == 503) {
@@ -134,7 +133,7 @@ class FilmsListPresenter(
     private fun checkFilmForFilters(film: Film): Boolean {
         val applyList: ArrayMap<FiltersMenu.AppliedFilter, Boolean> = ArrayMap()
 
-        val filters: ArrayMap<FiltersMenu.AppliedFilter, ArrayList<String>> = ArrayMap()
+        val filters: ArrayMap<AppliedFilter, ArrayList<String>> = ArrayMap()
         for (filterEntry in appliedFilters) {
             val list: ArrayList<String> = ArrayList()
             for (item in filterEntry.value) {
@@ -149,7 +148,7 @@ class FilmsListPresenter(
 
         for (filterEntry in filters) {
             when (filterEntry.key) {
-                FiltersMenu.AppliedFilter.COUNTRIES -> {
+                AppliedFilter.COUNTRIES -> {
                     film.countries?.let {
                         for (country in film.countries!!) {
                             applyList[FiltersMenu.AppliedFilter.COUNTRIES] = country in filterEntry.value
@@ -161,7 +160,7 @@ class FilmsListPresenter(
                     }
                 }
 
-                FiltersMenu.AppliedFilter.GENRES -> {
+                AppliedFilter.GENRES -> {
                     film.genres?.let {
                         for (genre in film.genres!!) {
                             applyList[FiltersMenu.AppliedFilter.GENRES] = genre in filterEntry.value
@@ -173,7 +172,7 @@ class FilmsListPresenter(
                     }
                 }
 
-                FiltersMenu.AppliedFilter.COUNTRIES_INVERTED -> {
+                AppliedFilter.COUNTRIES_INVERTED -> {
                     film.countries?.let {
                         for (country in film.countries!!) {
                             applyList[FiltersMenu.AppliedFilter.COUNTRIES_INVERTED] = country !in filterEntry.value
@@ -185,7 +184,7 @@ class FilmsListPresenter(
                     }
                 }
 
-                FiltersMenu.AppliedFilter.GENRES_INVERTED -> {
+                AppliedFilter.GENRES_INVERTED -> {
                     film.genres?.let {
                         for (genre in film.genres!!) {
                             applyList[FiltersMenu.AppliedFilter.GENRES_INVERTED] = genre !in filterEntry.value
@@ -197,7 +196,7 @@ class FilmsListPresenter(
                     }
                 }
 
-                FiltersMenu.AppliedFilter.RATING -> {
+                AppliedFilter.RATING -> {
                     if (film.ratingIMDB != null && film.ratingIMDB?.isNotEmpty() == true) {
                         val min: Float = filterEntry.value[0].toFloat()
                         val max: Float = filterEntry.value[1].toFloat()
@@ -220,7 +219,7 @@ class FilmsListPresenter(
                                   }
                               }
               */
-                FiltersMenu.AppliedFilter.TYPE -> {
+                AppliedFilter.TYPE -> {
                     if (filterEntry.value[0] == "Все") {
                         continue
                     }

@@ -8,9 +8,11 @@ import org.jsoup.nodes.Document
 
 object NewestFilmsModel {
     private const val NEWEST = "/new/page/"
+    val SORTS: ArrayList<String> = arrayListOf("last", "popular", "watching")
+    val TYPES: ArrayList<String> = arrayListOf("0", "1", "2", "3", "82") // all, films, serials, multfilms, anime
 
-    fun getNewestFilms(page: Int, filter: String): ArrayList<Film> {
-        val doc: Document = BaseModel.getJsoup(SettingsData.provider + "$NEWEST$page/?filter=$filter").get()
+    fun getNewestFilms(page: Int, sort: String, type: String): ArrayList<Film> {
+        val doc: Document = BaseModel.getJsoup(SettingsData.provider + "$NEWEST$page/?filter=$sort&genre=$type").get()
         return FilmsListModel.getFilmsFromPage(doc)
     }
 

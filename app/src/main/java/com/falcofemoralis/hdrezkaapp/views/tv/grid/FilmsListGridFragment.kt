@@ -109,7 +109,7 @@ class FilmsListGridFragment : VerticalGridSupportFragment(), OnItemViewSelectedL
                AdapterAction.UPDATE -> mAdapter?.notifyItemRangeChanged(from, count)
             //   AdapterAction.DELETE -> mAdapter?.notifyItemRangeRemoved(from, count)
            }*/
-        callView?.dataInited()
+        callView?.onFilmsListDataInit()
     }
 
     override fun setCallView(cv: FilmListCallView) {

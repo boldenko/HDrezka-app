@@ -79,7 +79,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
         super.onStart()
     }
 
-    override fun dataInited() {
+    override fun onFilmsListDataInit() {
 
     }
 

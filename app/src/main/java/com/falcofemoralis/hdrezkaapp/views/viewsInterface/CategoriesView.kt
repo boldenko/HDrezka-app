@@ -4,9 +4,9 @@ import android.util.ArrayMap
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 
 interface CategoriesView : IConnection{
-    fun setCategories()
-
     fun showList()
 
-    fun showFilterMsg()
+    fun showFilters()
+
+    fun setFilters(years: ArrayList<String>, genres: ArrayList<String>)
 }

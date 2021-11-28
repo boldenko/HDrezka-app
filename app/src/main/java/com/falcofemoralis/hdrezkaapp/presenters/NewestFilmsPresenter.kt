@@ -1,6 +1,7 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
 import android.util.ArrayMap
+import com.falcofemoralis.hdrezkaapp.constants.AppliedFilter
 import com.falcofemoralis.hdrezkaapp.models.NewestFilmsModel
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SeriesUpdateItem
@@ -16,16 +17,42 @@ import kotlinx.coroutines.withContext
 class NewestFilmsPresenter(
     private val newestFilmsView: NewestFilmsView,
     private val filmsListView: FilmsListView
-) : FiltersMenu.IFilters, FilmsListPresenter.IFilmsList {
+) : FilmsListPresenter.IFilmsList {
     var filmsListPresenter: FilmsListPresenter = FilmsListPresenter(filmsListView, newestFilmsView, this)
-    private val sortFilters: ArrayList<String> = arrayListOf("last", "popular", "watching")
+    private var appliedFilters: ArrayMap<AppliedFilter, String> = ArrayMap()
     private var currentPage: Int = 1 // newest film page
-    private var sortFilter: String = sortFilters[0]
 
     fun initFilms() {
+        appliedFilters[AppliedFilter.SORT] = NewestFilmsModel.SORTS[0]
+        appliedFilters[AppliedFilter.TYPE] = NewestFilmsModel.TYPES[0]
         filmsListView.setFilms(filmsListPresenter.activeFilms)
         filmsListPresenter.getNextFilms()
+    }
 
+    override fun getMoreFilms(): ArrayList<Film> {
+        return try {
+            val films: ArrayList<Film> = NewestFilmsModel.getNewestFilms(currentPage, appliedFilters[AppliedFilter.SORT]!!, appliedFilters[AppliedFilter.TYPE]!!)
+            currentPage++
+            films
+        } catch (e: Exception) {
+            ExceptionHelper.catchException(e, newestFilmsView)
+            ArrayList()
+        }
+    }
+
+    fun setFilter(type: AppliedFilter, pos: Int){
+        appliedFilters[type] = when(type){
+            AppliedFilter.TYPE -> NewestFilmsModel.TYPES[pos]
+            AppliedFilter.SORT -> NewestFilmsModel.SORTS[pos]
+            else -> ""
+        }
+    }
+
+    fun applyFilters() {
+        filmsListPresenter.reset()
+        filmsListPresenter.filmList.clear()
+        currentPage = 1
+        filmsListPresenter.getNextFilms()
     }
 
     fun initSeriesUpdates(callback: (seriesUpdates: LinkedHashMap<String, ArrayList<SeriesUpdateItem>>) -> Unit) {
@@ -40,34 +67,4 @@ class NewestFilmsPresenter(
         }
     }
 
-    override fun getMoreFilms(): ArrayList<Film> {
-        return try {
-            val films: ArrayList<Film> = NewestFilmsModel.getNewestFilms(currentPage, sortFilter)
-            currentPage++
-            films
-        } catch (e: Exception) {
-            ExceptionHelper.catchException(e, newestFilmsView)
-            ArrayList()
-        }
-    }
-
-    override fun onFilterCreated(appliedFilters: ArrayMap<FiltersMenu.AppliedFilter, Array<String?>>) {
-        filmsListPresenter.appliedFilters = appliedFilters
-    }
-
-    override fun onApplyFilters(appliedFilters: ArrayMap<FiltersMenu.AppliedFilter, Array<String?>>) {
-        val sortItem = appliedFilters[FiltersMenu.AppliedFilter.SORT]?.get(0)
-        filmsListPresenter.appliedFilters = appliedFilters
-        if (sortItem != null) {
-            sortFilter = sortFilters[sortItem.toInt()]
-            filmsListPresenter.reset()
-            filmsListPresenter.filmList.clear()
-            currentPage = 1
-            filmsListPresenter.getNextFilms()
-        } else {
-            filmsListPresenter.applyFilter()
-        }
-
-        newestFilmsView.showFilterMsg()
-    }
 }

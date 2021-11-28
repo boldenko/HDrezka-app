@@ -5,5 +5,5 @@ interface FilmListCallView {
 
     fun onFilmsListCreated()
 
-    fun dataInited()
+    fun onFilmsListDataInit()
 }

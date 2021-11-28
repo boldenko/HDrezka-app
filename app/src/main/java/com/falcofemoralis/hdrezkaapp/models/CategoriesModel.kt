@@ -1,13 +1,14 @@
 package com.falcofemoralis.hdrezkaapp.models
 
 import android.util.ArrayMap
+import com.falcofemoralis.hdrezkaapp.objects.Category
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 
 object CategoriesModel {
-    fun getCategories(): ArrayMap<Pair<String, String>, ArrayList<Pair<String, String>>> {
+    fun getCategories(): Category {
         val doc: Document = BaseModel.getJsoup(SettingsData.provider).get()
 
         val categories: ArrayMap<Pair<String, String>, ArrayList<Pair<String, String>>> = ArrayMap()
@@ -32,24 +33,18 @@ object CategoriesModel {
             categories[Pair(headerName, headerLink)] = genres
         }
 
-        return categories
-    }
-
-    fun getYears(): ArrayList<String> {
-        val doc: Document = BaseModel.getJsoup(SettingsData.provider).get()
         val years: ArrayList<String> = ArrayList()
-
         val yearsList = doc.select("select.select-year")
         if(yearsList.size > 0) {
-            val els: Elements = yearsList[0].select("option")
-            if (els.size > 0) {
-                for (el in els) {
+            val els2: Elements = yearsList[0].select("option")
+            if (els2.size > 0) {
+                for (el in els2) {
                     years.add(el.text())
                 }
             }
         }
 
-        return years
+        return Category(categories, years)
     }
 
     fun getFilmsFromCategory(catLink: String, page: Int): ArrayList<Film> {

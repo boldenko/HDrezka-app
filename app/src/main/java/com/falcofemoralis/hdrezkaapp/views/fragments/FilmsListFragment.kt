@@ -42,9 +42,6 @@ open class FilmsListFragment : Fragment(), FilmsListView {
 
         viewList = currentView.findViewById(R.id.fragment_films_list_rv_films)
         viewList.layoutManager = SettingsData.filmsInRow?.let { GridLayoutManager(context, it) }
-        viewList.setRecyclerListener {
-
-        }
 
         scrollView = currentView.findViewById(R.id.fragment_films_list_nsv_films)
         scrollView.setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
@@ -82,7 +79,7 @@ open class FilmsListFragment : Fragment(), FilmsListView {
             AdapterAction.UPDATE -> viewList.adapter?.notifyItemRangeChanged(from, count)
             AdapterAction.DELETE -> viewList.adapter?.notifyItemRangeRemoved(from, count)
         }
-        callView?.dataInited()
+        callView?.onFilmsListDataInit()
     }
 
     override fun setProgressBarState(type: IProgressState.StateType) {

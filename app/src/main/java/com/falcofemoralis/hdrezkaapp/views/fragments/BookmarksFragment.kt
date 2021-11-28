@@ -62,7 +62,7 @@ class BookmarksFragment : Fragment(), BookmarksView, FilmListCallView, AdapterVi
         super.onStart()
     }
 
-    override fun dataInited() {
+    override fun onFilmsListDataInit() {
 
     }
 
