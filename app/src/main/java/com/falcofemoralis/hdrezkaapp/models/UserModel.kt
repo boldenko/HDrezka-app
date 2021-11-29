@@ -6,6 +6,7 @@ import android.webkit.CookieManager
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.objects.UserData
 import com.falcofemoralis.hdrezkaapp.utils.CookieStorage
+import com.falcofemoralis.hdrezkaapp.utils.FileManager
 import org.json.JSONObject
 import org.jsoup.Connection
 import org.jsoup.HttpStatusException

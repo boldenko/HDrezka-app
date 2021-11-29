@@ -6,6 +6,8 @@ import android.webkit.CookieManager
 import android.webkit.WebStorage
 import com.falcofemoralis.hdrezkaapp.utils.CookieStorage
 import com.falcofemoralis.hdrezkaapp.utils.FileManager
+import com.google.common.reflect.TypeToken
+import com.google.gson.Gson
 
 object UserData {
     private const val USER_FILE: String = "user"
@@ -13,6 +15,7 @@ object UserData {
     private const val USER_ID: String = "id"
     private const val USER_HASH: String = "hash"
     private const val SESSION_ID: String = "session"
+    private const val SERIES_UPDATES_FILE = "series_updates"
 
     var isLoggedIn: Boolean? = null
     var avatarLink: String? = null
@@ -92,5 +95,20 @@ object UserData {
         FileManager.writeFile(SESSION_ID, "", false, context)
 
         avatarLink = null
+    }
+
+    fun saveUserSeriesUpdates(list: ArrayList<SeriesUpdateItem>?, context: Context){
+        FileManager.writeFile(SERIES_UPDATES_FILE, Gson().toJson(list), false, context)
+    }
+
+    fun getUserSeriesUpdates(context: Context) : ArrayList<SeriesUpdateItem> {
+        val str = FileManager.readFile(SERIES_UPDATES_FILE, context)
+        val myType = object : TypeToken<List<SeriesUpdateItem>>() {}.type
+        val list = Gson().fromJson<List<SeriesUpdateItem>>(str, myType)
+        return if(list == null){
+            ArrayList()
+        } else {
+            list as ArrayList<SeriesUpdateItem>
+        }
     }
 }

@@ -532,12 +532,14 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         val userUpdates: LinkedHashMap<String, ArrayList<SeriesUpdateItem>> = LinkedHashMap()
         val hintView = dialogView.findViewById<TextView>(R.id.series_updates_hint)
         val progressBar = dialogView.findViewById<ProgressBar>(R.id.series_updates_progress)
+        var savedSeriesUpdates: ArrayList<SeriesUpdateItem>? = null
 
         if (UserData.isLoggedIn == true) {
             hintView.visibility = View.GONE
 
             GlobalScope.launch {
                 seriesUpdates = NewestFilmsModel.getSeriesUpdates()
+                savedSeriesUpdates = UserData.getUserSeriesUpdates(_context)
 
                 if (seriesUpdates != null && seriesUpdates!!.size > 0) {
                     for ((date, list) in seriesUpdates!!) {
@@ -571,7 +573,10 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                                 }
 
                                 for (item in list) {
-                                    badgeCount++
+                                    if(savedSeriesUpdates != null && !savedSeriesUpdates!!.contains(item)){ // не содержит
+                                        badgeCount++
+                                        savedSeriesUpdates?.add(item)
+                                    }
 
                                     val itemView = layoutInflater.inflate(R.layout.inflate_series_updates_item, null) as LinearLayout
                                     itemView.findViewById<TextView>(R.id.inflate_series_updates_item_title).text = item.title
@@ -626,6 +631,12 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
 
         d = builder.create()
         notifyBtn.setOnClickListener {
+            if (UserData.isLoggedIn == true) {
+                notifyBtn.isShowCounter = false
+                notifyBtn.badgeColor = getColor(R.color.transparent)
+                UserData.saveUserSeriesUpdates(savedSeriesUpdates, _context)
+            }
+
             d.show()
         }
     }
