@@ -122,18 +122,18 @@
                         android:textSize="@dimen/normal_text" />
 
                     <RadioButton
-                        android:id="@+id/sort_now"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/now"
-                        android:textColor="@color/text_color"
-                        android:textSize="@dimen/normal_text" />
-
-                    <RadioButton
                         android:id="@+id/sort_announce"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/announce"
+                        android:textColor="@color/text_color"
+                        android:textSize="@dimen/normal_text" />
+
+                    <RadioButton
+                        android:id="@+id/sort_now"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/now"
                         android:textColor="@color/text_color"
                         android:textSize="@dimen/normal_text" />
 

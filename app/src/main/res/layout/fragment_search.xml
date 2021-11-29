@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/search_margin_top"
-            android:background="@color/main_color_2"
+            android:background="@color/main_color_3"
             android:drawableStart="@drawable/ic_baseline_search_24"
             android:drawableTint="@color/white"
             android:focusable="true"

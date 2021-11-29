@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +28,8 @@ import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
 import com.falcofemoralis.hdrezkaapp.views.elements.VoiceInputDialogFragmentOverride
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmListCallView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.SearchView
+import kotlinx.coroutines.*
+import java.util.concurrent.TimeUnit
 
 class SearchFragment : Fragment(), SearchView, FilmListCallView {
     private lateinit var currentView: View
@@ -38,6 +41,10 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
     private lateinit var fragmentListener: OnFragmentInteractionListener
     private lateinit var clearBtn: TextView
     private lateinit var voiceBtn: ImageView
+
+    private val SEARCH_DELAY_MS: Int = 400
+    private var searchDelayTimeMs: Int = 0
+    private var isSearching: Boolean = false
 
     enum class Tag {
         Voice,
@@ -96,7 +103,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
                 } else {
                     hintLayout.visibility = View.GONE
                     imm.hideSoftInputFromWindow(autoCompleteTextView.windowToken, 0)
-                    searchPresenter.setQuery(text)
+                   // searchPresenter.setQuery(text)
                 }
             }
             false
@@ -113,16 +120,31 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (!autoCompleteTextView.isPerformingCompletion) {
-                    if (SettingsData.deviceType == DeviceType.TV) {
-                        hintLayout.visibility = View.GONE
-                    }
-
-                    searchPresenter.getFilms(s.toString())
-
                     if (s.toString().isNotEmpty()) {
+                        if(!isSearching) {
+                            isSearching = true
+                            GlobalScope.launch {
+                                while (searchDelayTimeMs < SEARCH_DELAY_MS){
+                                    Thread.sleep(1)
+                                    searchDelayTimeMs++
+                                }
+
+                                withContext(Dispatchers.Main){
+                                    searchPresenter.setQuery(s.toString())
+                                }
+
+                                isSearching = false
+                                searchDelayTimeMs = 0
+                            }
+                        } else{
+                            searchDelayTimeMs = 0
+                        }
+
                         clearBtn.visibility = View.VISIBLE
+                        hintLayout.visibility = View.GONE
                     } else {
                         clearBtn.visibility = View.GONE
+                        hintLayout.visibility = View.VISIBLE
                     }
                 }
             }
