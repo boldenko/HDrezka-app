@@ -34,6 +34,7 @@ class UserPresenter(private val userView: UserView, private val context: Context
                     UserData.setLoggedIn(context)
                     getUserAvatar()
                     userView.completeAuth()
+                    userView.updateNotifyBtn()
                 }
             } catch (e: Exception) {
                 // catchException(e, userView)
@@ -53,6 +54,7 @@ class UserPresenter(private val userView: UserView, private val context: Context
                     UserData.setLoggedIn(context)
                     getUserAvatar()
                     userView.completeAuth()
+                    userView.updateNotifyBtn()
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
@@ -65,5 +67,6 @@ class UserPresenter(private val userView: UserView, private val context: Context
     fun exit() {
         UserData.reset(context)
         userView.setUserAvatar()
+        userView.updateNotifyBtn()
     }
 }

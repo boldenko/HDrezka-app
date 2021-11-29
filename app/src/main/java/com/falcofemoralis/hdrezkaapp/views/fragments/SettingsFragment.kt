@@ -201,6 +201,12 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         }
     }
 
+    override fun updateNotifyBtn() {
+        activity?.let {
+            (it as MainActivity).createNotifyBtn()
+        }
+    }
+
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
         try {
             if (context != null) {

@@ -6,9 +6,9 @@
     android:foreground="?attr/selectableItemBackground"
     android:orientation="horizontal"
     android:paddingStart="5dp"
-    android:paddingTop="15dp"
+    android:paddingTop="7dp"
     android:paddingEnd="5dp"
-    android:paddingBottom="15dp"
+    android:paddingBottom="7dp"
     android:weightSum="2">
 
     <LinearLayout

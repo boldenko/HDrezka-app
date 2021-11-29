@@ -63,16 +63,4 @@ class NewestFilmsPresenter(
         currentPage = 1
         filmsListPresenter.getNextFilms()
     }
-
-    fun initSeriesUpdates(callback: (seriesUpdates: LinkedHashMap<String, ArrayList<SeriesUpdateItem>>) -> Unit) {
-        GlobalScope.launch {
-            val seriesUpdates = NewestFilmsModel.getSeriesUpdates()
-
-            if (seriesUpdates.size > 0) {
-                withContext(Dispatchers.Main) {
-                    callback(seriesUpdates)
-                }
-            }
-        }
-    }
 }

@@ -5,11 +5,22 @@
     android:orientation="vertical">
 
     <ProgressBar
-        android:layout_marginBottom="25dp"
-        android:layout_marginTop="25dp"
         android:id="@+id/series_updates_progress"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="25dp" />
+
+    <TextView
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="25dp"
+        android:id="@+id/series_updates_hint"
+        android:text="@string/updates_for_register_only"
+        android:textSize="@dimen/normal_text"
+        android:textColor="@color/text_color"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -20,5 +31,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" />
+
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>

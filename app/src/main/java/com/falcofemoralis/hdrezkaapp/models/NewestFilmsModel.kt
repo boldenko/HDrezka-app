@@ -10,8 +10,8 @@ import org.jsoup.HttpStatusException
 import org.jsoup.nodes.Document
 
 object NewestFilmsModel {
-    private const val NEWEST = "/new/page/"
     private const val NEW = "/engine/ajax/get_newest_slider_content.php"
+    private const val SERIES_UPDATES_FILE = "series_updates"
 
     val SORTS: ArrayList<String> = arrayListOf("last", "popular", "watching", "newest_slider_content", "soon")
     val TYPES: ArrayList<String> = arrayListOf("0", "1", "2", "3", "82") // all, films, serials, multfilms, anime
@@ -81,4 +81,8 @@ object NewestFilmsModel {
 
         return seriesUpdates
     }
+
+/*    fun getCheckedSeriesUpdates() : LinkedHashMap<String, ArrayList<SeriesUpdateItem>>  {
+
+    }*/
 }

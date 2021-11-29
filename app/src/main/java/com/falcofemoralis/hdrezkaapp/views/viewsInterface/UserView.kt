@@ -9,4 +9,6 @@ interface UserView : IConnection {
     fun setUserAvatar()
 
     fun completeAuth()
+
+    fun updateNotifyBtn()
 }

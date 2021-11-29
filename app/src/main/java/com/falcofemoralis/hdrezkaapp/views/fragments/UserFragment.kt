@@ -159,6 +159,12 @@ class UserFragment : Fragment(), UserView {
         }
     }
 
+    override fun updateNotifyBtn() {
+        activity?.let {
+            (it as MainActivity).createNotifyBtn()
+        }
+    }
+
     private fun initExitButton() {
         exitPanel.setOnClickListener {
             val builder = DialogManager.getDialog(requireContext(), R.string.confirm_exit)
