@@ -4,7 +4,6 @@ import android.content.Context
 import com.falcofemoralis.hdrezkaapp.constants.AdapterAction
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
-import com.falcofemoralis.hdrezkaapp.models.FilmModel
 import com.falcofemoralis.hdrezkaapp.models.SearchModel
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
@@ -78,16 +77,15 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
 
         GlobalScope.launch {
             try {
-                val tokenTmp = token
-
                 if (loadedListFilms.size == 0) {
                     loadedListFilms = SearchModel.getFilmsFromSearchPage(query, currentPage)
 
+                    // blocked, retry with another search
                     if (loadedListFilms.size == 0 && currentPage == 1) {
-                        // blocked, retry with another search
                         loadedListFilms = SearchModel.getFilmsListByQuery(query)
                     }
 
+                    // no more films
                     if (loadedListFilms.size == 0) {
                         throw HttpStatusException("List end", 404, SettingsData.provider)
                     }
@@ -95,15 +93,9 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
                     currentPage++
                 }
 
-                fun processFilms(films: ArrayList<Film>) {
-                    if (tokenTmp == token) {
-                        addFilms(films)
-                    }
-                }
-
-                if (tokenTmp == token) {
-                    FilmModel.getFilmsData(loadedListFilms, 9, ::processFilms)
-                    // TODO
+                withContext(Dispatchers.Main) {
+                    addFilms(loadedListFilms)
+                    loadedListFilms.clear()
                 }
             } catch (e: Exception) {
                 if (e is HttpStatusException) {
