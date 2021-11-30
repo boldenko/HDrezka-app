@@ -22,6 +22,10 @@ import com.falcofemoralis.hdrezkaapp.constants.NavigationMenuTabs
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.FragmentChangeListener
 import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.NavigationStateListener
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.nikartm.support.ImageBadgeView
 
 class NavigationMenu : Fragment() {
@@ -93,35 +97,40 @@ class NavigationMenu : Fragment() {
 
         _context = context
 
-        //by default selection
-        SettingsData.mainScreen?.let {
-            when (it) {
-                0 -> setMenuIconFocusView(R.drawable.ic_baseline_movie_24_sel, newest_IB)
-                1 -> setMenuIconFocusView(R.drawable.ic_baseline_categories_24_sel, categories_IB)
-                2 -> setMenuIconFocusView(R.drawable.ic_baseline_search_24_sel, search_IB)
-                3 -> setMenuIconFocusView(R.drawable.ic_baseline_bookmarks_24_sel, bookmarks_IB)
-                4 -> setMenuIconFocusView(R.drawable.ic_baseline_watch_later_24_sel, later_IB)
-                else -> setMenuIconFocusView(R.drawable.ic_baseline_movie_24_sel, newest_IB)
+
+        GlobalScope.launch {
+            Thread.sleep(100)
+            withContext(Dispatchers.Main){
+                Log.d("TESTEST", "Start listeners")
+
+                //Navigation Menu Options Focus, Key Listeners
+                setListener(notify_IB, notify_TV, seriesUpdates, R.drawable.ic_baseline_notifications_24_sel, R.drawable.ic_baseline_notifications_24, -1)
+
+                setListener(newest_IB, newest_TV, newestFilms, R.drawable.ic_baseline_movie_24_sel, R.drawable.ic_baseline_movie_24, 0)
+
+                setListener(categories_IB, categories_TV, categories, R.drawable.ic_baseline_categories_24_sel, R.drawable.ic_baseline_categories_24, 1)
+
+                setListener(search_IB, search_TV, search, R.drawable.ic_baseline_search_24_sel, R.drawable.ic_baseline_search_24, 2)
+
+                setListener(bookmarks_IB, bookmarks_TV, bookmarks, R.drawable.ic_baseline_bookmarks_24_sel, R.drawable.ic_baseline_bookmarks_24, 3)
+
+                setListener(later_IB, later_TV, later, R.drawable.ic_baseline_watch_later_24_sel, R.drawable.ic_baseline_watch_later_24, 4)
+
+                setListener(settings_IB, settings_TV, settings, R.drawable.ic_baseline_settings_24_sel, R.drawable.ic_baseline_settings_24, -1)
+
+                Log.d("TESTEST", "End listeners")
             }
         }
 
-        //Navigation Menu Options Focus, Key Listeners
-        setListener(notify_IB, notify_TV, seriesUpdates, R.drawable.ic_baseline_notifications_24_sel, R.drawable.ic_baseline_notifications_24)
-
-        setListener(newest_IB, newest_TV, newestFilms, R.drawable.ic_baseline_movie_24_sel, R.drawable.ic_baseline_movie_24)
-
-        setListener(categories_IB, categories_TV, categories, R.drawable.ic_baseline_categories_24_sel, R.drawable.ic_baseline_categories_24)
-
-        setListener(search_IB, search_TV, search, R.drawable.ic_baseline_search_24_sel, R.drawable.ic_baseline_search_24)
-
-        setListener(bookmarks_IB, bookmarks_TV, bookmarks, R.drawable.ic_baseline_bookmarks_24_sel, R.drawable.ic_baseline_bookmarks_24)
-
-        setListener(later_IB, later_TV, later, R.drawable.ic_baseline_watch_later_24_sel, R.drawable.ic_baseline_watch_later_24)
-
-        setListener(settings_IB, settings_TV, settings, R.drawable.ic_baseline_settings_24_sel, R.drawable.ic_baseline_settings_24)
     }
 
-    private fun setListener(ib: ImageView, tv: TextView, lastMenu: String, selectedImage: Int, unselectedImage: Int) {
+    private fun setListener(ib: ImageView, tv: TextView, lastMenu: String, selectedImage: Int, unselectedImage: Int, id: Int){
+        if(SettingsData.mainScreen == id){
+            lastSelectedMenu = lastMenu
+            setMenuIconFocusView(selectedImage, ib)
+            setMenuNameFocusView(tv, true)
+        }
+
         ib.setOnFocusChangeListener { v, hasFocus ->
             Log.d("TESTEST", "$lastMenu")
 
@@ -189,6 +198,13 @@ class NavigationMenu : Fragment() {
                         lastSelectedMenu = lastMenu
                         fragmentChangeListener.switchFragment(lastMenu)
                         closeNav()
+                    }
+                    KeyEvent.KEYCODE_BACK -> {
+                        if(isNavigationOpen()){
+                            closeNav()
+                        }
+                        Log.d("TESTEST", "KEYCODE_BACK $lastMenu")
+
                     }
                 }
             }

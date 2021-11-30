@@ -14,6 +14,7 @@ import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.presenters.CategoriesPresenter
 import com.falcofemoralis.hdrezkaapp.utils.DialogManager
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
+import com.falcofemoralis.hdrezkaapp.views.elements.RadioGridGroup
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.CategoriesView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmListCallView
 
@@ -50,7 +51,7 @@ class CategoriesFragment : Fragment(), CategoriesView, AdapterView.OnItemSelecte
         val builder = DialogManager.getDialog(requireContext(), null)
         dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_categories_filters, null)
 
-        val typeGroupView: RadioGroup? = dialogView?.findViewById(R.id.film_types)
+        val typeGroupView: RadioGridGroup? = dialogView?.findViewById(R.id.film_types)
         typeGroupView?.setOnCheckedChangeListener { group, checkedId ->
             run {
                 if (checkedId != -1) {

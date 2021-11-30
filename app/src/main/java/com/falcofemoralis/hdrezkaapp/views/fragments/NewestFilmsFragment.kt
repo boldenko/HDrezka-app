@@ -18,6 +18,7 @@ import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.presenters.NewestFilmsPresenter
 import com.falcofemoralis.hdrezkaapp.utils.DialogManager
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
+import com.falcofemoralis.hdrezkaapp.views.elements.RadioGridGroup
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmListCallView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.NewestFilmsView
 
@@ -64,7 +65,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
         val builder = DialogManager.getDialog(requireContext(), null)
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_newest_filters, null)
 
-        val sortGroupView: RadioGroup = dialogView.findViewById(R.id.film_sort)
+        val sortGroupView: RadioGridGroup = dialogView.findViewById(R.id.film_sort)
         sortGroupView.check(
             when (SettingsData.defaultSort) {
                 0 -> R.id.sort_new
@@ -93,7 +94,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
             }
         }
 
-        val typeGroupView: RadioGroup = dialogView.findViewById(R.id.film_types)
+        val typeGroupView: RadioGridGroup = dialogView.findViewById(R.id.film_types)
         typeGroupView.setOnCheckedChangeListener { group, checkedId ->
             run {
                 if (checkedId != -1) {

@@ -3,6 +3,7 @@ package com.falcofemoralis.hdrezkaapp.views.adapters
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -20,6 +21,10 @@ import androidx.core.text.strikeThrough
 import androidx.core.text.underline
 import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.models.CommentsModel
@@ -71,16 +76,27 @@ class CommentsRecyclerViewAdapter(
         // set header
         holder.infoView.text = "${comment.nickname}, ${comment.date}"
 
-        // load image
-        Picasso.get().load(comment.avatarPath).into(holder.avatarView, object : Callback {
-            override fun onSuccess() {
-                holder.avatarProgressBar.visibility = View.GONE
-                holder.avatarView.visibility = View.VISIBLE
+        var glide = Glide.with(context).load(comment.avatarPath).fitCenter()
+        glide = glide.listener(object : RequestListener<Drawable> {
+            override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: com.bumptech.glide.request.target.Target<Drawable>?, p3: Boolean): Boolean {
+                return false
             }
 
-            override fun onError(e: Exception) {
+            override fun onResourceReady(p0: Drawable?, p1: Any?, p2: com.bumptech.glide.request.target.Target<Drawable>?, p3: DataSource?, p4: Boolean): Boolean {
+                GlobalScope.launch {
+                    withContext(Dispatchers.Main){
+                        holder.avatarProgressBar.visibility = View.GONE
+                        holder.avatarView.visibility = View.VISIBLE
+                    }
+                }
+                return false
             }
         })
+        glide = glide.error (R.drawable.no_avatar) // TODO
+        glide.into(holder.avatarView)
+        glide.submit()
+
+
 
         // set text with spoilers
         holder.textView.text = ""

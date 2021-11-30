@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
@@ -41,7 +39,7 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
     }
 
     override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
-        zoom(holder.layout, holder.posterLayoutView, holder.titleView, holder.infoView, context)
+        zoom(context, holder.layout, holder.posterLayoutView, holder.titleView, holder.infoView)
 
         val film = films[position]
 
@@ -57,7 +55,7 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
 
             override fun onResourceReady(p0: Drawable?, p1: Any?, p2: Target<Drawable>?, p3: DataSource?, p4: Boolean): Boolean {
                 GlobalScope.launch {
-                    withContext(Dispatchers.Main){
+                    withContext(Dispatchers.Main) {
                         holder.progressView.visibility = View.GONE
                         holder.posterLayoutView.visibility = View.VISIBLE
                     }
@@ -65,7 +63,7 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
                 return false
             }
         })
-        glide = glide.error (R.drawable.nopersonphoto) // TODO
+        glide = glide.error(R.drawable.nopersonphoto) // TODO
         glide.into(holder.filmPoster)
         glide.submit()
 
@@ -142,13 +140,15 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
     }
 
     companion object {
-        fun zoom(layout: LinearLayout, posterLayout: View, titleView: TextView, subView: TextView?, context: Context) {
+        fun zoom(context: Context, layout: LinearLayout, posterLayout: View, titleView: TextView, vararg subViews: TextView?) {
             if (SettingsData.deviceType == DeviceType.TV) {
                 layout.setOnFocusChangeListener { v, hasFocus ->
                     if (hasFocus) {
                         posterLayout.foreground = ColorDrawable(ContextCompat.getColor(context, R.color.transparent))
                         titleView.setTextColor(context.getColor(R.color.white))
-                        subView?.setTextColor(context.getColor(R.color.gray))
+                        for (subView in subViews) {
+                            subView?.setTextColor(context.getColor(R.color.gray))
+                        }
 
                         val anim: Animation = AnimationUtils.loadAnimation(context, R.anim.scale_in_tv)
                         v.startAnimation(anim)
@@ -156,7 +156,9 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
                     } else {
                         posterLayout.foreground = ColorDrawable(ContextCompat.getColor(context, R.color.unselected_film))
                         titleView.setTextColor(context.getColor(R.color.unselected_title))
-                        subView?.setTextColor(context.getColor(R.color.unselected_subtitle))
+                        for (subView in subViews) {
+                            subView?.setTextColor(context.getColor(R.color.unselected_subtitle))
+                        }
 
                         val anim: Animation = AnimationUtils.loadAnimation(context, R.anim.scale_out_tv)
                         v.startAnimation(anim)

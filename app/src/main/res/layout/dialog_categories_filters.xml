@@ -43,43 +43,48 @@
                         android:textColor="@color/white"
                         android:textSize="@dimen/normal_text" />
 
-                    <RadioGroup
+                    <com.falcofemoralis.hdrezkaapp.views.elements.RadioGridGroup
+                        android:columnCount="2"
                         android:id="@+id/film_types"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <RadioButton
                             android:id="@+id/type_films"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_columnWeight="1"
                             android:text="@string/films"
                             android:textColor="@color/text_color"
                             android:textSize="@dimen/normal_text" />
 
                         <RadioButton
                             android:id="@+id/type_serials"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_columnWeight="1"
                             android:text="@string/serials"
                             android:textColor="@color/text_color"
                             android:textSize="@dimen/normal_text" />
 
                         <RadioButton
                             android:id="@+id/type_multfilms"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_columnWeight="1"
                             android:text="@string/multfilms"
                             android:textColor="@color/text_color"
                             android:textSize="@dimen/normal_text" />
 
                         <RadioButton
                             android:id="@+id/type_anime"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_columnWeight="1"
                             android:text="@string/anime"
                             android:textColor="@color/text_color"
                             android:textSize="@dimen/normal_text" />
-                    </RadioGroup>
+                    </com.falcofemoralis.hdrezkaapp.views.elements.RadioGridGroup>
                 </LinearLayout>
 
                 <LinearLayout

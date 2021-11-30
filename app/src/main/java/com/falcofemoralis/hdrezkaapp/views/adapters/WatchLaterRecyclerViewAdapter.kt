@@ -34,6 +34,8 @@ class WatchLaterRecyclerViewAdapter(private val context: Context, private val wa
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        FilmsListRecyclerViewAdapter.zoom(context, holder.layout, holder.posterView, holder.nameView, holder.infoView, holder.dateView)
+
         val watchLaterItem = watchLaterList[position]
 
         if(position == 0){

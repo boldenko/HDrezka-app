@@ -163,6 +163,13 @@ class FilmFragment : Fragment(), FilmView {
         return currentView
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        if(SettingsData.deviceType == DeviceType.TV){
+            currentView.findViewById<TextView>(R.id.fragment_film_tv_open_player).requestFocus()
+        }
+        super.onViewCreated(view, savedInstanceState)
+    }
+
     @SuppressLint("InvalidWakeLockTag")
     private fun initFlags() {
         activity?.window?.addFlags(FLAG_KEEP_SCREEN_ON)
@@ -410,7 +417,7 @@ class FilmFragment : Fragment(), FilmView {
                 layout.setOnClickListener {
                     FragmentOpener.openWithData(this, fragmentListener, actor, "actor")
                 }
-                FilmsListRecyclerViewAdapter.zoom(layout, actorPhoto, nameView, careerView, requireContext())
+                FilmsListRecyclerViewAdapter.zoom(requireContext(), layout, actorPhoto, nameView, careerView)
             }
         }
     }
@@ -618,7 +625,7 @@ class FilmFragment : Fragment(), FilmView {
             val titleView: TextView = layout.findViewById(R.id.film_title)
             val infoView: TextView = layout.findViewById(R.id.film_info)
             val posterLayout: RelativeLayout = layout.findViewById(R.id.film_posterLayout)
-            FilmsListRecyclerViewAdapter.zoom(layout, posterLayout, titleView, infoView, requireContext())
+            FilmsListRecyclerViewAdapter.zoom(requireContext(), layout, posterLayout, titleView, infoView)
             layout.findViewById<TextView>(R.id.film_type).visibility = View.GONE
             titleView.text = film.title
             titleView.textSize = 12F
