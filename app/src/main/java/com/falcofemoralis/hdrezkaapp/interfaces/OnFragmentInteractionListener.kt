@@ -10,7 +10,7 @@ interface OnFragmentInteractionListener {
         POP_BACK_STACK
     }
 
-    fun onFragmentInteraction(fragmentSource: Fragment?, fragmentReceiver: Fragment?, action: Action, isBackStack: Boolean, backStackTag: String?, data: Bundle?, callback: (() -> Unit)?)
+    fun onFragmentInteraction(fragmentSource: Fragment?, fragmentReceiver: Fragment?, action: Action, isBackStack: Boolean, backStackTag: String?, data: Bundle?, callback: (() -> Unit)?, init: (() -> Unit)?)
 
     fun findFragmentByTag(tag: String): Fragment?
 }

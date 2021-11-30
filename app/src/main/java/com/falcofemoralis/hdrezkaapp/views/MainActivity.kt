@@ -7,12 +7,12 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.algolia.instantsearch.voice.VoiceSpeechRecognizer
@@ -33,15 +33,11 @@ import com.falcofemoralis.hdrezkaapp.interfaces.IPagerView
 import com.falcofemoralis.hdrezkaapp.interfaces.NavigationMenuCallback
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener.Action
-import com.falcofemoralis.hdrezkaapp.models.NewestFilmsModel
-import com.falcofemoralis.hdrezkaapp.objects.Film
-import com.falcofemoralis.hdrezkaapp.objects.SeriesUpdateItem
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.objects.UserData
 import com.falcofemoralis.hdrezkaapp.utils.ConnectionManager.isInternetAvailable
 import com.falcofemoralis.hdrezkaapp.utils.ConnectionManager.showConnectionErrorDialog
 import com.falcofemoralis.hdrezkaapp.utils.DialogManager
-import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
 import com.falcofemoralis.hdrezkaapp.views.fragments.*
 import com.falcofemoralis.hdrezkaapp.views.tv.NavigationMenu
 import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.FragmentChangeListener
@@ -126,11 +122,12 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                                 }
                             }
 
-                            fun fragmentInit(){
+                            fun fragmentInit() {
+                                Log.d("TEST TEST", "fragmentInit")
                                 initSeriesUpdates()
                             }
 
-                            onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, ::fragmentInit)
+                            onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null, ::fragmentInit)
                         }
                         else -> {
                             SettingsData.init(applicationContext, DeviceType.MOBILE)
@@ -142,7 +139,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                                 ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                             }
                             mainFragment = ViewPagerFragment()
-                            onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null)
+                            onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null, null)
 
                             createUserMenu()
                             setUserAvatar()
@@ -169,7 +166,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         if (!isSettingsOpened) {
             val f = if (mainFragment?.isVisible == true) mainFragment
             else currentFragment
-            onFragmentInteraction(f, SettingsFragment(), Action.NEXT_FRAGMENT_HIDE, true, null, null, null)
+            onFragmentInteraction(f, SettingsFragment(), Action.NEXT_FRAGMENT_HIDE, true, null, null, null, null)
             isSettingsOpened = true
         }
     }
@@ -197,7 +194,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         }
     }
 
-    override fun onFragmentInteraction(fragmentSource: Fragment?, fragmentReceiver: Fragment?, action: Action, isBackStack: Boolean, backStackTag: String?, data: Bundle?, callback: (() -> Unit)?) {
+    override fun onFragmentInteraction(fragmentSource: Fragment?, fragmentReceiver: Fragment?, action: Action, isBackStack: Boolean, backStackTag: String?, data: Bundle?, callback: (() -> Unit)?, init: (() -> Unit)?) {
         val fTrans: FragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentReceiver?.arguments = data
 
@@ -245,6 +242,10 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                     fTrans.addToBackStack(backStackTag)
                 }
                 fTrans.commit()
+                supportFragmentManager.executePendingTransactions()
+                if (init != null) {
+                    init()
+                }
             }
             Action.POP_BACK_STACK -> supportFragmentManager.popBackStack()
         }
@@ -316,7 +317,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
             isSettingsOpened = false
         }
 
-        if(isSeriesUpdatesOpened){
+        if (isSeriesUpdatesOpened) {
             isSeriesUpdatesOpened = false
         }
 
@@ -354,6 +355,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
 
         when (fragmentName) {
             NavigationMenuTabs.nav_menu_series_updates -> {
+                Log.d("TEST TEST", "fragmentTo $seriesUpdatesFragment ")
                 fragmentTo = seriesUpdatesFragment
             }
             NavigationMenuTabs.nav_menu_newest -> {
@@ -378,7 +380,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
 
         if (fragmentTo != null) {
             mainFragment = fragmentTo
-            onFragmentInteraction(null, fragmentTo, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null)
+            onFragmentInteraction(null, fragmentTo, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null, null)
         }
     }
 
@@ -540,12 +542,16 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     fun initSeriesUpdates() {
         seriesUpdatesFragment = SeriesUpdatesFragment()
         seriesUpdatesFragment?.initUserUpdatesData(this, ::updateNotifyBadge, ::createNotifyBtn)
+        Log.d("TEST TEST", "initUserUpdatesData $seriesUpdatesFragment")
     }
 
     fun updateNotifyBadge(badgeCount: Int) {
-        val notifyBtn = if(SettingsData.deviceType == DeviceType.TV){
+
+        val notifyBtn = if (SettingsData.deviceType == DeviceType.TV) {
+            Log.d("TEST TEST", "updateNotifyBadge $seriesUpdatesFragment ")
+            Log.d("TEST TEST", "updateNotifyBadge $NavigationMenu.notifyBtn ")
             NavigationMenu.notifyBtn
-        } else{
+        } else {
             findViewById(R.id.activity_main_iv_notify_btn)
         }
 
@@ -565,7 +571,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                 if (!isSeriesUpdatesOpened) {
                     val f = if (mainFragment?.isVisible == true) mainFragment
                     else currentFragment
-                    onFragmentInteraction(f, seriesUpdatesFragment, Action.NEXT_FRAGMENT_HIDE, true, null, null, null)
+                    onFragmentInteraction(f, seriesUpdatesFragment, Action.NEXT_FRAGMENT_HIDE, true, null, null, null, null)
                     isSeriesUpdatesOpened = true
                 }
             }

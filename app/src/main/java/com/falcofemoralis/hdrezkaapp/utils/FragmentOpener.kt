@@ -37,7 +37,7 @@ object FragmentOpener {
         if (SettingsData.deviceType == DeviceType.TV) {
             NavigationMenu.isFree = false
         }
-        fragmentListener.onFragmentInteraction(source, frag, OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, true, null, dataBundle, ::callback)
+        fragmentListener.onFragmentInteraction(source, frag, OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, true, null, dataBundle, ::callback, null)
     }
 
     fun openFragment(source: Fragment, fragment: Fragment, fragmentListener: OnFragmentInteractionListener){
@@ -49,7 +49,7 @@ object FragmentOpener {
         if (SettingsData.deviceType == DeviceType.TV) {
             NavigationMenu.isFree = false
         }
-        fragmentListener.onFragmentInteraction(source, fragment, OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, true, null, null, ::callback)
+        fragmentListener.onFragmentInteraction(source, fragment, OnFragmentInteractionListener.Action.NEXT_FRAGMENT_HIDE, true, null, null, ::callback, null)
     }
 
     fun callback() {
