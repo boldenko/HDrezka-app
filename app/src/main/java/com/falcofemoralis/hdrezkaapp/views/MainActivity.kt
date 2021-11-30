@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     private lateinit var currentFragment: Fragment
     private var savedInstanceState: Bundle? = null
     private lateinit var interfaceMode: Number
-    private val seriesUpdatesFragment: SeriesUpdatesFragment = SeriesUpdatesFragment()
+    private var seriesUpdatesFragment: SeriesUpdatesFragment? = null
 
     /* TV */
     private lateinit var navMenuFragment: NavigationMenu
@@ -316,6 +316,10 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
             isSettingsOpened = false
         }
 
+        if(isSeriesUpdatesOpened){
+            isSeriesUpdatesOpened = false
+        }
+
         if (SettingsData.deviceType == DeviceType.TV) {
             val acceptableFragment = when (mainFragment) {
                 is NewestFilmsFragment -> true
@@ -533,11 +537,12 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         // return result.toString(StandardCharsets.UTF_8);
     }
 
-    private fun initSeriesUpdates() {
-        seriesUpdatesFragment.initUserUpdatesData(this, ::updateNotifyBadge, ::createNotifyBtn)
+    fun initSeriesUpdates() {
+        seriesUpdatesFragment = SeriesUpdatesFragment()
+        seriesUpdatesFragment?.initUserUpdatesData(this, ::updateNotifyBadge, ::createNotifyBtn)
     }
 
-    private fun updateNotifyBadge(badgeCount: Int) {
+    fun updateNotifyBadge(badgeCount: Int) {
         val notifyBtn = if(SettingsData.deviceType == DeviceType.TV){
             NavigationMenu.notifyBtn
         } else{
@@ -566,222 +571,4 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
             }
         }
     }
-
-
-/*    fun createNotifyBtn() {
-        val _context = this
-
-        var d: AlertDialog? = null
-        val builder = DialogManager.getDialog(this, R.string.series_update_hot)
-        val dialogView = layoutInflater.inflate(R.layout.dialog_series_updates, null) as LinearLayout
-
-        var seriesUpdates: LinkedHashMap<String, ArrayList<SeriesUpdateItem>>? = null
-        val userUpdates: LinkedHashMap<String, ArrayList<SeriesUpdateItem>> = LinkedHashMap()
-        val hintView = dialogView.findViewById<TextView>(R.id.series_updates_hint)
-        val progressBar = dialogView.findViewById<ProgressBar>(R.id.series_updates_progress)
-        var savedSeriesUpdates: ArrayList<SeriesUpdateItem>? = null
-
-        if (UserData.isLoggedIn == true) {
-            hintView.visibility = View.GONE
-
-            GlobalScope.launch {
-                seriesUpdates = NewestFilmsModel.getSeriesUpdates()
-                savedSeriesUpdates = UserData.getUserSeriesUpdates(_context)
-
-                if (seriesUpdates != null && seriesUpdates!!.size > 0) {
-                    for ((date, list) in seriesUpdates!!) {
-                        val userList: ArrayList<SeriesUpdateItem> = ArrayList()
-
-                        for (item in list) {
-                            if (item.isUserWatch) {
-                                userList.add(item)
-                            }
-                        }
-
-                        if (userList.size > 0) {
-                            userUpdates[date] = userList
-                        }
-                    }
-
-                    // set dialog
-                    withContext(Dispatchers.Main) {
-                        progressBar.visibility = View.GONE
-
-                        val container = dialogView.findViewById<LinearLayout>(R.id.series_updates_container)
-
-                        if (userUpdates.size > 0) {
-                            var badgeCount = 0
-
-                            for ((date, list) in userUpdates) {
-                                if (list.size > 0) {
-                                    val dateView = layoutInflater.inflate(R.layout.inflate_series_updates_date, null) as LinearLayout
-                                    dateView.findViewById<TextView>(R.id.date).text = date
-                                    container.addView(dateView)
-                                }
-
-                                for (item in list) {
-                                    if (savedSeriesUpdates != null && !savedSeriesUpdates!!.contains(item)) { // не содержит
-                                        badgeCount++
-                                        savedSeriesUpdates?.add(item)
-                                    }
-
-                                    val itemView = layoutInflater.inflate(R.layout.inflate_series_updates_item, null) as LinearLayout
-                                    itemView.findViewById<TextView>(R.id.inflate_series_updates_item_title).text = item.title
-                                    itemView.findViewById<TextView>(R.id.inflate_series_updates_item_season).text = item.season
-                                    itemView.findViewById<TextView>(R.id.inflate_series_updates_item_episode).text = item.episode
-                                    if (!item.voice.isNullOrEmpty()) {
-                                        itemView.findViewById<TextView>(R.id.inflate_series_updates_item_voice).text = item.voice
-                                    }
-
-                                    val film = Film(SettingsData.provider + item.filmLink)
-                                    itemView.setOnClickListener {
-                                        if (!film.filmLink.isNullOrEmpty()) {
-                                            d?.dismiss()
-
-                                            val f = if (mainFragment?.isVisible == true) mainFragment
-                                            else currentFragment
-                                            if (f != null) {
-                                                FragmentOpener.openWithData(f, _context, film, "film")
-                                            }
-                                        }
-                                    }
-
-                                    container.addView(itemView)
-                                }
-                            }
-
-                            if (badgeCount > 0) {
-                                notifyBtn.badgeValue = badgeCount
-                                notifyBtn.isShowCounter = true
-                                notifyBtn.badgeColor = getColor(R.color.main_color_3)
-                            }
-                        } else {
-                            hintView.text = getString(R.string.no_updates)
-                        }
-                    }
-                }
-            }
-        } else {
-            progressBar.visibility = View.GONE
-            notifyBtn.isShowCounter = false
-            notifyBtn.badgeColor = getColor(R.color.transparent)
-        }
-
-        builder.setView(dialogView)
-        builder.setPositiveButton(R.string.ok_text) { dialog, id ->
-            dialog.dismiss()
-        }
-
-        builder.setNeutralButton(R.string.watch_all) { dialog, id ->
-            showAllSeriesUpdates(seriesUpdates)
-        }
-
-        d = builder.create()
-        notifyBtn.setOnClickListener {
-            if (UserData.isLoggedIn == true) {
-                notifyBtn.isShowCounter = false
-                notifyBtn.badgeColor = getColor(R.color.transparent)
-                UserData.saveUserSeriesUpdates(savedSeriesUpdates, _context)
-            }
-
-            d.show()
-        }
-    }*/
-
-/*    private fun showAllSeriesUpdates(tmp: LinkedHashMap<String, ArrayList<SeriesUpdateItem>>?) {
-        var seriesUpdates = tmp
-        val builder = DialogManager.getDialog(this, R.string.series_update_hot)
-        var dialog: AlertDialog? = null
-        val dialogView = layoutInflater.inflate(R.layout.dialog_series_updates, null) as LinearLayout
-        val container = dialogView.findViewById<LinearLayout>(R.id.series_updates_container)
-        dialogView.findViewById<TextView>(R.id.series_updates_hint).visibility = View.GONE
-
-        fun updateDialog() {
-            dialogView.findViewById<ProgressBar>(R.id.series_updates_progress).visibility = View.GONE
-
-            if (seriesUpdates != null) {
-                for ((date, updateItems) in seriesUpdates!!) {
-                    // костыль т.к .collapsed() не срабатывает
-                    val layout: LinearLayout = layoutInflater.inflate(R.layout.inflate_series_updates_layout, null) as LinearLayout
-                    val expandedList: LinearLayout = layout.findViewById(R.id.inflate_series_updates_layout_list)
-
-                    if (!date.contains("Сегодня")) {
-                        expandedList.visibility = View.GONE
-                    }
-
-                    layout.findViewById<TextView>(R.id.inflate_series_updates_layout_header).text = date
-                    layout.findViewById<LinearLayout>(R.id.inflate_series_updates_button).setOnClickListener {
-                        if (expandedList.isVisible) {
-                            expandedList.visibility = View.GONE
-                        } else {
-                            expandedList.visibility = View.VISIBLE
-                        }
-                    }
-
-                    var lastColor = R.color.light_background
-                    for (item in updateItems) {
-                        if (item.title.isEmpty()) {
-                            continue
-                        }
-
-                        val itemView = layoutInflater.inflate(R.layout.inflate_series_updates_item, null) as LinearLayout
-                        itemView.findViewById<TextView>(R.id.inflate_series_updates_item_title).text = item.title
-                        itemView.findViewById<TextView>(R.id.inflate_series_updates_item_season).text = item.season
-                        itemView.findViewById<TextView>(R.id.inflate_series_updates_item_episode).text = item.episode
-                        if (!item.voice.isNullOrEmpty()) {
-                            itemView.findViewById<TextView>(R.id.inflate_series_updates_item_voice).text = item.voice
-                        }
-
-                        val film = Film(SettingsData.provider + item.filmLink)
-                        itemView.setOnClickListener {
-                            if (!film.filmLink.isNullOrEmpty()) {
-                                dialog?.dismiss()
-
-                                val f = if (mainFragment?.isVisible == true) mainFragment
-                                else currentFragment
-                                if (f != null) {
-                                    FragmentOpener.openWithData(f, this, film, "film")
-                                }
-                            }
-                        }
-
-                        if (item.isUserWatch) {
-                            itemView.setBackgroundColor(ContextCompat.getColor(this, R.color.main_color_3))
-                        } else {
-                            lastColor = if (lastColor == R.color.dark_background) R.color.light_background else R.color.dark_background
-                            itemView.setBackgroundColor(ContextCompat.getColor(this, lastColor))
-                        }
-                        expandedList.addView(itemView)
-                    }
-                    container.addView(layout)
-                }
-            }
-        }
-
-        if (seriesUpdates == null) {
-            GlobalScope.launch {
-                seriesUpdates = NewestFilmsModel.getSeriesUpdates()
-
-                withContext(Dispatchers.Main) {
-                    updateDialog()
-                }
-            }
-        } else {
-            GlobalScope.launch {
-                Thread.sleep(50)
-
-                withContext(Dispatchers.Main) {
-                    updateDialog()
-                }
-            }
-        }
-
-        builder.setView(dialogView)
-        builder.setPositiveButton(getString(R.string.ok_text)) { d, id ->
-            d.cancel()
-        }
-
-        dialog = builder.create()
-        dialog.show()
-    }*/
 }

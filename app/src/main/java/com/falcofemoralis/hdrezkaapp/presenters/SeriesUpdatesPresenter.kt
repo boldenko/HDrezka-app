@@ -74,6 +74,17 @@ class SeriesUpdatesPresenter(private val seriesUpdatesView: SeriesUpdatesView) {
         }
     }
 
+    fun saveUserUpdatesList(context: Context) {
+        if (UserData.isLoggedIn == true) {
+            try {
+                UserData.saveUserSeriesUpdates(savedSeriesUpdates, context)
+                seriesUpdatesView.resetBadge()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
     fun initUserUpdatesData(_context: Context, updateNotifyBadge: (n: Int) -> Unit, createNotifyBtn: () -> Unit) {
         userSeriesUpdates = LinkedHashMap()
 
@@ -125,7 +136,7 @@ class SeriesUpdatesPresenter(private val seriesUpdatesView: SeriesUpdatesView) {
             }
 
             withContext(Dispatchers.Main) {
-                if(seriesUpdates != null) {
+                if (seriesUpdates != null) {
                     seriesUpdatesView.updateDialog(seriesUpdates!!)
                 }
             }

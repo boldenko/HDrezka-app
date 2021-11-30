@@ -203,7 +203,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     override fun updateNotifyBtn() {
         activity?.let {
-          //  (it as MainActivity).createNotifyBtn()
+            (it as MainActivity).initSeriesUpdates()
         }
     }
 

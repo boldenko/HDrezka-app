@@ -26,6 +26,7 @@ import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.presenters.SeriesUpdatesPresenter
 import com.falcofemoralis.hdrezkaapp.utils.DialogManager
 import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
+import com.falcofemoralis.hdrezkaapp.views.MainActivity
 import com.falcofemoralis.hdrezkaapp.views.adapters.FilmsListRecyclerViewAdapter
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.SeriesUpdatesView
 
@@ -63,6 +64,7 @@ class SeriesUpdatesFragment : Fragment(), SeriesUpdatesView {
         }
 
         seriesUpdatesPresenter?.initFilmsList()
+        seriesUpdatesPresenter?.saveUserUpdatesList(requireContext())
 
         createAllUpdatedDialog()
 
@@ -116,8 +118,14 @@ class SeriesUpdatesFragment : Fragment(), SeriesUpdatesView {
         seriesUpdatesPresenter?.initUserUpdatesData(_context, updateNotifyBadge, createNotifyBtn)
     }
 
+    override fun resetBadge(){
+        activity?.let {
+            (it as MainActivity).updateNotifyBadge(0)
+        }
+    }
+
     fun createAllUpdatedDialog() {
-        allUpdatesBtn.setOnClickListener{
+        allUpdatesBtn.setOnClickListener {
             val builder = DialogManager.getDialog(requireContext(), R.string.series_update_hot)
             dialogView = layoutInflater.inflate(R.layout.dialog_series_updates, null) as LinearLayout
             container = dialogView?.findViewById(R.id.series_updates_container)

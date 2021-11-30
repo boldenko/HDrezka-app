@@ -11,4 +11,6 @@ interface SeriesUpdatesView: IConnection {
     fun setHint(hintType: HintType)
 
     fun updateDialog(seriesUpdates: LinkedHashMap<String, ArrayList<SeriesUpdateItem>>)
+
+    fun resetBadge()
 }

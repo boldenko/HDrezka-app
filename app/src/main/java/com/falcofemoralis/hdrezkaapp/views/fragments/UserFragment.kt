@@ -161,7 +161,7 @@ class UserFragment : Fragment(), UserView {
 
     override fun updateNotifyBtn() {
         activity?.let {
-            //(it as MainActivity).createNotifyBtn()
+            (it as MainActivity).initSeriesUpdates()
         }
     }
 
