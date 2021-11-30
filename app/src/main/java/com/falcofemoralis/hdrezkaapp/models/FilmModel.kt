@@ -445,6 +445,7 @@ object FilmModel {
                     }
                 }
             } catch (e: Exception) {
+                e.printStackTrace()
                 delay(150)
                 startFilmLoad(counter, loadedFilms, filmsToLoad, index, film, callback)
             }

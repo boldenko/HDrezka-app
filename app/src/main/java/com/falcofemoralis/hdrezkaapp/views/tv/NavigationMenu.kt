@@ -4,6 +4,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
@@ -11,6 +12,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -20,12 +22,14 @@ import com.falcofemoralis.hdrezkaapp.constants.NavigationMenuTabs
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.FragmentChangeListener
 import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.NavigationStateListener
+import ru.nikartm.support.ImageBadgeView
 
 class NavigationMenu : Fragment() {
     private lateinit var fragmentChangeListener: FragmentChangeListener
     private lateinit var navigationStateListener: NavigationStateListener
     private lateinit var currentView: ConstraintLayout
 
+    private lateinit var notify_IB: ImageBadgeView
     private lateinit var newest_IB: ImageButton
     private lateinit var categories_IB: ImageButton
     private lateinit var search_IB: ImageButton
@@ -33,6 +37,7 @@ class NavigationMenu : Fragment() {
     private lateinit var later_IB: ImageButton
     private lateinit var settings_IB: ImageButton
 
+    private lateinit var notify_TV: TextView
     private lateinit var newest_TV: TextView
     private lateinit var categories_TV: TextView
     private lateinit var search_TV: TextView
@@ -40,6 +45,7 @@ class NavigationMenu : Fragment() {
     private lateinit var later_TV: TextView
     private lateinit var settings_TV: TextView
 
+    private val seriesUpdates = NavigationMenuTabs.nav_menu_series_updates
     private val newestFilms = NavigationMenuTabs.nav_menu_newest
     private val categories = NavigationMenuTabs.nav_menu_categories
     private val search = NavigationMenuTabs.nav_menu_search
@@ -52,6 +58,7 @@ class NavigationMenu : Fragment() {
     private var _context: Context? = null
 
     companion object {
+        var notifyBtn: ImageBadgeView? = null
         var isFree = true
         var isFocusOut = false
         var closed = false
@@ -60,6 +67,7 @@ class NavigationMenu : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         currentView = inflater.inflate(R.layout.fragment_nav_menu, container, false) as ConstraintLayout
 
+        notify_IB = currentView.findViewById(R.id.notify_IB)
         newest_IB = currentView.findViewById(R.id.newest_IB)
         categories_IB = currentView.findViewById(R.id.categories_IB)
         search_IB = currentView.findViewById(R.id.search_IB)
@@ -67,12 +75,15 @@ class NavigationMenu : Fragment() {
         later_IB = currentView.findViewById(R.id.later_IB)
         settings_IB = currentView.findViewById(R.id.settings_IB)
 
+        notify_TV = currentView.findViewById(R.id.notify_TV)
         newest_TV = currentView.findViewById(R.id.newest_TV)
         categories_TV = currentView.findViewById(R.id.categories_TV)
         search_TV = currentView.findViewById(R.id.search_TV)
         bookmarks_TV = currentView.findViewById(R.id.bookmarks_TV)
         later_TV = currentView.findViewById(R.id.later_TV)
         settings_TV = currentView.findViewById(R.id.settings_TV)
+
+        notifyBtn = notify_IB
 
         return currentView
     }
@@ -95,6 +106,8 @@ class NavigationMenu : Fragment() {
         }
 
         //Navigation Menu Options Focus, Key Listeners
+        setListener(notify_IB, notify_TV, seriesUpdates, R.drawable.ic_baseline_notifications_24_sel, R.drawable.ic_baseline_notifications_24)
+
         setListener(newest_IB, newest_TV, newestFilms, R.drawable.ic_baseline_movie_24_sel, R.drawable.ic_baseline_movie_24)
 
         setListener(categories_IB, categories_TV, categories, R.drawable.ic_baseline_categories_24_sel, R.drawable.ic_baseline_categories_24)
@@ -108,10 +121,14 @@ class NavigationMenu : Fragment() {
         setListener(settings_IB, settings_TV, settings, R.drawable.ic_baseline_settings_24_sel, R.drawable.ic_baseline_settings_24)
     }
 
-    private fun setListener(ib: ImageButton, tv: TextView, lastMenu: String, selectedImage: Int, unselectedImage: Int) {
+    private fun setListener(ib: ImageView, tv: TextView, lastMenu: String, selectedImage: Int, unselectedImage: Int) {
         ib.setOnFocusChangeListener { v, hasFocus ->
+            Log.d("TESTEST", "$lastMenu")
+
             if (isFree) {
                 if (hasFocus) {
+                    Log.d("TESTEST", "hasFocus $lastMenu")
+
                     if (isNavigationOpen()) {
                         setFocusedView(ib, selectedImage)
                         setMenuNameFocusView(tv, true)
@@ -121,6 +138,8 @@ class NavigationMenu : Fragment() {
                         openNav()
                     }
                 } else {
+                    Log.d("TESTEST", "not focus $lastMenu")
+
                     if (isNavigationOpen()) {
                         // false by default,
                         if (isFocusOut) {
@@ -137,25 +156,35 @@ class NavigationMenu : Fragment() {
 
         ib.setOnKeyListener { v, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN) {//only when key is pressed down
+                Log.d("TESTEST", "ACTION_DOWN $lastMenu")
+
                 when (keyCode) {
                     KeyEvent.KEYCODE_DPAD_RIGHT -> {
                         if (!closed) {
+                            Log.d("TESTEST", "KEYCODE_DPAD_RIGHT")
                             isFocusOut = true
                             closeNav()
                             navigationStateListener.onStateChanged(false, lastSelectedMenu)
                         }
                     }
                     KeyEvent.KEYCODE_ENTER -> {
+                        Log.d("TESTEST", "KEYCODE_ENTER $lastMenu")
+
                         closed = true
                         lastSelectedMenu = lastMenu
                         fragmentChangeListener.switchFragment(lastMenu)
+                        focusOut(ib)
                         // closeNav()
                     }
                     KeyEvent.KEYCODE_DPAD_UP -> {
+                        Log.d("TESTEST", "KEYCODE_DPAD_UP $lastMenu")
+
                         if (!ib.isFocusable)
                             ib.isFocusable = true
                     }
                     KeyEvent.KEYCODE_DPAD_CENTER -> {
+                        Log.d("TESTEST", "KEYCODE_DPAD_CENTER $lastMenu")
+
                         closed = true
                         lastSelectedMenu = lastMenu
                         fragmentChangeListener.switchFragment(lastMenu)
@@ -212,11 +241,11 @@ class NavigationMenu : Fragment() {
         }
     }
 
-    private fun setOutOfFocusedView(view: ImageButton, resource: Int) {
+    private fun setOutOfFocusedView(view: ImageView, resource: Int) {
         setMenuIconFocusView(resource, view)
     }
 
-    private fun setFocusedView(view: ImageButton, resource: Int) {
+    private fun setFocusedView(view: ImageView, resource: Int) {
         setMenuIconFocusView(resource, view)
     }
 
@@ -242,7 +271,7 @@ class NavigationMenu : Fragment() {
         set.start()
     }
 
-    private fun setMenuIconFocusView(resource: Int, view: ImageButton) {
+    private fun setMenuIconFocusView(resource: Int, view: ImageView) {
         view.setImageResource(resource)
     }
 
@@ -270,6 +299,10 @@ class NavigationMenu : Fragment() {
         navigationStateListener.onStateChanged(true, lastSelectedMenu)
 
         when (lastSelectedMenu) {
+            seriesUpdates -> {
+                notify_IB.requestFocus()
+                setMenuNameFocusView(notify_TV, true)
+            }
             categories -> {
                 categories_IB.requestFocus()
                 setMenuNameFocusView(categories_TV, true)
@@ -310,6 +343,10 @@ class NavigationMenu : Fragment() {
     }
 
     private fun unHighlightMenuSelections(lastSelectedMenu: String?) {
+        if (!lastSelectedMenu.equals(seriesUpdates, true)) {
+            setOutOfFocusedView(notify_IB, R.drawable.ic_baseline_notifications_24)
+            setMenuNameFocusView(notify_TV, false)
+        }
         if (!lastSelectedMenu.equals(newestFilms, true)) {
             setOutOfFocusedView(newest_IB, R.drawable.ic_baseline_movie_24)
             setMenuNameFocusView(newest_TV, false)
@@ -338,6 +375,9 @@ class NavigationMenu : Fragment() {
 
     private fun highlightMenuSelection(lastSelectedMenu: String?) {
         when (lastSelectedMenu) {
+            seriesUpdates -> {
+                setFocusedView(notify_IB, R.drawable.ic_baseline_notifications_24_sel)
+            }
             newestFilms -> {
                 setFocusedView(newest_IB, R.drawable.ic_baseline_movie_24_sel)
             }
@@ -361,7 +401,7 @@ class NavigationMenu : Fragment() {
 
     private fun enableNavMenuViews(visibility: Int) {
         if (visibility == View.GONE) {
-            animateMenuNamesEntry(newest_TV, visibility, 1, R.anim.slide_in_right_menu_name)
+            animateMenuNamesEntry(notify_TV, visibility, 1, R.anim.slide_in_right_menu_name)
             /* menuTextAnimationDelay = 0//200 //reset
              newest_TV.visibility = visibility
              categories_TV.visibility = visibility
@@ -370,12 +410,12 @@ class NavigationMenu : Fragment() {
              later_TV.visibility = visibility
              settings_TV.visibility = visibility*/
         } else {
-            animateMenuNamesEntry(newest_TV, visibility, 1, R.anim.slide_in_left_menu_name)
+            animateMenuNamesEntry(notify_TV, visibility, 1, R.anim.slide_in_left_menu_name)
         }
     }
 
     private fun animateMenuNamesEntry(view: View, visibility: Int, viewCode: Int, anim: Int) {
-        if(_context == null){
+        if (_context == null) {
             return
         }
 
@@ -408,18 +448,21 @@ class NavigationMenu : Fragment() {
             // step by step animation
             when (viewCode) {
                 1 -> {
-                    animateMenuNamesEntry(categories_TV, visibility, viewCode + 1, anim)
+                    animateMenuNamesEntry(newest_TV, visibility, viewCode + 1, anim)
                 }
                 2 -> {
-                    animateMenuNamesEntry(search_TV, visibility, viewCode + 1, anim)
+                    animateMenuNamesEntry(categories_TV, visibility, viewCode + 1, anim)
                 }
                 3 -> {
-                    animateMenuNamesEntry(bookmarks_TV, visibility, viewCode + 1, anim)
+                    animateMenuNamesEntry(search_TV, visibility, viewCode + 1, anim)
                 }
                 4 -> {
-                    animateMenuNamesEntry(later_TV, visibility, viewCode + 1, anim)
+                    animateMenuNamesEntry(bookmarks_TV, visibility, viewCode + 1, anim)
                 }
                 5 -> {
+                    animateMenuNamesEntry(later_TV, visibility, viewCode + 1, anim)
+                }
+                6 -> {
                     animateMenuNamesEntry(settings_TV, visibility, viewCode + 1, anim)
                 }
             }

@@ -65,10 +65,12 @@ import kotlin.system.exitProcess
 class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnection, IPagerView, NavigationStateListener, FragmentChangeListener,
     NavigationMenuCallback, VoiceSpeechRecognizer.ResultsListener {
     private var isSettingsOpened: Boolean = false
+    private var isSeriesUpdatesOpened: Boolean = false
     private var mainFragment: Fragment? = null
     private lateinit var currentFragment: Fragment
     private var savedInstanceState: Bundle? = null
     private lateinit var interfaceMode: Number
+    private val seriesUpdatesFragment: SeriesUpdatesFragment = SeriesUpdatesFragment()
 
     /* TV */
     private lateinit var navMenuFragment: NavigationMenu
@@ -139,9 +141,10 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
 
                             createUserMenu()
                             setUserAvatar()
-                            createNotifyBtn()
                         }
                     }
+
+                    initSeriesUpdates()
                 }
             }
         } else {
@@ -341,6 +344,9 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         var fragmentTo: Fragment? = null
 
         when (fragmentName) {
+            NavigationMenuTabs.nav_menu_series_updates -> {
+                fragmentTo = seriesUpdatesFragment
+            }
             NavigationMenuTabs.nav_menu_newest -> {
                 fragmentTo = NewestFilmsFragment()
             }
@@ -522,12 +528,48 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         // return result.toString(StandardCharsets.UTF_8);
     }
 
-    fun createNotifyBtn() {
+    private fun initSeriesUpdates() {
+        seriesUpdatesFragment.initUserUpdatesData(this, ::updateNotifyBadge, ::createNotifyBtn)
+    }
+
+    private fun updateNotifyBadge(badgeCount: Int) {
+        val notifyBtn = if(SettingsData.deviceType == DeviceType.TV){
+            NavigationMenu.notifyBtn
+        } else{
+            findViewById(R.id.activity_main_iv_notify_btn)
+        }
+
+        if (badgeCount > 0) {
+            notifyBtn?.badgeValue = badgeCount
+            notifyBtn?.isShowCounter = true
+            notifyBtn?.badgeColor = getColor(R.color.main_color_3)
+        } else {
+            notifyBtn?.isShowCounter = false
+            notifyBtn?.badgeColor = getColor(R.color.transparent)
+        }
+    }
+
+    private fun createNotifyBtn() {
+        if (SettingsData.deviceType == DeviceType.MOBILE) {
+            findViewById<ImageBadgeView>(R.id.activity_main_iv_notify_btn).setOnClickListener {
+                if (!isSeriesUpdatesOpened) {
+                    val f = if (mainFragment?.isVisible == true) mainFragment
+                    else currentFragment
+                    onFragmentInteraction(f, seriesUpdatesFragment, Action.NEXT_FRAGMENT_HIDE, true, null, null, null)
+                    isSeriesUpdatesOpened = true
+                }
+            }
+        }
+    }
+
+
+/*    fun createNotifyBtn() {
         val _context = this
-        val notifyBtn = findViewById<ImageBadgeView>(R.id.activity_main_iv_notify_btn)
+
         var d: AlertDialog? = null
         val builder = DialogManager.getDialog(this, R.string.series_update_hot)
         val dialogView = layoutInflater.inflate(R.layout.dialog_series_updates, null) as LinearLayout
+
         var seriesUpdates: LinkedHashMap<String, ArrayList<SeriesUpdateItem>>? = null
         val userUpdates: LinkedHashMap<String, ArrayList<SeriesUpdateItem>> = LinkedHashMap()
         val hintView = dialogView.findViewById<TextView>(R.id.series_updates_hint)
@@ -573,7 +615,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                                 }
 
                                 for (item in list) {
-                                    if(savedSeriesUpdates != null && !savedSeriesUpdates!!.contains(item)){ // не содержит
+                                    if (savedSeriesUpdates != null && !savedSeriesUpdates!!.contains(item)) { // не содержит
                                         badgeCount++
                                         savedSeriesUpdates?.add(item)
                                     }
@@ -639,7 +681,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
 
             d.show()
         }
-    }
+    }*/
 
     private fun showAllSeriesUpdates(tmp: LinkedHashMap<String, ArrayList<SeriesUpdateItem>>?) {
         var seriesUpdates = tmp

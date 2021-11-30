@@ -26,8 +26,7 @@
             app:ibv_fixedBadgeRadius="10dp"
             app:ibv_maxBadgeValue="99"
             app:ibv_roundBadge="true"
-            app:ibv_showCounter="false"
-            />
+            app:ibv_showCounter="false" />
 
         <TextView
             android:layout_width="wrap_content"
