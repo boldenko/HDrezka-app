@@ -125,7 +125,12 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                                     else -> NewestFilmsFragment()
                                 }
                             }
-                            onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null)
+
+                            fun fragmentInit(){
+                                initSeriesUpdates()
+                            }
+
+                            onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, ::fragmentInit)
                         }
                         else -> {
                             SettingsData.init(applicationContext, DeviceType.MOBILE)
@@ -141,10 +146,10 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
 
                             createUserMenu()
                             setUserAvatar()
+                            initSeriesUpdates()
                         }
                     }
 
-                    initSeriesUpdates()
                 }
             }
         } else {
@@ -505,7 +510,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         }
     }
 
-    fun compareAppVersion(version: Int?): Boolean {
+    private fun compareAppVersion(version: Int?): Boolean {
         if (version == null) {
             throw Exception("File not found")
         }
@@ -683,7 +688,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         }
     }*/
 
-    private fun showAllSeriesUpdates(tmp: LinkedHashMap<String, ArrayList<SeriesUpdateItem>>?) {
+/*    private fun showAllSeriesUpdates(tmp: LinkedHashMap<String, ArrayList<SeriesUpdateItem>>?) {
         var seriesUpdates = tmp
         val builder = DialogManager.getDialog(this, R.string.series_update_hot)
         var dialog: AlertDialog? = null
@@ -778,5 +783,5 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
 
         dialog = builder.create()
         dialog.show()
-    }
+    }*/
 }

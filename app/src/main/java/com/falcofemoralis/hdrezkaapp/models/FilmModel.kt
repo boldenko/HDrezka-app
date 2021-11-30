@@ -2,6 +2,7 @@ package com.falcofemoralis.hdrezkaapp.models
 
 import android.util.ArrayMap
 import android.webkit.CookieManager
+import com.falcofemoralis.hdrezkaapp.constants.FilmType
 import com.falcofemoralis.hdrezkaapp.objects.*
 import kotlinx.coroutines.*
 import org.json.JSONObject
@@ -84,7 +85,11 @@ object FilmModel {
     private fun getMainDataByLink(film: Film): Film {
         val filmPage: Document = BaseModel.getJsoup(film.filmLink).get()
 
-        film.type = film.filmLink?.split("/")?.get(3)?.let { getTypeByName(it) }
+        val type: String? = film.filmLink?.split("/")?.get(3)
+        if (type != null) {
+            film.type = getTypeByName(type)
+            film.constFilmType = getConstTypeByName(type)
+        }
         film.title = filmPage.select(FILM_TITLE).text()
         film.posterPath = filmPage.select("div.b-sidecover a img").attr("src")
 
@@ -120,6 +125,17 @@ object FilmModel {
             "films" -> "Фильм"
             "animation" -> "Аниме"
             else -> name
+        }
+    }
+
+    private fun getConstTypeByName(name: String): FilmType {
+        return when (name) {
+            "series" -> FilmType.SERIES
+            "cartoons" -> FilmType.MULTFILMS
+            "films" -> FilmType.FILM
+            "animation" -> FilmType.ANIME
+            "show" -> FilmType.TVSHOWS
+            else -> FilmType.FILM
         }
     }
 
@@ -356,7 +372,7 @@ object FilmModel {
                     val trans = Voice(subString.split(",")[1], parseSeasons(document))
                     val jsonObject = JSONObject(stringedDoc.substring(startObjIndex, endObjIndex + 1))
                     trans.streams = parseSteams(jsonObject.getString("streams"))
-                    if(jsonObject.has("subtitle")){
+                    if (jsonObject.has("subtitle")) {
                         trans.subtitles = parseSubtitles(jsonObject.getString("subtitle"))
                     }
                     try {
@@ -388,9 +404,9 @@ object FilmModel {
             film.autoswitch = autoswitch
         }
 
-        try{
+        try {
             film.filmId?.let { film.youtubeLink = getTrailerVideo(it) }
-        } catch (e: Exception){
+        } catch (e: Exception) {
             // ignore
         }
 

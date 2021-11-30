@@ -1,6 +1,7 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
 import android.content.Context
+import com.falcofemoralis.hdrezkaapp.constants.HintType
 import com.falcofemoralis.hdrezkaapp.models.FilmModel
 import com.falcofemoralis.hdrezkaapp.models.NewestFilmsModel
 import com.falcofemoralis.hdrezkaapp.objects.Film
@@ -20,45 +21,56 @@ class SeriesUpdatesPresenter(private val seriesUpdatesView: SeriesUpdatesView) {
     var userSeriesUpdates: LinkedHashMap<String, ArrayList<SeriesUpdateItem>>? = null
     var savedSeriesUpdates: ArrayList<SeriesUpdateItem>? = null
 
-    fun initList() {
-        GlobalScope.launch {
-            try {
-                userSeriesUpdates?.let {
-                    val overall = it.size
-                    val loadedList: LinkedHashMap<String, ArrayList<Film>> = LinkedHashMap()
-                    var all = 0
-
-                    for ((date, seriesUpdatesList) in it) {
-                        val filmsList: ArrayList<Film> = ArrayList()
-                        for (item in seriesUpdatesList) {
-                            filmsList.add(Film(SettingsData.provider + item.filmLink))
+    fun initFilmsList() {
+        if (UserData.isLoggedIn == true) {
+            GlobalScope.launch {
+                try {
+                    userSeriesUpdates?.let {
+                        val overall = it.size
+                        var downloadListsCount = 0
+                        val loadedList: LinkedHashMap<String, ArrayList<Film>> = LinkedHashMap()
+                        for ((date, list) in userSeriesUpdates!!) {
+                            loadedList[date] = ArrayList()
                         }
 
-                        FilmModel.getFilmsData(filmsList, filmsList.size) { films ->
-                            loadedList[date] = films
+                        for ((date, seriesUpdatesList) in it) {
+                            val filmsList: ArrayList<Film> = ArrayList()
+                            for (item in seriesUpdatesList) {
+                                filmsList.add(Film(SettingsData.provider + item.filmLink))
+                            }
 
-                            all++
-                            if (all == overall) {
-                                GlobalScope.launch {
-                                    withContext(Dispatchers.Main) {
-                                        seriesUpdatesView.setList(loadedList)
+                            FilmModel.getFilmsData(filmsList, filmsList.size) { films ->
+                                loadedList[date] = films
+
+                                downloadListsCount++
+                                if (downloadListsCount == overall) {
+                                    GlobalScope.launch {
+                                        withContext(Dispatchers.Main) {
+                                            if (films.size > 0) {
+                                                seriesUpdatesView.setList(loadedList)
+                                            } else {
+                                                seriesUpdatesView.setHint(HintType.EMPTY)
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                }
-            } catch (e: Exception) {
-                if (e is HttpStatusException) {
-                    if (e.statusCode == 503) {
-                        //actorView.showMsg(IConnection.ErrorType.PARSING_ERROR)
+                } catch (e: Exception) {
+                    if (e is HttpStatusException) {
+                        if (e.statusCode == 503) {
+                            //actorView.showMsg(IConnection.ErrorType.PARSING_ERROR)
+                        } else {
+                            ExceptionHelper.catchException(e, seriesUpdatesView)
+                        }
                     } else {
                         ExceptionHelper.catchException(e, seriesUpdatesView)
                     }
-                } else {
-                    ExceptionHelper.catchException(e, seriesUpdatesView)
                 }
             }
+        } else {
+            seriesUpdatesView.setHint(HintType.NOT_AUTH)
         }
     }
 
@@ -100,6 +112,22 @@ class SeriesUpdatesPresenter(private val seriesUpdatesView: SeriesUpdatesView) {
             withContext(Dispatchers.Main) {
                 updateNotifyBadge(badgeCount)
                 createNotifyBtn()
+            }
+        }
+    }
+
+    fun initAllUpdatesList() {
+        GlobalScope.launch {
+            if (seriesUpdates == null) {
+                seriesUpdates = NewestFilmsModel.getSeriesUpdates()
+            } else {
+                Thread.sleep(50) // fix
+            }
+
+            withContext(Dispatchers.Main) {
+                if(seriesUpdates != null) {
+                    seriesUpdatesView.updateDialog(seriesUpdates!!)
+                }
             }
         }
     }

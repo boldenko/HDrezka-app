@@ -11,18 +11,6 @@
         android:layout_marginTop="25dp"
         android:layout_marginBottom="25dp" />
 
-    <TextView
-        android:layout_marginStart="23dp"
-        android:layout_marginEnd="23dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginBottom="25dp"
-        android:id="@+id/series_updates_hint"
-        android:text="@string/updates_for_register_only"
-        android:textSize="@dimen/normal_text"
-        android:textColor="@color/text_color"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

@@ -195,8 +195,7 @@
     <string name="series_update_hot">Горячие обновления сериалов</string>
     <string name="announce">В ожидании</string>
     <string name="watch_all">Все обновления</string>
-    <string name="updates_for_register_only">Персональные обновления доступны только зарегистрированным пользователям</string>
+    <string name="updates_for_register_only">Персональные обновления доступны только авторизированным пользователям</string>
     <string name="no_updates">Новых обновлений нету</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="wait">Идет загрузка…</string>
 </resources>
