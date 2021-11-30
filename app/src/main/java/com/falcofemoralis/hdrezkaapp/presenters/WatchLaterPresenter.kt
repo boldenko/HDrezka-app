@@ -1,5 +1,6 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
+import com.falcofemoralis.hdrezkaapp.constants.AdapterAction
 import com.falcofemoralis.hdrezkaapp.interfaces.IMsg
 import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
 import com.falcofemoralis.hdrezkaapp.models.FilmModel
@@ -67,8 +68,9 @@ class WatchLaterPresenter(private val watchLaterView: WatchLaterView) {
 
                     if (index == dataToLoad.size - 1) {
                         withContext(Dispatchers.Main) {
+                            val itemsCount = activeWatchLaterList.size
                             activeWatchLaterList.addAll(dataToLoad)
-                            watchLaterView.redrawWatchLaterList()
+                            watchLaterView.redrawWatchLaterList(itemsCount, dataToLoad.size, AdapterAction.ADD)
                             watchLaterView.setProgressBarState(IProgressState.StateType.LOADED)
                         }
                     }
@@ -93,7 +95,7 @@ class WatchLaterPresenter(private val watchLaterView: WatchLaterView) {
                     activeWatchLaterList.removeAt(pos)
 
                     withContext(Dispatchers.Main) {
-                        watchLaterView.redrawWatchLaterList()
+                        watchLaterView.redrawWatchLaterList(pos - 1, pos + 1, AdapterAction.UPDATE)
                         getNextWatchLater()
                     }
                 }

@@ -44,7 +44,7 @@
             android:paddingEnd="6dp"
             android:text="Type"
             android:textColor="@color/white"
-            android:textSize="@dimen/normal_text" />
+            android:textSize="@dimen/small_text" />
 
         <TextView
             android:visibility="gone"

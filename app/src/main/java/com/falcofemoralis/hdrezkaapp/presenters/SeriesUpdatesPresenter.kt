@@ -36,7 +36,12 @@ class SeriesUpdatesPresenter(private val seriesUpdatesView: SeriesUpdatesView) {
                         for ((date, seriesUpdatesList) in it) {
                             val filmsList: ArrayList<Film> = ArrayList()
                             for (item in seriesUpdatesList) {
-                                filmsList.add(Film(SettingsData.provider + item.filmLink))
+                                val film = Film(SettingsData.provider + item.filmLink)
+                                film.subInfo = "${item.season} - ${item.episode}"
+                                if(!item.voice.isNullOrEmpty()){
+                                    film.subInfo += "\n${item.voice}"
+                                }
+                                filmsList.add(film)
                             }
 
                             FilmModel.getFilmsData(filmsList, filmsList.size) { films ->

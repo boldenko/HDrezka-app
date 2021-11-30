@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.falcofemoralis.hdrezkaapp.R
+import com.falcofemoralis.hdrezkaapp.constants.AdapterAction
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.IMsg
 import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
@@ -71,7 +72,7 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
     }
 
     override fun setWatchLaterList(list: ArrayList<WatchLater>) {
-        listView.adapter = WatchLaterRecyclerViewAdapter(list, ::listCallback, ::deleteWatchLater)
+        listView.adapter = WatchLaterRecyclerViewAdapter(requireContext(), list, ::listCallback, ::deleteWatchLater)
         progressBar.visibility = View.GONE
     }
 
@@ -120,10 +121,15 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
         }
     }
 
-    override fun redrawWatchLaterList() {
-        listView.recycledViewPool.clear();
-        listView.adapter?.notifyDataSetChanged()
+    override fun redrawWatchLaterList(from: Int, count: Int, action: AdapterAction) {
+        //listView.recycledViewPool.clear();
+        when (action) {
+            AdapterAction.ADD -> listView.adapter?.notifyItemRangeInserted(from, count)
+            AdapterAction.UPDATE -> listView.adapter?.notifyItemRangeChanged(from, count)
+            AdapterAction.DELETE -> listView.adapter?.notifyItemRangeRemoved(from, count)
+        }
     }
+
 
     fun updateAdapter() {
         if (UserData.isLoggedIn == true) {
