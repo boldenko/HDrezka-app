@@ -11,7 +11,7 @@ import org.jsoup.nodes.Document
 
 object NewestFilmsModel {
     private const val NEW = "/engine/ajax/get_newest_slider_content.php"
-    val SORTS: ArrayList<String> = arrayListOf("last", "popular", "watching", "newest_slider_content", "soon")
+    val SORTS: ArrayList<String> = arrayListOf("newest_slider_content", "last", "popular", "soon", "watching")
     val TYPES: ArrayList<String> = arrayListOf("0", "1", "2", "3", "82") // all, films, serials, multfilms, anime
 
     fun getNewestFilms(page: Int, sort: String, type: String): ArrayList<Film> {

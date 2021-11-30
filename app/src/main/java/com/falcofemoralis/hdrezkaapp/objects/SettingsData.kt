@@ -24,6 +24,7 @@ object SettingsData {
     var isSubtitlesDownload: Boolean? = null
     var isCheckNewVersion: Boolean? = null
     var isAltLoading: Boolean? = null
+    var defaultSort: Int? = null
 
     fun initProvider(context: Context) {
         if (provider == null || provider == "") {
@@ -60,10 +61,11 @@ object SettingsData {
             defq = null
         }
         defaultQuality = defq
+        defaultSort = prefs?.getString("defaultSort", "1")?.toInt()
     }
 
     fun setProvider(newProvider: String, context: Context, updateSettings: Boolean) {
-        if(updateSettings){
+        if (updateSettings) {
             val prefs: SharedPreferences? = PreferenceManager.getDefaultSharedPreferences(context)
             prefs?.edit()?.putString("ownProvider", newProvider)?.apply()
         }

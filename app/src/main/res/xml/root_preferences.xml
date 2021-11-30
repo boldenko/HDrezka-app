@@ -39,6 +39,15 @@
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
+            app:defaultValue="1"
+            app:entries="@array/sorts"
+            app:entryValues="@array/sortsIds"
+            app:key="defaultSort"
+            app:layout="@layout/custom_list_preference"
+            app:title="@string/newest_films_sort_default"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
             android:defaultValue="3"
             app:entries="@array/filmsInRow"
             app:entryValues="@array/filmsInRow"

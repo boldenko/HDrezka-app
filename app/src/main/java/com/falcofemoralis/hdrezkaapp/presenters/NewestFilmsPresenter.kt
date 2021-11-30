@@ -4,14 +4,10 @@ import android.util.ArrayMap
 import com.falcofemoralis.hdrezkaapp.constants.AppliedFilter
 import com.falcofemoralis.hdrezkaapp.models.NewestFilmsModel
 import com.falcofemoralis.hdrezkaapp.objects.Film
-import com.falcofemoralis.hdrezkaapp.objects.SeriesUpdateItem
+import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmsListView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.NewestFilmsView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class NewestFilmsPresenter(
     private val newestFilmsView: NewestFilmsView,
@@ -22,7 +18,9 @@ class NewestFilmsPresenter(
     private var currentPage: Int = 1 // newest film page
 
     fun initFilms() {
-        appliedFilters[AppliedFilter.SORT] = NewestFilmsModel.SORTS[0]
+        SettingsData.defaultSort?.let {
+            appliedFilters[AppliedFilter.SORT] = NewestFilmsModel.SORTS[it]
+        }
         appliedFilters[AppliedFilter.TYPE] = NewestFilmsModel.TYPES[0]
         filmsListView.setFilms(filmsListPresenter.activeFilms)
         filmsListPresenter.getNextFilms()
@@ -32,7 +30,7 @@ class NewestFilmsPresenter(
         return try {
             var films: ArrayList<Film> = ArrayList()
 
-            if (appliedFilters[AppliedFilter.SORT]!! == NewestFilmsModel.SORTS[3]) {
+            if (appliedFilters[AppliedFilter.SORT]!! == NewestFilmsModel.SORTS[0]) {
                 if (currentPage == 1) {
                     // films from slider
                     films = NewestFilmsModel.getNewFilms(appliedFilters[AppliedFilter.TYPE]!!)

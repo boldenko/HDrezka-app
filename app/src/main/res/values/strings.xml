@@ -63,7 +63,7 @@
     <string name="error_timeout">Превышен лимит ожидания</string>
     <string name="error_parsing">Ошибка при получении данных</string>
     <string name="no_access">Сайт недоступен. Смените URL на другой</string>
-    <string name="choose_year_hint">Год</string>
+    <string name="choose_year_hint">Выбрать год</string>
     <string name="sort_header">Сортировать</string>
     <string name="type_header">Выбрать тип</string>
     <string name="last">Последние поступления</string>
@@ -198,4 +198,6 @@
     <string name="updates_for_register_only">Персональные обновления доступны только авторизированным пользователям</string>
     <string name="no_updates">Новых обновлений нету</string>
     <string name="wait">Идет загрузка…</string>
+    <string name="newest_films_sort_default">Сортировка гланого экрана</string>
+    <string name="new_films">Горячие новинки</string>
 </resources>

@@ -16,6 +16,68 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/film_sort_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sort_header"
+                    android:textColor="@color/text_color"
+                    android:textSize="@dimen/normal_text" />
+
+                <RadioGroup
+                    android:id="@+id/film_sort"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp">
+
+                    <RadioButton
+                        android:id="@+id/sort_new"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/new_films"
+                        android:textColor="@color/text_color"
+                        android:textSize="@dimen/normal_text" />
+
+                    <RadioButton
+                        android:id="@+id/sort_last"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/last"
+                        android:textColor="@color/text_color"
+                        android:textSize="@dimen/normal_text" />
+
+                    <RadioButton
+                        android:id="@+id/sort_popular"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/popular"
+                        android:textColor="@color/text_color"
+                        android:textSize="@dimen/normal_text" />
+
+                    <RadioButton
+                        android:id="@+id/sort_announce"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/announce"
+                        android:textColor="@color/text_color"
+                        android:textSize="@dimen/normal_text" />
+
+                    <RadioButton
+                        android:id="@+id/sort_now"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/now"
+                        android:textColor="@color/text_color"
+                        android:textSize="@dimen/normal_text" />
+
+                </RadioGroup>
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/film_types_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -77,68 +139,6 @@
                 </RadioGroup>
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/film_sort_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sort_header"
-                    android:textColor="@color/text_color"
-                    android:textSize="@dimen/normal_text" />
-
-                <RadioGroup
-                    android:id="@+id/film_sort"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp">
-
-                    <RadioButton
-                        android:id="@+id/sort_last"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:text="@string/last"
-                        android:textColor="@color/text_color"
-                        android:textSize="@dimen/normal_text" />
-
-                    <RadioButton
-                        android:id="@+id/sort_new"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/newest"
-                        android:textColor="@color/text_color"
-                        android:textSize="@dimen/normal_text" />
-
-                    <RadioButton
-                        android:id="@+id/sort_popular"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/popular"
-                        android:textColor="@color/text_color"
-                        android:textSize="@dimen/normal_text" />
-
-                    <RadioButton
-                        android:id="@+id/sort_announce"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/announce"
-                        android:textColor="@color/text_color"
-                        android:textSize="@dimen/normal_text" />
-
-                    <RadioButton
-                        android:id="@+id/sort_now"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/now"
-                        android:textColor="@color/text_color"
-                        android:textSize="@dimen/normal_text" />
-
-                </RadioGroup>
-            </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </FrameLayout>

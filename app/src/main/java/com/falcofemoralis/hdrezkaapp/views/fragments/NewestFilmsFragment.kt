@@ -14,6 +14,7 @@ import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.constants.AppliedFilter
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
+import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.presenters.NewestFilmsPresenter
 import com.falcofemoralis.hdrezkaapp.utils.DialogManager
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
@@ -35,8 +36,6 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
         currentView = inflater.inflate(R.layout.fragment_newest_films, container, false) as LinearLayout
 
         initFilmsList()
-
-        // initSeriesUpdatesBtn()
 
         return currentView
     }
@@ -65,6 +64,35 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
         val builder = DialogManager.getDialog(requireContext(), null)
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_newest_filters, null)
 
+        val sortGroupView: RadioGroup = dialogView.findViewById(R.id.film_sort)
+        sortGroupView.check(
+            when (SettingsData.defaultSort) {
+                0 -> R.id.sort_new
+                1 -> R.id.sort_last
+                2 -> R.id.sort_popular
+                3 -> R.id.sort_announce
+                4 -> R.id.sort_now
+                else -> R.id.sort_last
+            }
+        )
+        sortGroupView.setOnCheckedChangeListener { group, checkedId ->
+            run {
+                if (checkedId != -1) {
+                    val pos: Int = when (checkedId) {
+                        R.id.sort_new -> 0
+                        R.id.sort_last -> 1
+                        R.id.sort_popular -> 2
+                        R.id.sort_announce -> 3
+                        R.id.sort_now -> 4
+                        else -> 1
+                    }
+                    newestFilmsPresenter.setFilter(AppliedFilter.SORT, pos)
+                } else {
+                    group.findViewById<RadioButton>(R.id.sort_last).isChecked = true
+                }
+            }
+        }
+
         val typeGroupView: RadioGroup = dialogView.findViewById(R.id.film_types)
         typeGroupView.setOnCheckedChangeListener { group, checkedId ->
             run {
@@ -80,25 +108,6 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
                     newestFilmsPresenter.setFilter(AppliedFilter.TYPE, pos)
                 } else {
                     group.findViewById<RadioButton>(R.id.type_all).isChecked = true
-                }
-            }
-        }
-
-        val sortGroupView: RadioGroup = dialogView.findViewById(R.id.film_sort)
-        sortGroupView.setOnCheckedChangeListener { group, checkedId ->
-            run {
-                if (checkedId != -1) {
-                    val pos: Int = when (checkedId) {
-                        R.id.sort_last -> 0
-                        R.id.sort_popular -> 1
-                        R.id.sort_now -> 2
-                        R.id.sort_new -> 3
-                        R.id.sort_announce -> 4
-                        else -> 0
-                    }
-                    newestFilmsPresenter.setFilter(AppliedFilter.SORT, pos)
-                } else {
-                    group.findViewById<RadioButton>(R.id.sort_last).isChecked = true
                 }
             }
         }

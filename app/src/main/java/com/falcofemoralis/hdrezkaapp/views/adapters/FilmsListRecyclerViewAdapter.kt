@@ -3,6 +3,8 @@ package com.falcofemoralis.hdrezkaapp.views.adapters
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,15 +13,23 @@ import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.constants.FilmType
 import com.falcofemoralis.hdrezkaapp.models.FilmModel
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
-import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
-import jp.wasabeef.picasso.transformations.ColorFilterTransformation
+import jp.wasabeef.glide.transformations.ColorFilterTransformation
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class FilmsListRecyclerViewAdapter(private val context: Context, private val films: ArrayList<Film>, private val openFilm: (film: Film) -> Unit) :
@@ -34,19 +44,30 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
         zoom(holder.layout, holder.posterLayoutView, holder.titleView, holder.infoView, context)
 
         val film = films[position]
-        val picasso = Picasso.get().load(film.posterPath)
+
+        var glide = Glide.with(context).load(film.posterPath).fitCenter()
         if (film.subInfo?.contains(FilmModel.AWAITING_TEXT) == true) {
-            picasso.transform(ColorFilterTransformation(R.color.black))
+            glide = glide.transform(ColorFilterTransformation(R.color.black))
         }
-        picasso.into(holder.filmPoster, object : Callback {
-            override fun onSuccess() {
-                holder.progressView.visibility = View.GONE
-                holder.posterLayoutView.visibility = View.VISIBLE
+
+        glide = glide.listener(object : RequestListener<Drawable> {
+            override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: Target<Drawable>?, p3: Boolean): Boolean {
+                return false
             }
 
-            override fun onError(e: Exception) {
+            override fun onResourceReady(p0: Drawable?, p1: Any?, p2: Target<Drawable>?, p3: DataSource?, p4: Boolean): Boolean {
+                GlobalScope.launch {
+                    withContext(Dispatchers.Main){
+                        holder.progressView.visibility = View.GONE
+                        holder.posterLayoutView.visibility = View.VISIBLE
+                    }
+                }
+                return false
             }
         })
+        glide = glide.error (R.drawable.nopersonphoto) // TODO
+        glide.into(holder.filmPoster)
+        glide.submit()
 
         holder.titleView.text = film.title
 
