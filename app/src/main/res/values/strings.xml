@@ -200,4 +200,6 @@
     <string name="wait">Идет загрузка…</string>
     <string name="newest_films_sort_default">Сортировка гланого экрана</string>
     <string name="new_films">Горячие новинки</string>
+    <string name="app_version">Версия приложения</string>
+    <string name="app_version_number">2.1.0</string>
 </resources>
