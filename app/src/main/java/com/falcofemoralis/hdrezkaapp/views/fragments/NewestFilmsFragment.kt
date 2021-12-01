@@ -18,6 +18,7 @@ import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.presenters.NewestFilmsPresenter
 import com.falcofemoralis.hdrezkaapp.utils.DialogManager
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
+import com.falcofemoralis.hdrezkaapp.utils.Highlighter
 import com.falcofemoralis.hdrezkaapp.views.elements.RadioGridGroup
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmListCallView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.NewestFilmsView
@@ -123,9 +124,12 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
         }
 
         val d = builder.create()
-        currentView.findViewById<TextView>(R.id.fragment_newest_films_tv_filters).setOnClickListener {
+        val filtersBtn = currentView.findViewById<TextView>(R.id.fragment_newest_films_tv_filters)
+        filtersBtn.setOnClickListener {
             d.show()
         }
+
+        Highlighter.highlightButton(filtersBtn, requireContext())
     }
 
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {

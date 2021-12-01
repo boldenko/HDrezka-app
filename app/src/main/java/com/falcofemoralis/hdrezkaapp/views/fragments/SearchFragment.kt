@@ -25,6 +25,7 @@ import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.presenters.SearchPresenter
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
+import com.falcofemoralis.hdrezkaapp.utils.Highlighter
 import com.falcofemoralis.hdrezkaapp.views.elements.VoiceInputDialogFragmentOverride
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmListCallView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.SearchView
@@ -177,6 +178,9 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
 
             //  autoCompleteTextView.requestFocus()
         }
+
+        Highlighter.highlightButton(autoCompleteTextView, requireContext(), true)
+        //Highlighter.highlightImage(voiceBtn, requireContext())
     }
 
     fun showVoiceDialog() {

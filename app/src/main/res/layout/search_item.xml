@@ -8,7 +8,7 @@
         android:id="@+id/text_view_list_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/main_color_2"
+        android:background="@color/main_color_3"
         android:padding="10dp"
         android:textColor="@color/white"
         android:textSize="@dimen/normal_text"
@@ -17,5 +17,5 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/dark_main_color_2" />
+        android:background="@color/main_color_3" />
 </LinearLayout>

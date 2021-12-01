@@ -26,6 +26,7 @@ import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.presenters.SeriesUpdatesPresenter
 import com.falcofemoralis.hdrezkaapp.utils.DialogManager
 import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
+import com.falcofemoralis.hdrezkaapp.utils.Highlighter
 import com.falcofemoralis.hdrezkaapp.views.MainActivity
 import com.falcofemoralis.hdrezkaapp.views.adapters.FilmsListRecyclerViewAdapter
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.SeriesUpdatesView
@@ -67,6 +68,8 @@ class SeriesUpdatesFragment : Fragment(), SeriesUpdatesView {
         seriesUpdatesPresenter?.saveUserUpdatesList(requireContext())
 
         createAllUpdatedDialog()
+
+        Highlighter.highlightButton(allUpdatesBtn, requireContext())
 
         return currentView
     }

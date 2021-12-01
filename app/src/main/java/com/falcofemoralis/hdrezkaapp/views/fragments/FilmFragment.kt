@@ -24,6 +24,8 @@ import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.*
 import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
@@ -51,10 +53,8 @@ import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
 import com.falcofemoralis.hdrezkaapp.models.ActorModel
 import com.falcofemoralis.hdrezkaapp.objects.*
 import com.falcofemoralis.hdrezkaapp.presenters.FilmPresenter
-import com.falcofemoralis.hdrezkaapp.utils.DialogManager
-import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
-import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
-import com.falcofemoralis.hdrezkaapp.utils.UnitsConverter
+import com.falcofemoralis.hdrezkaapp.utils.*
+import com.falcofemoralis.hdrezkaapp.utils.Highlighter.zoom
 import com.falcofemoralis.hdrezkaapp.views.MainActivity
 import com.falcofemoralis.hdrezkaapp.views.adapters.CommentsRecyclerViewAdapter
 import com.falcofemoralis.hdrezkaapp.views.adapters.FilmsListRecyclerViewAdapter
@@ -164,7 +164,7 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if(SettingsData.deviceType == DeviceType.TV){
+        if (SettingsData.deviceType == DeviceType.TV) {
             currentView.findViewById<TextView>(R.id.fragment_film_tv_open_player).requestFocus()
         }
         super.onViewCreated(view, savedInstanceState)
@@ -202,7 +202,22 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     private fun initFullSizePoster() {
-        currentView.findViewById<ImageView>(R.id.fragment_film_iv_poster).setOnClickListener { openFullSizeImage() }
+        val btn = currentView.findViewById<ImageView>(R.id.fragment_film_iv_poster)
+        btn.setOnClickListener {
+            openFullSizeImage()
+        }
+
+        btn.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                val anim: Animation = AnimationUtils.loadAnimation(context, R.anim.scale_in_tv)
+                v.startAnimation(anim)
+                anim.fillAfter = true
+            } else {
+                val anim: Animation = AnimationUtils.loadAnimation(context, R.anim.scale_out_tv)
+                v.startAnimation(anim)
+                anim.fillAfter = true
+            }
+        }
     }
 
     private fun initDownloadBtn() {
@@ -214,7 +229,8 @@ class FilmFragment : Fragment(), FilmView {
                 Toast.makeText(requireContext(), getString(R.string.perm_write_hint), Toast.LENGTH_LONG).show()
             }
         }
-        currentView.findViewById<View>(R.id.fragment_film_btn_download).setOnClickListener {
+        val btn = currentView.findViewById<View>(R.id.fragment_film_btn_download)
+        btn.setOnClickListener {
             when (PackageManager.PERMISSION_GRANTED) {
                 ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) -> {
                     filmPresenter.showTranslations(true)
@@ -228,12 +244,14 @@ class FilmFragment : Fragment(), FilmView {
                 }
             }
         }
+
+        Highlighter.highlightText(btn, requireContext())
     }
 
     override fun setTrailer(link: String?) {
-        val trailerBtn = currentView.findViewById<TextView>(R.id.fragment_film_tv_trailer)
+        val btn = currentView.findViewById<TextView>(R.id.fragment_film_tv_trailer)
         if (link != null && link.isNotEmpty()) {
-            trailerBtn.setOnClickListener {
+            btn.setOnClickListener {
                 val linkIntent = Intent(Intent.ACTION_VIEW, Uri.parse(filmPresenter.film.youtubeLink))
 
                 try {
@@ -242,8 +260,9 @@ class FilmFragment : Fragment(), FilmView {
                     Toast.makeText(requireContext(), getString(R.string.no_yt_player), Toast.LENGTH_LONG).show()
                 }
             }
+            Highlighter.highlightText(btn, requireContext())
         } else {
-            trailerBtn.visibility = View.GONE
+            btn.visibility = View.GONE
         }
     }
 
@@ -286,6 +305,8 @@ class FilmFragment : Fragment(), FilmView {
             }
 
             playerContainer.visibility = View.GONE
+
+            Highlighter.highlightButton(openPlayBtn, requireContext())
         } else {
             filmPresenter.initPlayer()
             openPlayBtn.visibility = View.GONE
@@ -325,10 +346,10 @@ class FilmFragment : Fragment(), FilmView {
         Picasso.get().load(film.posterPath).into(currentView.findViewById<ImageView>(R.id.fragment_film_iv_poster))
 
         currentView.findViewById<TextView>(R.id.fragment_film_tv_title).text = film.title
-        val origTileView =  currentView.findViewById<TextView>(R.id.fragment_film_tv_origtitle)
-        if(!film.origTitle.isNullOrEmpty()){
+        val origTileView = currentView.findViewById<TextView>(R.id.fragment_film_tv_origtitle)
+        if (!film.origTitle.isNullOrEmpty()) {
             origTileView.text = film.origTitle
-        } else{
+        } else {
             origTileView.visibility = View.GONE
         }
 
@@ -417,7 +438,7 @@ class FilmFragment : Fragment(), FilmView {
                 layout.setOnClickListener {
                     FragmentOpener.openWithData(this, fragmentListener, actor, "actor")
                 }
-                FilmsListRecyclerViewAdapter.zoom(requireContext(), layout, actorPhoto, nameView, careerView)
+                zoom(requireContext(), layout, actorPhoto, nameView, careerView)
             }
         }
     }
@@ -480,6 +501,7 @@ class FilmFragment : Fragment(), FilmView {
             if (SettingsData.deviceType == DeviceType.TV && i == genres.size - 1) {
                 genreView.nextFocusRightId = R.id.fragment_film_tv_directors
             }
+            Highlighter.highlightText(genreView, requireContext(), true)
             genresLayout.addView(genreView)
         }
     }
@@ -507,9 +529,12 @@ class FilmFragment : Fragment(), FilmView {
             dialog.window?.attributes = lp
 
             modalDialog = dialog
-            layout.findViewById<Button>(R.id.modal_bt_close).setOnClickListener {
+            val closeBtn = layout.findViewById<Button>(R.id.modal_bt_close)
+            closeBtn.setOnClickListener {
                 dialog.dismiss()
             }
+
+            Highlighter.highlightButton(closeBtn, requireContext())
         }
     }
 
@@ -625,7 +650,7 @@ class FilmFragment : Fragment(), FilmView {
             val titleView: TextView = layout.findViewById(R.id.film_title)
             val infoView: TextView = layout.findViewById(R.id.film_info)
             val posterLayout: RelativeLayout = layout.findViewById(R.id.film_posterLayout)
-            FilmsListRecyclerViewAdapter.zoom(requireContext(), layout, posterLayout, titleView, infoView)
+            zoom(requireContext(), layout, posterLayout, titleView, infoView)
             layout.findViewById<TextView>(R.id.film_type).visibility = View.GONE
             titleView.text = film.title
             titleView.textSize = 12F
@@ -727,6 +752,8 @@ class FilmFragment : Fragment(), FilmView {
                     bookmarksDialog?.show()
                 }
             }
+
+            Highlighter.highlightText(btn, requireContext())
         } else {
             /*       if (SettingsData.deviceType != DeviceType.TV) {
                        currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_title_layout).layoutParams = LinearLayout.LayoutParams(0, WindowManager.LayoutParams.WRAP_CONTENT, 0.85f)
@@ -744,6 +771,8 @@ class FilmFragment : Fragment(), FilmView {
             sharingIntent.putExtra(Intent.EXTRA_TEXT, body)
             startActivity(sharingIntent)
         }
+
+        Highlighter.highlightText(btn, requireContext())
     }
 
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {

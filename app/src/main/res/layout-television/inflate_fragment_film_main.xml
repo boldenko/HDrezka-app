@@ -18,9 +18,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@drawable/roundedbutton"
+            android:background="@color/main_color_3"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
             android:padding="5dp"
             android:layout_margin="5dp"
@@ -39,7 +38,6 @@
             android:paddingStart="7dp"
             android:paddingEnd="7dp"
             android:gravity="center"
-            android:foreground="?attr/selectableItemBackground"
             android:text="@string/add_to_bookmarks"
             android:textColor="@color/white"
             android:textSize="@dimen/normal_text" />
@@ -54,7 +52,6 @@
             android:paddingEnd="7dp"
             android:gravity="center"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
             android:text="@string/share_name"
             android:textColor="@color/white"
             android:textSize="@dimen/normal_text" />
@@ -69,7 +66,6 @@
             android:paddingEnd="7dp"
             android:gravity="center"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
             android:text="@string/download_name"
             android:textColor="@color/white"
             android:textSize="@dimen/normal_text" />
@@ -84,7 +80,6 @@
             android:paddingEnd="7dp"
             android:gravity="center"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
             android:text="@string/trailer"
             android:textColor="@color/white"
             android:textSize="@dimen/normal_text" />
@@ -102,19 +97,20 @@
         android:weightSum="100">
 
         <LinearLayout
+            android:id="@+id/fragment_film_iv_poster_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="@integer/film_info_weight_left"
             android:orientation="vertical">
 
             <ImageView
+                android:layout_margin="5dp"
                 android:id="@+id/fragment_film_iv_poster"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:contentDescription="film poster"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground" />
+                android:focusable="true" />
         </LinearLayout>
 
         <LinearLayout

@@ -14,6 +14,7 @@ import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.presenters.CategoriesPresenter
 import com.falcofemoralis.hdrezkaapp.utils.DialogManager
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
+import com.falcofemoralis.hdrezkaapp.utils.Highlighter
 import com.falcofemoralis.hdrezkaapp.views.elements.RadioGridGroup
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.CategoriesView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmListCallView
@@ -83,13 +84,17 @@ class CategoriesFragment : Fragment(), CategoriesView, AdapterView.OnItemSelecte
         }
 
         val d = builder.create()
-        currentView.findViewById<TextView>(R.id.fragment_categories_films_tv_filters).setOnClickListener {
+        val filtersBtn = currentView.findViewById<TextView>(R.id.fragment_categories_films_tv_filters)
+        filtersBtn.setOnClickListener {
             if (categoriesPresenter.category == null) {
                 categoriesPresenter.initCategories()
             }
 
             d.show()
         }
+
+        Highlighter.highlightButton(filtersBtn, requireContext())
+
     }
 
     override fun showFilters() {

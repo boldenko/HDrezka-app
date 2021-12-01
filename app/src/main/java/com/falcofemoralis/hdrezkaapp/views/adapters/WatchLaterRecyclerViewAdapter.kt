@@ -16,6 +16,7 @@ import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.models.FilmModel
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.WatchLater
+import com.falcofemoralis.hdrezkaapp.utils.Highlighter.zoom
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import jp.wasabeef.glide.transformations.ColorFilterTransformation
@@ -34,7 +35,7 @@ class WatchLaterRecyclerViewAdapter(private val context: Context, private val wa
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        FilmsListRecyclerViewAdapter.zoom(context, holder.layout, holder.posterView, holder.nameView, holder.infoView, holder.dateView)
+        zoom(context, holder.layout, holder.posterView, holder.nameView, holder.infoView, holder.dateView)
 
         val watchLaterItem = watchLaterList[position]
 
