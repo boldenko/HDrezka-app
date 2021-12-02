@@ -7,5 +7,5 @@
     <color name="unselected_film">#65000000</color>
     <color name="unselected_title">#959696</color>
     <color name="unselected_subtitle">#6a6a6a</color>
-    <color name="unselected_btn_color">#242424</color>
+    <color name="unselected_btn_color">#303030</color>
 </resources>

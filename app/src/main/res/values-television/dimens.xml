@@ -21,4 +21,5 @@
     <dimen name="scale_to">110%</dimen>
     <dimen name="inflate_film_layout_top_margin">12dp</dimen>
     <dimen name="leanback_margin_filters">15dp</dimen>
+    <dimen name="search_margin">15dp</dimen>
 </resources>

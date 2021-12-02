@@ -3,7 +3,7 @@
     <!-- Base colors-->
     <color name="black">#000000</color>
     <color name="gray">#AFAFAF</color>
-    <color name="white">#FFFFFF</color>
+    <color name="white">#f6f6f6</color>
     <color name="transparent">#00000000</color>
     <color name="day_night_сolor">#000</color>
 
@@ -16,7 +16,7 @@
     <color name="primary_red">#e63e39</color>
 
     <!-- Elements colors-->
-    <color name="text_color">#fff</color>
+    <color name="text_color">@color/white</color>
     <color name="text_color_hint">#D8D8D8</color>
     <color name="focusableColor">#FF5554</color>
     <color name="unselected_film">#00000000</color>

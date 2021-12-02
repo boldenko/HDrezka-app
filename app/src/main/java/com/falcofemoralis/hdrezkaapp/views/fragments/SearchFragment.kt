@@ -180,7 +180,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
             //  autoCompleteTextView.requestFocus()
         }
 
-        Highlighter.highlightButton(autoCompleteTextView, requireContext(), true)
+        //Highlighter.highlightButton(autoCompleteTextView, requireContext(), true)
         Highlighter.highlightImage(voiceBtn, requireContext())
         Highlighter.highlightImage(clearBtn, requireContext())
     }
