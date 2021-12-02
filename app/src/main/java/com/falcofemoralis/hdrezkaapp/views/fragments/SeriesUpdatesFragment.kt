@@ -189,7 +189,7 @@ class SeriesUpdatesFragment : Fragment(), SeriesUpdatesView {
                 }
 
                 if (item.isUserWatch) {
-                    itemView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.main_color_3))
+                    itemView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.primary_red))
                 } else {
                     lastColor = if (lastColor == R.color.dark_background) R.color.light_background else R.color.dark_background
                     itemView.setBackgroundColor(ContextCompat.getColor(requireContext(), lastColor))

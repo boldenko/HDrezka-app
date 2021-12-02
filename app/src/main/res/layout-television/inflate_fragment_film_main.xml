@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
@@ -12,77 +12,76 @@
         android:gravity="center">
 
         <TextView
-            android:drawablePadding="10dp"
-            app:drawableStartCompat="@drawable/ic_baseline_play_arrow2_24"
             android:id="@+id/fragment_film_tv_open_player"
+            style="@style/app_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@color/main_color_3"
+            android:layout_margin="5dp"
+            android:drawablePadding="10dp"
             android:focusable="true"
             android:gravity="center"
             android:padding="5dp"
-            android:layout_margin="5dp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
             android:text="@string/start_watching"
-            android:textColor="@color/white"
-            android:textSize="@dimen/normal_text"
-            android:textStyle="bold" />
+            app:drawableStartCompat="@drawable/ic_baseline_play_arrow2_24" />
 
         <TextView
-            android:drawablePadding="10dp"
-            app:drawableStartCompat="@drawable/ic_baseline_bookmarks_24"
             android:id="@+id/fragment_film_btn_bookmark"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:drawablePadding="10dp"
             android:focusable="true"
+            android:gravity="center"
             android:paddingStart="7dp"
             android:paddingEnd="7dp"
-            android:gravity="center"
             android:text="@string/add_to_bookmarks"
             android:textColor="@color/white"
-            android:textSize="@dimen/normal_text" />
+            android:textSize="@dimen/normal_text"
+            app:drawableStartCompat="@drawable/ic_baseline_bookmarks_24_film" />
 
         <TextView
-            android:drawablePadding="10dp"
-            app:drawableStartCompat="@drawable/ic_baseline_share_24"
             android:id="@+id/fragment_film_btn_share"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:drawablePadding="10dp"
+            android:focusable="true"
+            android:gravity="center"
             android:paddingStart="7dp"
             android:paddingEnd="7dp"
-            android:gravity="center"
-            android:focusable="true"
             android:text="@string/share_name"
             android:textColor="@color/white"
-            android:textSize="@dimen/normal_text" />
+            android:textSize="@dimen/normal_text"
+            app:drawableStartCompat="@drawable/ic_baseline_share_24" />
 
         <TextView
-            android:drawablePadding="10dp"
-            app:drawableStartCompat="@drawable/ic_baseline_arrow_circle_down_24"
             android:id="@+id/fragment_film_btn_download"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:drawablePadding="10dp"
+            android:focusable="true"
+            android:gravity="center"
             android:paddingStart="7dp"
             android:paddingEnd="7dp"
-            android:gravity="center"
-            android:focusable="true"
             android:text="@string/download_name"
             android:textColor="@color/white"
-            android:textSize="@dimen/normal_text" />
+            android:textSize="@dimen/normal_text"
+            app:drawableStartCompat="@drawable/ic_baseline_arrow_circle_down_24" />
 
         <TextView
-            android:drawablePadding="10dp"
-            app:drawableStartCompat="@drawable/ic_baseline_local_movies_24"
             android:id="@+id/fragment_film_tv_trailer"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:drawablePadding="10dp"
+            android:focusable="true"
+            android:gravity="center"
             android:paddingStart="7dp"
             android:paddingEnd="7dp"
-            android:gravity="center"
-            android:focusable="true"
             android:text="@string/trailer"
             android:textColor="@color/white"
-            android:textSize="@dimen/normal_text" />
+            android:textSize="@dimen/normal_text"
+            app:drawableStartCompat="@drawable/ic_baseline_local_movies_24" />
     </LinearLayout>
 
     <LinearLayout
@@ -104,10 +103,10 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_margin="5dp"
                 android:id="@+id/fragment_film_iv_poster"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="film poster"
                 android:focusable="true" />
@@ -131,7 +130,7 @@
                     android:layout_height="wrap_content"
                     android:breakStrategy="balanced"
                     android:text="Film title "
-                    android:textColor="@color/main_color_3"
+                    android:textColor="@color/primary_red"
                     android:textSize="@dimen/head_text" />
 
                 <TextView
@@ -140,7 +139,7 @@
                     android:layout_height="wrap_content"
                     android:breakStrategy="balanced"
                     android:text="Film original title"
-                    android:textColor="@color/main_color_3"
+                    android:textColor="@color/primary_red"
                     android:textSize="@dimen/normal_text" />
             </LinearLayout>
 
@@ -183,11 +182,11 @@
                     android:textSize="@dimen/normal_text" />
 
                 <com.willy.ratingbar.ScaleRatingBar
-                    android:layout_gravity="center"
                     android:id="@+id/fragment_film_srb_rating_hdrezka_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
+                    android:layout_gravity="center"
                     android:elevation="5dp"
                     app:srb_clearRatingEnabled="true"
                     app:srb_clickable="false"
@@ -237,14 +236,14 @@
                     android:textSize="@dimen/normal_text" />
 
                 <TextView
-                    android:visibility="gone"
                     android:id="@+id/fragment_film_tv_ratingHR"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="7dp"
                     android:text="HR Rating"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/normal_text" />
+                    android:textSize="@dimen/normal_text"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <LinearLayout

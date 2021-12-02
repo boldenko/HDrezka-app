@@ -18,7 +18,7 @@
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:textColor="@color/text_color"
-        android:textColorHint="@color/day_night_text_hint" />
+        android:textColorHint="@color/text_color_hint" />
 
     <EditText
         android:id="@+id/dialog_auth_email"
@@ -34,7 +34,7 @@
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:textColor="@color/text_color"
-        android:textColorHint="@color/day_night_text_hint" />
+        android:textColorHint="@color/text_color_hint" />
 
     <EditText
         android:id="@+id/dialog_auth_username"
@@ -50,7 +50,7 @@
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:textColor="@color/text_color"
-        android:textColorHint="@color/day_night_text_hint" />
+        android:textColorHint="@color/text_color_hint" />
 
     <EditText
         android:id="@+id/dialog_auth_password"
@@ -66,7 +66,7 @@
         android:nextFocusDown="@id/dialog_auth_submit"
         android:selectAllOnFocus="true"
         android:textColor="@color/text_color"
-        android:textColorHint="@color/day_night_text_hint" />
+        android:textColorHint="@color/text_color_hint" />
 
     <TextView
         android:id="@+id/dialog_auth_error"
@@ -76,7 +76,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:gravity="start"
-        android:textColor="@color/main_color_3"
+        android:textColor="@color/primary_red"
         android:textSize="@dimen/normal_text"
         android:visibility="gone" />
 

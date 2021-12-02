@@ -70,7 +70,7 @@
         android:breakStrategy="balanced"
         android:text="Title"
         android:textColor="@color/unselected_title"
-        android:textSize="@dimen/normal_text" />
+        android:textSize="@dimen/small_text" />
 
     <TextView
         android:id="@+id/film_info"
@@ -79,6 +79,6 @@
         android:singleLine="false"
         android:text="Info"
         android:textColor="@color/unselected_subtitle"
-        android:textSize="@dimen/normal_text" />
+        android:textSize="@dimen/small_text" />
 
 </LinearLayout>

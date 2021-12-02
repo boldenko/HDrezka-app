@@ -30,7 +30,7 @@
                     android:layout_height="wrap_content"
                     android:breakStrategy="balanced"
                     android:text="Name"
-                    android:textColor="@color/main_color_3"
+                    android:textColor="@color/primary_red"
                     android:textSize="@dimen/head_text" />
 
                 <TextView
@@ -39,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:breakStrategy="balanced"
                     android:text="Orig name"
-                    android:textColor="@color/main_color_3"
+                    android:textColor="@color/primary_red"
                     android:textSize="@dimen/normal_text" />
             </LinearLayout>
 

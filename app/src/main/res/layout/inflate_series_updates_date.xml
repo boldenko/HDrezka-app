@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="20 ноября"
-        android:textColor="@color/main_color_3"
+        android:textColor="@color/primary_red"
         android:textSize="@dimen/normal_text" />
 
 </LinearLayout>

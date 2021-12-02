@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/search_margin_top"
-            android:background="@color/main_color_3"
+            android:background="@color/unselected_btn_color"
             android:drawableStart="@drawable/ic_baseline_search_24"
             android:drawableTint="@color/white"
             android:focusable="true"
@@ -32,7 +32,7 @@
             android:textColor="@color/white"
             android:textColorHint="@color/white" />
 
-        <TextView
+        <ImageView
             android:nextFocusLeft="@id/fragment_search_act_suggest"
             android:nextFocusRight="@id/fragment_search_voice"
             android:id="@+id/fragment_search_tv_clear"
@@ -41,9 +41,8 @@
             android:layout_gravity="center|end"
             android:layout_marginTop="@dimen/search_margin_top_clear"
             android:layout_marginEnd="50dp"
-            android:background="@drawable/ic_baseline_close_24"
+            app:srcCompat="@drawable/ic_baseline_close_24"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
             android:visibility="gone"/>
 
         <ImageView
@@ -54,7 +53,6 @@
             android:layout_marginTop="@dimen/search_margin_top_clear"
             android:layout_marginEnd="10dp"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
             android:nextFocusLeft="@id/fragment_search_tv_clear"
             app:srcCompat="@drawable/ic_baseline_mic_none_24" />
 

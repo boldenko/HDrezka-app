@@ -16,7 +16,7 @@
         android:fadingEdge="horizontal"
         android:singleLine="true"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/main_color_3"
+        android:textColor="@color/primary_red"
         android:textSize="@dimen/normal_text" />
 
 </LinearLayout>

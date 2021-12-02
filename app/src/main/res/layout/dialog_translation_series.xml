@@ -21,7 +21,7 @@
         app:smsp_itemColor="@color/text_color"
         app:smsp_itemListColor="@color/text_color"
         app:smsp_itemListHintColor="@color/text_color"
-        app:smsp_selectedItemListColor="@color/main_color_3" />
+        app:smsp_selectedItemListColor="@color/primary_red" />
 
     <ProgressBar
         android:id="@+id/translations_progress"

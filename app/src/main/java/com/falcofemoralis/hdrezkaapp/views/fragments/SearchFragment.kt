@@ -40,7 +40,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
     private lateinit var imm: InputMethodManager
     private lateinit var hintLayout: LinearLayout
     private lateinit var fragmentListener: OnFragmentInteractionListener
-    private lateinit var clearBtn: TextView
+    private lateinit var clearBtn: ImageView
     private lateinit var voiceBtn: ImageView
 
     private val SEARCH_DELAY_MS: Int = 400
@@ -157,6 +157,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
             autoCompleteTextView.dismissDropDown()
             FragmentOpener.openWithData(this, fragmentListener, searchPresenter.activeSearchFilms[position], "film")
         }
+       // autoCompleteTextView.requestFocus()
 
         clearBtn.setOnClickListener {
             autoCompleteTextView.setText("")
@@ -180,7 +181,8 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
         }
 
         Highlighter.highlightButton(autoCompleteTextView, requireContext(), true)
-        //Highlighter.highlightImage(voiceBtn, requireContext())
+        Highlighter.highlightImage(voiceBtn, requireContext())
+        Highlighter.highlightImage(clearBtn, requireContext())
     }
 
     fun showVoiceDialog() {

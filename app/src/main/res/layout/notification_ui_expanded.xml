@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:text="Film name Film name"
-            android:textColor="@color/day_night_text"
+            android:textColor="@color/day_night_сolor"
             android:textSize="@dimen/normal_text"
             android:textStyle="bold" />
 

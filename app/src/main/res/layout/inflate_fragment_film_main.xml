@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_margin="10dp"
     android:layout_height="match_parent"
+    android:layout_margin="10dp"
     android:orientation="vertical">
 
     <!-- Header -->
@@ -12,23 +12,23 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/fragment_film_tv_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:breakStrategy="balanced"
-                android:text="Film title "
-                android:textColor="@color/main_color_3"
-                android:textSize="@dimen/head_text" />
+        <TextView
+            android:id="@+id/fragment_film_tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:breakStrategy="balanced"
+            android:text="Film title "
+            android:textColor="@color/primary_red"
+            android:textSize="@dimen/head_text" />
 
-            <TextView
-                android:id="@+id/fragment_film_tv_origtitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:breakStrategy="balanced"
-                android:text="Film original title"
-                android:textColor="@color/main_color_3"
-                android:textSize="@dimen/normal_text" />
+        <TextView
+            android:id="@+id/fragment_film_tv_origtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:breakStrategy="balanced"
+            android:text="Film original title"
+            android:textColor="@color/primary_red"
+            android:textSize="@dimen/normal_text" />
 
     </LinearLayout>
 
@@ -75,20 +75,17 @@
 
             <TextView
                 android:id="@+id/fragment_film_tv_trailer"
+                style="@style/app_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/roundedbutton"
-                android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
+                android:focusable="true"
                 android:gravity="center"
                 android:paddingTop="7dp"
                 android:paddingBottom="7dp"
-                android:text="@string/trailer"
-                android:textColor="@color/white"
-                android:textSize="@dimen/normal_text"
-                android:textStyle="bold" />
+                android:text="@string/trailer" />
 
         </LinearLayout>
 
@@ -182,58 +179,58 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/normal_text" />
 
-           <!-- <LinearLayout
-                android:weightSum="3"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <!-- <LinearLayout
+                 android:weightSum="3"
+                 android:gravity="center"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content">
 
-                <ImageView
-                    android:layout_weight="1"
-                    android:id="@+id/fragment_film_iv_bookmark"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_margin="5dp"
-                    android:background="#00000000"
-                    android:clickable="true"
-                    android:contentDescription="bookmarks button"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:nextFocusRight="@id/fragment_film_iv_share"
-                    android:nextFocusDown="@id/fragment_film_iv_poster"
-                    android:src="@drawable/ic_baseline_star_bookmark_24" />
+                 <ImageView
+                     android:layout_weight="1"
+                     android:id="@+id/fragment_film_iv_bookmark"
+                     android:layout_width="0dp"
+                     android:layout_height="50dp"
+                     android:layout_margin="5dp"
+                     android:background="#00000000"
+                     android:clickable="true"
+                     android:contentDescription="bookmarks button"
+                     android:focusable="true"
+                     android:foreground="?attr/selectableItemBackground"
+                     android:nextFocusRight="@id/fragment_film_iv_share"
+                     android:nextFocusDown="@id/fragment_film_iv_poster"
+                     android:src="@drawable/ic_baseline_star_bookmark_24" />
 
-                <ImageView
-                    android:layout_weight="1"
-                    android:id="@+id/fragment_film_tv_download"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_margin="5dp"
-                    android:background="#00000000"
-                    android:clickable="true"
-                    android:contentDescription="bookmarks button"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:nextFocusRight="@id/fragment_film_iv_share"
-                    android:nextFocusDown="@id/fragment_film_iv_poster"
-                    android:src="@drawable/ic_baseline_arrow_circle_down_24" />
+                 <ImageView
+                     android:layout_weight="1"
+                     android:id="@+id/fragment_film_tv_download"
+                     android:layout_width="0dp"
+                     android:layout_height="50dp"
+                     android:layout_margin="5dp"
+                     android:background="#00000000"
+                     android:clickable="true"
+                     android:contentDescription="bookmarks button"
+                     android:focusable="true"
+                     android:foreground="?attr/selectableItemBackground"
+                     android:nextFocusRight="@id/fragment_film_iv_share"
+                     android:nextFocusDown="@id/fragment_film_iv_poster"
+                     android:src="@drawable/ic_baseline_arrow_circle_down_24" />
 
-                <ImageView
-                    android:layout_weight="1"
-                    android:id="@+id/fragment_film_iv_share"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_margin="5dp"
-                    android:background="#00000000"
-                    android:clickable="true"
-                    android:contentDescription="share button"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:nextFocusLeft="@id/fragment_film_iv_bookmark"
-                    android:nextFocusDown="@id/fragment_film_iv_poster"
-                    android:src="@drawable/ic_baseline_share_24" />
+                 <ImageView
+                     android:layout_weight="1"
+                     android:id="@+id/fragment_film_iv_share"
+                     android:layout_width="0dp"
+                     android:layout_height="50dp"
+                     android:layout_margin="5dp"
+                     android:background="#00000000"
+                     android:clickable="true"
+                     android:contentDescription="share button"
+                     android:focusable="true"
+                     android:foreground="?attr/selectableItemBackground"
+                     android:nextFocusLeft="@id/fragment_film_iv_bookmark"
+                     android:nextFocusDown="@id/fragment_film_iv_poster"
+                     android:src="@drawable/ic_baseline_share_24" />
 
-            </LinearLayout>-->
+             </LinearLayout>-->
         </LinearLayout>
     </LinearLayout>
 
@@ -366,15 +363,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@drawable/roundedbutton"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
             android:padding="10dp"
             android:text="@string/start_watching"
-            android:textColor="@color/white"
-            android:textSize="@dimen/normal_text"
-            android:textStyle="bold" />
+            style="@style/app_button"
+ />
     </LinearLayout>
 
 </LinearLayout>

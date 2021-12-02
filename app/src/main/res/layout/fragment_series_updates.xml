@@ -14,20 +14,14 @@
 
         <TextView
             android:id="@+id/fragment_series_updates_tv_all"
+            style="@style/app_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/leanback_margin_filters"
             android:layout_marginTop="7dp"
             android:layout_marginEnd="7dp"
             android:layout_marginBottom="7dp"
-            android:background="@color/main_color_3"
-            android:padding="7dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:text="@string/series_update"
-            android:textColor="@color/white"
-            android:textSize="@dimen/normal_text"
-            android:textStyle="bold" />
+            android:text="@string/series_update" />
     </LinearLayout>
 
 
@@ -59,7 +53,6 @@
         android:layout_gravity="center" />
 
     <TextView
-        android:gravity="center"
         android:id="@+id/fragment_series_updates_hint"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -67,6 +60,7 @@
         android:layout_marginTop="25dp"
         android:layout_marginEnd="23dp"
         android:layout_marginBottom="25dp"
+        android:gravity="center"
         android:textColor="@color/text_color"
         android:textSize="@dimen/normal_text"
         android:visibility="gone" />

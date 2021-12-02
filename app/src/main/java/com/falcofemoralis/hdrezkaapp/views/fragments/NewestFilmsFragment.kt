@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RadioButton
-import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.falcofemoralis.hdrezkaapp.R
@@ -64,7 +63,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
 
     private fun initFiltersBtn() {
         val builder = DialogManager.getDialog(requireContext(), null)
-        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_newest_filters, null)
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_filters_newest, null)
 
         val sortGroupView: RadioGridGroup = dialogView.findViewById(R.id.film_sort)
         sortGroupView.check(

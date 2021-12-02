@@ -558,7 +558,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         if (badgeCount > 0) {
             notifyBtn?.badgeValue = badgeCount
             notifyBtn?.isShowCounter = true
-            notifyBtn?.badgeColor = getColor(R.color.main_color_3)
+            notifyBtn?.badgeColor = getColor(R.color.primary_red)
         } else {
             notifyBtn?.isShowCounter = false
             notifyBtn?.badgeColor = getColor(R.color.transparent)

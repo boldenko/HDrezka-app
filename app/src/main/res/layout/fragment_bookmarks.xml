@@ -36,7 +36,7 @@
             app:smsp_itemColor="@color/white"
             app:smsp_itemListColor="@color/text_color"
             app:smsp_itemListHintColor="@color/white"
-            app:smsp_selectedItemListColor="@color/main_color_3" />
+            app:smsp_selectedItemListColor="@color/primary_red" />
 
         <com.chivorn.smartmaterialspinner.SmartMaterialSpinner
             android:id="@+id/fragment_bookmarks_sp_show"
@@ -55,7 +55,7 @@
             app:smsp_itemColor="@color/white"
             app:smsp_itemListColor="@color/text_color"
             app:smsp_itemListHintColor="@color/white"
-            app:smsp_selectedItemListColor="@color/main_color_3" />
+            app:smsp_selectedItemListColor="@color/primary_red" />
 
         <com.chivorn.smartmaterialspinner.SmartMaterialSpinner
             android:id="@+id/fragment_bookmarks_sp_list"
@@ -83,7 +83,7 @@
             app:smsp_itemListColor="@color/text_color"
             app:smsp_itemListHintColor="@color/white"
             app:smsp_searchBackgroundColor="@color/light_background"
-            app:smsp_selectedItemListColor="@color/main_color_3" />
+            app:smsp_selectedItemListColor="@color/primary_red" />
     </LinearLayout>
 
     <TextView

@@ -9,7 +9,7 @@
         android:id="@+id/inflate_comment_indent"
         android:layout_width="1dp"
         android:layout_height="match_parent"
-        android:background="@color/main_color_3"
+        android:background="@color/primary_red"
         android:visibility="gone" />
 
     <LinearLayout
@@ -95,7 +95,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="6dp"
                             android:text="(0)"
-                            android:textColor="@color/main_color_3"
+                            android:textColor="@color/primary_red"
                             android:textSize="@dimen/small_text" />
                     </LinearLayout>
 
@@ -105,7 +105,7 @@
                         android:layout_height="wrap_content"
                         android:foreground="?attr/selectableItemBackground"
                         android:text="@string/reply"
-                        android:textColor="@color/main_color_3"
+                        android:textColor="@color/primary_red"
                         android:textSize="@dimen/small_text" />
                 </LinearLayout>
 
@@ -130,7 +130,7 @@
                         android:layout_height="wrap_content"
                         android:foreground="?attr/selectableItemBackground"
                         android:text="@string/delete"
-                        android:textColor="@color/main_color_3"
+                        android:textColor="@color/primary_red"
                         android:textSize="@dimen/small_text" />
                 </LinearLayout>
             </RelativeLayout>

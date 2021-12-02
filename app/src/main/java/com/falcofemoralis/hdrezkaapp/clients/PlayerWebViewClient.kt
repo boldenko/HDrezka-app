@@ -33,9 +33,9 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val f
     }
 
     override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
-        if (error?.errorCode == ERROR_TIMEOUT) {
+  /*      if (error?.errorCode == ERROR_TIMEOUT) {
             mainView.showConnectionError(IConnection.ErrorType.TIMEOUT, error.toString())
-        }
+        }*/
         super.onReceivedError(view, request, error)
     }
 

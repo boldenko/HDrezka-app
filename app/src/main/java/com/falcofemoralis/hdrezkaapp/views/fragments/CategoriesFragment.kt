@@ -50,7 +50,7 @@ class CategoriesFragment : Fragment(), CategoriesView, AdapterView.OnItemSelecte
 
     private fun initFiltersBtn() {
         val builder = DialogManager.getDialog(requireContext(), null)
-        dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_categories_filters, null)
+        dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_filters_categories, null)
 
         val typeGroupView: RadioGridGroup? = dialogView?.findViewById(R.id.film_types)
         typeGroupView?.setOnCheckedChangeListener { group, checkedId ->

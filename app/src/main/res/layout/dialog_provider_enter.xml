@@ -16,7 +16,7 @@
         android:spinnerMode="dialog"
         android:entries="@array/providerProtocols"
         app:smsp_arrowColor="@color/text_color"
-        app:smsp_floatingLabelColor="@color/day_night_text_hint"
+        app:smsp_floatingLabelColor="@color/text_color_hint"
         app:smsp_hintColor="@color/text_color"
         app:smsp_hintSize="0dp"
         app:smsp_underlineSize="0dp"
@@ -24,7 +24,7 @@
         app:smsp_itemColor="@color/text_color"
         app:smsp_itemListColor="@color/text_color"
         app:smsp_itemListHintColor="@color/text_color"
-        app:smsp_selectedItemListColor="@color/main_color_3" />
+        app:smsp_selectedItemListColor="@color/primary_red" />
 
     <EditText
         android:textColor="@color/text_color"

@@ -33,8 +33,6 @@ import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.utils.UnitsConverter
 import com.falcofemoralis.hdrezkaapp.views.elements.CommentEditor
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmView
-import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -259,8 +257,8 @@ class CommentsRecyclerViewAdapter(
             holder.likeCounter.setTextColor(ContextCompat.getColor(context, R.color.active_like))
             ImageViewCompat.setImageTintList(holder.likeIcon, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.active_like)))
         } else {
-            holder.likeCounter.setTextColor(ContextCompat.getColor(context, R.color.main_color_3))
-            ImageViewCompat.setImageTintList(holder.likeIcon, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.main_color_3)))
+            holder.likeCounter.setTextColor(ContextCompat.getColor(context, R.color.primary_red))
+            ImageViewCompat.setImageTintList(holder.likeIcon, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.primary_red)))
         }
     }
 

@@ -2,9 +2,9 @@
 <resources>
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowLightStatusBar">false</item>
-        <item name="colorPrimary">@color/main_color_3</item>
+        <item name="colorPrimary">@color/primary_red</item>
         <item name="colorPrimaryDark">@color/dark_background</item>
-        <item name="colorAccent">@color/main_color_3</item>
+        <item name="colorAccent">@color/primary_red</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowBackground">@color/transparent</item>
         <item name="android:navigationBarColor">@color/dark_background</item>
@@ -17,22 +17,22 @@
 
     <style name="editTextStyle" parent="@style/Widget.AppCompat.EditText">
         <item name="android:textColor">@color/white</item>
-        <item name="android:backgroundTint">@color/main_color_3</item>
+        <item name="android:backgroundTint">@color/primary_red</item>
     </style>
 
     <!-- Alert Dialog -->
     <style name="CustomAlertDialog" parent="Theme.MaterialComponents.Light.Dialog.Alert">
-        <item name="colorControlHighlight">@color/dialog_focusableColor</item>
+        <item name="colorControlHighlight">@color/focusableColor</item>
         <item name="android:colorBackground">@color/light_background</item>
         <item name="android:textColorSecondary">@color/white</item>
         <item name="textColorAlertDialogListItem">@color/white</item>
-        <item name="color">@color/main_color_3</item>
+        <item name="color">@color/primary_red</item>
         <item name="buttonBarPositiveButtonStyle">@style/Alert.Button.Positive</item>
         <item name="buttonBarNegativeButtonStyle">@style/Alert.Button.Neutral</item>
         <item name="buttonBarNeutralButtonStyle">@style/Alert.Button.Neutral</item>
 
         <!-- Used for the buttons -->
-        <item name="colorAccent">@color/main_color_3</item>
+        <item name="colorAccent">@color/primary_red</item>
         <!-- Used for the title and text -->
         <item name="android:textColorPrimary">@color/white</item>
         <!-- Used for the background -->
@@ -41,14 +41,14 @@
 
     <style name="Alert.Button.Positive" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="backgroundTint">@color/transparent</item>
-        <item name="rippleColor">@color/main_color_3</item>
-        <item name="android:textColor">@color/main_color_3</item>
+        <item name="rippleColor">@color/primary_red</item>
+        <item name="android:textColor">@color/primary_red</item>
     </style>
 
     <style name="Alert.Button.Neutral" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="backgroundTint">@color/transparent</item>
-        <item name="rippleColor">@color/main_color_3</item>
-        <item name="android:textColor">@color/main_color_3</item>
+        <item name="rippleColor">@color/primary_red</item>
+        <item name="android:textColor">@color/primary_red</item>
     </style>
 
     <!-- Material Alert Dialog -->
@@ -59,14 +59,14 @@
         <item name="colorOnSurface">@color/white</item>
 
         <!-- Used for the buttons -->
-        <item name="colorAccent">@color/main_color_3</item>
+        <item name="colorAccent">@color/primary_red</item>
 
         <!-- Used for the title and text -->
         <item name="android:textColorPrimary">@color/white</item>
 
         <item name="android:textColorSecondary">@color/white</item>
         <item name="textColorAlertDialogListItem">@color/white</item>
-        <item name="android:colorAccent">@color/main_color_3</item>
+        <item name="android:colorAccent">@color/primary_red</item>
     </style>
 
     <style name="UserSettingElement">
@@ -84,17 +84,17 @@
     </style>
 
     <style name="ATVTheme" parent="Theme.Leanback">
-        <item name="colorPrimary">@color/main_color_3</item>
+        <item name="colorPrimary">@color/primary_red</item>
         <item name="colorPrimaryDark">@color/dark_background</item>
-        <item name="colorAccent">@color/main_color_3</item>
+        <item name="colorAccent">@color/primary_red</item>
         <item name="background">@color/black</item>
         <item name="android:windowBackground">@color/black</item>
-        <item name="playbackProgressPrimaryColor">@color/main_color_3</item>
+        <item name="playbackProgressPrimaryColor">@color/primary_red</item>
     </style>
 
     <style name="CustomSwitch" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- active thumb & track color (30% transparency) -->
-        <item name="colorControlActivated">@color/main_color_3</item>
+        <item name="colorControlActivated">@color/primary_red</item>
 
         <!-- inactive thumb color -->
         <item name="colorSwitchThumbNormal">#f1f1f1</item>
@@ -131,5 +131,15 @@
     <style name="DefaultCardImageStyle" parent="Widget.Leanback.ImageCardView.ImageStyle">
         <item name="android:layout_width">@dimen/default_image_card_width</item>
         <item name="android:layout_height">@dimen/default_image_card_height</item>
+    </style>
+
+    <style name="app_button">
+        <item name="android:padding">7dp</item>
+        <item name="android:paddingStart">20dp</item>
+        <item name="android:paddingEnd">20dp</item>
+        <item name="android:background">@color/unselected_btn_color</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/normal_text</item>
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>

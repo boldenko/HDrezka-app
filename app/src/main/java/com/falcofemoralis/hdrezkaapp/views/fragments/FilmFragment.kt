@@ -57,7 +57,6 @@ import com.falcofemoralis.hdrezkaapp.utils.*
 import com.falcofemoralis.hdrezkaapp.utils.Highlighter.zoom
 import com.falcofemoralis.hdrezkaapp.views.MainActivity
 import com.falcofemoralis.hdrezkaapp.views.adapters.CommentsRecyclerViewAdapter
-import com.falcofemoralis.hdrezkaapp.views.adapters.FilmsListRecyclerViewAdapter
 import com.falcofemoralis.hdrezkaapp.views.elements.CommentEditor
 import com.falcofemoralis.hdrezkaapp.views.tv.player.PlayerActivity
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmView
@@ -229,8 +228,8 @@ class FilmFragment : Fragment(), FilmView {
                 Toast.makeText(requireContext(), getString(R.string.perm_write_hint), Toast.LENGTH_LONG).show()
             }
         }
-        val btn = currentView.findViewById<View>(R.id.fragment_film_btn_download)
-        btn.setOnClickListener {
+        val downloadBtn = currentView.findViewById<View>(R.id.fragment_film_btn_download)
+        downloadBtn.setOnClickListener {
             when (PackageManager.PERMISSION_GRANTED) {
                 ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) -> {
                     filmPresenter.showTranslations(true)
@@ -245,13 +244,13 @@ class FilmFragment : Fragment(), FilmView {
             }
         }
 
-        Highlighter.highlightText(btn, requireContext())
+        Highlighter.highlightText(downloadBtn, requireContext())
     }
 
     override fun setTrailer(link: String?) {
-        val btn = currentView.findViewById<TextView>(R.id.fragment_film_tv_trailer)
+        val trailerBtn = currentView.findViewById<TextView>(R.id.fragment_film_tv_trailer)
         if (link != null && link.isNotEmpty()) {
-            btn.setOnClickListener {
+            trailerBtn.setOnClickListener {
                 val linkIntent = Intent(Intent.ACTION_VIEW, Uri.parse(filmPresenter.film.youtubeLink))
 
                 try {
@@ -260,9 +259,9 @@ class FilmFragment : Fragment(), FilmView {
                     Toast.makeText(requireContext(), getString(R.string.no_yt_player), Toast.LENGTH_LONG).show()
                 }
             }
-            Highlighter.highlightText(btn, requireContext())
+            Highlighter.highlightText(trailerBtn, requireContext())
         } else {
-            btn.visibility = View.GONE
+            trailerBtn.visibility = View.GONE
         }
     }
 
@@ -602,7 +601,7 @@ class FilmFragment : Fragment(), FilmView {
 
     override fun changeWatchState(state: Boolean, btn: ImageView) {
         if (state) {
-            ImageViewCompat.setImageTintList(btn, ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.main_color_3)))
+            ImageViewCompat.setImageTintList(btn, ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.primary_red)))
         } else {
             ImageViewCompat.setImageTintList(btn, ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.white)))
         }
@@ -617,7 +616,7 @@ class FilmFragment : Fragment(), FilmView {
         val collectionLayout: LinearLayout = currentView.findViewById(R.id.fragment_film_tv_collection_list)
         for (i in collection.lastIndex downTo 0) {
             val film = collection.reversed()[i]
-            val layout: LinearLayout = layoutInflater.inflate(R.layout.inflate_colletion_item, null) as LinearLayout
+            val layout: LinearLayout = layoutInflater.inflate(R.layout.inflate_collection_item, null) as LinearLayout
             layout.findViewById<TextView>(R.id.inflate_collection_item_n).text = (i + 1).toString()
             layout.findViewById<TextView>(R.id.inflate_collection_item_name).text = film.title
             layout.findViewById<TextView>(R.id.inflate_collection_item_year).text = film.year
@@ -702,7 +701,7 @@ class FilmFragment : Fragment(), FilmView {
     }
 
     override fun setBookmarksList(bookmarks: ArrayList<Bookmark>) {
-        val btn: View = currentView.findViewById(R.id.fragment_film_btn_bookmark)
+        val bookmarksBtn: View = currentView.findViewById(R.id.fragment_film_btn_bookmark)
         if (UserData.isLoggedIn == true) {
             val data: Array<String?> = arrayOfNulls(bookmarks.size)
             val checkedItems = BooleanArray(bookmarks.size)
@@ -748,23 +747,23 @@ class FilmFragment : Fragment(), FilmView {
                     bookmarksDialog?.dismiss()
                 }
                 bookmarksDialog = builder?.create()
-                btn.setOnClickListener {
+                bookmarksBtn.setOnClickListener {
                     bookmarksDialog?.show()
                 }
             }
 
-            Highlighter.highlightText(btn, requireContext())
+            Highlighter.highlightText(bookmarksBtn, requireContext())
         } else {
             /*       if (SettingsData.deviceType != DeviceType.TV) {
                        currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_title_layout).layoutParams = LinearLayout.LayoutParams(0, WindowManager.LayoutParams.WRAP_CONTENT, 0.85f)
                    }*/
-            btn.visibility = View.GONE
+            bookmarksBtn.visibility = View.GONE
         }
     }
 
     override fun setShareBtn(title: String, link: String) {
-        val btn: View = currentView.findViewById(R.id.fragment_film_btn_share)
-        btn.setOnClickListener {
+        val shareBtn: View = currentView.findViewById(R.id.fragment_film_btn_share)
+        shareBtn.setOnClickListener {
             val sharingIntent = Intent(Intent.ACTION_SEND)
             sharingIntent.type = "text/plain"
             val body: String = getString(R.string.share_body, title, link)
@@ -772,7 +771,7 @@ class FilmFragment : Fragment(), FilmView {
             startActivity(sharingIntent)
         }
 
-        Highlighter.highlightText(btn, requireContext())
+        Highlighter.highlightText(shareBtn, requireContext())
     }
 
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
@@ -928,7 +927,7 @@ class FilmFragment : Fragment(), FilmView {
                         if (activeNameTextView != null && !isDownload && UserData.isLoggedIn == true) {
                             activeNameTextView?.setTextColor(requireContext().getColor(R.color.text_color))
                             activeNameTextView = textView
-                            activeNameTextView?.setTextColor(requireContext().getColor(R.color.main_color_3))
+                            activeNameTextView?.setTextColor(requireContext().getColor(R.color.primary_red))
 
                             filmPresenter.film.lastVoiceId = translation.id
                         }
@@ -942,7 +941,7 @@ class FilmFragment : Fragment(), FilmView {
                 }
 
                 if (activeNameTextView != null && !isDownload) {
-                    activeNameTextView?.setTextColor(requireContext().getColor(R.color.main_color_3))
+                    activeNameTextView?.setTextColor(requireContext().getColor(R.color.primary_red))
                     activeNameTextView?.requestFocus()
                 }
 
@@ -988,7 +987,7 @@ class FilmFragment : Fragment(), FilmView {
                             if (activeNameTextView != null && !isDownload && UserData.isLoggedIn == true) {
                                 activeNameTextView?.setTextColor(requireContext().getColor(R.color.text_color))
                                 activeNameTextView = nameTextView
-                                activeNameTextView?.setTextColor(requireContext().getColor(R.color.main_color_3))
+                                activeNameTextView?.setTextColor(requireContext().getColor(R.color.primary_red))
 
                                 filmPresenter.film.lastVoiceId = translations[selectedTranslation].id
                                 filmPresenter.film.lastSeason = season
@@ -1031,7 +1030,7 @@ class FilmFragment : Fragment(), FilmView {
                 d?.window?.attributes = layoutParams
 
                 if (activeNameTextView != null && !isDownload) {
-                    activeNameTextView?.setTextColor(requireContext().getColor(R.color.main_color_3))
+                    activeNameTextView?.setTextColor(requireContext().getColor(R.color.primary_red))
                     activeNameTextView?.isFocusableInTouchMode = true
                     activeNameTextView?.requestFocus()
                 }

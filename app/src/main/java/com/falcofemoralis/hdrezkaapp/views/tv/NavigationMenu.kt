@@ -238,7 +238,7 @@ class NavigationMenu : Fragment() {
                     tv.setTextColor(
                         ContextCompat.getColor(
                             requireContext(),
-                            R.color.main_color_3
+                            R.color.primary_red
                         )
                     )
                 }
@@ -247,7 +247,7 @@ class NavigationMenu : Fragment() {
                     tv.setTextColor(
                         ContextCompat.getColor(
                             requireContext(),
-                            R.color.nav_text_color
+                            R.color.white
                         )
                     )
                 }
@@ -296,7 +296,7 @@ class NavigationMenu : Fragment() {
             view.setTextColor(
                 ContextCompat.getColor(
                     requireContext(),
-                    R.color.main_color_3
+                    R.color.primary_red
                 )
             )
         } else

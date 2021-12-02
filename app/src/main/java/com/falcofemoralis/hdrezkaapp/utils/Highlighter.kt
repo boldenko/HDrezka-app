@@ -3,7 +3,6 @@ package com.falcofemoralis.hdrezkaapp.utils
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.content.Context
-import android.content.res.ColorStateList
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.ColorDrawable
@@ -62,14 +61,14 @@ object Highlighter {
                     val textColorTo: Int
 
                     if (hasFocus) {
-                        bgColorFrom = ContextCompat.getColor(context, R.color.main_color_3)
-                        bgColorTo = ContextCompat.getColor(context, R.color.white)
+                        bgColorFrom = ContextCompat.getColor(context, R.color.unselected_btn_color)
+                        bgColorTo = ContextCompat.getColor(context, R.color.primary_red)
                         textColorFrom = ContextCompat.getColor(context, R.color.white)
-                        textColorTo = ContextCompat.getColor(context, R.color.black)
+                        textColorTo = ContextCompat.getColor(context, R.color.white)
                     } else {
-                        bgColorFrom = ContextCompat.getColor(context, R.color.white)
-                        bgColorTo = ContextCompat.getColor(context, R.color.main_color_3)
-                        textColorFrom = ContextCompat.getColor(context, R.color.black)
+                        bgColorFrom = ContextCompat.getColor(context, R.color.primary_red)
+                        bgColorTo = ContextCompat.getColor(context, R.color.unselected_btn_color)
+                        textColorFrom = ContextCompat.getColor(context, R.color.white)
                         textColorTo = ContextCompat.getColor(context, R.color.white)
                     }
 
@@ -88,8 +87,8 @@ object Highlighter {
                             }
                         }
 
-                        if(isHint){
-                            if(v is AutoCompleteTextView){
+                        if (isHint) {
+                            if (v is AutoCompleteTextView) {
                                 v.setHintTextColor(animator.animatedValue as Int)
                             }
                         }
@@ -100,28 +99,34 @@ object Highlighter {
         }
     }
 
-    fun highlightImage(iv: ImageView, context: Context){
+    fun highlightImage(iv: View, context: Context) {
         if (SettingsData.deviceType == DeviceType.TV) {
             iv.setOnFocusChangeListener { v, hasFocus ->
+
+                val colorFrom: Int
+                val colorTo: Int
+
+                if (hasFocus) {
+                    colorFrom = ContextCompat.getColor(context, R.color.white)
+                    colorTo = ContextCompat.getColor(context, R.color.primary_red)
+                } else {
+                    colorFrom = ContextCompat.getColor(context, R.color.primary_red)
+                    colorTo = ContextCompat.getColor(context, R.color.white)
+                }
+
+                val colorAnimationText = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+                colorAnimationText.duration = ANIM_DURATION
                 if (v is ImageView) {
-                    val textColorFrom: Int
-                    val textColorTo: Int
-
-                    if (hasFocus) {
-                        textColorFrom = ContextCompat.getColor(context, R.color.white)
-                        textColorTo = ContextCompat.getColor(context, R.color.black)
-                    } else {
-                        textColorFrom = ContextCompat.getColor(context, R.color.black)
-                        textColorTo = ContextCompat.getColor(context, R.color.white)
-                    }
-
-                    val colorAnimationText = ValueAnimator.ofObject(ArgbEvaluator(), textColorFrom, textColorTo)
-                    colorAnimationText.duration = ANIM_DURATION
                     colorAnimationText.addUpdateListener { animator ->
                         v.colorFilter = PorterDuffColorFilter(animator.animatedValue as Int, PorterDuff.Mode.SRC_IN)
                     }
-                    colorAnimationText.start()
+                } else if (v is TextView) {
+                    colorAnimationText.addUpdateListener { animator ->
+                        v.setBackgroundColor(animator.animatedValue as Int)
+                    }
                 }
+                colorAnimationText.start()
+
             }
         }
     }
@@ -135,12 +140,12 @@ object Highlighter {
 
                     if (hasFocus) {
                         textColorFrom = ContextCompat.getColor(context, R.color.white)
-                        textColorTo = ContextCompat.getColor(context, R.color.main_color_3)
+                        textColorTo = ContextCompat.getColor(context, R.color.primary_red)
                         if (isBackground) {
                             (v.getBackground() as TransitionDrawable).startTransition(ANIM_DURATION.toInt())
                         }
                     } else {
-                        textColorFrom = ContextCompat.getColor(context, R.color.main_color_3)
+                        textColorFrom = ContextCompat.getColor(context, R.color.primary_red)
                         textColorTo = ContextCompat.getColor(context, R.color.white)
                         if (isBackground) {
                             (v.getBackground() as TransitionDrawable).reverseTransition(ANIM_DURATION.toInt())
