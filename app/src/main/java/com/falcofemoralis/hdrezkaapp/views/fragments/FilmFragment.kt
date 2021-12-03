@@ -72,7 +72,6 @@ class FilmFragment : Fragment(), FilmView {
     private lateinit var currentView: View
     private lateinit var filmPresenter: FilmPresenter
     private lateinit var fragmentListener: OnFragmentInteractionListener
-    private lateinit var playerView: WebView
     private lateinit var progressBar: ProgressBar
     private lateinit var scrollView: NestedScrollView
     private lateinit var commentsList: RecyclerView
@@ -91,7 +90,7 @@ class FilmFragment : Fragment(), FilmView {
 
     override fun onDestroy() {
         if (isWebviewInstalled) {
-            playerView.destroy()
+            playerView?.destroy()
         }
         activity?.window?.clearFlags(FLAG_KEEP_SCREEN_ON)
         if (SettingsData.deviceType == DeviceType.TV) {
@@ -104,7 +103,6 @@ class FilmFragment : Fragment(), FilmView {
 
     override fun onResume() {
         if (isWebviewInstalled) {
-            wv = playerView
             presenter = filmPresenter
         }
         if (isFullscreen) {
@@ -121,14 +119,13 @@ class FilmFragment : Fragment(), FilmView {
             PlayerJsInterface.notifyanager?.cancel(0)
         } else {
             //do when show
-            wv = playerView
             presenter = filmPresenter
             isFullscreen = false
         }
     }
 
     companion object {
-        lateinit var wv: WebView
+        var playerView: WebView? = null
         var presenter: FilmPresenter? = null
         var isFullscreen: Boolean = false
     }
@@ -273,7 +270,6 @@ class FilmFragment : Fragment(), FilmView {
 
     private fun initPlayer() {
         val openPlayBtn = currentView.findViewById<TextView>(R.id.fragment_film_tv_open_player)
-        val playerContainer = currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_player_container)
 
         if (SettingsData.deviceType == DeviceType.TV) {
             openPlayBtn.requestFocus()
@@ -303,11 +299,14 @@ class FilmFragment : Fragment(), FilmView {
                 }
             }
 
-            playerContainer.visibility = View.GONE
+            if(SettingsData.deviceType == DeviceType.MOBILE){
+                currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_player_container).visibility = View.GONE
+            }
 
             Highlighter.highlightButton(openPlayBtn, requireContext())
         } else {
             filmPresenter.initPlayer()
+
             openPlayBtn.visibility = View.GONE
         }
     }
@@ -316,19 +315,19 @@ class FilmFragment : Fragment(), FilmView {
     override fun setPlayer(link: String) {
         val container: LinearLayout = currentView.findViewById(R.id.fragment_film_ll_player_container)
 
-        playerView.settings.javaScriptEnabled = true
-        playerView.settings.domStorageEnabled = true
+        playerView?.settings?.javaScriptEnabled = true
+        playerView?.settings?.domStorageEnabled = true
         // playerView.settings.userAgentString = BaseModel.userAgent
-        playerView.addJavascriptInterface(WebAppInterface(requireActivity()), "Android")
-        playerView.addJavascriptInterface(PlayerJsInterface(requireContext()), "JSOUT")
-        playerView.webViewClient = PlayerWebViewClient(requireContext(), this, filmPresenter.film) {
+        playerView?.addJavascriptInterface(WebAppInterface(requireActivity()), "Android")
+        playerView?.addJavascriptInterface(PlayerJsInterface(requireContext()), "JSOUT")
+        playerView?.webViewClient = PlayerWebViewClient(requireContext(), this, filmPresenter.film) {
             container.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
             currentView.findViewById<ProgressBar>(R.id.fragment_film_pb_player_loading).visibility = View.GONE
-            playerView.visibility = View.VISIBLE
+            playerView?.visibility = View.VISIBLE
         }
 
-        playerView.webChromeClient = activity?.let { PlayerChromeClient(it) }
-        playerView.loadUrl(link)
+        playerView?.webChromeClient = activity?.let { PlayerChromeClient(it) }
+        playerView?.loadUrl(link)
     }
 
     class WebAppInterface(private val act: FragmentActivity) {

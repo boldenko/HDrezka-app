@@ -80,8 +80,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
-                android:foreground="?attr/selectableItemBackground"
                 android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 android:gravity="center"
                 android:paddingTop="7dp"
                 android:paddingBottom="7dp"
@@ -360,6 +360,7 @@
 
         <TextView
             android:id="@+id/fragment_film_tv_open_player"
+            style="@style/app_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -367,9 +368,29 @@
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
             android:padding="10dp"
-            android:text="@string/start_watching"
-            style="@style/app_button"
- />
+            android:text="@string/start_watching" />
+    </LinearLayout>
+
+    <!-- Player -->
+    <LinearLayout
+        android:id="@+id/fragment_film_ll_player_container"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_margin="10dp"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/fragment_film_pb_player_loading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <WebView
+            android:id="@+id/fragment_film_wv_player"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
     </LinearLayout>
 
 </LinearLayout>

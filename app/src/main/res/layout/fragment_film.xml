@@ -28,28 +28,6 @@
             <!-- Main info -->
             <include layout="@layout/inflate_fragment_film_main" />
 
-            <!-- Player -->
-            <LinearLayout
-                android:id="@+id/fragment_film_ll_player_container"
-                android:layout_width="match_parent"
-                android:layout_height="350dp"
-                android:layout_margin="10dp"
-                android:layout_marginBottom="5dp"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ProgressBar
-                    android:id="@+id/fragment_film_pb_player_loading"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <WebView
-                    android:id="@+id/fragment_film_wv_player"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone" />
-            </LinearLayout>
-
             <!--Rating-->
             <RelativeLayout
                 android:id="@+id/fragment_film_rating_layout"

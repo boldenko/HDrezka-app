@@ -53,7 +53,7 @@ class PlayerJsInterface(val mContext: Context) {
 
     companion object {
         fun stop() {
-            FilmFragment.wv?.evaluateJavascript("mediaElement.pause();", null)
+            FilmFragment.playerView?.evaluateJavascript("mediaElement.pause();", null)
             playing = false
         }
 

@@ -12,7 +12,7 @@ import androidx.core.app.NotificationCompat
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.clients.PlayerJsInterface
 import com.falcofemoralis.hdrezkaapp.views.fragments.FilmFragment.Companion.presenter
-import com.falcofemoralis.hdrezkaapp.views.fragments.FilmFragment.Companion.wv
+import com.falcofemoralis.hdrezkaapp.views.fragments.FilmFragment.Companion.playerView
 import com.squareup.picasso.Picasso
 
 class NotificationListener : BroadcastReceiver() {
@@ -25,11 +25,11 @@ class NotificationListener : BroadcastReceiver() {
         expandedView.setTextViewText(R.id.title, presenter?.film?.title)
 
         if (PlayerJsInterface.playing) {
-            wv.evaluateJavascript("mediaElement.pause();", null)
+            playerView?.evaluateJavascript("mediaElement.pause();", null)
             PlayerJsInterface.playing = false
             expandedView.setImageViewResource(R.id.pausePlay, R.drawable.ic_baseline_pause_24)
         } else {
-            wv.evaluateJavascript("mediaElement.play();", null)
+            playerView?.evaluateJavascript("mediaElement.play();", null)
             PlayerJsInterface.playing = true
             expandedView.setImageViewResource(R.id.pausePlay, R.drawable.ic_baseline_play_arrow_24)
         }
