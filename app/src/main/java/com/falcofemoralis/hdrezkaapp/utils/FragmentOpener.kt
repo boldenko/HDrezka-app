@@ -19,7 +19,7 @@ import java.io.Serializable
 object FragmentOpener {
     private var isCommitInProgress = false
 
-    fun <T> openWithData(source: Fragment, fragmentListener: OnFragmentInteractionListener, data: T, dataTag: String) where T : Serializable {
+    fun <T> openWithData(source: Fragment?, fragmentListener: OnFragmentInteractionListener, data: T, dataTag: String) where T : Serializable {
         if (isCommitInProgress) {
             return
         }

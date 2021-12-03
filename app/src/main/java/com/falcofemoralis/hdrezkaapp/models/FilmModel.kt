@@ -398,10 +398,14 @@ object FilmModel {
         film.translations = filmTranslations
 
         if (film.isMovieTranslation == false && SettingsData.autoPlayNextEpisode == true) {
-            val firstIndex = stringedDoc.indexOf("\$(function () { sof.tv.initCDNSeriesEvents")
-            val secondIndex = stringedDoc.indexOf("; \$(function ()")
-            val autoswitch = stringedDoc.substring(firstIndex, secondIndex)
-            film.autoswitch = autoswitch
+            try {
+                val firstIndex = stringedDoc.indexOf("\$(function () { sof.tv.initCDNSeriesEvents")
+                val secondIndex = stringedDoc.indexOf("; \$(function ()")
+                val autoswitch = stringedDoc.substring(firstIndex, secondIndex)
+                film.autoswitch = autoswitch
+            } catch (e: Exception){
+                e.printStackTrace()
+            }
         }
 
         try {

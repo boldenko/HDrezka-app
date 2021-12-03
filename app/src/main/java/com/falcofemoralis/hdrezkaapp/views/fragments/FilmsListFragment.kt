@@ -24,9 +24,6 @@ import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmListCallView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmsListView
 import android.widget.AbsListView
 
-
-
-
 open class FilmsListFragment : Fragment(), FilmsListView {
     private lateinit var currentView: View
     private lateinit var recyclerView: RecyclerView
