@@ -23,6 +23,7 @@
     <color name="unselected_title">@color/white</color>
     <color name="unselected_subtitle">@color/gray</color>
     <color name="unselected_btn_color">@color/primary_red</color>
+    <color name="editor_input">#303030</color>
 
     <!-- Film types colors -->
     <color name="film">#00a0b0</color>

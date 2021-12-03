@@ -322,13 +322,17 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
 
     override fun updatePager() {
         if (SettingsData.deviceType != DeviceType.TV) {
-            (mainFragment as ViewPagerFragment).setAdapter()
+            if (mainFragment is ViewPagerFragment) {
+                (mainFragment as ViewPagerFragment).setAdapter()
+            }
         }
     }
 
     override fun redrawPage(item: UpdateItem) {
         if (SettingsData.deviceType != DeviceType.TV) {
-            (mainFragment as ViewPagerFragment).updatePage(item)
+            if (mainFragment is ViewPagerFragment) {
+                (mainFragment as ViewPagerFragment).updatePage(item)
+            }
         }
     }
 
@@ -533,7 +537,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     private fun getPermissionDialog() = supportFragmentManager.findFragmentByTag(SearchFragment.Tag.getTag().name) as? VoicePermissionDialogFragment
 
     private fun downloadApk(apkUrl: String?) {
-        if(apkUrl != null && apkUrl.isNotEmpty()) {
+        if (apkUrl != null && apkUrl.isNotEmpty()) {
             val downloadController = DownloadController(this, apkUrl)
             downloadController.enqueueDownload()
         }
@@ -633,13 +637,10 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     fun initSeriesUpdates() {
         seriesUpdatesFragment = SeriesUpdatesFragment()
         seriesUpdatesFragment?.initUserUpdatesData(this, ::updateNotifyBadge, ::createNotifyBtn)
-        Log.d("TEST TEST", "initUserUpdatesData $seriesUpdatesFragment")
     }
 
     fun updateNotifyBadge(badgeCount: Int) {
         val notifyBtn = if (SettingsData.deviceType == DeviceType.TV) {
-            Log.d("TEST TEST", "updateNotifyBadge $seriesUpdatesFragment ")
-            Log.d("TEST TEST", "updateNotifyBadge $NavigationMenu.notifyBtn ")
             NavigationMenu.notifyBtn
         } else {
             findViewById(R.id.activity_main_iv_notify_btn)

@@ -83,14 +83,16 @@ class CommentEditor(
                         textArea.text?.clear()
                     }
                 } catch (e: Exception) {
-                    if (e is HttpStatusException) {
-                        if (e.statusCode == 403) {
-                            Toast.makeText(context, context.getString(R.string.comment_need_apply), Toast.LENGTH_SHORT).show()
+                    withContext(Dispatchers.Main) {
+                        if (e is HttpStatusException) {
+                            if (e.statusCode == 403) {
+                                Toast.makeText(context, context.getString(R.string.comment_need_apply), Toast.LENGTH_SHORT).show()
+                            } else {
+                                ExceptionHelper.catchException(e, iConnection)
+                            }
                         } else {
                             ExceptionHelper.catchException(e, iConnection)
                         }
-                    } else {
-                        ExceptionHelper.catchException(e, iConnection)
                     }
                 }
             }

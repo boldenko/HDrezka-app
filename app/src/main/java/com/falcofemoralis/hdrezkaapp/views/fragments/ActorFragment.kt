@@ -17,7 +17,6 @@ import com.falcofemoralis.hdrezkaapp.objects.Actor
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.presenters.ActorPresenter
-import com.falcofemoralis.hdrezkaapp.utils.ConnectionManager
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
 import com.falcofemoralis.hdrezkaapp.views.adapters.FilmsListRecyclerViewAdapter
@@ -54,35 +53,39 @@ class ActorFragment : Fragment(), ActorView {
     }
 
     override fun setBaseInfo(actor: Actor) {
-        currentView.findViewById<TextView>(R.id.fragment_actor_films_tv_name).text = actor.name
-        currentView.findViewById<TextView>(R.id.fragment_actor_films_tv_name_orig).text = actor.nameOrig
+        try {
+            currentView.findViewById<TextView>(R.id.fragment_actor_films_tv_name).text = actor.name
+            currentView.findViewById<TextView>(R.id.fragment_actor_films_tv_name_orig).text = actor.nameOrig
 
-        val photoView = currentView.findViewById<ImageView>(R.id.fragment_actor_films_iv_photo)
-        Picasso.get().load(actor.photo).into(photoView)
-        actor.photo?.let { setFullSizeImage(it) }
-        photoView.setOnClickListener { openFullSizeImage() }
+            val photoView = currentView.findViewById<ImageView>(R.id.fragment_actor_films_iv_photo)
+            Picasso.get().load(actor.photo).into(photoView)
+            actor.photo?.let { setFullSizeImage(it) }
+            photoView.setOnClickListener { openFullSizeImage() }
 
-        if (SettingsData.deviceType == DeviceType.TV) {
-            photoView.requestFocus()
+            if (SettingsData.deviceType == DeviceType.TV) {
+                photoView.requestFocus()
+            }
+
+            currentView.findViewById<TextView>(R.id.fragment_actor_films_tv_career).text = getString(R.string.career, actor.careers)
+
+            if (actor.age != null) {
+                actor.birthday += " (${actor.age})"
+            }
+
+            if (actor.diedOnAge != null) {
+                actor.deathday += " (${getString(R.string.death_in)} ${actor.diedOnAge})"
+            }
+
+            setInfo(actor.birthday, R.id.fragment_actor_films_tv_borndate, R.string.birthdate)
+            setInfo(actor.birthplace, R.id.fragment_actor_films_tv_bornplace, R.string.birthplace)
+            setInfo(actor.deathday, R.id.fragment_actor_films_tv_dieddate, R.string.deathdate)
+            setInfo(actor.deathplace, R.id.fragment_actor_films_tv_diedplace, R.string.deathplace)
+
+            scrollView.visibility = View.VISIBLE
+            progressBar.visibility = View.GONE
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-
-        currentView.findViewById<TextView>(R.id.fragment_actor_films_tv_career).text = getString(R.string.career, actor.careers)
-
-        if (actor.age != null) {
-            actor.birthday += " (${actor.age})"
-        }
-
-        if (actor.diedOnAge != null) {
-            actor.deathday += " (${getString(R.string.death_in)} ${actor.diedOnAge})"
-        }
-
-        setInfo(actor.birthday, R.id.fragment_actor_films_tv_borndate, R.string.birthdate)
-        setInfo(actor.birthplace, R.id.fragment_actor_films_tv_bornplace, R.string.birthplace)
-        setInfo(actor.deathday, R.id.fragment_actor_films_tv_dieddate, R.string.deathdate)
-        setInfo(actor.deathplace, R.id.fragment_actor_films_tv_diedplace, R.string.deathplace)
-
-        scrollView.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
     }
 
     private fun setInfo(data: String?, viewId: Int, textId: Int) {
@@ -110,11 +113,11 @@ class ActorFragment : Fragment(), ActorView {
     }
 
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
-        try{
-            if(context != null){
+        try {
+            if (context != null) {
                 ExceptionHelper.showToastError(requireContext(), type, errorText)
             }
-        } catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }

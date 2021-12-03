@@ -102,8 +102,6 @@ class NavigationMenu : Fragment() {
         GlobalScope.launch {
             Thread.sleep(100)
             withContext(Dispatchers.Main){
-                Log.d("TESTEST", "Start listeners")
-
                 //Navigation Menu Options Focus, Key Listeners
                 setListener(notify_IB, notify_TV, seriesUpdates, R.drawable.ic_baseline_notifications_24_sel, R.drawable.ic_baseline_notifications_24, -1)
 
@@ -118,8 +116,6 @@ class NavigationMenu : Fragment() {
                 setListener(later_IB, later_TV, later, R.drawable.ic_baseline_watch_later_24_sel, R.drawable.ic_baseline_watch_later_24, 4)
 
                 setListener(settings_IB, settings_TV, settings, R.drawable.ic_baseline_settings_24_sel, R.drawable.ic_baseline_settings_24, -1)
-
-                Log.d("TESTEST", "End listeners")
             }
         }
 
@@ -133,12 +129,8 @@ class NavigationMenu : Fragment() {
         }
 
         ib.setOnFocusChangeListener { v, hasFocus ->
-            Log.d("TESTEST", "$lastMenu")
-
             if (isFree && !isLocked) {
                 if (hasFocus) {
-                    Log.d("TESTEST", "hasFocus $lastMenu")
-
                     if (isNavigationOpen()) {
                         setFocusedView(ib, selectedImage)
                         setMenuNameFocusView(tv, true)
@@ -148,8 +140,6 @@ class NavigationMenu : Fragment() {
                         openNav()
                     }
                 } else {
-                    Log.d("TESTEST", "not focus $lastMenu")
-
                     if (isNavigationOpen()) {
                         // false by default,
                         if (isFocusOut) {
@@ -166,20 +156,15 @@ class NavigationMenu : Fragment() {
 
         ib.setOnKeyListener { v, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN) {//only when key is pressed down
-                Log.d("TESTEST", "ACTION_DOWN $lastMenu")
-
                 when (keyCode) {
                     KeyEvent.KEYCODE_DPAD_RIGHT -> {
                         if (!closed) {
-                            Log.d("TESTEST", "KEYCODE_DPAD_RIGHT")
                             isFocusOut = true
                             closeNav()
                             navigationStateListener.onStateChanged(false, lastSelectedMenu)
                         }
                     }
                     KeyEvent.KEYCODE_ENTER -> {
-                        Log.d("TESTEST", "KEYCODE_ENTER $lastMenu")
-
                         closed = true
                         lastSelectedMenu = lastMenu
                         fragmentChangeListener.switchFragment(lastMenu)
@@ -187,14 +172,10 @@ class NavigationMenu : Fragment() {
                         // closeNav()
                     }
                     KeyEvent.KEYCODE_DPAD_UP -> {
-                        Log.d("TESTEST", "KEYCODE_DPAD_UP $lastMenu")
-
                         if (!ib.isFocusable)
                             ib.isFocusable = true
                     }
                     KeyEvent.KEYCODE_DPAD_CENTER -> {
-                        Log.d("TESTEST", "KEYCODE_DPAD_CENTER $lastMenu")
-
                         closed = true
                         lastSelectedMenu = lastMenu
                         fragmentChangeListener.switchFragment(lastMenu)
@@ -204,8 +185,6 @@ class NavigationMenu : Fragment() {
                         if(isNavigationOpen()){
                             closeNav()
                         }
-                        Log.d("TESTEST", "KEYCODE_BACK $lastMenu")
-
                     }
                 }
             }

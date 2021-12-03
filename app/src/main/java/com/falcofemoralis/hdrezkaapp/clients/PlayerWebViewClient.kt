@@ -137,7 +137,6 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val f
                 "}" + "})()"
 
         view?.evaluateJavascript(script2, null)
-        Log.d("SCR_T", script2)
 
         val script2m = "javascript: (function() {" +
                 "var elMain = document.getElementById('main');" +
@@ -172,7 +171,6 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val f
                 "setTimeout(setPos, 1000);" +
                 "})()"
         view?.evaluateJavascript(script2m, null)
-        Log.d("SCR_T", script2m)
 
         view?.evaluateJavascript(
             "var vkGroups = document.getElementById('vk_groups');\n" +

@@ -22,6 +22,10 @@ import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
 import com.falcofemoralis.hdrezkaapp.views.adapters.FilmsListRecyclerViewAdapter
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmListCallView
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmsListView
+import android.widget.AbsListView
+
+
+
 
 open class FilmsListFragment : Fragment(), FilmsListView {
     private lateinit var currentView: View
@@ -52,7 +56,6 @@ open class FilmsListFragment : Fragment(), FilmsListView {
                 val diff = view.bottom - (scrollView.height + scrollView.scrollY)
 
                 if (diff == 0) {
-                    Log.d("LIST_TEST", "end")
                     setProgressBarState(IProgressState.StateType.LOADING)
                     callView?.triggerEnd()
                 }

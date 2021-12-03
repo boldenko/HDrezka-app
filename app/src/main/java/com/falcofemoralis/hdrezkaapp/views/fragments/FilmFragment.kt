@@ -80,7 +80,7 @@ class FilmFragment : Fragment(), FilmView {
     private var modalDialog: Dialog? = null
     private var commentEditor: CommentEditor? = null
     private var bookmarksDialog: AlertDialog? = null
-    private lateinit var wl: PowerManager.WakeLock
+    private var wl: PowerManager.WakeLock? = null
     private var isWebviewInstalled = true
 
     override fun onAttach(context: Context) {
@@ -93,8 +93,12 @@ class FilmFragment : Fragment(), FilmView {
             playerView?.destroy()
         }
         activity?.window?.clearFlags(FLAG_KEEP_SCREEN_ON)
-        if (SettingsData.deviceType == DeviceType.TV) {
-            wl.release()
+        if (SettingsData.deviceType == DeviceType.TV && wl?.isHeld == true) {
+           try {
+               wl?.release()
+           } catch (e: Exception){
+               e.printStackTrace()
+           }
         }
         PlayerJsInterface.notifyanager?.cancel(0)
 
@@ -173,7 +177,7 @@ class FilmFragment : Fragment(), FilmView {
         if (SettingsData.deviceType == DeviceType.TV) {
             val pm: PowerManager = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
             wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "tag")
-            wl.acquire(300 * 60 * 1000L)
+            wl?.acquire(300 * 60 * 1000L)
         }
     }
 
