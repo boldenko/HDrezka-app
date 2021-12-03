@@ -45,10 +45,10 @@
     <string name="sort_hint">Сортировать</string>
     <string name="show_hint">Отобразить</string>
     <string name="catalogue">Каталог</string>
-    <string name="choose_cat_hint">Выберите категорию</string>
+    <string name="choose_cat_hint">Выбрать категорию</string>
     <string name="choose_genre_hint">Жанр</string>
-    <string name="choose_countries">Выберите страны</string>
-    <string name="choose_genres">Выберите жанры</string>
+    <string name="choose_countries">Выбрать страны</string>
+    <string name="choose_genres">Выбрать жанры</string>
     <string name="exclude_countries">Исключить страны</string>
     <string name="exclude_genres">Исключить жанры</string>
     <string name="cancel">Отменить</string>
@@ -99,7 +99,7 @@
     <string name="search_page_hint">Введите название фильма или сериала в строку поиска</string>
     <string name="no_player">Отсутствует плеер!</string>
     <string name="no_manager">Отсутствует менеджер загрузок!</string>
-    <string name="choose_quality">Выберите качество</string>
+    <string name="choose_quality">Выбрать качество</string>
     <string name="translation">Озвучка</string>
     <string name="start_watching">Смотреть</string>
     <string name="download">Скачать</string>

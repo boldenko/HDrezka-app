@@ -1097,84 +1097,108 @@ class FilmFragment : Fragment(), FilmView {
     override fun openStream(stream: Stream, filmTitle: String, title: String, isDownload: Boolean, translation: Voice) {
         val url = stream.url.replace("#EXT-X-STREAM-INF:", "")
 
-        if (isDownload) {
-            val manager: DownloadManager? = requireActivity().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager?
-            if (manager != null) {
-                val parseUri = Uri.parse(url)
-                val fileName = StringBuilder()
-                fileName.append(filmTitle)
-                if (title.isNotEmpty()) {
-                    fileName.append(" $title")
-                }
+        fun initStream(subtitle: Subtitle?) {
+            if (isDownload) {
+                val manager: DownloadManager? = requireActivity().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager?
+                if (manager != null) {
+                    val parseUri = Uri.parse(url)
+                    val fileName = StringBuilder()
+                    fileName.append(filmTitle)
+                    if (title.isNotEmpty()) {
+                        fileName.append(" $title")
+                    }
 
-                if (stream.quality.isNotEmpty()) {
-                    fileName.append(" ${stream.quality}")
-                }
+                    if (stream.quality.isNotEmpty()) {
+                        fileName.append(" ${stream.quality}")
+                    }
 
-                fileName.append(" ${parseUri.lastPathSegment}")
+                    fileName.append(" ${parseUri.lastPathSegment}")
 
-                if (SettingsData.isExternalDownload == true) {
-                    val sharingIntent = Intent(Intent.ACTION_SEND)
-                    sharingIntent.type = "text/plain"
-                    val body: String = getString(R.string.share_body, fileName.toString(), parseUri)
-                    sharingIntent.putExtra(Intent.EXTRA_TEXT, body)
-                    startActivity(sharingIntent)
+                    if (SettingsData.isExternalDownload == true) {
+                        val sharingIntent = Intent(Intent.ACTION_SEND)
+                        sharingIntent.type = "text/plain"
+                        val body: String = getString(R.string.share_body, fileName.toString(), parseUri)
+                        sharingIntent.putExtra(Intent.EXTRA_TEXT, body)
+                        startActivity(sharingIntent)
+                    } else {
+                        val request = DownloadManager.Request(parseUri)
+                        request.setTitle(fileName)
+                        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+                        request.allowScanningByMediaScanner()
+                        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName.toString())
+                        manager.enqueue(request)
+                        Toast.makeText(requireContext(), getString(R.string.download_started), Toast.LENGTH_SHORT).show()
+                    }
+
+                    if (subtitle != null) {
+                        downloadSubtitle(subtitle.url, "$fileName.vtt")
+                    }
                 } else {
-                    val request = DownloadManager.Request(parseUri)
-                    request.setTitle(fileName)
-                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-                    request.allowScanningByMediaScanner()
-                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName.toString())
-                    manager.enqueue(request)
-                    Toast.makeText(requireContext(), getString(R.string.download_started), Toast.LENGTH_SHORT).show()
-                }
-
-                if (translation.subtitles != null && translation.subtitles!!.size > 0) {
-                    downloadSubtitle(translation.subtitles!![0].url, "$fileName.vtt")
+                    Toast.makeText(requireContext(), getString(R.string.no_manager), Toast.LENGTH_LONG).show()
                 }
             } else {
-                Toast.makeText(requireContext(), getString(R.string.no_manager), Toast.LENGTH_LONG).show()
-            }
-        } else {
-            if (UserData.isLoggedIn == true) {
-                filmPresenter.updateWatchLater(translation)
-            }
-
-            if (SettingsData.isPlayer == false && SettingsData.deviceType == DeviceType.TV) {
-                val intent = Intent(requireContext(), PlayerActivity::class.java)
-                intent.putExtra(PlayerActivity.FILM, filmPresenter.film)
-                intent.putExtra(PlayerActivity.STREAM, stream)
-                intent.putExtra(PlayerActivity.TRANSLATION, translation)
-                startActivity(intent)
-            } else {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                val newFilmTitle: String
-
-                if (translation.seasons != null && translation.seasons!!.size > 0) {
-                    newFilmTitle = "Сезон ${translation.selectedEpisode?.first} - Эпизод ${translation.selectedEpisode?.second} $filmTitle"
-                } else {
-                    newFilmTitle = filmTitle
+                if (UserData.isLoggedIn == true) {
+                    filmPresenter.updateWatchLater(translation)
                 }
 
-                intent.setDataAndType(Uri.parse(url), "video/*")
-                intent.putExtra("title", newFilmTitle)
-
-                val filename = newFilmTitle.replace(" ", "").replace("/", "") + ".vtt"
-                val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/$filename"
-                if (translation.subtitles != null && translation.subtitles!!.size > 0 && SettingsData.isSubtitlesDownload == true) {
-                    downloadSubtitle(translation.subtitles!![0].url, filename)
-                    intent.putExtra("subtitles_location", path)
-                    intent.putExtra("subs", path)
-                }
-
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
-                try {
+                if (SettingsData.isPlayer == false && SettingsData.deviceType == DeviceType.TV) {
+                    val intent = Intent(requireContext(), PlayerActivity::class.java)
+                    intent.putExtra(PlayerActivity.FILM, filmPresenter.film)
+                    intent.putExtra(PlayerActivity.STREAM, stream)
+                    intent.putExtra(PlayerActivity.TRANSLATION, translation)
                     startActivity(intent)
-                } catch (e: Exception) {
-                    Toast.makeText(requireContext(), getString(R.string.no_player), Toast.LENGTH_LONG).show()
+                } else {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    val newFilmTitle: String
+
+                    if (translation.seasons != null && translation.seasons!!.size > 0) {
+                        newFilmTitle = "Сезон ${translation.selectedEpisode?.first} - Эпизод ${translation.selectedEpisode?.second} $filmTitle"
+                    } else {
+                        newFilmTitle = filmTitle
+                    }
+
+                    intent.setDataAndType(Uri.parse(url), "video/*")
+                    intent.putExtra("title", newFilmTitle)
+
+                    if (subtitle != null && SettingsData.isSubtitlesDownload == true) {
+                        val filename = newFilmTitle.replace(" ", "").replace("/", "") + ".vtt"
+                        val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/$filename"
+
+                        downloadSubtitle(subtitle.url, filename)
+
+                        intent.putExtra("subtitles_location", path)
+                        val subs: Array<Uri> = arrayOf(Uri.parse(subtitle.url))
+                        intent.putExtra("subs", subs)
+                        val subsnames: Array<String> = arrayOf(subtitle.lang)
+                        intent.putExtra("subs.name", subsnames)
+                        intent.putExtra("subs.filename", subsnames)
+                    }
+
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+                    try {
+                        startActivity(intent)
+                    } catch (e: Exception) {
+                        Toast.makeText(requireContext(), getString(R.string.no_player), Toast.LENGTH_LONG).show()
+                    }
                 }
             }
+        }
+
+        val builder = DialogManager.getDialog(requireContext(), R.string.title_select_caption)
+        val subtitlesNames: ArrayList<String> = ArrayList()
+
+        if (translation.subtitles != null && translation.subtitles!!.size > 0 && SettingsData.deviceType == DeviceType.MOBILE) {
+            for (subtitle in translation.subtitles!!) {
+                subtitlesNames.add(subtitle.lang)
+            }
+
+            builder.setAdapter(ArrayAdapter(requireContext(), R.layout.simple_list_item, subtitlesNames)) { dialog, which ->
+                initStream(translation.subtitles!![which])
+            }
+            builder.create().show()
+        } else {
+            initStream(null)
         }
     }
 
