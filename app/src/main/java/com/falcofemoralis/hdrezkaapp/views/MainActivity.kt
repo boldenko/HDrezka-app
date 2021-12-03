@@ -1,8 +1,10 @@
 package com.falcofemoralis.hdrezkaapp.views
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
@@ -10,7 +12,7 @@ import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.*
-import com.falcofemoralis.hdrezkaapp.BuildConfig
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -22,11 +24,13 @@ import com.algolia.instantsearch.voice.ui.Voice.shouldExplainPermission
 import com.algolia.instantsearch.voice.ui.Voice.showPermissionRationale
 import com.algolia.instantsearch.voice.ui.VoicePermissionDialogFragment
 import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
+import com.falcofemoralis.hdrezkaapp.BuildConfig
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.clients.PlayerJsInterface
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.constants.NavigationMenuTabs
 import com.falcofemoralis.hdrezkaapp.constants.UpdateItem
+import com.falcofemoralis.hdrezkaapp.controllers.DownloadController
 import com.falcofemoralis.hdrezkaapp.controllers.SocketFactory
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.interfaces.IPagerView
@@ -111,6 +115,14 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         FirebaseApp.initializeApp(this);
 
         if (isInternetAvailable(applicationContext)) {
+            SettingsData.initProvider(this)
+
+            try {
+                setDefaultSSLSocketFactory(SocketFactory())
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
             initApp()
 
             checkAppVersion()
@@ -186,14 +198,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     @SuppressLint("SourceLockedOrientationActivity")
     private fun initApp() {
         if (savedInstanceState == null) {
-            SettingsData.initProvider(this)
-
-            try {
-                setDefaultSSLSocketFactory(SocketFactory())
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
             if (SettingsData.provider == null || SettingsData.provider == "") {
                 showProviderEnter()
             } else {
@@ -281,7 +285,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                 Toast.makeText(this, getString(R.string.new_provider, link), Toast.LENGTH_LONG).show()
                 SettingsData.setProvider(link, this, true)
                 d.cancel()
-                initCreate()
+                initApp()
             } else {
                 Toast.makeText(this, getString(R.string.empty_provider), Toast.LENGTH_SHORT).show()
             }
@@ -528,16 +532,32 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     private fun getPermissionView(): View = getPermissionDialog()!!.requireView().findViewById(R.id.positive)
     private fun getPermissionDialog() = supportFragmentManager.findFragmentByTag(SearchFragment.Tag.getTag().name) as? VoicePermissionDialogFragment
 
+    private fun downloadApk(apkUrl: String?) {
+        if(apkUrl != null && apkUrl.isNotEmpty()) {
+            val downloadController = DownloadController(this, apkUrl)
+            downloadController.enqueueDownload()
+        }
+    }
+
     private fun checkAppVersion() {
+        var apkUrl: String? = null
         if (SettingsData.isCheckNewVersion == true) {
             val _context = this
             //val versionFilePath = filesDir.path + "/version"
+
+            val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+                if (isGranted) {
+                    // Permission is granted. Continue the action or workflow in your
+                    downloadApk(apkUrl)
+                } else {
+                    Toast.makeText(_context, getString(R.string.perm_write_hint), Toast.LENGTH_LONG).show()
+                }
+            }
 
             GlobalScope.launch {
                 try {
                     val uri: URI = URI.create("https://dl.dropboxusercontent.com/s/yhvwhwdzmiiqu6x/version.json?dl=1")
                     uri.toURL().openStream().use { inputStream ->
-                        // InputStream -> String
                         val versionString = convertInputStreamToString(inputStream)
                         try {
                             if (versionString != null) {
@@ -545,43 +565,31 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                                 val versionCode = versionObject.getInt("code")
                                 val serverVersion = versionObject.getString("version")
                                 val newFeatures = versionObject.getString("newFeatures")
+                                apkUrl = versionObject.getString("apk")
 
-                                val isNewVersion = compareAppVersion(versionCode)
+                                val isNewVersion = true // compareAppVersion(versionCode)
+
+                                // TODO
 
                                 withContext(Dispatchers.Main) {
                                     if (isNewVersion) {
                                         // show dialog
                                         val builder = DialogManager.getDialog(_context, R.string.new_version_hint)
-                                        builder.setPositiveButton(R.string.ok_text) { d, i ->
+                                        builder.setNegativeButton(R.string.cancel) { d, i ->
                                             d.dismiss()
                                         }
-                                        /*       builder.setNegativeButton(R.string.cancel) { d, i ->
-                                         fun downloadApk() {
-                                             val apkUrl = "https://androidwave.com/source/apk/app-pagination-recyclerview.apk"
-                                             val downloadController = DownloadController(_context, apkUrl)
-                                             downloadController.enqueueDownload()
-                                         }
 
-                                         val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-                                             if (isGranted) {
-                                                 // Permission is granted. Continue the action or workflow in your
-                                                 downloadApk()
-                                             } else {
-                                                 Toast.makeText(_context, getString(R.string.perm_write_hint), Toast.LENGTH_LONG).show()
-                                             }
-                                         }
+                                        builder.setPositiveButton(R.string.update_to) { d, i ->
+                                            when (PackageManager.PERMISSION_GRANTED) {
+                                                ContextCompat.checkSelfPermission(_context, Manifest.permission.WRITE_EXTERNAL_STORAGE) -> {
+                                                    downloadApk(apkUrl)
+                                                }
+                                                else -> {
+                                                    requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                                }
+                                            }
+                                        }
 
-                                         when (PackageManager.PERMISSION_GRANTED) {
-                                             ContextCompat.checkSelfPermission(_context, Manifest.permission.WRITE_EXTERNAL_STORAGE) -> {
-                                                 downloadApk()
-                                             }
-                                             else -> {
-                                                 // You can directly ask for the permission.
-                                                 // The registered ActivityResultCallback gets the result of this request.
-                                                 requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                                             }
-                                         }
-                                     }*/
                                         builder.setMessage("${BuildConfig.VERSION_NAME} -> $serverVersion\n\n $newFeatures")
                                         val d = builder.create()
                                         d.show()

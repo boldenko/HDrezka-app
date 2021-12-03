@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
-    <external-path name="all_ext_dirs" path="." />
-    <files-path name="all__dirs" path="." />
+    <external-path
+        name="external_files"
+        path="." />
 </paths>
