@@ -223,7 +223,6 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
     private fun getVoiceDialog() = (parentFragmentManager.findFragmentByTag(Tag.Voice.name) as? VoiceInputDialogFragmentOverride)
     private fun getPermissionDialog() = parentFragmentManager.findFragmentByTag(Tag.getTag().name) as? VoicePermissionDialogFragment
 
-
     override fun redrawSearchFilms(films: ArrayList<String>) {
         context?.let {
             autoCompleteTextView.setAdapter(ArrayAdapter(it, R.layout.search_item, R.id.text_view_list_item, films))

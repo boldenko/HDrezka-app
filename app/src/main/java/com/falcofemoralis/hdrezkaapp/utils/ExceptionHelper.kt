@@ -47,15 +47,16 @@ object ExceptionHelper {
                     createDialog(textId, context)
                 } else if (type == ErrorType.MALFORMED_URL) {
                     val urlErrorString = if (SettingsData.provider == null) {
-                        "ссылка на сайт пустая!"
+                        context.getString(R.string.url_error_empty)
                     } else if (!SettingsData.provider!!.contains("http://") && !SettingsData.provider!!.contains("https://")) {
-                        "отсуствует протокол (http:// или https://) в ссылке!"
+                        context.getString(R.string.url_error_no_protocol)
                     } else {
-                        "убедитесь что ваша ссылка на сайт рабочая!"
+                        context.getString(R.string.url_error_malformed)
+
                     }
-                    Toast.makeText(context, "${context.getString(textId)}: $urlErrorString Ваш URL: ${SettingsData.provider}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "${context.getString(textId)}: $urlErrorString ${context.getString(R.string.your_url)} ${SettingsData.provider}", Toast.LENGTH_LONG).show()
                 } else if (type != ErrorType.PROVIDER_TIMEOUT) {
-                    Toast.makeText(context, context.getString(textId) + ": " + error.toString(), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(textId) + ": " + error, Toast.LENGTH_SHORT).show()
                 }
             }
         }

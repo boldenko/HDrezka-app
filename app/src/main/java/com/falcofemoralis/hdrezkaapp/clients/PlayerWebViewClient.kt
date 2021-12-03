@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -33,9 +34,9 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val f
     }
 
     override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
-  /*      if (error?.errorCode == ERROR_TIMEOUT) {
-            mainView.showConnectionError(IConnection.ErrorType.TIMEOUT, error.toString())
-        }*/
+        /*      if (error?.errorCode == ERROR_TIMEOUT) {
+                  mainView.showConnectionError(IConnection.ErrorType.TIMEOUT, error.toString())
+              }*/
         super.onReceivedError(view, request, error)
     }
 
@@ -100,23 +101,45 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val f
                 "document.body.style.minWidth = 'unset';" +
                 "document.getElementsByTagName('html')[0].style.height = 'unset';" +
                 "" + // fix width translations
-                "const translatorArray = document.getElementsByClassName('b-translator__item');" +
+                "var translatorArray = document.getElementsByClassName('b-translator__item');" +
                 "for (var i = 0; i < translatorArray.length; i++) {" +
                 "    translatorArray[i].style.setProperty('min-width', '100%', 'important');" +
                 "    translatorArray[i].style.setProperty('width', 'unset', 'important');" +
                 "}" +
-                "const translatorBlock = document.getElementsByClassName(\"b-translators__block\")\n" +
-                "if (translatorBlock.length > 0) {\n" +
-                "    translatorBlock[0].style.setProperty('padding-right', '10px', 'important');\n" +
-                "}\n" +
-                "\n" +
-                "const translatorList = document.getElementsByClassName(\"b-translators__list\")\n" +
-                "if (translatorList.length > 0) {\n" +
-                "    translatorList[0].style.setProperty('padding-right', 'unset', 'important');\n" +
+                "var translatorBlock = document.getElementsByClassName(\"b-translators__block\");" +
+                "if (translatorBlock.length > 0) {" +
+                "    translatorBlock[0].style.setProperty('padding-right', '10px', 'important');" +
                 "}" +
-                "" + // fix elements sizes
-                "document.getElementById('cdnplayer-container').style.setProperty('width', '100%', 'important');" +
-                "document.getElementById('cdnplayer').style.setProperty('width', '100%', 'important');" +
+                "" +
+                "var translatorList = document.getElementsByClassName(\"b-translators__list\");" +
+                "if (translatorList.length > 0) {" +
+                "    translatorList[0].style.setProperty('padding-right', 'unset', 'important');" +
+                "}" +
+                "var playercont = document.getElementById('cdnplayer-container');" +
+                "if (playercont == null) {" +
+                "    playercont = document.getElementById('ownplayer');" +
+                "}" +
+                "if (playercont != null) {" +
+                "    playercont.style.setProperty('width', '100%', 'important');" +
+                "}" +
+                "var cdnplayer = document.getElementById('cdnplayer');" +
+                "if (cdnplayer == null) {" +
+                "    cdnplayer = document.getElementById('videoplayer');" +
+                "}" +
+                "if (cdnplayer != null) {" +
+                "    cdnplayer.style.setProperty('width', '100%', 'important');" +
+                "}" +
+                "var restrplayer = document.getElementsByClassName(\"b-player__restricted\");" +
+                "if (restrplayer.length > 0) {" +
+                "    if (restrplayer[0]) {" +
+                "        restrplayer[0].style.setProperty('width', '100%', 'important');" +
+                "    }" +
+                "}" + "})()"
+
+        view?.evaluateJavascript(script2, null)
+        Log.d("SCR_T", script2)
+
+        val script2m = "javascript: (function() {" +
                 "var elMain = document.getElementById('main');" +
                 "if (elMain) {" +
                 "    elMain.style.setProperty('padding', '0', 'important');" +
@@ -148,7 +171,8 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val f
                 "} " +
                 "setTimeout(setPos, 1000);" +
                 "})()"
-        view?.evaluateJavascript(script2, null)
+        view?.evaluateJavascript(script2m, null)
+        Log.d("SCR_T", script2m)
 
         view?.evaluateJavascript(
             "var vkGroups = document.getElementById('vk_groups');\n" +

@@ -1080,14 +1080,18 @@ class FilmFragment : Fragment(), FilmView {
     override fun showStreams(streams: ArrayList<Stream>, filmTitle: String, title: String, isDownload: Boolean, translation: Voice) {
         val builder = DialogManager.getDialog(requireContext(), R.string.choose_quality)
         val qualities: ArrayList<String> = ArrayList()
-        for (stream in streams) {
-            qualities.add(stream.quality)
-        }
+        if (streams.size > 0) {
+            for (stream in streams) {
+                qualities.add(stream.quality)
+            }
 
-        builder.setAdapter(ArrayAdapter(requireContext(), R.layout.simple_list_item, qualities)) { dialog, which ->
-            openStream(streams[which], filmTitle, title, isDownload, translation)
+            builder.setAdapter(ArrayAdapter(requireContext(), R.layout.simple_list_item, qualities)) { dialog, which ->
+                openStream(streams[which], filmTitle, title, isDownload, translation)
+            }
+            builder.show()
+        } else {
+            Toast.makeText(requireContext(), R.string.blocked_in_region, Toast.LENGTH_SHORT).show()
         }
-        builder.show()
     }
 
     override fun openStream(stream: Stream, filmTitle: String, title: String, isDownload: Boolean, translation: Voice) {

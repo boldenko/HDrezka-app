@@ -208,4 +208,6 @@
     <string name="mobile_devices">•для смартфонов\n•для планшетов</string>
     <string name="to_tv">Перейти в ТВ версию</string>
     <string name="to_mobile">Перейти в мобильную версию</string>
+    <string name="your_url">Ваш URL:</string>
+    <string name="blocked_in_region">К сожалению, это видео не доступно в вашем регионе</string>
 </resources>
