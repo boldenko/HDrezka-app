@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="animation_duration">200</integer>
     <integer name="film_info_weight_left">35</integer>
     <integer name="film_info_weight_right">65</integer>
     <integer name="comment_avatar">15</integer>

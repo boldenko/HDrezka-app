@@ -102,7 +102,6 @@ object Highlighter {
     fun highlightImage(iv: View, context: Context) {
         if (SettingsData.deviceType == DeviceType.TV) {
             iv.setOnFocusChangeListener { v, hasFocus ->
-
                 val colorFrom: Int
                 val colorTo: Int
 
@@ -126,7 +125,6 @@ object Highlighter {
                     }
                 }
                 colorAnimationText.start()
-
             }
         }
     }
@@ -166,6 +164,61 @@ object Highlighter {
                     }
                     colorAnimationText.start()
                 }
+            }
+        }
+    }
+
+    fun highlightLayout(layout: LinearLayout, textView: TextView, iv: ImageView, context: Context) {
+        //  if (SettingsData.deviceType == DeviceType.TV) {
+        layout.setOnFocusChangeListener { v, hasFocus ->
+            if (v is LinearLayout) {
+                val bgColorFrom: Int
+                val bgColorTo: Int
+                val textColorFrom: Int
+                val textColorTo: Int
+
+                if (hasFocus) {
+                    bgColorFrom = ContextCompat.getColor(context, R.color.light_background)
+                    bgColorTo = ContextCompat.getColor(context, R.color.white)
+                    textColorFrom = ContextCompat.getColor(context, R.color.white)
+                    textColorTo = ContextCompat.getColor(context, R.color.black)
+                } else {
+                    bgColorFrom = ContextCompat.getColor(context, R.color.white)
+                    bgColorTo = ContextCompat.getColor(context, R.color.light_background)
+                    textColorFrom = ContextCompat.getColor(context, R.color.black)
+                    textColorTo = ContextCompat.getColor(context, R.color.white)
+                }
+
+                val colorAnimationBg = ValueAnimator.ofObject(ArgbEvaluator(), bgColorFrom, bgColorTo)
+                colorAnimationBg.duration = ANIM_DURATION
+                colorAnimationBg.addUpdateListener { animator -> v.setBackgroundColor(animator.animatedValue as Int) }
+                colorAnimationBg.start()
+
+                val colorAnimationText = ValueAnimator.ofObject(ArgbEvaluator(), textColorFrom, textColorTo)
+                colorAnimationText.duration = ANIM_DURATION
+                colorAnimationText.addUpdateListener { animator ->
+                    textView.setTextColor(animator.animatedValue as Int)
+                }
+                colorAnimationText.start()
+
+                ///
+                val colorFrom: Int
+                val colorTo: Int
+
+                if (hasFocus) {
+                    colorFrom = ContextCompat.getColor(context, R.color.white)
+                    colorTo = ContextCompat.getColor(context, R.color.primary_red)
+                } else {
+                    colorFrom = ContextCompat.getColor(context, R.color.primary_red)
+                    colorTo = ContextCompat.getColor(context, R.color.white)
+                }
+
+                val colorAnimationImage = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+                colorAnimationImage.duration = ANIM_DURATION
+                colorAnimationImage.addUpdateListener { animator ->
+                    iv.colorFilter = PorterDuffColorFilter(animator.animatedValue as Int, PorterDuff.Mode.SRC_IN)
+                }
+                colorAnimationImage.start()
             }
         }
     }

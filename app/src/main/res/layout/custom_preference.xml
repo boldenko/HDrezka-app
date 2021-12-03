@@ -42,8 +42,8 @@
             android:layout_below="@android:id/title"
             android:layout_alignStart="@android:id/title"
             android:maxLines="4"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="?android:attr/textColorSecondary" />
+            android:textColor="@color/pref_text_color"
+            android:textSize="@dimen/small_text"  />
     </RelativeLayout>
     <!-- Preference should place its actual preference widget here. -->
     <LinearLayout

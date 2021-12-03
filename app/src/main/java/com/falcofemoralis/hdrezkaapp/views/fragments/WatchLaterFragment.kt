@@ -46,6 +46,10 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         currentView = inflater.inflate(R.layout.fragment_watch_later_list, container, false)
 
+        if(SettingsData.deviceType == DeviceType.TV) {
+            NavigationMenu.isLocked = true
+        }
+
         listView = currentView.findViewById(R.id.fragment_watch_later_list_rv)
         progressBar = currentView.findViewById(R.id.fragment_watch_later_list_pb_loading)
         msgView = currentView.findViewById(R.id.fragment_watch_later_list_tv_msg)
@@ -77,6 +81,10 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
     override fun setWatchLaterList(list: ArrayList<WatchLater>) {
         listView.adapter = WatchLaterRecyclerViewAdapter(requireContext(), list, ::listCallback, ::deleteWatchLater)
         progressBar.visibility = View.GONE
+
+        if(SettingsData.deviceType == DeviceType.TV) {
+            NavigationMenu.isLocked = false
+        }
     }
 
     private fun listCallback(film: Film) {
@@ -100,6 +108,10 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
             }
 
             msgView.text = text
+        }
+
+        if(SettingsData.deviceType == DeviceType.TV) {
+            NavigationMenu.isLocked = false
         }
     }
 

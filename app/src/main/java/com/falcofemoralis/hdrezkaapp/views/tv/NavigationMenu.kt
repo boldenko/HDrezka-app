@@ -31,7 +31,7 @@ import ru.nikartm.support.ImageBadgeView
 class NavigationMenu : Fragment() {
     private lateinit var fragmentChangeListener: FragmentChangeListener
     private lateinit var navigationStateListener: NavigationStateListener
-    private lateinit var currentView: ConstraintLayout
+    private lateinit var currentView: View
 
     private lateinit var notify_IB: ImageBadgeView
     private lateinit var newest_IB: ImageButton
@@ -66,10 +66,11 @@ class NavigationMenu : Fragment() {
         var isFree = true
         var isFocusOut = false
         var closed = false
+        var isLocked = false
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        currentView = inflater.inflate(R.layout.fragment_nav_menu, container, false) as ConstraintLayout
+        currentView = inflater.inflate(R.layout.fragment_nav_menu, container, false) as View
 
         notify_IB = currentView.findViewById(R.id.notify_IB)
         newest_IB = currentView.findViewById(R.id.newest_IB)
@@ -134,7 +135,7 @@ class NavigationMenu : Fragment() {
         ib.setOnFocusChangeListener { v, hasFocus ->
             Log.d("TESTEST", "$lastMenu")
 
-            if (isFree) {
+            if (isFree && !isLocked) {
                 if (hasFocus) {
                     Log.d("TESTEST", "hasFocus $lastMenu")
 

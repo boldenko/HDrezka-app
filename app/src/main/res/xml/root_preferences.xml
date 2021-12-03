@@ -147,10 +147,17 @@
             app:title="@string/isAltLoading_title" />
 
         <Preference
-            android:layout="@layout/custom_text_preference"
-            app:summary="@string/app_version_number"
-            app:title="@string/app_version" />
+            android:icon="@drawable/ic_baseline_tv"
+            android:key="changeToTv"
+            android:summary="@string/to_tv"
+            android:layout="@layout/custom_preference"
+            app:title="@string/change_to_tv" />
 
     </PreferenceCategory>
+
+    <Preference
+        android:key="app_version"
+        android:layout="@layout/custom_text_preference"
+        app:title="@string/app_version" />
 
 </PreferenceScreen>

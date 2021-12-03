@@ -1,7 +1,8 @@
 package com.falcofemoralis.hdrezkaapp.views
 
 import android.annotation.SuppressLint
-import android.app.UiModeManager
+import android.content.Context
+import android.content.DialogInterface.OnShowListener
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
@@ -38,11 +39,13 @@ import com.falcofemoralis.hdrezkaapp.objects.UserData
 import com.falcofemoralis.hdrezkaapp.utils.ConnectionManager.isInternetAvailable
 import com.falcofemoralis.hdrezkaapp.utils.ConnectionManager.showConnectionErrorDialog
 import com.falcofemoralis.hdrezkaapp.utils.DialogManager
+import com.falcofemoralis.hdrezkaapp.utils.Highlighter
 import com.falcofemoralis.hdrezkaapp.views.fragments.*
 import com.falcofemoralis.hdrezkaapp.views.tv.NavigationMenu
 import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.FragmentChangeListener
 import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.NavigationStateListener
 import com.google.firebase.FirebaseApp
+import com.jakewharton.processphoenix.ProcessPhoenix
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -65,7 +68,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     private var mainFragment: Fragment? = null
     private lateinit var currentFragment: Fragment
     private var savedInstanceState: Bundle? = null
-    private lateinit var interfaceMode: Number
     private var seriesUpdatesFragment: SeriesUpdatesFragment? = null
 
     /* TV */
@@ -73,84 +75,217 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     private lateinit var navFragmentLayout: FrameLayout
     private var doubleBackToExitPressedOnce = false
 
+    override fun attachBaseContext(context: Context?) {
+        super.attachBaseContext(context)
+
+        if (context != null) {
+            SettingsData.initDeviceType(context)
+
+            val uiMode = if (SettingsData.deviceType == DeviceType.TV) {
+                Configuration.UI_MODE_TYPE_TELEVISION
+            } else {
+                // TODO Tablet ?
+                Configuration.UI_MODE_TYPE_NORMAL
+            }
+
+            resources.configuration.setTo(context.resources.configuration)
+            resources.configuration.uiMode = uiMode
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
         this.savedInstanceState = savedInstanceState
 
+        if (detectUIMode()) {
+            setContentView(R.layout.activity_main)
+
+            initCreate()
+        } else {
+            setContentView(R.layout.activity_device_chooser)
+
+            showUIModeChooser()
+        }
+    }
+
+    private fun initCreate() {
         FirebaseApp.initializeApp(this);
 
-        initApp()
+        if (isInternetAvailable(applicationContext)) {
+            initApp()
 
-        checkAppVersion()
+            checkAppVersion()
+        } else {
+            showConnectionError(IConnection.ErrorType.NO_INTERNET, "")
+        }
+    }
+
+    private fun detectUIMode(): Boolean {
+        return SettingsData.deviceType != null
+    }
+
+    private fun showUIModeChooser() {
+        val mobileBtn = findViewById<LinearLayout>(R.id.btn_mobile)
+        mobileBtn.setOnClickListener {
+            val builder = DialogManager.getDialog(this, R.string.are_you_sure, false)
+            builder.setPositiveButton(R.string.ok) { dialog, id ->
+                dialog.dismiss()
+                SettingsData.setUIMode(DeviceType.MOBILE, this)
+                refreshActivity()
+            }
+
+            builder.setNegativeButton(R.string.cancel) { dialog, id ->
+                dialog.dismiss()
+            }
+
+            val d = builder.create()
+            d.setOnShowListener {
+                val btn: Button = d.getButton(AlertDialog.BUTTON_POSITIVE)
+                btn.isFocusable = true
+                btn.requestFocus()
+            }
+            d.show()
+        }
+        Highlighter.highlightLayout(mobileBtn, findViewById(R.id.mobile_text), findViewById(R.id.mobile_image), this)
+
+        val tvBtn = findViewById<LinearLayout>(R.id.btn_tv)
+        tvBtn.setOnClickListener {
+            val builder = DialogManager.getDialog(this, R.string.are_you_sure, false)
+            builder.setPositiveButton(R.string.ok) { dialog, id ->
+                dialog.dismiss()
+                SettingsData.setUIMode(DeviceType.TV, this)
+                refreshActivity()
+            }
+
+            builder.setNegativeButton(R.string.cancel) { dialog, id ->
+                dialog.dismiss()
+            }
+
+            val d = builder.create()
+            d.setOnShowListener {
+                val btn: Button = d.getButton(AlertDialog.BUTTON_POSITIVE)
+                btn.isFocusable = true
+                btn.requestFocus()
+            }
+            d.show()
+        }
+        Highlighter.highlightLayout(tvBtn, findViewById(R.id.tv_text), findViewById(R.id.tv_image), this)
+    }
+
+    fun refreshActivity() {
+        ProcessPhoenix.triggerRebirth(this)
+    }
+
+    override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
+        try {
+            showConnectionErrorDialog(this, type, ::initCreate)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     @SuppressLint("SourceLockedOrientationActivity")
     private fun initApp() {
-        if (isInternetAvailable(applicationContext)) {
-            if (savedInstanceState == null) {
-                SettingsData.initProvider(this)
-                try {
-                    setDefaultSSLSocketFactory(SocketFactory())
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-                if (SettingsData.provider == null || SettingsData.provider == "") {
-                    showProviderEnter()
+        if (savedInstanceState == null) {
+            SettingsData.initProvider(this)
+
+            try {
+                setDefaultSSLSocketFactory(SocketFactory())
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            if (SettingsData.provider == null || SettingsData.provider == "") {
+                showProviderEnter()
+            } else {
+                if (SettingsData.deviceType == DeviceType.MOBILE) {
+                    // Mobile
+                    SettingsData.init(applicationContext)
+                    UserData.init(applicationContext)
+
+                    requestedOrientation = if (SettingsData.isAutorotate == true) {
+                        ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+                    } else {
+                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                    }
+                    mainFragment = ViewPagerFragment()
+                    onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null, null)
+
+                    createUserMenu()
+                    setUserAvatar()
+                    initSeriesUpdates()
                 } else {
-                    interfaceMode = (getSystemService(UI_MODE_SERVICE) as UiModeManager).currentModeType
+                    // TV
+                    SettingsData.init(applicationContext)
+                    UserData.init(applicationContext)
+                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
-                    when (interfaceMode) {
-                        Configuration.UI_MODE_TYPE_TELEVISION -> {
-                            SettingsData.init(applicationContext, DeviceType.TV)
-                            UserData.init(applicationContext)
-                            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                    navFragmentLayout = findViewById(R.id.nav_fragment)
 
-                            navFragmentLayout = findViewById(R.id.nav_fragment)
+                    navMenuFragment = NavigationMenu()
+                    supportFragmentManager.beginTransaction().replace(R.id.nav_fragment, navMenuFragment).commit()
 
-                            navMenuFragment = NavigationMenu()
-                            supportFragmentManager.beginTransaction().replace(R.id.nav_fragment, navMenuFragment).commit()
-
-                            SettingsData.mainScreen?.let {
-                                mainFragment = when (it) {
-                                    0 -> NewestFilmsFragment()
-                                    1 -> CategoriesFragment()
-                                    2 -> SearchFragment()
-                                    3 -> BookmarksFragment()
-                                    4 -> WatchLaterFragment()
-                                    else -> NewestFilmsFragment()
-                                }
-                            }
-
-                            fun fragmentInit() {
-                                Log.d("TEST TEST", "fragmentInit")
-                                initSeriesUpdates()
-                            }
-
-                            onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null, ::fragmentInit)
-                        }
-                        else -> {
-                            SettingsData.init(applicationContext, DeviceType.MOBILE)
-                            UserData.init(applicationContext)
-
-                            requestedOrientation = if (SettingsData.isAutorotate == true) {
-                                ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
-                            } else {
-                                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                            }
-                            mainFragment = ViewPagerFragment()
-                            onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null, null)
-
-                            createUserMenu()
-                            setUserAvatar()
-                            initSeriesUpdates()
+                    SettingsData.mainScreen?.let {
+                        mainFragment = when (it) {
+                            0 -> NewestFilmsFragment()
+                            1 -> CategoriesFragment()
+                            2 -> SearchFragment()
+                            3 -> BookmarksFragment()
+                            4 -> WatchLaterFragment()
+                            else -> NewestFilmsFragment()
                         }
                     }
 
+                    fun fragmentInit() {
+                        initSeriesUpdates()
+                    }
+
+                    onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null, ::fragmentInit)
                 }
             }
-        } else {
-            showConnectionError(IConnection.ErrorType.NO_INTERNET, "")
+        }
+    }
+
+    fun showProviderEnter() {
+        val builder = DialogManager.getDialog(this, R.string.provider_enter_title)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_provider_enter, null)
+        val spinner = dialogView.findViewById<SmartMaterialSpinner<String>>(R.id.dialog_provider_protocol)
+        val editText = dialogView.findViewById<EditText>(R.id.dialog_provider_enter)
+        val adapter: ArrayAdapter<*> = ArrayAdapter.createFromResource(this, R.array.providerProtocols, android.R.layout.simple_spinner_item)
+        var selectedProtocol = ""
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, itemSelected: View?, selectedItemPosition: Int, selectedId: Long) {
+                val arr = resources.getStringArray(R.array.providerProtocols)
+                selectedProtocol = arr[selectedItemPosition]
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+        spinner.setSelection(0)
+
+        builder.setNegativeButton(getString(R.string.exit)) { dialog, id ->
+            exitProcess(0)
+        }
+        builder.setPositiveButton(getString(R.string.ok), null)
+        builder.setView(dialogView)
+        builder.setCancelable(false)
+        val d = builder.create()
+        d.show()
+
+        d.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val enteredText = editText.text.toString().replace(" ", "").replace("\n", "")
+
+            if (enteredText.isNotEmpty()) {
+                val link = selectedProtocol + enteredText
+                Toast.makeText(this, getString(R.string.new_provider, link), Toast.LENGTH_LONG).show()
+                SettingsData.setProvider(link, this, true)
+                d.cancel()
+                initCreate()
+            } else {
+                Toast.makeText(this, getString(R.string.empty_provider), Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -162,7 +297,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         }
     }
 
-    fun openUserMenu() {
+    private fun openUserMenu() {
         if (!isSettingsOpened) {
             val f = if (mainFragment?.isVisible == true) mainFragment
             else currentFragment
@@ -259,57 +394,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
 
     override fun findFragmentByTag(tag: String): Fragment? {
         return supportFragmentManager.findFragmentByTag(tag)
-    }
-
-    override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
-        try {
-            showConnectionErrorDialog(this, type, ::initApp)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    fun showProviderEnter() {
-        val dialog = DialogManager.getDialog(this, R.string.provider_enter_title)
-        val dialogView = layoutInflater.inflate(R.layout.dialog_provider_enter, null)
-        val spinner = dialogView.findViewById<SmartMaterialSpinner<String>>(R.id.dialog_provider_protocol)
-        val editText = dialogView.findViewById<EditText>(R.id.dialog_provider_enter)
-        val adapter: ArrayAdapter<*> = ArrayAdapter.createFromResource(this, R.array.providerProtocols, android.R.layout.simple_spinner_item)
-        var selectedProtocol = ""
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adapter
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, itemSelected: View?, selectedItemPosition: Int, selectedId: Long) {
-                val arr = resources.getStringArray(R.array.providerProtocols)
-                selectedProtocol = arr[selectedItemPosition]
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
-        spinner.setSelection(0)
-
-        dialog.setNegativeButton(getString(R.string.exit)) { dialog, id ->
-            exitProcess(0)
-        }
-        dialog.setPositiveButton(getString(R.string.ok), null)
-        dialog.setView(dialogView)
-        dialog.setCancelable(false)
-        val d = dialog.create()
-        d.show()
-
-        d.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-            val enteredText = editText.text.toString().replace(" ", "").replace("\n", "")
-
-            if (enteredText.isNotEmpty()) {
-                val link = selectedProtocol + enteredText
-                Toast.makeText(this, getString(R.string.new_provider, link), Toast.LENGTH_LONG).show()
-                SettingsData.setProvider(link, this, true)
-                d.cancel()
-                initApp()
-            } else {
-                Toast.makeText(this, getString(R.string.empty_provider), Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     override fun onBackPressed() {
@@ -546,7 +630,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     }
 
     fun updateNotifyBadge(badgeCount: Int) {
-
         val notifyBtn = if (SettingsData.deviceType == DeviceType.TV) {
             Log.d("TEST TEST", "updateNotifyBadge $seriesUpdatesFragment ")
             Log.d("TEST TEST", "updateNotifyBadge $NavigationMenu.notifyBtn ")

@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
+import com.falcofemoralis.hdrezkaapp.BuildConfig
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.constants.AuthType
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
@@ -42,7 +43,11 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     private var exitBtn: Preference? = null
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.root_preferences, rootKey)
+        if(SettingsData.deviceType == DeviceType.MOBILE){
+            setPreferencesFromResource(R.xml.root_preferences, rootKey)
+        } else{
+            setPreferencesFromResource(R.xml.root_preferences_tv, rootKey)
+        }
         preferences = PreferenceManager.getDefaultSharedPreferences(context)
         preferences.registerOnSharedPreferenceChangeListener(this)
         mActivity = requireActivity()
@@ -72,6 +77,20 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 setStateDefaultQuality(!it)
             }
         }
+
+        findPreference<Preference?>("changeToTv")?.setOnPreferenceClickListener{
+            changeUiMode(DeviceType.TV)
+            true
+        }
+
+        findPreference<Preference?>("changeToMobile")?.setOnPreferenceClickListener{
+            changeUiMode(DeviceType.MOBILE)
+            true
+        }
+
+        val versionType = SettingsData.deviceType?.name
+
+        findPreference<Preference?>("app_version")?.summary = "${BuildConfig.VERSION_NAME} $versionType"
     }
 
     private fun initExitButton() {
@@ -269,8 +288,8 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 }
             }
             "rowMultiplier" -> {
-               // SettingsData.rowMultiplier = preferences.getString("rowMultiplier", "3")?.toInt()
-              //  applyInterfaceChange()
+                // SettingsData.rowMultiplier = preferences.getString("rowMultiplier", "3")?.toInt()
+                //  applyInterfaceChange()
             }
             "autoPlayNextEpisode" -> {
                 SettingsData.autoPlayNextEpisode = preferences.getBoolean("autoPlayNextEpisode", true)
@@ -288,7 +307,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             "isCheckNewVersion" -> {
                 SettingsData.isCheckNewVersion = preferences.getBoolean("isCheckNewVersion", true)
             }
-            "isAltLoading" ->{
+            "isAltLoading" -> {
                 SettingsData.isAltLoading = preferences.getBoolean("isAltLoading", false)
             }
         }
@@ -323,5 +342,14 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     private fun applyInterfaceChange() {
         mActivity?.let { (it as MainActivity).updatePager() }
+    }
+
+    private fun changeUiMode(deviceType: DeviceType) {
+        mContext?.let {
+            SettingsData.setUIMode(deviceType, it)
+        }
+        mActivity?.let {
+            (it as MainActivity).refreshActivity()
+        }
     }
 }
