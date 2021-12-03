@@ -2,7 +2,6 @@ package com.falcofemoralis.hdrezkaapp.views
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.DialogInterface.OnShowListener
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
@@ -11,6 +10,7 @@ import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.*
+import com.falcofemoralis.hdrezkaapp.BuildConfig
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -22,7 +22,6 @@ import com.algolia.instantsearch.voice.ui.Voice.shouldExplainPermission
 import com.algolia.instantsearch.voice.ui.Voice.showPermissionRationale
 import com.algolia.instantsearch.voice.ui.VoicePermissionDialogFragment
 import com.chivorn.smartmaterialspinner.SmartMaterialSpinner
-import com.falcofemoralis.hdrezkaapp.BuildConfig
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.clients.PlayerJsInterface
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
@@ -407,6 +406,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
 
         if (SettingsData.deviceType == DeviceType.TV) {
             val acceptableFragment = when (mainFragment) {
+                is SeriesUpdatesFragment -> true
                 is NewestFilmsFragment -> true
                 is CategoriesFragment -> true
                 is SearchFragment -> true
@@ -439,7 +439,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
 
         when (fragmentName) {
             NavigationMenuTabs.nav_menu_series_updates -> {
-                Log.d("TEST TEST", "fragmentTo $seriesUpdatesFragment ")
                 fragmentTo = seriesUpdatesFragment
             }
             NavigationMenuTabs.nav_menu_newest -> {

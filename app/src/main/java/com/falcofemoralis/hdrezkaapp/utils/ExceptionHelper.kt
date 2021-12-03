@@ -20,8 +20,10 @@ import org.jsoup.HttpStatusException
 import org.jsoup.parser.ParseError
 import java.io.IOException
 import java.net.ConnectException
+import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import javax.net.ssl.SSLException
 import javax.net.ssl.SSLHandshakeException
 
 object ExceptionHelper {
@@ -41,6 +43,7 @@ object ExceptionHelper {
                     ErrorType.MODERATE_BY_ADMIN -> R.string.comment_need_apply
                     ErrorType.ERROR -> R.string.error_occured
                     ErrorType.EMPTY_SEARCH -> R.string.search_empty
+                    ErrorType.FILM_BLOCKED -> R.string.blocked_in_region
                 }
 
                 if (type == ErrorType.BLOCKED_SITE) {
@@ -91,7 +94,17 @@ object ExceptionHelper {
     fun catchException(e: Exception, view: IConnection) {
         Firebase.crashlytics.recordException(e)
 
-        FirebaseCrashlytics.getInstance().recordException(e)
+        if (e !is IllegalArgumentException &&
+            e !is UnknownHostException &&
+            e !is SocketTimeoutException &&
+            e !is ConnectException &&
+            e !is HttpStatusException &&
+                    e !is SocketException &&
+                    e !is SSLException &&
+            e !is IOException
+        ) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+        }
 
         e.printStackTrace()
 
@@ -101,6 +114,7 @@ object ExceptionHelper {
                 when (e.statusCode) {
                     401 -> ErrorType.EMPTY_SEARCH
                     404 -> ErrorType.EMPTY
+                    405 -> ErrorType.FILM_BLOCKED
                     503 -> ErrorType.PROVIDER_TIMEOUT
                     else -> ErrorType.ERROR
                 }

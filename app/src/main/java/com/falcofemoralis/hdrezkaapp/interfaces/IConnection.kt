@@ -11,7 +11,8 @@ interface IConnection {
         MALFORMED_URL,
         MODERATE_BY_ADMIN,
         PROVIDER_TIMEOUT,
-        EMPTY_SEARCH
+        EMPTY_SEARCH,
+        FILM_BLOCKED
     }
 
     fun showConnectionError(type: ErrorType, errorText: String)

@@ -265,6 +265,8 @@ class FilmFragment : Fragment(), FilmView {
     override fun showMsg(msgType: IConnection.ErrorType) {
         if (msgType == IConnection.ErrorType.PARSING_ERROR) {
             Toast.makeText(requireContext(), getString(R.string.server_error_503), Toast.LENGTH_SHORT).show()
+        } else if (msgType == IConnection.ErrorType.EMPTY) {
+            Toast.makeText(requireContext(), getString(R.string.error_empty), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -299,7 +301,7 @@ class FilmFragment : Fragment(), FilmView {
                 }
             }
 
-            if(SettingsData.deviceType == DeviceType.MOBILE){
+            if (SettingsData.deviceType == DeviceType.MOBILE) {
                 currentView.findViewById<LinearLayout>(R.id.fragment_film_ll_player_container).visibility = View.GONE
             }
 

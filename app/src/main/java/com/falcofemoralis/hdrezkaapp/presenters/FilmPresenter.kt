@@ -178,11 +178,11 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
                         getNextComments()
                     }
                 } catch (e: Exception) {
-                    if(e is HttpStatusException) {
+                    if (e is HttpStatusException) {
                         if (e.statusCode != 404) {
                             catchException(e, filmView)
                         }
-                    } else{
+                    } else {
                         catchException(e, filmView)
                     }
                     isCommentsLoading = false
@@ -269,25 +269,30 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
                 }
 
                 withContext(Dispatchers.Main) {
-                    film.title?.let {
-                        if (SettingsData.isMaxQuality == true) {
-                            filmView.openStream(translation.streams!![translation.streams!!.size - 1], it, additionalTitle.toString(), isDownload, translation)
-                        } else if (SettingsData.defaultQuality != null) {
-                            var isDefaultQualityFound = false
+                    if (translation.streams?.size ?: 0 > 0) {
 
-                            for (stream in translation.streams!!) {
-                                if (stream.quality == SettingsData.defaultQuality) {
-                                    filmView.openStream(stream, it, additionalTitle.toString(), isDownload, translation)
-                                    isDefaultQualityFound = true
-                                }
-                            }
-
-                            if (!isDefaultQualityFound) {
+                        film.title?.let {
+                            if (SettingsData.isMaxQuality == true) {
                                 filmView.openStream(translation.streams!![translation.streams!!.size - 1], it, additionalTitle.toString(), isDownload, translation)
+                            } else if (SettingsData.defaultQuality != null) {
+                                var isDefaultQualityFound = false
+
+                                for (stream in translation.streams!!) {
+                                    if (stream.quality == SettingsData.defaultQuality) {
+                                        filmView.openStream(stream, it, additionalTitle.toString(), isDownload, translation)
+                                        isDefaultQualityFound = true
+                                    }
+                                }
+
+                                if (!isDefaultQualityFound) {
+                                    filmView.openStream(translation.streams!![translation.streams!!.size - 1], it, additionalTitle.toString(), isDownload, translation)
+                                }
+                            } else {
+                                filmView.showStreams(translation.streams!!, it, additionalTitle.toString(), isDownload, translation)
                             }
-                        } else {
-                            filmView.showStreams(translation.streams!!, it, additionalTitle.toString(), isDownload, translation)
                         }
+                    } else {
+                        filmView.showMsg(IConnection.ErrorType.EMPTY)
                     }
                 }
             } catch (e: Exception) {

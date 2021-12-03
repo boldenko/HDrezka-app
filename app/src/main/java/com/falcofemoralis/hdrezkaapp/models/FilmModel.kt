@@ -538,10 +538,10 @@ object FilmModel {
                     getThumbnails(thumbnailsUrl, translation)
                 }
             } else {
-                throw HttpStatusException("failed to get stream", 400, SettingsData.provider)
+                throw HttpStatusException("failed to get stream in object", 405, SettingsData.provider)
             }
         } else {
-            throw HttpStatusException("failed to get stream", 400, SettingsData.provider)
+            throw HttpStatusException("failed to get stream", 405, SettingsData.provider)
         }
     }
 
@@ -660,10 +660,10 @@ object FilmModel {
                 translation.seasons = parseSeasons(Jsoup.parse(jsonObject.getString("episodes")))
                 return translation
             } else {
-                throw HttpStatusException("failed to get seasons", 400, SettingsData.provider)
+                throw HttpStatusException("failed to get seasons in object", 405, SettingsData.provider)
             }
         } else {
-            throw HttpStatusException("failed to get seasons", 400, SettingsData.provider)
+            throw HttpStatusException("failed to get seasons", 405, SettingsData.provider)
         }
     }
 
@@ -708,10 +708,10 @@ object FilmModel {
                     getThumbnails(thumbnailsUrl, translation)
                 }
             } else {
-                throw HttpStatusException("failed to get stream", 400, SettingsData.provider)
+                throw HttpStatusException("failed to get stream in object", 405, SettingsData.provider)
             }
         } else {
-            throw HttpStatusException("failed to get stream", 400, SettingsData.provider)
+            throw HttpStatusException("failed to get stream", 405, SettingsData.provider)
         }
     }
 
