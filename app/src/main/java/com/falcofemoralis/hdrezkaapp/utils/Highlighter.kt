@@ -179,14 +179,14 @@ object Highlighter {
 
                 if (hasFocus) {
                     bgColorFrom = ContextCompat.getColor(context, R.color.light_background)
-                    bgColorTo = ContextCompat.getColor(context, R.color.white)
-                    textColorFrom = ContextCompat.getColor(context, R.color.white)
-                    textColorTo = ContextCompat.getColor(context, R.color.black)
-                } else {
-                    bgColorFrom = ContextCompat.getColor(context, R.color.white)
-                    bgColorTo = ContextCompat.getColor(context, R.color.light_background)
-                    textColorFrom = ContextCompat.getColor(context, R.color.black)
+                    bgColorTo = ContextCompat.getColor(context, R.color.primary_red)
+                    textColorFrom = ContextCompat.getColor(context, R.color.primary_red)
                     textColorTo = ContextCompat.getColor(context, R.color.white)
+                } else {
+                    bgColorFrom = ContextCompat.getColor(context, R.color.primary_red)
+                    bgColorTo = ContextCompat.getColor(context, R.color.light_background)
+                    textColorFrom = ContextCompat.getColor(context, R.color.white)
+                    textColorTo = ContextCompat.getColor(context, R.color.primary_red)
                 }
 
                 val colorAnimationBg = ValueAnimator.ofObject(ArgbEvaluator(), bgColorFrom, bgColorTo)
@@ -201,15 +201,16 @@ object Highlighter {
                 }
                 colorAnimationText.start()
 
+
                 ///
-                val colorFrom: Int
+           /*     val colorFrom: Int
                 val colorTo: Int
 
                 if (hasFocus) {
                     colorFrom = ContextCompat.getColor(context, R.color.white)
-                    colorTo = ContextCompat.getColor(context, R.color.primary_red)
+                    colorTo = ContextCompat.getColor(context, R.color.white)
                 } else {
-                    colorFrom = ContextCompat.getColor(context, R.color.primary_red)
+                    colorFrom = ContextCompat.getColor(context, R.color.white)
                     colorTo = ContextCompat.getColor(context, R.color.white)
                 }
 
@@ -218,7 +219,7 @@ object Highlighter {
                 colorAnimationImage.addUpdateListener { animator ->
                     iv.colorFilter = PorterDuffColorFilter(animator.animatedValue as Int, PorterDuff.Mode.SRC_IN)
                 }
-                colorAnimationImage.start()
+                colorAnimationImage.start()*/
             }
         }
     }

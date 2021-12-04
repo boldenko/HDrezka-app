@@ -8,7 +8,7 @@ import org.jsoup.Connection
 import org.jsoup.Jsoup
 
 object BaseModel {
-    const val userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36"
+    const val userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36"
 
     fun getJsoup(link: String?): Connection {
         val connection = Jsoup.connect(link?.replace(" ", "")?.replace("\n", ""))

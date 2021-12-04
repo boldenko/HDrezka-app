@@ -38,7 +38,7 @@ class SeriesUpdatesPresenter(private val seriesUpdatesView: SeriesUpdatesView) {
                             for (item in seriesUpdatesList) {
                                 val film = Film(SettingsData.provider + item.filmLink)
                                 film.subInfo = "${item.season} - ${item.episode}"
-                                if(!item.voice.isNullOrEmpty()){
+                                if (!item.voice.isNullOrEmpty()) {
                                     film.subInfo += "\n${item.voice}"
                                 }
                                 filmsList.add(film)
@@ -94,40 +94,44 @@ class SeriesUpdatesPresenter(private val seriesUpdatesView: SeriesUpdatesView) {
         userSeriesUpdates = LinkedHashMap()
 
         GlobalScope.launch {
-            var badgeCount = 0
+            try {
+                var badgeCount = 0
 
-            if (UserData.isLoggedIn == true) {
-                seriesUpdates = NewestFilmsModel.getSeriesUpdates()
-                savedSeriesUpdates = UserData.getUserSeriesUpdates(_context)
+                if (UserData.isLoggedIn == true) {
+                    seriesUpdates = NewestFilmsModel.getSeriesUpdates()
+                    savedSeriesUpdates = UserData.getUserSeriesUpdates(_context)
 
-                if (seriesUpdates != null && seriesUpdates!!.size > 0) {
-                    for ((date, list) in seriesUpdates!!) {
-                        val userList: ArrayList<SeriesUpdateItem> = ArrayList()
-                        for (item in list) {
-                            if (item.isUserWatch) {
-                                userList.add(item)
+                    if (seriesUpdates != null && seriesUpdates!!.size > 0) {
+                        for ((date, list) in seriesUpdates!!) {
+                            val userList: ArrayList<SeriesUpdateItem> = ArrayList()
+                            for (item in list) {
+                                if (item.isUserWatch) {
+                                    userList.add(item)
+                                }
+                            }
+
+                            if (userList.size > 0) {
+                                userSeriesUpdates!![date] = userList
                             }
                         }
 
-                        if (userList.size > 0) {
-                            userSeriesUpdates!![date] = userList
-                        }
-                    }
-
-                    for ((date, list) in userSeriesUpdates!!) {
-                        for (item in list) {
-                            if (savedSeriesUpdates != null && !savedSeriesUpdates!!.contains(item)) { // не содержит
-                                badgeCount++
-                                savedSeriesUpdates?.add(item)
+                        for ((date, list) in userSeriesUpdates!!) {
+                            for (item in list) {
+                                if (savedSeriesUpdates != null && !savedSeriesUpdates!!.contains(item)) { // не содержит
+                                    badgeCount++
+                                    savedSeriesUpdates?.add(item)
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            withContext(Dispatchers.Main) {
-                updateNotifyBadge(badgeCount)
-                createNotifyBtn()
+                withContext(Dispatchers.Main) {
+                    updateNotifyBadge(badgeCount)
+                    createNotifyBtn()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }

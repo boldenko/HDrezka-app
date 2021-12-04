@@ -9,7 +9,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
@@ -87,7 +86,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
             val uiMode = if (SettingsData.deviceType == DeviceType.TV) {
                 Configuration.UI_MODE_TYPE_TELEVISION
             } else {
-                // TODO Tablet ?
                 Configuration.UI_MODE_TYPE_NORMAL
             }
 
@@ -136,18 +134,20 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     }
 
     private fun showUIModeChooser() {
+        val builder = DialogManager.getDialog(this, R.string.are_you_sure, false)
+        builder.setNegativeButton(R.string.cancel) { dialog, id ->
+            dialog.dismiss()
+        }
+
         val mobileBtn = findViewById<LinearLayout>(R.id.btn_mobile)
         mobileBtn.setOnClickListener {
-            val builder = DialogManager.getDialog(this, R.string.are_you_sure, false)
             builder.setPositiveButton(R.string.ok) { dialog, id ->
                 dialog.dismiss()
                 SettingsData.setUIMode(DeviceType.MOBILE, this)
                 refreshActivity()
             }
 
-            builder.setNegativeButton(R.string.cancel) { dialog, id ->
-                dialog.dismiss()
-            }
+            builder.setMessage(R.string.change_to_mobile)
 
             val d = builder.create()
             d.setOnShowListener {
@@ -157,20 +157,17 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
             }
             d.show()
         }
-        Highlighter.highlightLayout(mobileBtn, findViewById(R.id.mobile_text), findViewById(R.id.mobile_image), this)
+        Highlighter.highlightLayout(mobileBtn, findViewById(R.id.mobile_text_header), findViewById(R.id.mobile_image), this)
 
         val tvBtn = findViewById<LinearLayout>(R.id.btn_tv)
         tvBtn.setOnClickListener {
-            val builder = DialogManager.getDialog(this, R.string.are_you_sure, false)
             builder.setPositiveButton(R.string.ok) { dialog, id ->
                 dialog.dismiss()
                 SettingsData.setUIMode(DeviceType.TV, this)
                 refreshActivity()
             }
 
-            builder.setNegativeButton(R.string.cancel) { dialog, id ->
-                dialog.dismiss()
-            }
+            builder.setMessage(R.string.change_to_tv)
 
             val d = builder.create()
             d.setOnShowListener {
@@ -180,7 +177,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
             }
             d.show()
         }
-        Highlighter.highlightLayout(tvBtn, findViewById(R.id.tv_text), findViewById(R.id.tv_image), this)
+        Highlighter.highlightLayout(tvBtn, findViewById(R.id.tv_text_header), findViewById(R.id.tv_image), this)
     }
 
     fun refreshActivity() {
@@ -571,9 +568,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                                 val newFeatures = versionObject.getString("newFeatures")
                                 apkUrl = versionObject.getString("apk")
 
-                                val isNewVersion = true // compareAppVersion(versionCode)
-
-                                // TODO
+                                val isNewVersion = compareAppVersion(versionCode)
 
                                 withContext(Dispatchers.Main) {
                                     if (isNewVersion) {
