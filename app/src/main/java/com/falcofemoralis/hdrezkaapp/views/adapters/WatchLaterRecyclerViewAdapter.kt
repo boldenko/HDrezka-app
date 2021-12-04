@@ -25,13 +25,12 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class WatchLaterRecyclerViewAdapter(private val context: Context, private val watchLaterList: ArrayList<WatchLater>, private val openFilm: (film: Film) -> Unit, private val deleteHandler: (id: String, pos: Int) -> Unit) :
+class WatchLaterRecyclerViewAdapter(private val context: Context, private val watchLaterList: ArrayList<WatchLater>, private val openFilm: (film: Film) -> Unit, private val deleteHandler: (id: String) -> Unit) :
     RecyclerView.Adapter<WatchLaterRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.inflate_watch_later, parent, false)
         return ViewHolder(view)
-
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -72,7 +71,10 @@ class WatchLaterRecyclerViewAdapter(private val context: Context, private val wa
         }
 
         holder.deleteView.setOnClickListener {
-            deleteHandler(watchLaterItem.id, position)
+            deleteHandler(watchLaterItem.id)
+            watchLaterList.removeAt(position)
+            notifyItemRemoved(position)
+            notifyItemRangeChanged(position, itemCount)
         }
     }
 

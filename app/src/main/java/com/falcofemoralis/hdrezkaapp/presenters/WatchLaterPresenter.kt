@@ -1,10 +1,13 @@
 package com.falcofemoralis.hdrezkaapp.presenters
 
+import android.util.Log
 import com.falcofemoralis.hdrezkaapp.constants.AdapterAction
+import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.interfaces.IMsg
 import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
 import com.falcofemoralis.hdrezkaapp.models.FilmModel
 import com.falcofemoralis.hdrezkaapp.models.WatchLaterModel
+import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.objects.WatchLater
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper.catchException
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.WatchLaterView
@@ -87,17 +90,23 @@ class WatchLaterPresenter(private val watchLaterView: WatchLaterView) {
         initList()
     }
 
-    fun deleteWatchLaterItem(id: String, pos: Int) {
+    fun deleteWatchLaterItem(id: String) {
         GlobalScope.launch {
             try {
-                if (pos < activeWatchLaterList.size) {
-                    WatchLaterModel.removeItem(id)
-                    activeWatchLaterList.removeAt(pos)
+                WatchLaterModel.removeItem(id)
+                // activeWatchLaterList.removeAt(pos)
 
-                    withContext(Dispatchers.Main) {
-                        watchLaterView.redrawWatchLaterList(pos - 1, pos + 1, AdapterAction.UPDATE)
+                withContext(Dispatchers.Main) {
+                    val onItemsDownload = if (SettingsData.deviceType == DeviceType.MOBILE) {
+                        7
+                    } else {
+                        4
+                    }
+
+                    if (activeWatchLaterList.size <= onItemsDownload) {
                         getNextWatchLater()
                     }
+
                 }
             } catch (e: Exception) {
                 catchException(e, watchLaterView)

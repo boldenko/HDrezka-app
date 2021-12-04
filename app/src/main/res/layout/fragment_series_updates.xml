@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_margin="10dp"
     tools:context=".views.fragments.SeriesUpdatesFragment">
 
     <LinearLayout
@@ -16,7 +17,6 @@
             style="@style/app_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/leanback_margin_filters"
             android:layout_marginTop="7dp"
             android:layout_marginEnd="7dp"
             android:layout_marginBottom="7dp"

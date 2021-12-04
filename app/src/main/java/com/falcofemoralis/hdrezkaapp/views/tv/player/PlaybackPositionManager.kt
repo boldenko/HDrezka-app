@@ -103,7 +103,6 @@ class PlaybackPositionManager(private val context: Context, private val isSeries
                 if (item.filmId == databaseSaveItem.filmId &&
                     item.translationId == databaseSaveItem.translationId
                 ) {
-                    item.lastTime = databaseSaveItem.lastTime
                     return item.lastTime ?: 0L
                 }
             }

@@ -11,6 +11,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -71,6 +72,8 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     private lateinit var currentFragment: Fragment
     private var savedInstanceState: Bundle? = null
     private var seriesUpdatesFragment: SeriesUpdatesFragment? = null
+    private var apkUrl: String? = null
+    private var requestPermissionLauncher: ActivityResultLauncher<String>? = null
 
     /* TV */
     private lateinit var navMenuFragment: NavigationMenu
@@ -98,6 +101,15 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         super.onCreate(savedInstanceState)
         this.savedInstanceState = savedInstanceState
 
+        requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                // Permission is granted. Continue the action or workflow in your
+                downloadApk()
+            } else {
+                Toast.makeText(this, getString(R.string.perm_write_hint), Toast.LENGTH_LONG).show()
+            }
+        }
+
         if (detectUIMode()) {
             setContentView(R.layout.activity_main)
 
@@ -110,9 +122,9 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     }
 
     private fun initCreate() {
-        FirebaseApp.initializeApp(this);
-
         if (isInternetAvailable(applicationContext)) {
+            FirebaseApp.initializeApp(this)
+
             SettingsData.initProvider(this)
 
             try {
@@ -533,27 +545,17 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     private fun getPermissionView(): View = getPermissionDialog()!!.requireView().findViewById(R.id.positive)
     private fun getPermissionDialog() = supportFragmentManager.findFragmentByTag(SearchFragment.Tag.getTag().name) as? VoicePermissionDialogFragment
 
-    private fun downloadApk(apkUrl: String?) {
-        if (apkUrl != null && apkUrl.isNotEmpty()) {
-            val downloadController = DownloadController(this, apkUrl)
+    private fun downloadApk() {
+        if (apkUrl != null && apkUrl!!.isNotEmpty()) {
+            val downloadController = DownloadController(this, apkUrl!!)
             downloadController.enqueueDownload()
         }
     }
 
     private fun checkAppVersion() {
-        var apkUrl: String? = null
         if (SettingsData.isCheckNewVersion == true) {
             val _context = this
             //val versionFilePath = filesDir.path + "/version"
-
-            val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-                if (isGranted) {
-                    // Permission is granted. Continue the action or workflow in your
-                    downloadApk(apkUrl)
-                } else {
-                    Toast.makeText(_context, getString(R.string.perm_write_hint), Toast.LENGTH_LONG).show()
-                }
-            }
 
             GlobalScope.launch {
                 try {
@@ -581,10 +583,10 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                                         builder.setPositiveButton(R.string.update_to) { d, i ->
                                             when (PackageManager.PERMISSION_GRANTED) {
                                                 ContextCompat.checkSelfPermission(_context, Manifest.permission.WRITE_EXTERNAL_STORAGE) -> {
-                                                    downloadApk(apkUrl)
+                                                    downloadApk()
                                                 }
                                                 else -> {
-                                                    requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                                    requestPermissionLauncher?.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                                                 }
                                             }
                                         }

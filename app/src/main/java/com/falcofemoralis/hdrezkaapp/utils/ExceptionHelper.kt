@@ -92,7 +92,6 @@ object ExceptionHelper {
     }
 
     fun catchException(e: Exception, view: IConnection) {
-        Firebase.crashlytics.recordException(e)
 
         if (e !is IllegalArgumentException &&
             e !is UnknownHostException &&
@@ -103,7 +102,7 @@ object ExceptionHelper {
                     e !is SSLException &&
             e !is IOException
         ) {
-            FirebaseCrashlytics.getInstance().recordException(e)
+            Firebase.crashlytics.recordException(e)
         }
 
         e.printStackTrace()

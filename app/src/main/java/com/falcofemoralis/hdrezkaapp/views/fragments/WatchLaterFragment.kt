@@ -91,8 +91,8 @@ class WatchLaterFragment : Fragment(), WatchLaterView {
         FragmentOpener.openWithData(this, fragmentListener, film, "film")
     }
 
-    private fun deleteWatchLater(id: String, pos: Int) {
-        watchLaterPresenter.deleteWatchLaterItem(id, pos)
+    private fun deleteWatchLater(id: String) {
+        watchLaterPresenter.deleteWatchLaterItem(id)
     }
 
     override fun showMsg(type: IMsg.MsgType) {
