@@ -84,6 +84,7 @@ class PlayerActivity : FragmentActivity() {
         const val FILM = "film"
         const val STREAM = "stream"
         const val TRANSLATION = "translation"
+        const val SUBTITLE = "subtitle"
         const val GAMEPAD_TRIGGER_INTENSITY_ON = 0.5f
         const val GAMEPAD_TRIGGER_INTENSITY_OFF = 0.45f
     }

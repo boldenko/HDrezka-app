@@ -94,11 +94,11 @@ class FilmFragment : Fragment(), FilmView {
         }
         activity?.window?.clearFlags(FLAG_KEEP_SCREEN_ON)
         if (SettingsData.deviceType == DeviceType.TV && wl?.isHeld == true) {
-           try {
-               wl?.release()
-           } catch (e: Exception){
-               e.printStackTrace()
-           }
+            try {
+                wl?.release()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
         PlayerJsInterface.notifyanager?.cancel(0)
 
@@ -1151,6 +1151,9 @@ class FilmFragment : Fragment(), FilmView {
                     intent.putExtra(PlayerActivity.FILM, filmPresenter.film)
                     intent.putExtra(PlayerActivity.STREAM, stream)
                     intent.putExtra(PlayerActivity.TRANSLATION, translation)
+                    if (subtitle != null) {
+                        intent.putExtra(PlayerActivity.SUBTITLE, subtitle)
+                    }
                     startActivity(intent)
                 } else {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
@@ -1193,7 +1196,7 @@ class FilmFragment : Fragment(), FilmView {
         val builder = DialogManager.getDialog(requireContext(), R.string.title_select_caption)
         val subtitlesNames: ArrayList<String> = ArrayList()
 
-        if (translation.subtitles != null && translation.subtitles!!.size > 0 && SettingsData.deviceType == DeviceType.MOBILE) {
+        if (translation.subtitles != null && translation.subtitles!!.size > 0) {
             for (subtitle in translation.subtitles!!) {
                 subtitlesNames.add(subtitle.lang)
             }

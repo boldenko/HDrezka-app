@@ -114,6 +114,7 @@ class PlayerFragment : VideoSupportFragment() {
         mFilm = activity?.intent?.getSerializableExtra(PlayerActivity.FILM) as Film
         mStream = activity?.intent?.getSerializableExtra(PlayerActivity.STREAM) as Stream
         mTranslation = activity?.intent?.getSerializableExtra(PlayerActivity.TRANSLATION) as Voice
+        val mSelectedSubtitle: Subtitle? = activity?.intent?.getSerializableExtra(PlayerActivity.SUBTITLE) as Subtitle?
 
         if (mTranslation?.seasons != null && mTranslation?.seasons!!.size > 0) {
             isSerial = true
@@ -143,7 +144,19 @@ class PlayerFragment : VideoSupportFragment() {
             }
         }
 
-        selectedSubtitle = if (mTranslation?.subtitles != null && mTranslation!!.subtitles!!.size > 0) 0 else -1
+        selectedSubtitle = if (mSelectedSubtitle != null && mTranslation?.subtitles != null && mTranslation!!.subtitles!!.size > 0) {
+            var selSub = -1
+            for ((i, sub) in mTranslation?.subtitles!!.withIndex()) {
+                if (sub.lang == mSelectedSubtitle!!.lang) {
+                    selSub = i
+                }
+            }
+            selSub
+        } else if (mTranslation?.subtitles != null && mTranslation!!.subtitles!!.size > 0) {
+            0
+        } else {
+            -1
+        }
 
         if (playbackPositionManager == null) {
             playbackPositionManager = PlaybackPositionManager(requireContext(), isSerial)
@@ -187,7 +200,7 @@ class PlayerFragment : VideoSupportFragment() {
         mPlayerGlue?.host = VideoSupportFragmentGlueHost(this)
         mPlayerGlue?.isSeekEnabled = true
         mPlayerGlue?.isControlsOverlayAutoHideEnabled = false
-      //  StoryboardSeekDataProvider.setSeekProvider(mTranslation!!, mPlayerGlue!!, requireContext())
+        //  StoryboardSeekDataProvider.setSeekProvider(mTranslation!!, mPlayerGlue!!, requireContext())
 
         if (mPlayerGlue?.isPrepared == true) {
             mPlayerGlue?.seekProvider = StoryboardSeekDataProvider(mTranslation!!, requireContext())
@@ -241,7 +254,7 @@ class PlayerFragment : VideoSupportFragment() {
     private fun play(stream: Stream) {
         mPlayerGlue?.title = title
         mPlayerGlue?.subtitle = mFilm?.description
-        prepareMediaForPlaying(stream.url, mTranslation?.subtitles?.get(0)?.url, true)
+        prepareMediaForPlaying(stream.url, mTranslation?.subtitles?.get(selectedSubtitle)?.url, true)
         mPlayerGlue?.play()
     }
 
@@ -257,7 +270,7 @@ class PlayerFragment : VideoSupportFragment() {
                     if (stream.quality == mStream?.quality) {
                         mStream = stream
                         mTranslation?.selectedEpisode = Pair(playlistItem.season, playlistItem.episode)
-                        prepareMediaForPlaying(stream.url, mTranslation?.subtitles?.get(0)?.url, true)
+                        prepareMediaForPlaying(stream.url, mTranslation?.subtitles?.get(selectedSubtitle)?.url, true)
                         mPlayerGlue?.play()
                         break
                     }
@@ -390,7 +403,7 @@ class PlayerFragment : VideoSupportFragment() {
         }
     }
 
-    private fun saveCurrentTime(){
+    private fun saveCurrentTime() {
         val lastPos = mPlayerGlue?.getCurrentPos()
         if (lastPos != null) {
             // save
