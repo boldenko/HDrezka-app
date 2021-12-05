@@ -86,14 +86,18 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         if (context != null) {
             SettingsData.initDeviceType(context)
 
-            val uiMode = if (SettingsData.deviceType == DeviceType.TV) {
+            val uiMode: Int? = if (SettingsData.deviceType == DeviceType.TV) {
                 Configuration.UI_MODE_TYPE_TELEVISION
-            } else {
+            } else if (SettingsData.deviceType == DeviceType.MOBILE) {
                 Configuration.UI_MODE_TYPE_NORMAL
+            } else {
+                null
             }
 
-            resources.configuration.setTo(context.resources.configuration)
-            resources.configuration.uiMode = uiMode
+            if (uiMode != null) {
+                resources.configuration.uiMode = uiMode
+                resources.configuration.setTo(resources.configuration)
+            }
         }
     }
 
@@ -230,7 +234,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                     // TV
                     SettingsData.init(applicationContext)
                     UserData.init(applicationContext)
-                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
                     navFragmentLayout = findViewById(R.id.nav_fragment)
 

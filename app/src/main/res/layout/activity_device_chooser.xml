@@ -15,10 +15,8 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:background="@color/light_background"
-        android:foreground="@drawable/unselected_focus"
         android:clickable="true"
-        android:focusable="true"
-        app:cardElevation="4dp">
+        android:focusable="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -68,11 +66,9 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:foreground="@drawable/unselected_focus"
         android:background="@color/light_background"
         android:clickable="true"
-        android:focusable="true"
-        app:cardElevation="4dp">
+        android:focusable="true">
 
         <LinearLayout
             android:layout_width="match_parent"
