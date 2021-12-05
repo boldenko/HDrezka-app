@@ -270,7 +270,7 @@ class FilmFragment : Fragment(), FilmView {
         if (msgType == IConnection.ErrorType.PARSING_ERROR) {
             Toast.makeText(requireContext(), getString(R.string.server_error_503), Toast.LENGTH_SHORT).show()
         } else if (msgType == IConnection.ErrorType.EMPTY) {
-            Toast.makeText(requireContext(), getString(R.string.error_empty), Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.blocked_in_region), Toast.LENGTH_SHORT).show()
         }
     }
 

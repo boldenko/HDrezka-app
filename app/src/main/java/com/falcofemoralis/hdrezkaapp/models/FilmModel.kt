@@ -118,7 +118,7 @@ object FilmModel {
         return film
     }
 
-    private fun getTypeByName(name: String): String {
+    fun getTypeByName(name: String): String {
         return when (name) {
             "series" -> "Сериал"
             "cartoons" -> "Мультфильм"
@@ -128,7 +128,7 @@ object FilmModel {
         }
     }
 
-    private fun getConstTypeByName(name: String): FilmType {
+    fun getConstTypeByName(name: String): FilmType {
         return when (name) {
             "series" -> FilmType.SERIES
             "cartoons" -> FilmType.MULTFILMS
@@ -466,7 +466,7 @@ object FilmModel {
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                delay(150)
+                delay(50)
                 startFilmLoad(counter, loadedFilms, filmsToLoad, index, film, callback)
             }
         }

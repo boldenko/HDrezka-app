@@ -270,7 +270,6 @@ class FilmPresenter(private val filmView: FilmView, val film: Film) {
 
                 withContext(Dispatchers.Main) {
                     if (translation.streams?.size ?: 0 > 0) {
-
                         film.title?.let {
                             if (SettingsData.isMaxQuality == true) {
                                 filmView.openStream(translation.streams!![translation.streams!!.size - 1], it, additionalTitle.toString(), isDownload, translation)

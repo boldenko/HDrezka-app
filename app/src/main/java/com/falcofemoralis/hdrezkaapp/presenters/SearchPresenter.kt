@@ -4,6 +4,7 @@ import android.content.Context
 import com.falcofemoralis.hdrezkaapp.constants.AdapterAction
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.interfaces.IProgressState
+import com.falcofemoralis.hdrezkaapp.models.FilmModel
 import com.falcofemoralis.hdrezkaapp.models.SearchModel
 import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
@@ -77,26 +78,43 @@ class SearchPresenter(private val searchView: SearchView, private val filmsListV
 
         GlobalScope.launch {
             try {
+                fun completeSearch() {
+                    GlobalScope.launch {
+                        withContext(Dispatchers.Main) {
+                            addFilms(loadedListFilms)
+                            loadedListFilms.clear()
+                        }
+                    }
+                }
+
+                fun checkFilmsPage() {
+                    // no more films
+                    if (loadedListFilms.size == 0) {
+                        throw HttpStatusException("List end", 404, SettingsData.provider)
+                    }
+                    currentPage++
+                }
+
                 if (loadedListFilms.size == 0) {
                     loadedListFilms = SearchModel.getFilmsFromSearchPage(query, currentPage)
 
                     // blocked, retry with another search
                     if (loadedListFilms.size == 0 && currentPage == 1) {
                         loadedListFilms = SearchModel.getFilmsListByQuery(query)
+
+                        FilmModel.getFilmsData(loadedListFilms, loadedListFilms.size) { films ->
+                            loadedListFilms = films
+                            checkFilmsPage()
+                            completeSearch()
+                        }
+
+                        return@launch
                     }
 
-                    // no more films
-                    if (loadedListFilms.size == 0) {
-                        throw HttpStatusException("List end", 404, SettingsData.provider)
-                    }
-
-                    currentPage++
+                    checkFilmsPage()
                 }
 
-                withContext(Dispatchers.Main) {
-                    addFilms(loadedListFilms)
-                    loadedListFilms.clear()
-                }
+                completeSearch()
             } catch (e: Exception) {
                 if (e is HttpStatusException) {
                     if (e.statusCode != 404) {
