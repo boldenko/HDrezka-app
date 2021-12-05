@@ -310,6 +310,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             "isAltLoading" -> {
                 SettingsData.isAltLoading = preferences.getBoolean("isAltLoading", false)
             }
+            "isSelectSubtitles" -> {
+                SettingsData.isSelectSubtitle = preferences.getBoolean("isSelectSubtitles", true)
+            }
         }
     }
 

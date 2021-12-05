@@ -1196,7 +1196,7 @@ class FilmFragment : Fragment(), FilmView {
         val builder = DialogManager.getDialog(requireContext(), R.string.title_select_caption)
         val subtitlesNames: ArrayList<String> = ArrayList()
 
-        if (translation.subtitles != null && translation.subtitles!!.size > 0) {
+        if (translation.subtitles != null && translation.subtitles!!.size > 0 && SettingsData.isSelectSubtitle == true) {
             for (subtitle in translation.subtitles!!) {
                 subtitlesNames.add(subtitle.lang)
             }

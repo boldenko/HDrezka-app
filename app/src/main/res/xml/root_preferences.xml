@@ -109,6 +109,13 @@
             app:useSimpleSummaryProvider="true" />
 
         <SwitchPreferenceCompat
+            android:layout="@layout/custom_switch_preference"
+            android:defaultValue="true"
+            app:key="isSelectSubtitles"
+            app:summary="@string/select_subtitles_hint"
+            app:title="@string/select_subtitles_title" />
+
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:layout="@layout/custom_switch_preference"
             app:key="isSubtitlesDownload"
