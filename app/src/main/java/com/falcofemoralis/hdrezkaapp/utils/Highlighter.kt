@@ -23,31 +23,36 @@ import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 object Highlighter {
     const val ANIM_DURATION = 250L
 
-    fun zoom(context: Context, layout: LinearLayout, posterLayout: View, titleView: TextView, vararg subViews: TextView?) {
+    fun zoom(context: Context, layout: LinearLayout, iv: ImageView, titleView: TextView, onFocusCallback: (() -> Unit)?, vararg subViews: TextView?) {
         if (SettingsData.deviceType == DeviceType.TV) {
             layout.setOnFocusChangeListener { v, hasFocus ->
                 if (hasFocus) {
-                    posterLayout.foreground = ColorDrawable(ContextCompat.getColor(context, R.color.transparent))
+                    if(onFocusCallback != null){
+                        onFocusCallback?.let { it() }
+                    }
+
+                    iv.setColorFilter(context.getColor(R.color.transparent))
                     titleView.setTextColor(context.getColor(R.color.white))
                     for (subView in subViews) {
                         subView?.setTextColor(context.getColor(R.color.gray))
                     }
 
                     val anim: Animation = AnimationUtils.loadAnimation(context, R.anim.scale_in_tv)
-                    v.startAnimation(anim)
                     anim.fillAfter = true
+                    v.startAnimation(anim)
                 } else {
-                    posterLayout.foreground = ColorDrawable(ContextCompat.getColor(context, R.color.unselected_film))
+                    iv.setColorFilter(context.getColor(R.color.unselected_film))
                     titleView.setTextColor(context.getColor(R.color.unselected_title))
                     for (subView in subViews) {
                         subView?.setTextColor(context.getColor(R.color.unselected_subtitle))
                     }
 
                     val anim: Animation = AnimationUtils.loadAnimation(context, R.anim.scale_out_tv)
-                    v.startAnimation(anim)
                     anim.fillAfter = true
+                    v.startAnimation(anim)
                 }
             }
+            iv.setColorFilter(context.getColor(R.color.unselected_film))
         }
     }
 

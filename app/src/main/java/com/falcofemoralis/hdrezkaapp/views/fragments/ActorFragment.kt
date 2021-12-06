@@ -106,7 +106,7 @@ class ActorFragment : Fragment(), ActorView {
             layout.findViewById<TextView>(R.id.career_header).text = career.first
             val recyclerView: RecyclerView = layout.findViewById(R.id.career_films)
             recyclerView.layoutManager = SettingsData.filmsInRow?.let { GridLayoutManager(requireContext(), it) }
-            recyclerView.adapter = FilmsListRecyclerViewAdapter(requireContext(), career.second, ::listCallback)
+            recyclerView.adapter = FilmsListRecyclerViewAdapter(career.second, ::listCallback, null)
 
             container.addView(layout)
         }

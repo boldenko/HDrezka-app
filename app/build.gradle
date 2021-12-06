@@ -82,4 +82,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'io.github.nikartm:image-support:2.0.0'
     implementation 'com.jakewharton:process-phoenix:2.1.2'
+    // implementation 'jp.wasabeef:recyclerview-animators:4.0.2'
 }

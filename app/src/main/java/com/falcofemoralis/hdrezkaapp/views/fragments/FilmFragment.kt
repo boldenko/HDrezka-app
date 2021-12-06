@@ -442,7 +442,7 @@ class FilmFragment : Fragment(), FilmView {
                 layout.setOnClickListener {
                     FragmentOpener.openWithData(this, fragmentListener, actor, "actor")
                 }
-                zoom(requireContext(), layout, actorPhoto, nameView, careerView)
+                zoom(requireContext(), layout, actorPhoto, nameView, null, careerView)
             }
         }
     }
@@ -653,8 +653,8 @@ class FilmFragment : Fragment(), FilmView {
             val layout: LinearLayout = layoutInflater.inflate(R.layout.inflate_film, null) as LinearLayout
             val titleView: TextView = layout.findViewById(R.id.film_title)
             val infoView: TextView = layout.findViewById(R.id.film_info)
-            val posterLayout: RelativeLayout = layout.findViewById(R.id.film_posterLayout)
-            zoom(requireContext(), layout, posterLayout, titleView, infoView)
+            val posterView: ImageView = layout.findViewById(R.id.film_poster)
+            zoom(requireContext(), layout, posterView, titleView,null, infoView)
             layout.findViewById<TextView>(R.id.film_type).visibility = View.GONE
             titleView.text = film.title
             titleView.textSize = 12F

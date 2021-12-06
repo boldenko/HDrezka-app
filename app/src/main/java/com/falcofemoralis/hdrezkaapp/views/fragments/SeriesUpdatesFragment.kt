@@ -87,7 +87,7 @@ class SeriesUpdatesFragment : Fragment(), SeriesUpdatesView {
             layout.findViewById<TextView>(R.id.career_header).text = date
             val recyclerView: RecyclerView = layout.findViewById(R.id.career_films)
             recyclerView.layoutManager = SettingsData.filmsInRow?.let { GridLayoutManager(requireContext(), it) }
-            recyclerView.adapter = FilmsListRecyclerViewAdapter(requireContext(), filmsList, ::listCallback)
+            recyclerView.adapter = FilmsListRecyclerViewAdapter(filmsList, ::listCallback, null)
 
             container.addView(layout)
         }

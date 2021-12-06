@@ -23,7 +23,6 @@
         android:orientation="vertical">
 
         <ImageView
-            android:foreground="@color/unselected_film"
             android:id="@+id/actor_photo"
             android:layout_width="100dp"
             android:layout_height="130dp"

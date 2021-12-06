@@ -2,14 +2,11 @@ package com.falcofemoralis.hdrezkaapp.views.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +16,6 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.falcofemoralis.hdrezkaapp.R
-import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.constants.FilmType
 import com.falcofemoralis.hdrezkaapp.models.FilmModel
 import com.falcofemoralis.hdrezkaapp.objects.Film
@@ -32,20 +28,39 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class FilmsListRecyclerViewAdapter(private val context: Context, private val films: ArrayList<Film>, private val openFilm: (film: Film) -> Unit) :
+class FilmsListRecyclerViewAdapter(private val films: ArrayList<Film>, private val openFilm: (film: Film) -> Unit, private val onListEndTrigger: (() -> Unit)?) :
     RecyclerView.Adapter<FilmsListRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.inflate_film, parent, false)
-        return ViewHolder(view)
+        val context: Context = parent.getContext()
+
+        return ViewHolder(view, context)
     }
 
+    override fun onViewDetachedFromWindow(holder: ViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        // holder.layout.clearAnimation()
+        //holder.posterLayoutView.clearAnimation()
+        holder.itemView.clearAnimation()
+    }
+
+
     override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
-        zoom(context, holder.layout, holder.posterLayoutView, holder.titleView, holder.infoView)
+        fun onFocusCallback() {
+            if (position > films.size - 1 - (SettingsData.filmsInRow?.times(2) ?: 14)) {
+                //Log.d("TESTREST", "$position > ${films.size - 1 - (SettingsData.filmsInRow?.times(2) ?: 14)}")
+                if (onListEndTrigger != null) {
+                    onListEndTrigger?.let { it() }
+                }
+            }
+        }
+
+        zoom(holder.context, holder.layout, holder.filmPoster, holder.titleView, ::onFocusCallback, holder.infoView)
 
         val film = films[position]
 
-        var glide = Glide.with(context).load(film.posterPath).fitCenter()
+        var glide = Glide.with(holder.context).load(film.posterPath).fitCenter()
         if (film.subInfo?.contains(FilmModel.AWAITING_TEXT) == true) {
             glide = glide.transform(ColorFilterTransformation(R.color.black))
         }
@@ -98,12 +113,12 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
         holder.typeView.text = typeText
 
         val color: Int = when (film.constFilmType) {
-            FilmType.FILM -> ContextCompat.getColor(context, R.color.film)
-            FilmType.MULTFILMS -> ContextCompat.getColor(context, R.color.multfilm)
-            FilmType.SERIES -> ContextCompat.getColor(context, R.color.serial)
-            FilmType.ANIME -> ContextCompat.getColor(context, R.color.anime)
-            FilmType.TVSHOWS -> ContextCompat.getColor(context, R.color.tv_show)
-            else -> ContextCompat.getColor(context, R.color.background)
+            FilmType.FILM -> ContextCompat.getColor(holder.context, R.color.film)
+            FilmType.MULTFILMS -> ContextCompat.getColor(holder.context, R.color.multfilm)
+            FilmType.SERIES -> ContextCompat.getColor(holder.context, R.color.serial)
+            FilmType.ANIME -> ContextCompat.getColor(holder.context, R.color.anime)
+            FilmType.TVSHOWS -> ContextCompat.getColor(holder.context, R.color.tv_show)
+            else -> ContextCompat.getColor(holder.context, R.color.background)
         }
         holder.typeView.setBackgroundColor(color)
 
@@ -130,7 +145,8 @@ class FilmsListRecyclerViewAdapter(private val context: Context, private val fil
 
     override fun getItemCount(): Int = films.size
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+    inner class ViewHolder(view: View, val context: Context) : RecyclerView.ViewHolder(view) {
         val layout: LinearLayout = view.findViewById(R.id.film_layout)
         val filmPoster: ImageView = view.findViewById(R.id.film_poster)
         val titleView: TextView = view.findViewById(R.id.film_title)

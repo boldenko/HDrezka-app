@@ -3,27 +3,26 @@
     android:id="@+id/film_layout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginStart="5dp"
     android:layout_marginTop="@dimen/inflate_film_layout_top_margin"
     android:layout_marginEnd="5dp"
     android:layout_marginBottom="5dp"
-    android:layout_marginStart="5dp"
-    android:focusable="true"
     android:clipToPadding="false"
+    android:focusable="true"
     android:orientation="vertical">
 
     <ProgressBar
-        android:visibility="visible"
         android:id="@+id/film_loading"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:visibility="visible" />
 
     <RelativeLayout
-        android:foreground="@color/unselected_film"
         android:id="@+id/film_posterLayout"
-        android:visibility="gone"
-        android:adjustViewBounds="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/film_poster"
@@ -31,7 +30,7 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:contentDescription="film poster"
-            android:foregroundGravity="center_horizontal" >
+            android:foregroundGravity="center_horizontal">
 
         </ImageView>
 
@@ -47,27 +46,27 @@
             android:textSize="@dimen/small_text" />
 
         <TextView
-            android:visibility="gone"
             android:id="@+id/film_sub_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/film_poster"
             android:background="@color/transparent"
-            android:text="SubInfo"
+            android:breakStrategy="balanced"
             android:paddingStart="3dp"
             android:paddingEnd="3dp"
-            android:breakStrategy="balanced"
+            android:text="SubInfo"
             android:textColor="@color/white"
-            android:textSize="@dimen/small_text" />
+            android:textSize="@dimen/small_text"
+            android:visibility="gone" />
     </RelativeLayout>
 
     <TextView
-        android:ellipsize="end"
-        android:maxLines="2"
         android:id="@+id/film_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:breakStrategy="balanced"
+        android:ellipsize="end"
+        android:maxLines="2"
         android:text="Title"
         android:textColor="@color/unselected_title"
         android:textSize="@dimen/small_text" />

@@ -34,7 +34,7 @@ class WatchLaterRecyclerViewAdapter(private val context: Context, private val wa
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        zoom(context, holder.layout, holder.posterView, holder.nameView, holder.infoView, holder.dateView)
+        zoom(context, holder.layout, holder.posterView, holder.nameView, null, holder.infoView, holder.dateView)
 
         val watchLaterItem = watchLaterList[position]
 
