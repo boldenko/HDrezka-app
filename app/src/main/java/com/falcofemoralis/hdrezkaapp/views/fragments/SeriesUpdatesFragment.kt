@@ -25,6 +25,7 @@ import com.falcofemoralis.hdrezkaapp.objects.SeriesUpdateItem
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.presenters.SeriesUpdatesPresenter
 import com.falcofemoralis.hdrezkaapp.utils.DialogManager
+import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
 import com.falcofemoralis.hdrezkaapp.utils.Highlighter
 import com.falcofemoralis.hdrezkaapp.views.MainActivity
@@ -110,7 +111,13 @@ class SeriesUpdatesFragment : Fragment(), SeriesUpdatesView {
     }
 
     override fun showConnectionError(type: IConnection.ErrorType, errorText: String) {
-        //
+        try {
+            if (context != null) {
+                ExceptionHelper.showToastError(requireContext(), type, errorText)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun initUserUpdatesData(_context: Context, updateNotifyBadge: (n: Int) -> Unit, createNotifyBtn: () -> Unit) {

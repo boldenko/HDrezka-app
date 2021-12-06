@@ -138,16 +138,20 @@ class SeriesUpdatesPresenter(private val seriesUpdatesView: SeriesUpdatesView) {
 
     fun initAllUpdatesList() {
         GlobalScope.launch {
-            if (seriesUpdates == null) {
-                seriesUpdates = NewestFilmsModel.getSeriesUpdates()
-            } else {
-                Thread.sleep(50) // fix
-            }
-
-            withContext(Dispatchers.Main) {
-                if (seriesUpdates != null) {
-                    seriesUpdatesView.updateDialog(seriesUpdates!!)
+            try {
+                if (seriesUpdates == null) {
+                    seriesUpdates = NewestFilmsModel.getSeriesUpdates()
+                } else {
+                    Thread.sleep(50) // fix
                 }
+
+                withContext(Dispatchers.Main) {
+                    if (seriesUpdates != null) {
+                        seriesUpdatesView.updateDialog(seriesUpdates!!)
+                    }
+                }
+            } catch (e: Exception) {
+                ExceptionHelper.catchException(e, seriesUpdatesView)
             }
         }
     }
