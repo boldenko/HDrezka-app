@@ -28,6 +28,7 @@ import com.falcofemoralis.hdrezkaapp.BuildConfig
 import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.clients.PlayerJsInterface
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
+import com.falcofemoralis.hdrezkaapp.constants.DownloadType
 import com.falcofemoralis.hdrezkaapp.constants.NavigationMenuTabs
 import com.falcofemoralis.hdrezkaapp.constants.UpdateItem
 import com.falcofemoralis.hdrezkaapp.controllers.DownloadController
@@ -550,8 +551,47 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
 
     private fun downloadApk() {
         if (apkUrl != null && apkUrl!!.isNotEmpty()) {
-            val downloadController = DownloadController(this, apkUrl!!)
-            downloadController.enqueueDownload()
+            val builder = DialogManager.getDialog(this, null, false)
+            val dialogView = layoutInflater.inflate(R.layout.dialog_progress, null, false)
+            val progressbarView = dialogView.findViewById<ProgressBar>(R.id.progressbar)
+            val hintView = dialogView.findViewById<TextView>(R.id.hint_text)
+            builder.setView(dialogView)
+            val d = builder.create()
+            d.show()
+
+            val percentView = dialogView.findViewById<TextView>(R.id.percent)
+            val totalView = dialogView.findViewById<TextView>(R.id.totalSize)
+            var totalSize = 0F
+            var totalText = ""
+
+            fun onComplete(type: DownloadType, value: Float) {
+                when (type) {
+                    DownloadType.SET_MAX -> {
+                        progressbarView.max = value.toInt() * 1024
+                        totalSize = value
+                        totalText = String.format("%.2f", value)
+                        totalView.text = "0/$totalText МБ"
+                    }
+                    DownloadType.SET_PROGRESS -> {
+                        progressbarView.progress = value.toInt() * 1024
+                        val valueText = String.format("%.2f", value)
+                        percentView.text = "${(((value) * 1024F).toInt() * 100) / (totalSize * 1024F).toInt()}%"
+                        totalView.text = "$valueText/$totalText МБ"
+                    }
+                    DownloadType.SUCCESS -> {
+                        d.dismiss()
+                    }
+                    DownloadType.FAILED -> {
+                        d.setCancelable(true)
+                        progressbarView.visibility = View.GONE
+                        percentView.visibility = View.GONE
+                        totalView.visibility = View.GONE
+                        hintView.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            DownloadController(this, apkUrl!!, ::onComplete).enqueueDownload()
         }
     }
 
