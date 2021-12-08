@@ -270,6 +270,7 @@ class PlayerFragment : VideoSupportFragment() {
                     if (stream.quality == mStream?.quality) {
                         mStream = stream
                         mTranslation?.selectedEpisode = Pair(playlistItem.season, playlistItem.episode)
+                        mPlayerGlue?.seekProvider = StoryboardSeekDataProvider(mTranslation!!, requireContext())
                         prepareMediaForPlaying(stream.url, mTranslation?.subtitles?.get(selectedSubtitle)?.url, true)
                         mPlayerGlue?.play()
                         break
