@@ -6,7 +6,6 @@ import android.webkit.CookieManager
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.objects.UserData
 import com.falcofemoralis.hdrezkaapp.utils.CookieStorage
-import com.falcofemoralis.hdrezkaapp.utils.FileManager
 import org.json.JSONObject
 import org.jsoup.Connection
 import org.jsoup.HttpStatusException
@@ -92,7 +91,7 @@ object UserModel {
         if (scriptTag.size > 0) {
             val scriptValue = scriptTag[0].html()
 
-            if (scriptValue.contains("location")) {
+            if ((scriptValue.contains("location") || scriptValue.isEmpty()) && res.hasCookie("dle_user_id") && res.hasCookie("dle_password")) {
                 UserData.setCookies(res.cookie("dle_user_id"), res.cookie("dle_password"), null, context, true)
             } else {
                 val toParse = scriptValue.replace("\$('#register-popup-errors').html('", "").replace("').show();", "")
