@@ -62,6 +62,10 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
         fragmentListener = context as OnFragmentInteractionListener
     }
 
+    private fun onFilmClickedListener(){
+        imm.hideSoftInputFromWindow(autoCompleteTextView.windowToken, 0)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         currentView = inflater.inflate(R.layout.fragment_search, container, false)
         clearBtn = currentView.findViewById(R.id.fragment_search_tv_clear)
@@ -69,6 +73,8 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
 
         filmsListFragment = FilmsListFragment()
         filmsListFragment.setCallView(this)
+        filmsListFragment.setOnFilmClickedListener(::onFilmClickedListener)
+
         childFragmentManager.beginTransaction().replace(R.id.fragment_search_fcv_container, filmsListFragment).commit()
 
         autoCompleteTextView = currentView.findViewById(R.id.fragment_search_act_suggest)
@@ -88,7 +94,6 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
     }
 
     override fun onFilmsListDataInit() {
-
     }
 
     private fun initSearchViews() {

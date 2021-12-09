@@ -14,8 +14,9 @@ object FilmsListModel {
         val films: ArrayList<Film> = ArrayList()
 
         for (el in doc.select(FILMS)) {
-            val film = Film(el.attr("data-id").toInt())
-            film.filmLink = el.attr("data-url")
+           // val film = Film(el.attr("data-id").toInt())
+            val film = Film(el.attr("data-url"))
+
             if (film.filmLink.isNullOrEmpty()) {
                 film.filmLink = el.select("div.b-content__inline_item-cover a").attr("href")
 

@@ -30,6 +30,7 @@ open class FilmsListFragment : Fragment(), FilmsListView {
     private lateinit var scrollView: NestedScrollView
     private lateinit var fragmentListener: OnFragmentInteractionListener
     private var callView: FilmListCallView? = null
+    private var onFilmClickedListener: ( () -> Unit)? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -78,6 +79,10 @@ open class FilmsListFragment : Fragment(), FilmsListView {
         callView = cv
     }
 
+    fun setOnFilmClickedListener(listener: () -> Unit){
+        onFilmClickedListener = listener
+    }
+
     override fun setFilms(films: ArrayList<Film>) {
         recyclerView.adapter = FilmsListRecyclerViewAdapter(films, ::listCallback, ::listEndCallback)
     }
@@ -99,6 +104,9 @@ open class FilmsListFragment : Fragment(), FilmsListView {
     }
 
     private fun listCallback(film: Film) {
+        if(onFilmClickedListener != null){
+            onFilmClickedListener?.let { it() }
+        }
         FragmentOpener.openWithData(this, fragmentListener, film, "film")
     }
 }

@@ -21,6 +21,7 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.DisplayMetrics
+import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
@@ -92,12 +93,16 @@ class FilmFragment : Fragment(), FilmView {
         if (isWebviewInstalled) {
             playerView?.destroy()
         }
-        activity?.window?.clearFlags(FLAG_KEEP_SCREEN_ON)
-        if (SettingsData.deviceType == DeviceType.TV && wl?.isHeld == true) {
-            try {
-                wl?.release()
-            } catch (e: Exception) {
-                e.printStackTrace()
+
+        if(SettingsData.isPlayer == false) {
+            activity?.window?.clearFlags(FLAG_KEEP_SCREEN_ON)
+
+            if (SettingsData.deviceType == DeviceType.TV && wl?.isHeld == true) {
+                try {
+                    wl?.release()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
         PlayerJsInterface.notifyanager?.cancel(0)
@@ -172,12 +177,14 @@ class FilmFragment : Fragment(), FilmView {
 
     @SuppressLint("InvalidWakeLockTag")
     private fun initFlags() {
-        activity?.window?.addFlags(FLAG_KEEP_SCREEN_ON)
+        if (SettingsData.isPlayer == false) {
+            activity?.window?.addFlags(FLAG_KEEP_SCREEN_ON)
 
-        if (SettingsData.deviceType == DeviceType.TV) {
-            val pm: PowerManager = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
-            wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "tag")
-            wl?.acquire(300 * 60 * 1000L)
+            if (SettingsData.deviceType == DeviceType.TV) {
+                val pm: PowerManager = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
+                wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "tag")
+                wl?.acquire(300 * 60 * 1000L)
+            }
         }
     }
 
@@ -654,7 +661,7 @@ class FilmFragment : Fragment(), FilmView {
             val titleView: TextView = layout.findViewById(R.id.film_title)
             val infoView: TextView = layout.findViewById(R.id.film_info)
             val posterView: ImageView = layout.findViewById(R.id.film_poster)
-            zoom(requireContext(), layout, posterView, titleView,null, infoView)
+            zoom(requireContext(), layout, posterView, titleView, null, infoView)
             layout.findViewById<TextView>(R.id.film_type).visibility = View.GONE
             titleView.text = film.title
             titleView.textSize = 12F
