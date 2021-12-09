@@ -317,7 +317,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     }
 
     private fun setStateExternalPlayerPrefs(state: Boolean) {
-        val prefsKey = arrayOf("isPlayerChooser", "isMaxQuality", "defaultQuality", "isSubtitlesDownload")
+        val prefsKey = arrayOf("isPlayerChooser", "isMaxQuality", "defaultQuality", "isSubtitlesDownload", "isSelectSubtitles")
         for (prefKey in prefsKey) {
             if (SettingsData.deviceType == DeviceType.TV && (prefKey == "isMaxQuality" || prefKey == "defaultQuality")) {
                 continue
