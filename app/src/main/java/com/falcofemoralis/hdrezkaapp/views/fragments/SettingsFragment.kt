@@ -43,9 +43,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     private var exitBtn: Preference? = null
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        if(SettingsData.deviceType == DeviceType.MOBILE){
+        if (SettingsData.deviceType == DeviceType.MOBILE) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
-        } else{
+        } else {
             setPreferencesFromResource(R.xml.root_preferences_tv, rootKey)
         }
         preferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -78,19 +78,47 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             }
         }
 
-        findPreference<Preference?>("changeToTv")?.setOnPreferenceClickListener{
-            changeUiMode(DeviceType.TV)
+        findPreference<Preference?>("changeToTv")?.setOnPreferenceClickListener {
+            showUiModeChangeDialog(DeviceType.TV)
             true
         }
 
-        findPreference<Preference?>("changeToMobile")?.setOnPreferenceClickListener{
-            changeUiMode(DeviceType.MOBILE)
+        findPreference<Preference?>("changeToMobile")?.setOnPreferenceClickListener {
+            showUiModeChangeDialog(DeviceType.MOBILE)
             true
         }
 
         val versionType = SettingsData.deviceType?.name
 
         findPreference<Preference?>("app_version")?.summary = "${BuildConfig.VERSION_NAME} $versionType"
+    }
+
+    private fun showUiModeChangeDialog(deviceType: DeviceType) {
+        if (mContext != null) {
+            val builder = DialogManager.getDialog(mContext!!, R.string.are_you_sure)
+            builder.setNegativeButton(R.string.cancel) { dialog, id ->
+                dialog.dismiss()
+            }
+
+            builder.setPositiveButton(R.string.ok) { dialog, id ->
+                dialog.dismiss()
+                changeUiMode(deviceType)
+            }
+
+            if(deviceType == DeviceType.MOBILE){
+                builder.setMessage(R.string.change_to_mobile)
+            } else{
+                builder.setMessage(R.string.change_to_tv)
+            }
+
+            val d = builder.create()
+            d.setOnShowListener {
+                val btn: Button = d.getButton(AlertDialog.BUTTON_POSITIVE)
+                btn.isFocusable = true
+                btn.requestFocus()
+            }
+            d.show()
+        }
     }
 
     private fun initExitButton() {

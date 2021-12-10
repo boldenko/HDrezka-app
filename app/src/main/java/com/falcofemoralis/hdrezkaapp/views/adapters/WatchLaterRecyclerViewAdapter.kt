@@ -59,6 +59,7 @@ class WatchLaterRecyclerViewAdapter(private val context: Context, private val wa
             }
         })
         glide = glide.error (R.drawable.nopersonphoto) // TODO
+        glide = glide.override(Target.SIZE_ORIGINAL)
         glide.into(holder.posterView)
         glide.submit()
 

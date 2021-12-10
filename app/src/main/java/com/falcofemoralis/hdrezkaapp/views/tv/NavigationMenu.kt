@@ -67,6 +67,7 @@ class NavigationMenu : Fragment() {
         var isFocusOut = false
         var closed = false
         var isLocked = false
+        var isViewOnHover = false
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -98,10 +99,9 @@ class NavigationMenu : Fragment() {
 
         _context = context
 
-
         GlobalScope.launch {
             Thread.sleep(100)
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main) {
                 //Navigation Menu Options Focus, Key Listeners
                 setListener(notify_IB, notify_TV, seriesUpdates, R.drawable.ic_baseline_notifications_24_sel, R.drawable.ic_baseline_notifications_24, -1)
 
@@ -116,13 +116,14 @@ class NavigationMenu : Fragment() {
                 setListener(later_IB, later_TV, later, R.drawable.ic_baseline_watch_later_24_sel, R.drawable.ic_baseline_watch_later_24, 4)
 
                 setListener(settings_IB, settings_TV, settings, R.drawable.ic_baseline_settings_24_sel, R.drawable.ic_baseline_settings_24, -1)
+
+                setOnHoverListener()
             }
         }
-
     }
 
-    private fun setListener(ib: ImageView, tv: TextView, lastMenu: String, selectedImage: Int, unselectedImage: Int, id: Int){
-        if(SettingsData.mainScreen == id){
+    private fun setListener(ib: ImageView, tv: TextView, lastMenu: String, selectedImage: Int, unselectedImage: Int, id: Int) {
+        if (SettingsData.mainScreen == id) {
             lastSelectedMenu = lastMenu
             setMenuIconFocusView(selectedImage, ib)
             setMenuNameFocusView(tv, true)
@@ -182,7 +183,7 @@ class NavigationMenu : Fragment() {
                         closeNav()
                     }
                     KeyEvent.KEYCODE_BACK -> {
-                        if(isNavigationOpen()){
+                        if (isNavigationOpen()) {
                             closeNav()
                         }
                     }
@@ -234,6 +235,72 @@ class NavigationMenu : Fragment() {
             }
 
             v?.onTouchEvent(event) ?: true
+        }
+
+        fun onHoverListener(event: MotionEvent) {
+            if (isFree && !isLocked) {
+                when (event.action) {
+                    MotionEvent.ACTION_HOVER_ENTER -> {
+                        Log.d("MOUSE_TEST", "button ENTER")
+
+                        isViewOnHover = true
+
+                        if (lastSelectedMenu != lastMenu) {
+                            setFocusedView(ib, selectedImage)
+                            setMenuNameFocusView(tv, true)
+                            focusIn(ib)
+                        }
+                    }
+                    MotionEvent.ACTION_HOVER_EXIT -> {
+                        Log.d("MOUSE_TEST", "button EXIT")
+
+                        if (lastSelectedMenu != lastMenu) {
+                            if (isFocusOut) {
+                                isFocusOut = false
+                            } else {
+                                setOutOfFocusedView(ib, unselectedImage)
+                            }
+                            setMenuNameFocusView(tv, false)
+                            focusOut(ib)
+                        }
+                    }
+                }
+            }
+        }
+
+        ib.setOnHoverListener { v, event ->
+            onHoverListener(event)
+            true
+        }
+
+        tv.setOnHoverListener { v, event ->
+            onHoverListener(event)
+            true
+        }
+    }
+
+    private fun setOnHoverListener() {
+        currentView.findViewById<ConstraintLayout>(R.id.open_nav_CL).setOnHoverListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_HOVER_ENTER -> {
+                    if (isViewOnHover) {
+                        isViewOnHover = false
+                    } else {
+                        Log.d("MOUSE_TEST", "bar ENTER")
+                        openNav()
+                        closed = false
+                    }
+                }
+                MotionEvent.ACTION_HOVER_EXIT -> {
+                    if (!isViewOnHover) {
+                        Log.d("MOUSE_TEST", "bar EXIT")
+                        closeNav()
+                        closed = true
+                    }
+                }
+            }
+            true
+
         }
     }
 

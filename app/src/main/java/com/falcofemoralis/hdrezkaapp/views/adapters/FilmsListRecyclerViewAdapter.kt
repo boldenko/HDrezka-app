@@ -81,6 +81,7 @@ class FilmsListRecyclerViewAdapter(private val films: ArrayList<Film>, private v
             }
         })
         glide = glide.error(R.drawable.nopersonphoto) // TODO
+        glide = glide.override(Target.SIZE_ORIGINAL)
         glide.into(holder.filmPoster)
         glide.submit()
 
