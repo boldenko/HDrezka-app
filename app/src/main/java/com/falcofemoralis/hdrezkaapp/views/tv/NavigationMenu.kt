@@ -241,8 +241,6 @@ class NavigationMenu : Fragment() {
             if (isFree && !isLocked) {
                 when (event.action) {
                     MotionEvent.ACTION_HOVER_ENTER -> {
-                        Log.d("MOUSE_TEST", "button ENTER")
-
                         isViewOnHover = true
 
                         if (lastSelectedMenu != lastMenu) {
@@ -252,8 +250,6 @@ class NavigationMenu : Fragment() {
                         }
                     }
                     MotionEvent.ACTION_HOVER_EXIT -> {
-                        Log.d("MOUSE_TEST", "button EXIT")
-
                         if (lastSelectedMenu != lastMenu) {
                             if (isFocusOut) {
                                 isFocusOut = false
@@ -286,14 +282,12 @@ class NavigationMenu : Fragment() {
                     if (isViewOnHover) {
                         isViewOnHover = false
                     } else {
-                        Log.d("MOUSE_TEST", "bar ENTER")
                         openNav()
                         closed = false
                     }
                 }
                 MotionEvent.ACTION_HOVER_EXIT -> {
                     if (!isViewOnHover) {
-                        Log.d("MOUSE_TEST", "bar EXIT")
                         closeNav()
                         closed = true
                     }

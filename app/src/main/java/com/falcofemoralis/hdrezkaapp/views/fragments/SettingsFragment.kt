@@ -3,8 +3,10 @@ package com.falcofemoralis.hdrezkaapp.views.fragments
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +31,10 @@ import com.falcofemoralis.hdrezkaapp.utils.DialogManager
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.views.MainActivity
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.UserView
+import android.graphics.drawable.Drawable
+
+
+
 
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener, UserView {
     private lateinit var preferences: SharedPreferences
@@ -88,6 +94,18 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             true
         }
 
+     /*   findPreference<Preference?>("selectedPlayerPackage")?.setOnPreferenceClickListener {
+            if (mContext != null) {
+                val packages =  mContext!!.packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+
+                for (packageInfo in packages) {
+                    Log.d("TEST", "Package name:" + packageInfo.packageName)
+                    val icon = mContext!!.packageManager.getApplicationIcon(packageInfo.packageName)
+                }
+            }
+            true
+        }*/
+
         val versionType = SettingsData.deviceType?.name
 
         findPreference<Preference?>("app_version")?.summary = "${BuildConfig.VERSION_NAME} $versionType"
@@ -105,9 +123,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 changeUiMode(deviceType)
             }
 
-            if(deviceType == DeviceType.MOBILE){
+            if (deviceType == DeviceType.MOBILE) {
                 builder.setMessage(R.string.change_to_mobile)
-            } else{
+            } else {
                 builder.setMessage(R.string.change_to_tv)
             }
 

@@ -21,7 +21,6 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.DisplayMetrics
-import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
@@ -94,7 +93,7 @@ class FilmFragment : Fragment(), FilmView {
             playerView?.destroy()
         }
 
-        if(SettingsData.isPlayer == false) {
+        if (SettingsData.isPlayer == false) {
             activity?.window?.clearFlags(FLAG_KEEP_SCREEN_ON)
 
             if (SettingsData.deviceType == DeviceType.TV && wl?.isHeld == true) {
@@ -1191,6 +1190,10 @@ class FilmFragment : Fragment(), FilmView {
 
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
+                /*    if (SettingsData.selectedPlayerPackage != null) {
+                        intent.setPackage(SettingsData.selectedPlayerPackage)
+                    }*/
+                    
                     try {
                         startActivity(intent)
                     } catch (e: Exception) {

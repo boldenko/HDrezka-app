@@ -27,6 +27,7 @@ object SettingsData {
     var isAltLoading: Boolean? = null
     var defaultSort: Int? = null
     var isSelectSubtitle: Boolean? = null
+    var selectedPlayerPackage: String? = null
 
     fun initProvider(context: Context) {
         if (provider == null || provider == "") {
@@ -88,6 +89,7 @@ object SettingsData {
         defaultQuality = defq
         defaultSort = prefs?.getString("defaultSort", "1")?.toInt()
         isSelectSubtitle = prefs?.getBoolean("isSelectSubtitles", true)
+       // selectedPlayerPackage = prefs?.getString("selectedPlayerPackage", null)
     }
 
     fun setProvider(newProvider: String, context: Context, updateSettings: Boolean) {

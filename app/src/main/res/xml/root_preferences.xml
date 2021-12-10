@@ -122,6 +122,12 @@
             app:summary="@string/subtitle_download_hint"
             app:title="@string/subtitle_download_title" />
 
+   <!--     <Preference
+            android:key="selectedPlayerPackage"
+            android:summary="плеер"
+            android:layout="@layout/custom_preference"
+            app:title="Плеер по умолчанию" />-->
+
     </PreferenceCategory>
 
     <PreferenceCategory
