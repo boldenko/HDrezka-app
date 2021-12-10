@@ -1193,7 +1193,7 @@ class FilmFragment : Fragment(), FilmView {
                 /*    if (SettingsData.selectedPlayerPackage != null) {
                         intent.setPackage(SettingsData.selectedPlayerPackage)
                     }*/
-                    
+
                     try {
                         startActivity(intent)
                     } catch (e: Exception) {

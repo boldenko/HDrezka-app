@@ -5,7 +5,6 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.TransitionDrawable
 import android.view.View
 import android.view.animation.Animation
@@ -27,7 +26,7 @@ object Highlighter {
         if (SettingsData.deviceType == DeviceType.TV) {
             layout.setOnFocusChangeListener { v, hasFocus ->
                 if (hasFocus) {
-                    if(onFocusCallback != null){
+                    if (onFocusCallback != null) {
                         onFocusCallback?.let { it() }
                     }
 
@@ -144,13 +143,13 @@ object Highlighter {
                     if (hasFocus) {
                         textColorFrom = ContextCompat.getColor(context, R.color.white)
                         textColorTo = ContextCompat.getColor(context, R.color.primary_red)
-                        if (isBackground) {
+                        if (isBackground && (v.getBackground() is TransitionDrawable)) {
                             (v.getBackground() as TransitionDrawable).startTransition(ANIM_DURATION.toInt())
                         }
                     } else {
                         textColorFrom = ContextCompat.getColor(context, R.color.primary_red)
                         textColorTo = ContextCompat.getColor(context, R.color.white)
-                        if (isBackground) {
+                        if (isBackground && (v.getBackground() is TransitionDrawable)) {
                             (v.getBackground() as TransitionDrawable).reverseTransition(ANIM_DURATION.toInt())
                         }
                     }
@@ -208,23 +207,23 @@ object Highlighter {
 
 
                 ///
-           /*     val colorFrom: Int
-                val colorTo: Int
+                /*     val colorFrom: Int
+                     val colorTo: Int
 
-                if (hasFocus) {
-                    colorFrom = ContextCompat.getColor(context, R.color.white)
-                    colorTo = ContextCompat.getColor(context, R.color.white)
-                } else {
-                    colorFrom = ContextCompat.getColor(context, R.color.white)
-                    colorTo = ContextCompat.getColor(context, R.color.white)
-                }
+                     if (hasFocus) {
+                         colorFrom = ContextCompat.getColor(context, R.color.white)
+                         colorTo = ContextCompat.getColor(context, R.color.white)
+                     } else {
+                         colorFrom = ContextCompat.getColor(context, R.color.white)
+                         colorTo = ContextCompat.getColor(context, R.color.white)
+                     }
 
-                val colorAnimationImage = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
-                colorAnimationImage.duration = ANIM_DURATION
-                colorAnimationImage.addUpdateListener { animator ->
-                    iv.colorFilter = PorterDuffColorFilter(animator.animatedValue as Int, PorterDuff.Mode.SRC_IN)
-                }
-                colorAnimationImage.start()*/
+                     val colorAnimationImage = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+                     colorAnimationImage.duration = ANIM_DURATION
+                     colorAnimationImage.addUpdateListener { animator ->
+                         iv.colorFilter = PorterDuffColorFilter(animator.animatedValue as Int, PorterDuff.Mode.SRC_IN)
+                     }
+                     colorAnimationImage.start()*/
             }
         }
     }
