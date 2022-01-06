@@ -665,7 +665,6 @@ object FilmModel {
                 }
                 i++
             }
-            // C6235.m18490(replace)
             String(Base64.decode(replace, 0))
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
