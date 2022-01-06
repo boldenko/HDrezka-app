@@ -327,9 +327,9 @@ class FilmFragment : Fragment(), FilmView {
     override fun setPlayer(link: String) {
         val container: LinearLayout = currentView.findViewById(R.id.fragment_film_ll_player_container)
 
+        playerView?.settings?.userAgentString = SettingsData.useragent
         playerView?.settings?.javaScriptEnabled = true
         playerView?.settings?.domStorageEnabled = true
-        // playerView.settings.userAgentString = BaseModel.userAgent
         playerView?.addJavascriptInterface(WebAppInterface(requireActivity()), "Android")
         playerView?.addJavascriptInterface(PlayerJsInterface(requireContext()), "JSOUT")
         playerView?.webViewClient = PlayerWebViewClient(requireContext(), this, filmPresenter.film) {
@@ -1190,9 +1190,9 @@ class FilmFragment : Fragment(), FilmView {
 
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
-                /*    if (SettingsData.selectedPlayerPackage != null) {
-                        intent.setPackage(SettingsData.selectedPlayerPackage)
-                    }*/
+                    /*    if (SettingsData.selectedPlayerPackage != null) {
+                            intent.setPackage(SettingsData.selectedPlayerPackage)
+                        }*/
 
                     try {
                         startActivity(intent)

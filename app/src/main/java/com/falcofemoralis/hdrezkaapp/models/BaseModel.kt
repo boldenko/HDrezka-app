@@ -8,11 +8,9 @@ import org.jsoup.Connection
 import org.jsoup.Jsoup
 
 object BaseModel {
-    const val userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36"
-
     fun getJsoup(link: String?): Connection {
         val connection = Jsoup.connect(link?.replace(" ", "")?.replace("\n", ""))
-            .userAgent(userAgent)
+            .userAgent(SettingsData.useragent)
             .ignoreContentType(true)
             //.ignoreHttpErrors(true)
             //.followRedirects(false)
@@ -25,7 +23,6 @@ object BaseModel {
                 .header("Cache-Control", "no-cache")
                 .header("Origin", SettingsData.provider)
                 .header("Upgrade-Insecure-Requests", "1")
-                //.header("User-Agent", userAgent)
                 .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
                 .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
                 .header("Accept-Encoding", "gzip, deflate")

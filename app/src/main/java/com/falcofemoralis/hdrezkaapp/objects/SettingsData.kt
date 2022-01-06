@@ -2,6 +2,7 @@ package com.falcofemoralis.hdrezkaapp.objects
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import androidx.preference.PreferenceManager
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.constants.GridLayoutSizes
@@ -28,6 +29,7 @@ object SettingsData {
     var defaultSort: Int? = null
     var isSelectSubtitle: Boolean? = null
     var selectedPlayerPackage: String? = null
+    var useragent: String? = null
 
     fun initProvider(context: Context) {
         if (provider == null || provider == "") {
@@ -89,7 +91,15 @@ object SettingsData {
         defaultQuality = defq
         defaultSort = prefs?.getString("defaultSort", "1")?.toInt()
         isSelectSubtitle = prefs?.getBoolean("isSelectSubtitles", true)
-       // selectedPlayerPackage = prefs?.getString("selectedPlayerPackage", null)
+        // selectedPlayerPackage = prefs?.getString("selectedPlayerPackage", null)
+
+        try {
+            // Mozilla/5.0 (Linux; Android 12; Pixel 4a) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.104 Mobile Safari/537.36
+            useragent = "Mozilla/5.0 (Linux; Android ${Build.VERSION.RELEASE}; ${Build.MANUFACTURER}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
+        } catch (e: Exception) {
+            useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36"
+            e.printStackTrace()
+        }
     }
 
     fun setProvider(newProvider: String, context: Context, updateSettings: Boolean) {

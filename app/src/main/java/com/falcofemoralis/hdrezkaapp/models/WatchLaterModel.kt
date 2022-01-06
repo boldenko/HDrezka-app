@@ -40,7 +40,6 @@ object WatchLaterModel {
     fun removeItem(id: String) {
         BaseModel.getJsoup(SettingsData.provider + "/engine/ajax/cdn_saves_remove.php")
             .data("id", id)
-            .userAgent("Mozilla")
             .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider))
             .post()
     }
