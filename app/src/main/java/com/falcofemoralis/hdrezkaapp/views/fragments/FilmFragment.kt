@@ -327,7 +327,7 @@ class FilmFragment : Fragment(), FilmView {
     override fun setPlayer(link: String) {
         val container: LinearLayout = currentView.findViewById(R.id.fragment_film_ll_player_container)
 
-        playerView?.settings?.userAgentString = SettingsData.useragent
+        playerView?.settings?.userAgentString = SettingsData.mobileUserAgent
         playerView?.settings?.javaScriptEnabled = true
         playerView?.settings?.domStorageEnabled = true
         playerView?.addJavascriptInterface(WebAppInterface(requireActivity()), "Android")

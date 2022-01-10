@@ -30,6 +30,7 @@ object SettingsData {
     var isSelectSubtitle: Boolean? = null
     var selectedPlayerPackage: String? = null
     var useragent: String? = null
+    var mobileUserAgent: String? = null
 
     fun initProvider(context: Context) {
         if (provider == null || provider == "") {
@@ -92,14 +93,8 @@ object SettingsData {
         defaultSort = prefs?.getString("defaultSort", "1")?.toInt()
         isSelectSubtitle = prefs?.getBoolean("isSelectSubtitles", true)
         // selectedPlayerPackage = prefs?.getString("selectedPlayerPackage", null)
-
-        try {
-            // Mozilla/5.0 (Linux; Android 12; Pixel 4a) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.104 Mobile Safari/537.36
-            useragent = "Mozilla/5.0 (Linux; Android ${Build.VERSION.RELEASE}; ${Build.MANUFACTURER}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
-        } catch (e: Exception) {
-            useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36"
-            e.printStackTrace()
-        }
+        useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36"
+        mobileUserAgent = "Mozilla/5.0 (Linux; Android ${Build.VERSION.RELEASE}; ${Build.MANUFACTURER}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
     }
 
     fun setProvider(newProvider: String, context: Context, updateSettings: Boolean) {
