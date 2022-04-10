@@ -9,6 +9,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
@@ -38,11 +39,13 @@ import com.falcofemoralis.hdrezkaapp.interfaces.IPagerView
 import com.falcofemoralis.hdrezkaapp.interfaces.NavigationMenuCallback
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener
 import com.falcofemoralis.hdrezkaapp.interfaces.OnFragmentInteractionListener.Action
+import com.falcofemoralis.hdrezkaapp.objects.Film
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.objects.UserData
 import com.falcofemoralis.hdrezkaapp.utils.ConnectionManager.isInternetAvailable
 import com.falcofemoralis.hdrezkaapp.utils.ConnectionManager.showConnectionErrorDialog
 import com.falcofemoralis.hdrezkaapp.utils.DialogManager
+import com.falcofemoralis.hdrezkaapp.utils.FragmentOpener
 import com.falcofemoralis.hdrezkaapp.utils.Highlighter
 import com.falcofemoralis.hdrezkaapp.views.fragments.*
 import com.falcofemoralis.hdrezkaapp.views.tv.NavigationMenu
@@ -231,6 +234,11 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                     createUserMenu()
                     setUserAvatar()
                     initSeriesUpdates()
+
+                    if (intent.data != null) {
+                        val link = SettingsData.provider + intent.data.toString().replace("${intent.data!!.scheme}://", "").replace(intent.data!!.host ?: "", "")
+                        FragmentOpener.openWithData(mainFragment, this, Film(link), "film")
+                    }
                 } else {
                     // TV
                     SettingsData.init(applicationContext)
