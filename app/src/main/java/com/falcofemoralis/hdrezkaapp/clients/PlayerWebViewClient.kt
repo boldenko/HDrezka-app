@@ -13,6 +13,9 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.falcofemoralis.hdrezkaapp.interfaces.IConnection
 import com.falcofemoralis.hdrezkaapp.objects.Film
+import android.webkit.ValueCallback
+import com.falcofemoralis.hdrezkaapp.objects.SettingsData
+import com.google.android.exoplayer2.metadata.icy.IcyHeaders
 
 
 class PlayerWebViewClient(val context: Context, val mainView: IConnection, val film: Film, val callback: () -> Unit) : WebViewClient() {
@@ -22,6 +25,7 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val f
         if (!checkUrl(request.url.toString())) {
             view.loadUrl(request.url.toString())
         }
+        view.loadUrl(request.url.toString(), mapOf(Pair(SettingsData.APP_HEADER, IcyHeaders.REQUEST_HEADER_ENABLE_METADATA_VALUE)))
         return true
     }
 
@@ -30,6 +34,7 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val f
         if (!checkUrl(url)) {
             view.loadUrl(url)
         }
+        view.loadUrl(url, mapOf(Pair(SettingsData.APP_HEADER, IcyHeaders.REQUEST_HEADER_ENABLE_METADATA_VALUE)))
         return true
     }
 
@@ -57,6 +62,8 @@ class PlayerWebViewClient(val context: Context, val mainView: IConnection, val f
     }
 
     override fun onPageFinished(view: WebView?, url: String?) {
+        view?.evaluateJavascript("$.ajaxSetup({    beforeSend: function (xhr)    {       xhr.setRequestHeader('X-App-Hdrezka-App', '1');    }});", null)
+
         // Move player at top
         val script1 = "javascript:document.querySelector('meta[name=\"viewport\"]').setAttribute('content', 'width=device-width,initial-scale=1.0');" +
                 "var idsToHide = ['top-head', 'top-nav', 'comments-form', 'hd-comments-list', 'hd-comments-navigation', 'footer'];" +

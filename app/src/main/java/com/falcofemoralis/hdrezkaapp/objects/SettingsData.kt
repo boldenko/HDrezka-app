@@ -11,6 +11,7 @@ import com.falcofemoralis.hdrezkaapp.utils.FileManager
 object SettingsData {
     const val PROVIDER_FILE = "provider"
     const val UIMODE_FILE = "uimode"
+    const val APP_HEADER = "X-App-Hdrezka-App"
 
     var deviceType: DeviceType? = null
     var provider: String? = null
@@ -93,8 +94,8 @@ object SettingsData {
         defaultSort = prefs?.getString("defaultSort", "1")?.toInt()
         isSelectSubtitle = prefs?.getBoolean("isSelectSubtitles", true)
         // selectedPlayerPackage = prefs?.getString("selectedPlayerPackage", null)
-        useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36"
-        mobileUserAgent = "Mozilla/5.0 (Linux; Android ${Build.VERSION.RELEASE}; ${Build.MANUFACTURER}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
+        useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36"
+        mobileUserAgent = "Mozilla/5.0 (Linux; Android ${Build.VERSION.RELEASE}; ${Build.MANUFACTURER}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36"
     }
 
     fun setProvider(newProvider: String, context: Context, updateSettings: Boolean) {

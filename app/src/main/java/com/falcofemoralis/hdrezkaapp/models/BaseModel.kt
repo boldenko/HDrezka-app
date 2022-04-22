@@ -1,9 +1,7 @@
 package com.falcofemoralis.hdrezkaapp.models
 
-import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
-import com.falcofemoralis.hdrezkaapp.views.fragments.FilmFragment
-import com.squareup.picasso.Picasso
+import com.google.android.exoplayer2.metadata.icy.IcyHeaders
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 
@@ -15,6 +13,7 @@ object BaseModel {
             //.ignoreHttpErrors(true)
             //.followRedirects(false)
             .timeout(30000)
+            .header(SettingsData.APP_HEADER, IcyHeaders.REQUEST_HEADER_ENABLE_METADATA_VALUE)
 
         if (SettingsData.isAltLoading == true) {
             connection.header("Host", SettingsData.provider!!.replace("http://", "").replace("https://", "").replace(" ", "").replace("\n", ""))
@@ -31,10 +30,4 @@ object BaseModel {
         return connection
     }
 
- /*   fun getPicasso(url: String,){
-        Picasso
-            .get()
-            .load(FilmFragment.presenter?.film?.posterPath)
-
-    }*/
 }
