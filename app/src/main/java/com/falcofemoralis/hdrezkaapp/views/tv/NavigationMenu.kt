@@ -4,7 +4,6 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
@@ -58,7 +57,6 @@ class NavigationMenu : Fragment() {
     private var settings = NavigationMenuTabs.nav_menu_settings
 
     private var lastSelectedMenu: String? = newestFilms
-    private var menuTextAnimationDelay = 0 //200
     private var _context: Context? = null
 
     companion object {
@@ -137,7 +135,6 @@ class NavigationMenu : Fragment() {
                         setMenuNameFocusView(tv, true)
                         focusIn(ib)
                     } else {
-                        closed = false
                         openNav()
                     }
                 } else {
@@ -165,23 +162,30 @@ class NavigationMenu : Fragment() {
                             navigationStateListener.onStateChanged(false, lastSelectedMenu)
                         }
                     }
-                    KeyEvent.KEYCODE_ENTER -> {
-                        closed = true
-                        lastSelectedMenu = lastMenu
-                        fragmentChangeListener.switchFragment(lastMenu)
-                        focusOut(ib)
-                        // closeNav()
+                    KeyEvent.KEYCODE_DPAD_LEFT -> {
+                        if (!isNavigationOpen()) {
+                            openNav()
+                        }
                     }
+//                    KeyEvent.KEYCODE_ENTER -> {
+//                        Log.d("KET_TEST", "KEYCODE_ENTER")
+//                        closed = true
+//                        lastSelectedMenu = lastMenu
+//                        fragmentChangeListener.switchFragment(lastMenu)
+//                        focusOut(ib)
+//                        // closeNav()
+//                    }
                     KeyEvent.KEYCODE_DPAD_UP -> {
                         if (!ib.isFocusable)
                             ib.isFocusable = true
                     }
-                    KeyEvent.KEYCODE_DPAD_CENTER -> {
-                        closed = true
-                        lastSelectedMenu = lastMenu
-                        fragmentChangeListener.switchFragment(lastMenu)
-                        closeNav()
-                    }
+//                    KeyEvent.KEYCODE_DPAD_CENTER -> {
+//                        if (lastSelectedMenu != lastMenu) {
+//                            fragmentChangeListener.switchFragment(lastMenu)
+//                        }
+//                        lastSelectedMenu = lastMenu
+//                        closeNav()
+//                    }
                     KeyEvent.KEYCODE_BACK -> {
                         if (isNavigationOpen()) {
                             closeNav()
@@ -194,10 +198,11 @@ class NavigationMenu : Fragment() {
 
         ib.setOnClickListener {
             if (isNavigationOpen()) {
+                if (lastSelectedMenu != lastMenu) {
+                    fragmentChangeListener.switchFragment(lastMenu)
+                }
                 lastSelectedMenu = lastMenu
-                fragmentChangeListener.switchFragment(lastMenu)
                 closeNav()
-                closed = true
             } else {
                 openNav()
             }
@@ -283,13 +288,11 @@ class NavigationMenu : Fragment() {
                         isViewOnHover = false
                     } else {
                         openNav()
-                        closed = false
                     }
                 }
                 MotionEvent.ACTION_HOVER_EXIT -> {
                     if (!isViewOnHover) {
                         closeNav()
-                        closed = true
                     }
                 }
             }
@@ -350,6 +353,8 @@ class NavigationMenu : Fragment() {
     }
 
     private fun openNav() {
+        closed = false
+
         enableNavMenuViews(View.VISIBLE)
         val lp = FrameLayout.LayoutParams(WRAP_CONTENT, MATCH_PARENT)
         currentView.layoutParams = lp
@@ -388,6 +393,8 @@ class NavigationMenu : Fragment() {
     }
 
     private fun closeNav() {
+        closed = true
+
         enableNavMenuViews(View.GONE)
         val lp = FrameLayout.LayoutParams(WRAP_CONTENT, MATCH_PARENT)
         currentView.layoutParams = lp
@@ -458,73 +465,47 @@ class NavigationMenu : Fragment() {
 
     private fun enableNavMenuViews(visibility: Int) {
         if (visibility == View.GONE) {
-            animateMenuNamesEntry(notify_TV, visibility, 1, R.anim.slide_in_right_menu_name)
-            /* menuTextAnimationDelay = 0//200 //reset
-             newest_TV.visibility = visibility
-             categories_TV.visibility = visibility
-             search_TV.visibility = visibility
-             bookmarks_TV.visibility = visibility
-             later_TV.visibility = visibility
-             settings_TV.visibility = visibility*/
+            val animate = AnimationUtils.loadAnimation(_context, R.anim.slide_in_right_menu_name)
+            val duration = context?.resources?.getInteger(R.integer.animation_duration)?.toLong()
+
+            duration?.let {
+                animate.duration = it
+            }
+            animate.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation?) {
+                }
+
+                override fun onAnimationEnd(animation: Animation?) {
+                    notify_TV.visibility = visibility
+                    newest_TV.visibility = visibility
+                    categories_TV.visibility = visibility
+                    search_TV.visibility = visibility
+                    bookmarks_TV.visibility = visibility
+                    later_TV.visibility = visibility
+                    settings_TV.visibility = visibility
+                }
+
+                override fun onAnimationRepeat(animation: Animation?) {
+                }
+            })
+            notify_TV.startAnimation(animate)
+            newest_TV.startAnimation(animate)
+            categories_TV.startAnimation(animate)
+            search_TV.startAnimation(animate)
+            bookmarks_TV.startAnimation(animate)
+            later_TV.startAnimation(animate)
+            settings_TV.startAnimation(animate)
         } else {
-            animateMenuNamesEntry(notify_TV, visibility, 1, R.anim.slide_in_left_menu_name)
+            notify_TV.visibility = visibility
+            newest_TV.visibility = visibility
+            categories_TV.visibility = visibility
+            search_TV.visibility = visibility
+            bookmarks_TV.visibility = visibility
+            later_TV.visibility = visibility
+            settings_TV.visibility = visibility
         }
     }
 
-    private fun animateMenuNamesEntry(view: View, visibility: Int, viewCode: Int, anim: Int) {
-        if (_context == null) {
-            return
-        }
-
-        view.postDelayed({
-            val animate = AnimationUtils.loadAnimation(_context, anim)
-
-            if (visibility == View.GONE) {
-                val duration = context?.resources?.getInteger(R.integer.animation_duration)?.toLong()
-                duration?.let {
-                    animate.duration = it
-                }
-                animate.setAnimationListener(object : Animation.AnimationListener {
-                    override fun onAnimationStart(animation: Animation?) {
-                    }
-
-                    override fun onAnimationEnd(animation: Animation?) {
-                        view.visibility = visibility
-                    }
-
-                    override fun onAnimationRepeat(animation: Animation?) {
-                    }
-                })
-            } else {
-                view.visibility = visibility
-            }
-            view.startAnimation(animate)
-
-            menuTextAnimationDelay = 0 // 100
-
-            // step by step animation
-            when (viewCode) {
-                1 -> {
-                    animateMenuNamesEntry(newest_TV, visibility, viewCode + 1, anim)
-                }
-                2 -> {
-                    animateMenuNamesEntry(categories_TV, visibility, viewCode + 1, anim)
-                }
-                3 -> {
-                    animateMenuNamesEntry(search_TV, visibility, viewCode + 1, anim)
-                }
-                4 -> {
-                    animateMenuNamesEntry(bookmarks_TV, visibility, viewCode + 1, anim)
-                }
-                5 -> {
-                    animateMenuNamesEntry(later_TV, visibility, viewCode + 1, anim)
-                }
-                6 -> {
-                    animateMenuNamesEntry(settings_TV, visibility, viewCode + 1, anim)
-                }
-            }
-        }, menuTextAnimationDelay.toLong())
-    }
 
     private fun isNavigationOpen() = newest_TV.visibility == View.VISIBLE
 
