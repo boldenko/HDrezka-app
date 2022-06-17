@@ -3,10 +3,8 @@ package com.falcofemoralis.hdrezkaapp.views.fragments
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,9 +29,6 @@ import com.falcofemoralis.hdrezkaapp.utils.DialogManager
 import com.falcofemoralis.hdrezkaapp.utils.ExceptionHelper
 import com.falcofemoralis.hdrezkaapp.views.MainActivity
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.UserView
-import android.graphics.drawable.Drawable
-
-
 
 
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener, UserView {
@@ -94,17 +89,17 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             true
         }
 
-     /*   findPreference<Preference?>("selectedPlayerPackage")?.setOnPreferenceClickListener {
-            if (mContext != null) {
-                val packages =  mContext!!.packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+        /*   findPreference<Preference?>("selectedPlayerPackage")?.setOnPreferenceClickListener {
+               if (mContext != null) {
+                   val packages =  mContext!!.packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
 
-                for (packageInfo in packages) {
-                    Log.d("TEST", "Package name:" + packageInfo.packageName)
-                    val icon = mContext!!.packageManager.getApplicationIcon(packageInfo.packageName)
-                }
-            }
-            true
-        }*/
+                   for (packageInfo in packages) {
+                       Log.d("TEST", "Package name:" + packageInfo.packageName)
+                       val icon = mContext!!.packageManager.getApplicationIcon(packageInfo.packageName)
+                   }
+               }
+               true
+           }*/
 
         val versionType = SettingsData.deviceType?.name
 
@@ -365,7 +360,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     private fun setStateExternalPlayerPrefs(state: Boolean) {
         val prefsKey = arrayOf("isPlayerChooser", "isMaxQuality", "defaultQuality", "isSubtitlesDownload", "isSelectSubtitles")
         for (prefKey in prefsKey) {
-            if (SettingsData.deviceType == DeviceType.TV && (prefKey == "isMaxQuality" || prefKey == "defaultQuality")) {
+            if (SettingsData.deviceType == DeviceType.TV && (prefKey == "isMaxQuality" || prefKey == "defaultQuality" || prefKey == "isSelectSubtitles")) {
                 continue
             }
 

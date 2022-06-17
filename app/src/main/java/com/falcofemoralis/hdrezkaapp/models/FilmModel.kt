@@ -2,11 +2,9 @@ package com.falcofemoralis.hdrezkaapp.models
 
 import android.util.ArrayMap
 import android.util.Base64
-import android.util.Log
 import android.webkit.CookieManager
 import com.falcofemoralis.hdrezkaapp.constants.FilmType
 import com.falcofemoralis.hdrezkaapp.objects.*
-import com.falcofemoralis.hdrezkaapp.utils.CookieStorage
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import org.jsoup.HttpStatusException
@@ -531,7 +529,10 @@ object FilmModel {
         data["action"] = "get_movie"
 
         val unixTime = System.currentTimeMillis()
-        val result: Document? = BaseModel.getJsoup(SettingsData.provider + GET_STREAM_POST + "/?t=$unixTime").data(data).post()
+        val result: Document? = BaseModel.getJsoup(SettingsData.provider + GET_STREAM_POST + "/?t=$unixTime")
+            .data(data)
+            .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider) + "; allowed_comments=1; _ym_isad=1; _ym_visorc=b; dle_newpm=0;")
+            .post()
 
         if (result != null) {
             val bodyString: String = result.select("body").text()
@@ -724,7 +725,7 @@ object FilmModel {
 
         val unixTime = System.currentTimeMillis()
         val result: Document? = BaseModel.getJsoup(SettingsData.provider + GET_STREAM_POST + "/?t=$unixTime")
-            .header("Cookie",   CookieManager.getInstance().getCookie(SettingsData.provider) + "; allowed_comments=1; _ym_isad=1; _ym_visorc=b; dle_newpm=0;")
+            .header("Cookie", CookieManager.getInstance().getCookie(SettingsData.provider) + "; allowed_comments=1; _ym_isad=1; _ym_visorc=b; dle_newpm=0;")
             .data(data)
             .post()
 
