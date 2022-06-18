@@ -91,6 +91,13 @@
             app:summary="@string/select_subtitles_hint"
             app:title="@string/select_subtitles_title" />
 
+        <SwitchPreferenceCompat
+            android:layout="@layout/custom_switch_preference"
+            android:defaultValue="true"
+            app:key="isControlsOverlayAutoHide"
+            app:summary="@string/isControlsOverlayAutoHide_hint"
+            app:title="@string/isControlsOverlayAutoHide_title" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

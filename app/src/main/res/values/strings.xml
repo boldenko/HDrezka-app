@@ -214,4 +214,6 @@
     <string name="select_subtitles_title">Предлагать выбор субтитров</string>
     <string name="select_subtitles_hint">После выбора качества всегда будет предложен выбор субтитров</string>
     <string name="download_failed">Ошибка загрузки</string>
+    <string name="isControlsOverlayAutoHide_title">Автозакрытие плеера</string>
+    <string name="isControlsOverlayAutoHide_hint">Плеер будет автоматически свернут</string>
 </resources>

@@ -354,6 +354,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             "isSelectSubtitles" -> {
                 SettingsData.isSelectSubtitle = preferences.getBoolean("isSelectSubtitles", true)
             }
+            "isControlsOverlayAutoHide" -> {
+                SettingsData.isControlsOverlayAutoHide = preferences.getBoolean("isControlsOverlayAutoHide", true)
+            }
         }
     }
 

@@ -32,6 +32,7 @@ object SettingsData {
     var selectedPlayerPackage: String? = null
     var useragent: String? = null
     var mobileUserAgent: String? = null
+    var isControlsOverlayAutoHide: Boolean? = null
 
     fun initProvider(context: Context) {
         if (provider == null || provider == "") {
@@ -81,6 +82,7 @@ object SettingsData {
         isSubtitlesDownload = prefs?.getBoolean("isSubtitlesDownload", true)
         isCheckNewVersion = prefs?.getBoolean("isCheckNewVersion", true)
         isAltLoading = prefs?.getBoolean("isAltLoading", false)
+        isControlsOverlayAutoHide = prefs?.getBoolean("isControlsOverlayAutoHide", true)
         (prefs?.getString("filmsInRow", (if (deviceType == DeviceType.TV) GridLayoutSizes.TV else GridLayoutSizes.MOBILE).toString())).let {
             if (it != null) {
                 filmsInRow = it.toInt()

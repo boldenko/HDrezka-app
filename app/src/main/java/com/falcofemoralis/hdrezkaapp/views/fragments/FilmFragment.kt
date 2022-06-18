@@ -912,6 +912,7 @@ class FilmFragment : Fragment(), FilmView {
 
                     if (UserData.isLoggedIn == true) {
                         filmPresenter.updateRating(selectableRatingBar.rating)
+                        Toast.makeText(requireContext(), selectableRatingBar.rating.toString(), Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(requireContext(), getString(R.string.need_register), Toast.LENGTH_SHORT).show()
                     }

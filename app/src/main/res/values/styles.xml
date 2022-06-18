@@ -90,6 +90,12 @@
         <item name="background">@color/black</item>
         <item name="android:windowBackground">@color/black</item>
         <item name="playbackProgressPrimaryColor">@color/primary_red</item>
+        <item name="playbackProgressSecondaryColor">@color/primary_red</item>
+        <item name="playbackControlsIconHighlightColor">@color/primary_red</item>
+        <item name="defaultBrandColor">@color/primary_red</item>
+        <item name="defaultBrandColorDark">@color/primary_red</item>
+        <item name="playbackControlsAutoHideTimeout">@integer/playbackControlsAutoHideTimeout</item>
+        <item name="playbackControlsAutoHideTickleTimeout">@integer/playbackControlsAutoHideTickleTimeout</item>
     </style>
 
     <style name="CustomSwitch" parent="Theme.MaterialComponents.DayNight.NoActionBar">

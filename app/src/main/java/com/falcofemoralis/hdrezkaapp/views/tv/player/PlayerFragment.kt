@@ -200,7 +200,8 @@ class PlayerFragment : VideoSupportFragment() {
         mPlayerGlue = VideoPlayerGlue(activity, mPlayerAdapter, mPlaybackActionListener!!, isSerial)
         mPlayerGlue?.host = VideoSupportFragmentGlueHost(this)
         mPlayerGlue?.isSeekEnabled = true
-        mPlayerGlue?.isControlsOverlayAutoHideEnabled = false
+        mPlayerGlue?.isControlsOverlayAutoHideEnabled = SettingsData.isControlsOverlayAutoHide!!
+
         //  StoryboardSeekDataProvider.setSeekProvider(mTranslation!!, mPlayerGlue!!, requireContext())
 
         if (mPlayerGlue?.isPrepared == true) {
@@ -282,7 +283,7 @@ class PlayerFragment : VideoSupportFragment() {
     }
 
     private fun prepareMediaForPlaying(mediaSourceUri: String, subtitleUri: String?, resetPosition: Boolean) {
-      //  val userAgent = Util.getUserAgent(requireActivity(), "VideoPlayerGlue")
+        //  val userAgent = Util.getUserAgent(requireActivity(), "VideoPlayerGlue")
         val factory = DefaultDataSourceFactory(requireActivity(), SettingsData.useragent)
         val mediaSource: MediaSource = ProgressiveMediaSource
             .Factory(factory)

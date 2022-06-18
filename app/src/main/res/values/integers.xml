@@ -7,4 +7,6 @@
     <integer name="comment_main">80</integer>
     <integer name="watch_later_left">20</integer>
     <integer name="watch_later_right">80</integer>
+    <integer name="playbackControlsAutoHideTimeout">3000</integer>
+    <integer name="playbackControlsAutoHideTickleTimeout">3000</integer>
 </resources>
