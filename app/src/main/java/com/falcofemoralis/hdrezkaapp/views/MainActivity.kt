@@ -9,7 +9,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
@@ -50,7 +49,6 @@ import com.falcofemoralis.hdrezkaapp.utils.Highlighter
 import com.falcofemoralis.hdrezkaapp.views.fragments.*
 import com.falcofemoralis.hdrezkaapp.views.tv.NavigationMenu
 import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.FragmentChangeListener
-import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.NavigationStateListener
 import com.google.firebase.FirebaseApp
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.squareup.picasso.Picasso
@@ -68,7 +66,7 @@ import javax.net.ssl.HttpsURLConnection.setDefaultSSLSocketFactory
 import kotlin.system.exitProcess
 
 
-class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnection, IPagerView, NavigationStateListener, FragmentChangeListener,
+class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnection, IPagerView, FragmentChangeListener,
     NavigationMenuCallback, VoiceSpeechRecognizer.ResultsListener {
     private var isSettingsOpened: Boolean = false
     private var isSeriesUpdatesOpened: Boolean = false
@@ -496,9 +494,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         }
     }
 
-    override fun onStateChanged(expanded: Boolean, lastSelected: String?) {
-    }
-
     override fun navMenuToggle(toShow: Boolean) {
     }
 
@@ -506,7 +501,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         when (fragment) {
             is NavigationMenu -> {
                 fragment.setFragmentChangeListener(this)
-                fragment.setNavigationStateListener(this)
             }
         }
     }
