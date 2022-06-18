@@ -1,6 +1,9 @@
 package com.falcofemoralis.hdrezkaapp.views
 
 import android.Manifest
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ActivityInfo
@@ -9,7 +12,10 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -49,6 +55,7 @@ import com.falcofemoralis.hdrezkaapp.utils.Highlighter
 import com.falcofemoralis.hdrezkaapp.views.fragments.*
 import com.falcofemoralis.hdrezkaapp.views.tv.NavigationMenu
 import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.FragmentChangeListener
+import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.NavigationStateListener
 import com.google.firebase.FirebaseApp
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.squareup.picasso.Picasso
@@ -67,7 +74,7 @@ import kotlin.system.exitProcess
 
 
 class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnection, IPagerView, FragmentChangeListener,
-    NavigationMenuCallback, VoiceSpeechRecognizer.ResultsListener {
+    NavigationMenuCallback, VoiceSpeechRecognizer.ResultsListener, NavigationStateListener {
     private var isSettingsOpened: Boolean = false
     private var isSeriesUpdatesOpened: Boolean = false
     private var mainFragment: Fragment? = null
@@ -501,6 +508,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         when (fragment) {
             is NavigationMenu -> {
                 fragment.setFragmentChangeListener(this)
+                fragment.setNavigationStateListener(this)
             }
         }
     }
@@ -709,5 +717,25 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                 }
             }
         }
+    }
+
+    override fun onStateChanged(closed: Boolean) {
+        Log.d("TESTEST", closed.toString())
+
+        val closedWidth = 0
+        val expandedWidth = 200
+
+        val anim = if (closed) {
+            ValueAnimator.ofInt(expandedWidth, closedWidth)
+        } else {
+            ValueAnimator.ofInt(closedWidth, expandedWidth)
+        }
+
+        anim.interpolator = AccelerateInterpolator()
+        anim.duration = NavigationMenu.animDuration
+        anim.addUpdateListener { animation ->
+            findViewById<FrameLayout>(R.id.activity_main_fcv_container).translationX = (animation.animatedValue as Int).toFloat()
+        }
+        anim.start()
     }
 }

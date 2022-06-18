@@ -8,8 +8,6 @@ import android.view.*
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.animation.AccelerateInterpolator
-import android.view.animation.AlphaAnimation
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -19,6 +17,7 @@ import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.constants.NavigationMenuTabs
 import com.falcofemoralis.hdrezkaapp.objects.SettingsData
 import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.FragmentChangeListener
+import com.falcofemoralis.hdrezkaapp.views.tv.interfaces.NavigationStateListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -28,11 +27,11 @@ import ru.nikartm.support.ImageBadgeView
 
 class NavigationMenu : Fragment() {
     private lateinit var fragmentChangeListener: FragmentChangeListener
+    private lateinit var navigationStateListener: NavigationStateListener
     private lateinit var currentView: View
     private var lastSelectedMenu: String? = NavigationMenuTabs.nav_menu_newest
     private var _context: Context? = null
     private val buttons = ArrayList<DrawerButton>()
-    private val animDuration = 200L
 
     private class DrawerButton(buttonView: ImageView, textView: TextView, category: String, selectedImage: Int, unselectedImage: Int, id: Int) {
         val buttonView: ImageView = buttonView // ImageButton
@@ -44,9 +43,10 @@ class NavigationMenu : Fragment() {
     }
 
     companion object {
+        val animDuration = 200L
         var notifyBtn: ImageBadgeView? = null
         var isFree = true
-        var closed = false
+        var closed = true
         var isLocked = false
         var isViewOnHover = false
     }
@@ -111,6 +111,7 @@ class NavigationMenu : Fragment() {
                         // user selects the button when the drawer is closed
                         // open the drawer
                         Log.d("TEST_DRAWER", "user selects the button when the drawer is closed -> focus this button")
+                        System.out.println(v)
                         openNav()
                     }
                 } else {
@@ -337,45 +338,51 @@ class NavigationMenu : Fragment() {
     }
 
     private fun openNav() {
-        closed = false
+        if(closed) {
+            closed = false
+            navigationStateListener.onStateChanged(closed)
 
-        val fromWidth = currentView.width
-        toggleNavMenuViews(View.VISIBLE)
-        currentView.measure(WRAP_CONTENT, MATCH_PARENT)
-        val toWidth = currentView.measuredWidth
-        toggleNavMenuViews(View.GONE)
-        animateVview(currentView, fromWidth, toWidth) {
+            val fromWidth = currentView.width
             toggleNavMenuViews(View.VISIBLE)
-        }
+            currentView.measure(WRAP_CONTENT, MATCH_PARENT)
+            val toWidth = currentView.measuredWidth
+            toggleNavMenuViews(View.GONE)
+            animateView(currentView, fromWidth, toWidth) {
+                toggleNavMenuViews(View.VISIBLE)
+            }
 
-        for (btn in buttons) {
-            if (btn.category == lastSelectedMenu) {
-                btn.buttonView.requestFocus()
-                setMenuNameFocusView(btn.textView, true)
-                break
+            for (btn in buttons) {
+                if (btn.category == lastSelectedMenu) {
+                    btn.buttonView.requestFocus()
+                    setMenuNameFocusView(btn.textView, true)
+                    break
+                }
             }
         }
     }
 
     private fun closeNav() {
-        closed = true
+        if(!closed) {
+            closed = true
+            navigationStateListener.onStateChanged(closed)
 
-        val fromWidth = currentView.width
-        toggleNavMenuViews(View.GONE)
-        currentView.measure(WRAP_CONTENT, MATCH_PARENT)
-        val toWidth = currentView.measuredWidth
-        animateVview(currentView, fromWidth, toWidth) {
+            val fromWidth = currentView.width
+            toggleNavMenuViews(View.GONE)
+            currentView.measure(WRAP_CONTENT, MATCH_PARENT)
+            val toWidth = currentView.measuredWidth
+            animateView(currentView, fromWidth, toWidth) {
 
+            }
+
+            //highlighting last selected menu icon
+            highlightMenuSelection(lastSelectedMenu)
+
+            //Setting out of focus views for menu icons, names
+            unHighlightMenuSelections(lastSelectedMenu)
         }
-
-        //highlighting last selected menu icon
-        highlightMenuSelection(lastSelectedMenu)
-
-        //Setting out of focus views for menu icons, names
-        unHighlightMenuSelections(lastSelectedMenu)
     }
 
-    private fun animateVview(view: View, from: Int, to: Int, animationEnd: () -> Unit) {
+    private fun animateView(view: View, from: Int, to: Int, animationEnd: () -> Unit) {
         val anim = ValueAnimator.ofInt(from, to)
         anim.interpolator = AccelerateInterpolator()
         anim.duration = animDuration
@@ -448,26 +455,13 @@ class NavigationMenu : Fragment() {
              }*/
     }
 
-    private fun animateView(view: View, valueAnimator: ValueAnimator, animationEnd: () -> Unit) {
-        valueAnimator.addUpdateListener { animation ->
-            view.layoutParams.width = animation.animatedValue as Int
-            view.requestLayout()
-        }
-
-        valueAnimator.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
-                animationEnd()
-            }
-        })
-
-        valueAnimator.interpolator = AccelerateInterpolator()
-        valueAnimator.duration = animDuration
-        valueAnimator.start()
-    }
-
     private fun isNavigationOpen() = buttons[1].textView.visibility == View.VISIBLE
 
     fun setFragmentChangeListener(callback: FragmentChangeListener) {
         this.fragmentChangeListener = callback
+    }
+
+    fun setNavigationStateListener(callback: NavigationStateListener) {
+        this.navigationStateListener = callback
     }
 }
