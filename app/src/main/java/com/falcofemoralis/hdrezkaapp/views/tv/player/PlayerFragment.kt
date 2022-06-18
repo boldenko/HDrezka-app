@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
@@ -253,16 +252,53 @@ class PlayerFragment : VideoSupportFragment() {
         }
     }
 
+    private fun getDescription(): String {
+        val divider = " | "
+        var str = ""
+
+        str += "${getString(R.string.release_date, mFilm?.date)}$divider"
+
+        if (!mFilm?.ratingIMDB.isNullOrEmpty()) {
+            str += "${getString(R.string.imdb)}: ${mFilm?.ratingIMDB}$divider"
+        }
+        if (!mFilm?.ratingKP.isNullOrEmpty()) {
+            str += "${getString(R.string.kp)}: ${mFilm?.ratingKP}$divider"
+        }
+        if (!mFilm?.ratingHR.isNullOrEmpty()) {
+            str += "${getString(R.string.hr)}: ${mFilm?.ratingHR}$divider"
+        }
+        if (!mFilm?.ratingWA.isNullOrEmpty()) {
+            str += "${getString(R.string.wa)}: ${mFilm?.ratingWA}$divider"
+        }
+
+        if (mFilm?.genres != null) {
+            var i = 1
+            str += "${getString(R.string.genres)}: "
+            for (genre in mFilm!!.genres!!) {
+                var comma = ", "
+                if(i == mFilm!!.genres!!.size){
+                    comma = ""
+                }
+
+                str += "$genre$comma"
+                i++
+            }
+        }
+
+
+        return str
+    }
+
     private fun play(stream: Stream) {
         mPlayerGlue?.title = title
-        mPlayerGlue?.subtitle = mFilm?.description
+        mPlayerGlue?.subtitle = getDescription()
         prepareMediaForPlaying(stream.url, mTranslation?.subtitles?.get(selectedSubtitle)?.url, true)
         mPlayerGlue?.play()
     }
 
     private fun play(playlistItem: Playlist.PlaylistItem) {
         mPlayerGlue?.title = "${mFilm?.title} Сезон ${playlistItem.season} - Эпизод ${playlistItem.episode}"
-        mPlayerGlue?.subtitle = mFilm?.description
+        mPlayerGlue?.subtitle = getDescription()
 
         GlobalScope.launch {
             FilmModel.getStreamsByEpisodeId(mTranslation!!, mFilm?.filmId!!, playlistItem.season, playlistItem.episode)

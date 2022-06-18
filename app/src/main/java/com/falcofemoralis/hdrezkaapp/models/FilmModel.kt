@@ -111,6 +111,14 @@ object FilmModel {
                             film.ratingKP = td[1].select(FILM_KP_RATING).text()
                             //  film.ratingWA = td[1].select(FILM_WA_RATING).text()
                         }
+                        "Жанр" -> {
+                            val genresEls = td.select("span")
+                            val genres: ArrayList<String> = ArrayList()
+                            for (el in genresEls) {
+                                genres.add(el.text())
+                            }
+                            film.genres = genres
+                        }
                     }
                 }
             }
