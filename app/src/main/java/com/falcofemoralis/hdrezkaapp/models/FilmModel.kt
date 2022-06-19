@@ -554,7 +554,7 @@ object FilmModel {
                     getThumbnails(thumbnailsUrl, translation)
                 }
             } else {
-                throw HttpStatusException("failed to get stream in object", 405, SettingsData.provider)
+                throw HttpStatusException(jsonObject.getString("message"), 405, SettingsData.provider)
             }
         } else {
             throw HttpStatusException("failed to get stream", 405, SettingsData.provider)

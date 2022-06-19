@@ -12,7 +12,7 @@ import com.falcofemoralis.hdrezkaapp.utils.FileManager
 object SettingsData {
     const val UIMODE_FILE = "uimode"
     const val APP_HEADER = "X-App-Hdrezka-App"
-    const val UPDATE_URL = "https://dl.dropboxusercontent.com/s/yhvwhwdzmiiqu6x/version.json?dl=1"
+    const val UPDATE_URL = "https://dl.dropboxusercontent.com/s/9dxteko8dqk3ysa/version_next.json?dl=1"
 
     var deviceType: DeviceType? = null
     var provider: String? = null
@@ -33,6 +33,7 @@ object SettingsData {
     var useragent: String? = null
     var mobileUserAgent: String? = null
     var isControlsOverlayAutoHide: Boolean? = null
+    var isInitHint: Boolean? = null
 
     fun initDeviceType(context: Context) {
         var str: String? = null
@@ -74,6 +75,9 @@ object SettingsData {
         isAltLoading = prefs?.getBoolean("isAltLoading", false)
         isControlsOverlayAutoHide = prefs?.getBoolean("isControlsOverlayAutoHide", true)
         provider = prefs?.getString("ownProvider", context.getString(R.string.share_host))
+        defaultSort = prefs?.getString("defaultSort", "1")?.toInt()
+        isSelectSubtitle = prefs?.getBoolean("isSelectSubtitles", true)
+        isInitHint = prefs?.getBoolean("initHint", false)
 
         (prefs?.getString("filmsInRow", (if (deviceType == DeviceType.TV) GridLayoutSizes.TV else GridLayoutSizes.MOBILE).toString())).let {
             if (it != null) {
@@ -85,8 +89,7 @@ object SettingsData {
             defq = null
         }
         defaultQuality = defq
-        defaultSort = prefs?.getString("defaultSort", "1")?.toInt()
-        isSelectSubtitle = prefs?.getBoolean("isSelectSubtitles", true)
+
         useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36"
         mobileUserAgent = "Mozilla/5.0 (Linux; Android ${Build.VERSION.RELEASE}; ${Build.MANUFACTURER}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36"
     }
@@ -98,5 +101,10 @@ object SettingsData {
         }
 
         provider = newProvider
+    }
+
+    fun updateInitHint(context: Context) {
+        val prefs: SharedPreferences? = PreferenceManager.getDefaultSharedPreferences(context)
+        prefs?.edit()?.putBoolean("initHint", true)?.apply()
     }
 }

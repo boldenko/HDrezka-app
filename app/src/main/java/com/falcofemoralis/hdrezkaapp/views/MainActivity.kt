@@ -10,7 +10,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.widget.*
@@ -218,6 +217,10 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
             SettingsData.init(applicationContext)
             UserData.init(applicationContext)
 
+            if (SettingsData.isInitHint == false) {
+                showInitHint()
+            }
+
             if (SettingsData.deviceType == DeviceType.MOBILE) {
                 // Mobile
                 requestedOrientation = if (SettingsData.isAutorotate == true) {
@@ -261,6 +264,16 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
                 onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null, ::fragmentInit)
             }
         }
+    }
+
+    private fun showInitHint() {
+        val builder = DialogManager.getDialog(this, R.string.init_hint_title)
+        builder.setMessage(R.string.init_hint_msg)
+        builder.setPositiveButton(getString(R.string.ok_text)) { dialog, id ->
+            SettingsData.updateInitHint(this)
+        }
+        val d = builder.create()
+        d.show()
     }
 
     fun showProviderEnter() {

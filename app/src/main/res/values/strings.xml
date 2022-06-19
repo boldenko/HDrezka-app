@@ -218,4 +218,6 @@
     <string name="isControlsOverlayAutoHide_hint">Плеер будет автоматически свернут</string>
     <string name="genres">Жанры</string>
     <string name="share_host">https://rzk.link</string>
+    <string name="init_hint_title">О приложении</string>
+    <string name="init_hint_msg">Данное приложение является неофициальным! Подробнее можно узнать на форуме 4pda.\n\nСлава Україні!\n\nПутин и его свита убивают мирное население (https://t.me/verkhovnaradaofukraine) на войне в Украине\n#stopputin</string>
 </resources>
