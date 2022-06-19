@@ -217,4 +217,5 @@
     <string name="isControlsOverlayAutoHide_title">Автозакрытие плеера</string>
     <string name="isControlsOverlayAutoHide_hint">Плеер будет автоматически свернут</string>
     <string name="genres">Жанры</string>
+    <string name="share_host">https://rzk.link</string>
 </resources>

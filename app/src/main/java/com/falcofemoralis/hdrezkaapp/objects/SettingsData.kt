@@ -4,14 +4,15 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import androidx.preference.PreferenceManager
+import com.falcofemoralis.hdrezkaapp.R
 import com.falcofemoralis.hdrezkaapp.constants.DeviceType
 import com.falcofemoralis.hdrezkaapp.constants.GridLayoutSizes
 import com.falcofemoralis.hdrezkaapp.utils.FileManager
 
 object SettingsData {
-    const val PROVIDER_FILE = "provider"
     const val UIMODE_FILE = "uimode"
     const val APP_HEADER = "X-App-Hdrezka-App"
+    const val UPDATE_URL = "https://dl.dropboxusercontent.com/s/yhvwhwdzmiiqu6x/version.json?dl=1"
 
     var deviceType: DeviceType? = null
     var provider: String? = null
@@ -29,20 +30,9 @@ object SettingsData {
     var isAltLoading: Boolean? = null
     var defaultSort: Int? = null
     var isSelectSubtitle: Boolean? = null
-    var selectedPlayerPackage: String? = null
     var useragent: String? = null
     var mobileUserAgent: String? = null
     var isControlsOverlayAutoHide: Boolean? = null
-
-    fun initProvider(context: Context) {
-        if (provider == null || provider == "") {
-            try {
-                provider = FileManager.readFile(PROVIDER_FILE, context)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
 
     fun initDeviceType(context: Context) {
         var str: String? = null
@@ -83,6 +73,8 @@ object SettingsData {
         isCheckNewVersion = prefs?.getBoolean("isCheckNewVersion", true)
         isAltLoading = prefs?.getBoolean("isAltLoading", false)
         isControlsOverlayAutoHide = prefs?.getBoolean("isControlsOverlayAutoHide", true)
+        provider = prefs?.getString("ownProvider", context.getString(R.string.share_host))
+
         (prefs?.getString("filmsInRow", (if (deviceType == DeviceType.TV) GridLayoutSizes.TV else GridLayoutSizes.MOBILE).toString())).let {
             if (it != null) {
                 filmsInRow = it.toInt()
@@ -95,7 +87,6 @@ object SettingsData {
         defaultQuality = defq
         defaultSort = prefs?.getString("defaultSort", "1")?.toInt()
         isSelectSubtitle = prefs?.getBoolean("isSelectSubtitles", true)
-        // selectedPlayerPackage = prefs?.getString("selectedPlayerPackage", null)
         useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36"
         mobileUserAgent = "Mozilla/5.0 (Linux; Android ${Build.VERSION.RELEASE}; ${Build.MANUFACTURER}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36"
     }
@@ -106,11 +97,6 @@ object SettingsData {
             prefs?.edit()?.putString("ownProvider", newProvider)?.apply()
         }
 
-        try {
-            FileManager.writeFile(PROVIDER_FILE, newProvider, false, context)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
         provider = newProvider
     }
 }

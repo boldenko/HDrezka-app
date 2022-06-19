@@ -1,8 +1,6 @@
 package com.falcofemoralis.hdrezkaapp.views
 
 import android.Manifest
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
@@ -14,7 +12,6 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
@@ -138,8 +135,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
         if (isInternetAvailable(applicationContext)) {
             FirebaseApp.initializeApp(this)
 
-            SettingsData.initProvider(this)
-
             try {
                 setDefaultSSLSocketFactory(SocketFactory())
             } catch (e: Exception) {
@@ -220,57 +215,50 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     @SuppressLint("SourceLockedOrientationActivity")
     private fun initApp() {
         if (savedInstanceState == null) {
-            if (SettingsData.provider == null || SettingsData.provider == "") {
-                showProviderEnter()
-            } else {
-                if (SettingsData.deviceType == DeviceType.MOBILE) {
-                    // Mobile
-                    SettingsData.init(applicationContext)
-                    UserData.init(applicationContext)
+            SettingsData.init(applicationContext)
+            UserData.init(applicationContext)
 
-                    requestedOrientation = if (SettingsData.isAutorotate == true) {
-                        ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
-                    } else {
-                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                    }
-                    mainFragment = ViewPagerFragment()
-                    onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null, null)
-
-                    createUserMenu()
-                    setUserAvatar()
-                    initSeriesUpdates()
-
-                    if (intent.data != null) {
-                        val link = SettingsData.provider + intent.data.toString().replace("${intent.data!!.scheme}://", "").replace(intent.data!!.host ?: "", "")
-                        FragmentOpener.openWithData(mainFragment, this, Film(link), "film")
-                    }
+            if (SettingsData.deviceType == DeviceType.MOBILE) {
+                // Mobile
+                requestedOrientation = if (SettingsData.isAutorotate == true) {
+                    ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
                 } else {
-                    // TV
-                    SettingsData.init(applicationContext)
-                    UserData.init(applicationContext)
-
-                    navFragmentLayout = findViewById(R.id.nav_fragment)
-
-                    navMenuFragment = NavigationMenu()
-                    supportFragmentManager.beginTransaction().replace(R.id.nav_fragment, navMenuFragment).commit()
-
-                    SettingsData.mainScreen?.let {
-                        mainFragment = when (it) {
-                            0 -> NewestFilmsFragment()
-                            1 -> CategoriesFragment()
-                            2 -> SearchFragment()
-                            3 -> BookmarksFragment()
-                            4 -> WatchLaterFragment()
-                            else -> NewestFilmsFragment()
-                        }
-                    }
-
-                    fun fragmentInit() {
-                        initSeriesUpdates()
-                    }
-
-                    onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null, ::fragmentInit)
+                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                 }
+                mainFragment = ViewPagerFragment()
+                onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null, null)
+
+                createUserMenu()
+                setUserAvatar()
+                initSeriesUpdates()
+
+                if (intent.data != null) {
+                    val link = SettingsData.provider + intent.data.toString().replace("${intent.data!!.scheme}://", "").replace(intent.data!!.host ?: "", "")
+                    FragmentOpener.openWithData(mainFragment, this, Film(link), "film")
+                }
+            } else {
+                // TV
+                navFragmentLayout = findViewById(R.id.nav_fragment)
+
+                navMenuFragment = NavigationMenu()
+                supportFragmentManager.beginTransaction().replace(R.id.nav_fragment, navMenuFragment).commit()
+
+                SettingsData.mainScreen?.let {
+                    mainFragment = when (it) {
+                        0 -> NewestFilmsFragment()
+                        1 -> CategoriesFragment()
+                        2 -> SearchFragment()
+                        3 -> BookmarksFragment()
+                        4 -> WatchLaterFragment()
+                        else -> NewestFilmsFragment()
+                    }
+                }
+
+                fun fragmentInit() {
+                    initSeriesUpdates()
+                }
+
+                onFragmentInteraction(null, mainFragment, Action.NEXT_FRAGMENT_REPLACE, false, null, null, null, ::fragmentInit)
             }
         }
     }
@@ -521,15 +509,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     // This callback is invoked when the Speech Recognizer returns.
     // This is where you process the intent and extract the speech text from the intent.
     override fun onResults(possibleTexts: Array<out String>) {
-/*        if (requestCode == SPEECH_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            val spokenText: String? =
-                data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS).let { results ->
-                    results?.get(0)
-                }
-
-        }
-        super.onActivityResult(requestCode, resultCode, data)*/
-
         val spokenText = possibleTexts.firstOrNull() //?.capitalize()
         if (mainFragment is SearchFragment) {
             (mainFragment as SearchFragment).showVoiceResult(spokenText)
@@ -608,11 +587,10 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     private fun checkAppVersion() {
         if (SettingsData.isCheckNewVersion == true) {
             val _context = this
-            //val versionFilePath = filesDir.path + "/version"
 
             GlobalScope.launch {
                 try {
-                    val uri: URI = URI.create("https://dl.dropboxusercontent.com/s/yhvwhwdzmiiqu6x/version.json?dl=1")
+                    val uri: URI = URI.create(SettingsData.UPDATE_URL)
                     uri.toURL().openStream().use { inputStream ->
                         val versionString = convertInputStreamToString(inputStream)
                         try {
@@ -677,11 +655,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
             result.write(buffer, 0, length)
         }
 
-        // Java 1.1
         return result.toString(StandardCharsets.UTF_8.name())
-
-        // Java 10
-        // return result.toString(StandardCharsets.UTF_8);
     }
 
     fun initSeriesUpdates() {
@@ -720,8 +694,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener, IConnec
     }
 
     override fun onStateChanged(closed: Boolean) {
-        Log.d("TESTEST", closed.toString())
-
         val closedWidth = 0
         val expandedWidth = 200
 
