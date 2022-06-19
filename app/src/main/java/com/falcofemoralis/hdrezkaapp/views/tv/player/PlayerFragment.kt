@@ -253,10 +253,10 @@ class PlayerFragment : VideoSupportFragment() {
     }
 
     private fun getDescription(): String {
-        val divider = " | "
+        val divider = " • "
         var str = ""
 
-        str += "${getString(R.string.release_date, mFilm?.date)}$divider"
+        str += "${getString(R.string.release_date, "${mFilm?.date} ${mFilm?.year}")}$divider"
 
         if (!mFilm?.ratingIMDB.isNullOrEmpty()) {
             str += "${getString(R.string.imdb)}: ${mFilm?.ratingIMDB}$divider"
@@ -271,19 +271,19 @@ class PlayerFragment : VideoSupportFragment() {
             str += "${getString(R.string.wa)}: ${mFilm?.ratingWA}$divider"
         }
 
-        if (mFilm?.genres != null) {
-            var i = 1
-            str += "${getString(R.string.genres)}: "
-            for (genre in mFilm!!.genres!!) {
-                var comma = ", "
-                if(i == mFilm!!.genres!!.size){
-                    comma = ""
-                }
+        if (mFilm?.countries != null) {
+            var countriesText = ""
+            for ((index, country) in mFilm?.countries!!.withIndex()) {
+                countriesText += country
 
-                str += "$genre$comma"
-                i++
+                if (index != mFilm?.countries!!.size - 1) {
+                    countriesText += ", "
+                }
             }
+
+            str += getString(R.string.countries, countriesText)
         }
+
 
 
         return str
