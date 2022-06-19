@@ -341,7 +341,7 @@ class FilmFragment : Fragment(), FilmView {
 
         playerView?.webChromeClient = activity?.let { PlayerChromeClient(it) }
         val map = HashMap<String, String>()
-        map[SettingsData.APP_HEADER,] = IcyHeaders.REQUEST_HEADER_ENABLE_METADATA_VALUE
+        map[SettingsData.APP_HEADER] = IcyHeaders.REQUEST_HEADER_ENABLE_METADATA_VALUE
         playerView?.loadUrl(link, map)
     }
 
@@ -780,6 +780,11 @@ class FilmFragment : Fragment(), FilmView {
         shareBtn.setOnClickListener {
             val sharingIntent = Intent(Intent.ACTION_SEND)
             sharingIntent.type = "text/plain"
+            val link = if (SettingsData.provider == getString(R.string.default_provider)) {
+                Uri.parse(link).buildUpon().authority(SettingsData.SHARE_HOST).build()
+            } else {
+                link
+            }
             val body: String = getString(R.string.share_body, title, link)
             sharingIntent.putExtra(Intent.EXTRA_TEXT, body)
             startActivity(sharingIntent)

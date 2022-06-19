@@ -135,7 +135,7 @@
         app:title="@string/cat_app">
 
         <EditTextPreference
-            android:defaultValue="@string/share_host"
+            android:defaultValue="@string/default_provider"
             app:key="ownProvider"
             app:layout="@layout/custom_edit_preference"
             app:summary="@string/own_provider_hint"
