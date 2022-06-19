@@ -61,6 +61,7 @@ import com.falcofemoralis.hdrezkaapp.views.elements.CommentEditor
 import com.falcofemoralis.hdrezkaapp.views.tv.player.PlayerActivity
 import com.falcofemoralis.hdrezkaapp.views.viewsInterface.FilmView
 import com.github.aakira.expandablelayout.ExpandableLinearLayout
+import com.google.android.exoplayer2.metadata.icy.IcyHeaders
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.willy.ratingbar.ScaleRatingBar
@@ -339,7 +340,9 @@ class FilmFragment : Fragment(), FilmView {
         }
 
         playerView?.webChromeClient = activity?.let { PlayerChromeClient(it) }
-        playerView?.loadUrl(link)
+        val map = HashMap<String, String>()
+        map[SettingsData.APP_HEADER,] = IcyHeaders.REQUEST_HEADER_ENABLE_METADATA_VALUE
+        playerView?.loadUrl(link, map)
     }
 
     class WebAppInterface(private val act: FragmentActivity) {

@@ -19,13 +19,14 @@ import com.google.android.exoplayer2.metadata.icy.IcyHeaders
 
 
 class PlayerWebViewClient(val context: Context, val mainView: IConnection, val film: Film, val callback: () -> Unit) : WebViewClient() {
-
     @TargetApi(Build.VERSION_CODES.N)
     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
         if (!checkUrl(request.url.toString())) {
             view.loadUrl(request.url.toString())
         }
-        view.loadUrl(request.url.toString(), mapOf(Pair(SettingsData.APP_HEADER, IcyHeaders.REQUEST_HEADER_ENABLE_METADATA_VALUE)))
+        val map = HashMap<String, String>()
+        map[SettingsData.APP_HEADER,] = IcyHeaders.REQUEST_HEADER_ENABLE_METADATA_VALUE
+        view.loadUrl(request.url.toString(), map)
         return true
     }
 
