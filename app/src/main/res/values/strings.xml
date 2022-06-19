@@ -214,8 +214,8 @@
     <string name="select_subtitles_title">Предлагать выбор субтитров</string>
     <string name="select_subtitles_hint">После выбора качества всегда будет предложен выбор субтитров</string>
     <string name="download_failed">Ошибка загрузки</string>
-    <string name="isControlsOverlayAutoHide_title">Автозакрытие плеера</string>
-    <string name="isControlsOverlayAutoHide_hint">Плеер будет автоматически свернут</string>
+    <string name="isControlsOverlayAutoHide_title">Автозакрытие меню плеера</string>
+    <string name="isControlsOverlayAutoHide_hint">Меню управления плеером будет автоматически свернуто</string>
     <string name="genres">Жанры</string>
     <string name="share_host">https://hdrzk.org</string>
     <string name="init_hint_title">О приложении</string>
