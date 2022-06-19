@@ -211,7 +211,6 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
 
     fun showVoiceResult(spokenText: String?) {
         if (spokenText != null) {
-            //autoCompleteTextView.dismissDropDown()
             autoCompleteTextView.setText(spokenText)
 
             //проверяем ведденный текст
@@ -220,7 +219,7 @@ class SearchFragment : Fragment(), SearchView, FilmListCallView {
             } else {
                 hintLayout.visibility = View.GONE
                 imm.hideSoftInputFromWindow(autoCompleteTextView.windowToken, 0)
-                searchPresenter.setQuery(spokenText)
+                autoCompleteTextView.setText(spokenText)
             }
         }
     }
