@@ -320,7 +320,7 @@ class PlayerFragment : VideoSupportFragment() {
 
     private fun prepareMediaForPlaying(mediaSourceUri: String, subtitleUri: String?, resetPosition: Boolean) {
         //  val userAgent = Util.getUserAgent(requireActivity(), "VideoPlayerGlue")
-        val factory = DefaultDataSourceFactory(requireActivity(), SettingsData.useragent)
+        val factory = DefaultDataSourceFactory(requireActivity(), SettingsData.mobileUserAgent)
         val mediaSource: MediaSource = ProgressiveMediaSource
             .Factory(factory)
             .setExtractorsFactory(DefaultExtractorsFactory())

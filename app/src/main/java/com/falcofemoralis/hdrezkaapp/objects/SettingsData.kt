@@ -28,10 +28,8 @@ object SettingsData {
     var defaultQuality: String? = null
     var isSubtitlesDownload: Boolean? = null
     var isCheckNewVersion: Boolean? = null
-    var isAltLoading: Boolean? = null
     var defaultSort: Int? = null
     var isSelectSubtitle: Boolean? = null
-    var useragent: String? = null
     var mobileUserAgent: String? = null
     var isControlsOverlayAutoHide: Boolean? = null
     var isInitHint: Boolean? = null
@@ -73,12 +71,12 @@ object SettingsData {
         autoPlayNextEpisode = prefs?.getBoolean("autoPlayNextEpisode", true)
         isSubtitlesDownload = prefs?.getBoolean("isSubtitlesDownload", true)
         isCheckNewVersion = prefs?.getBoolean("isCheckNewVersion", true)
-        isAltLoading = prefs?.getBoolean("isAltLoading", false)
         isControlsOverlayAutoHide = prefs?.getBoolean("isControlsOverlayAutoHide", true)
         provider = prefs?.getString("ownProvider", context.getString(R.string.default_provider))
         defaultSort = prefs?.getString("defaultSort", "1")?.toInt()
         isSelectSubtitle = prefs?.getBoolean("isSelectSubtitles", true)
         isInitHint = prefs?.getBoolean("initHint", false)
+        prefs?.getString("userAgent", context.getString(R.string.default_useragent))?.let { updateUserAgent(it) }
 
         (prefs?.getString("filmsInRow", (if (deviceType == DeviceType.TV) GridLayoutSizes.TV else GridLayoutSizes.MOBILE).toString())).let {
             if (it != null) {
@@ -90,9 +88,6 @@ object SettingsData {
             defq = null
         }
         defaultQuality = defq
-
-        useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36"
-        mobileUserAgent = "Mozilla/5.0 (Linux; Android ${Build.VERSION.RELEASE}; ${Build.MANUFACTURER}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36"
     }
 
     fun setProvider(newProvider: String, context: Context, updateSettings: Boolean) {
@@ -107,5 +102,9 @@ object SettingsData {
     fun updateInitHint(context: Context) {
         val prefs: SharedPreferences? = PreferenceManager.getDefaultSharedPreferences(context)
         prefs?.edit()?.putBoolean("initHint", true)?.apply()
+    }
+
+    fun updateUserAgent(agent: String) {
+        mobileUserAgent = "Mozilla/5.0 (Linux; Android ${Build.VERSION.RELEASE}; ${Build.MANUFACTURER}) $agent"
     }
 }

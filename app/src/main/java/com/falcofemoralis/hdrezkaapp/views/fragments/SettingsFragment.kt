@@ -348,14 +348,14 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             "isCheckNewVersion" -> {
                 SettingsData.isCheckNewVersion = preferences.getBoolean("isCheckNewVersion", true)
             }
-            "isAltLoading" -> {
-                SettingsData.isAltLoading = preferences.getBoolean("isAltLoading", false)
-            }
             "isSelectSubtitles" -> {
                 SettingsData.isSelectSubtitle = preferences.getBoolean("isSelectSubtitles", true)
             }
             "isControlsOverlayAutoHide" -> {
                 SettingsData.isControlsOverlayAutoHide = preferences.getBoolean("isControlsOverlayAutoHide", true)
+            }
+            "useragent" -> {
+                preferences.getString("userAgent", getString(R.string.default_useragent))?.let { SettingsData.updateUserAgent(it) }
             }
         }
     }
