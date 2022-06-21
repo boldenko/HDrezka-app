@@ -81,6 +81,15 @@
                         android:textSize="@dimen/normal_text"
                         android:layout_columnWeight="1" />
 
+                    <RadioButton
+                        android:id="@+id/sort_fresh"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/fresh"
+                        android:textColor="@color/text_color"
+                        android:textSize="@dimen/normal_text"
+                        android:layout_columnWeight="1" />
+
                 </com.falcofemoralis.hdrezkaapp.views.elements.RadioGridGroup>
             </LinearLayout>
 

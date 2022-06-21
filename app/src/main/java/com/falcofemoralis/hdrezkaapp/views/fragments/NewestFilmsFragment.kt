@@ -73,6 +73,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
                 2 -> R.id.sort_popular
                 3 -> R.id.sort_announce
                 4 -> R.id.sort_now
+                5 -> R.id.sort_fresh
                 else -> R.id.sort_last
             }
         )
@@ -85,6 +86,7 @@ class NewestFilmsFragment : Fragment(), NewestFilmsView, FilmListCallView {
                         R.id.sort_popular -> 2
                         R.id.sort_announce -> 3
                         R.id.sort_now -> 4
+                        R.id.sort_fresh -> 5
                         else -> 1
                     }
                     newestFilmsPresenter.setFilter(AppliedFilter.SORT, pos)

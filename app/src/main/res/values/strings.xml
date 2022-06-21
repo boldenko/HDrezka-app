@@ -219,10 +219,11 @@
     <string name="genres">Жанры</string>
     <string name="default_provider">https://hdrzk.org</string>
     <string name="init_hint_title">О приложении</string>
-    <string name="init_hint_msg">Данное приложение является неофициальным и администрация сайта резки не имеет никакого отношение к данному приложению! Подробнее можно узнать на форуме 4pda.\n\nСлава Україні!\n\nПутин и его свита убивают мирное население (https://t.me/verkhovnaradaofukraine) на войне в Украине\n#stopputin</string>
-    <string name="default_useragent">AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063</string>
+    <string name="init_hint_msg">Данное приложение является неофициальным и администрация сайта резки не имеет никакого отношение к нему! Подробнее можно узнать на форуме 4pda.\n\nСлава Україні!\n\nПутин и его свита убивают мирное население (https://t.me/verkhovnaradaofukraine) на войне в Украине\n#stopputin</string>
+    <string name="default_useragent">AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.91 Mobile Safari/537.36</string>
     <string name="useragent_hint">Возможность изменить поле useragent в запросе</string>
     <string name="useragent_title">Поле Useragent</string>
+    <string name="fresh">Новинки</string>
 </resources>
 
 

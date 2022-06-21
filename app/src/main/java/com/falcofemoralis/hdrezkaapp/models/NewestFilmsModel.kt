@@ -11,7 +11,7 @@ import org.jsoup.nodes.Document
 
 object NewestFilmsModel {
     private const val NEW = "/engine/ajax/get_newest_slider_content.php"
-    val SORTS: ArrayList<String> = arrayListOf("newest_slider_content", "last", "popular", "soon", "watching")
+    val SORTS: ArrayList<String> = arrayListOf("newest_slider_content", "last", "popular", "soon", "watching", "new")
     val TYPES: ArrayList<String> = arrayListOf("0", "1", "2", "3", "82") // all, films, serials, multfilms, anime
 
     fun getNewestFilms(page: Int, sort: String, type: String): ArrayList<Film> {
@@ -36,6 +36,17 @@ object NewestFilmsModel {
         } else {
             throw HttpStatusException("failed to get new films", 404, SettingsData.provider)
         }
+    }
+
+    fun getFreshFilms(page: Int, type: String): ArrayList<Film> {
+        var link = SettingsData.provider + "/new/page/$page/?filter=last"
+
+        if (type != "0") {
+            link += "&genre=$type"
+        }
+
+        val doc: Document = BaseModel.getJsoup(link).get()
+        return FilmsListModel.getFilmsFromPage(doc)
     }
 
     fun getSeriesUpdates(): LinkedHashMap<String, ArrayList<SeriesUpdateItem>> {

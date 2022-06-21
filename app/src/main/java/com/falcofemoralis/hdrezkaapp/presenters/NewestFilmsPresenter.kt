@@ -35,6 +35,8 @@ class NewestFilmsPresenter(
                     // films from slider
                     films = NewestFilmsModel.getNewFilms(appliedFilters[AppliedFilter.TYPE]!!)
                 }
+            } else if (appliedFilters[AppliedFilter.SORT]!! == NewestFilmsModel.SORTS[5]) {
+                films = NewestFilmsModel.getFreshFilms(currentPage, appliedFilters[AppliedFilter.TYPE]!!)
             } else {
                 films = NewestFilmsModel.getNewestFilms(currentPage, appliedFilters[AppliedFilter.SORT]!!, appliedFilters[AppliedFilter.TYPE]!!)
             }

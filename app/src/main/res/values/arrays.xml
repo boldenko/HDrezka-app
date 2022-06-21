@@ -125,6 +125,7 @@
         <item>@string/popular</item>
         <item>@string/announce</item>
         <item>@string/now</item>
+        <item>@string/fresh</item>
     </string-array>
     <string-array name="sortsIds">
         <item>0</item>
